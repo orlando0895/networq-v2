@@ -12,7 +12,7 @@ import type { Database } from '@/integrations/supabase/types';
 type Contact = Database['public']['Tables']['contacts']['Row'];
 
 const Index = () => {
-  const { contacts, loading, addContact } = useContacts();
+  const { contacts, loading, addContact, updateContact } = useContacts();
   const [searchTerm, setSearchTerm] = useState("");
   const [isAddingContact, setIsAddingContact] = useState(false);
   const [filterTier, setFilterTier] = useState<"all" | "A-player" | "Acquaintance">("all");
@@ -80,7 +80,11 @@ const Index = () => {
         {/* Contacts Grid */}
         <div className="space-y-3 sm:space-y-4">
           {filteredContacts.map((contact) => (
-            <ContactCard key={contact.id} contact={contact} />
+            <ContactCard 
+              key={contact.id} 
+              contact={contact} 
+              onUpdateContact={updateContact}
+            />
           ))}
         </div>
 
