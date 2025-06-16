@@ -1,16 +1,7 @@
 
-interface Contact {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  company: string;
-  industry: string;
-  services: string[];
-  tier: "A-player" | "Acquaintance";
-  notes: string;
-  addedDate: string;
-}
+import type { Database } from '@/integrations/supabase/types';
+
+type Contact = Database['public']['Tables']['contacts']['Row'];
 
 interface ContactStatsProps {
   contacts: Contact[];

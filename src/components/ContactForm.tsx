@@ -14,7 +14,7 @@ interface NewContact {
   phone: string;
   company: string;
   industry: string;
-  services: string;
+  services: string[];
   tier: "A-player" | "Acquaintance";
   notes: string;
 }
@@ -26,14 +26,14 @@ interface ContactFormProps {
 }
 
 const ContactForm = ({ isOpen, onOpenChange, onAddContact }: ContactFormProps) => {
-  const [newContact, setNewContact] = useState<NewContact>({
+  const [newContact, setNewContact] = useState({
     name: "",
     email: "",
     phone: "",
     company: "",
     industry: "",
     services: "",
-    tier: "Acquaintance",
+    tier: "Acquaintance" as "A-player" | "Acquaintance",
     notes: ""
   });
 
@@ -42,10 +42,12 @@ const ContactForm = ({ isOpen, onOpenChange, onAddContact }: ContactFormProps) =
       return;
     }
 
-    const result = await onAddContact({
+    const contactData: NewContact = {
       ...newContact,
       services: newContact.services.split(",").map(s => s.trim().toLowerCase()).filter(s => s)
-    });
+    };
+
+    const result = await onAddContact(contactData);
 
     if (result?.success) {
       setNewContact({

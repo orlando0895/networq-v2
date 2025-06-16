@@ -2,19 +2,9 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, Star } from "lucide-react";
+import type { Database } from '@/integrations/supabase/types';
 
-interface Contact {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  company: string;
-  industry: string;
-  services: string[];
-  tier: "A-player" | "Acquaintance";
-  notes: string;
-  addedDate: string;
-}
+type Contact = Database['public']['Tables']['contacts']['Row'];
 
 interface ContactFiltersProps {
   searchTerm: string;

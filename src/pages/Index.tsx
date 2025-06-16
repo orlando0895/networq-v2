@@ -7,19 +7,9 @@ import ContactForm from "@/components/ContactForm";
 import ContactStats from "@/components/ContactStats";
 import ContactFilters from "@/components/ContactFilters";
 import EmptyState from "@/components/EmptyState";
+import type { Database } from '@/integrations/supabase/types';
 
-interface Contact {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  company: string;
-  industry: string;
-  services: string[];
-  tier: "A-player" | "Acquaintance";
-  notes: string;
-  addedDate: string;
-}
+type Contact = Database['public']['Tables']['contacts']['Row'];
 
 const Index = () => {
   const { contacts, loading, addContact } = useContacts();
@@ -39,7 +29,7 @@ const Index = () => {
     return matchesSearch && matchesTier;
   });
 
-  const hasFilters = searchTerm || filterTier !== "all";
+  const hasFilters = searchTerm !== "" || filterTier !== "all";
 
   if (loading) {
     return (
