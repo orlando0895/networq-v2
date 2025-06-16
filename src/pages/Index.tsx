@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,9 +7,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, Plus, Users, Star, UserPlus, Network, Mail, Phone, Edit, Filter, ChevronDown } from "lucide-react";
+import { Search, Plus, Users, Star, UserPlus, Network, Mail, Phone, Edit, Filter, ChevronDown, Menu } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 
 interface Contact {
   id: string;
@@ -135,40 +135,37 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-slate-50">
-      {/* Header */}
+      {/* Mobile-Optimized Header */}
       <header className="bg-white border-b border-slate-200 sticky top-0 z-40">
-        <div className="max-w-6xl mx-auto px-6 py-4">
+        <div className="px-4 sm:px-6 py-3 sm:py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl p-2.5">
-                <Network className="w-6 h-6 text-white" />
+            <div className="flex items-center space-x-3">
+              <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl p-2">
+                <Network className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Networq</h1>
-                <p className="text-sm text-slate-600 leading-relaxed">Your personal referral engine</p>
+                <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">Networq</h1>
+                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">Your personal referral engine</p>
               </div>
             </div>
-            <div className="flex items-center space-x-3">
-              <Button variant="outline" className="hidden sm:flex">
-                <UserPlus className="w-4 h-4 mr-2" />
-                Invite to Circle
-              </Button>
-              <Dialog open={isAddingContact} onOpenChange={setIsAddingContact}>
-                <DialogTrigger asChild>
-                  <Button className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 transition-all duration-200">
-                    <Plus className="w-4 h-4 mr-2" />
-                    Add Contact
+            <div className="flex items-center space-x-2">
+              {/* Mobile Sheet for Add Contact */}
+              <Sheet open={isAddingContact} onOpenChange={setIsAddingContact}>
+                <SheetTrigger asChild>
+                  <Button size="sm" className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 transition-all duration-200">
+                    <Plus className="w-4 h-4 sm:mr-2" />
+                    <span className="hidden sm:inline">Add Contact</span>
                   </Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-md">
-                  <DialogHeader>
-                    <DialogTitle className="flex items-center gap-2 text-lg font-semibold">
+                </SheetTrigger>
+                <SheetContent className="w-full sm:max-w-md overflow-y-auto">
+                  <SheetHeader>
+                    <SheetTitle className="flex items-center gap-2 text-lg font-semibold">
                       <UserPlus className="w-5 h-5" />
                       Add New Contact
-                    </DialogTitle>
-                  </DialogHeader>
-                  <div className="space-y-4">
-                    <div className="grid grid-cols-2 gap-4">
+                    </SheetTitle>
+                  </SheetHeader>
+                  <div className="space-y-4 mt-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
                         <Label htmlFor="name" className="text-sm font-medium">Name *</Label>
                         <Input
@@ -176,7 +173,7 @@ const Index = () => {
                           value={newContact.name}
                           onChange={(e) => setNewContact({...newContact, name: e.target.value})}
                           placeholder="John Doe"
-                          className="mt-1"
+                          className="mt-1 h-12"
                         />
                       </div>
                       <div>
@@ -187,12 +184,12 @@ const Index = () => {
                           value={newContact.email}
                           onChange={(e) => setNewContact({...newContact, email: e.target.value})}
                           placeholder="john@company.com"
-                          className="mt-1"
+                          className="mt-1 h-12"
                         />
                       </div>
                     </div>
                     
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
                         <Label htmlFor="phone" className="text-sm font-medium">Phone</Label>
                         <Input
@@ -200,7 +197,7 @@ const Index = () => {
                           value={newContact.phone}
                           onChange={(e) => setNewContact({...newContact, phone: e.target.value})}
                           placeholder="(555) 123-4567"
-                          className="mt-1"
+                          className="mt-1 h-12"
                         />
                       </div>
                       <div>
@@ -210,7 +207,7 @@ const Index = () => {
                           value={newContact.company}
                           onChange={(e) => setNewContact({...newContact, company: e.target.value})}
                           placeholder="Company Name"
-                          className="mt-1"
+                          className="mt-1 h-12"
                         />
                       </div>
                     </div>
@@ -222,7 +219,7 @@ const Index = () => {
                         value={newContact.industry}
                         onChange={(e) => setNewContact({...newContact, industry: e.target.value})}
                         placeholder="e.g., Marketing & Design"
-                        className="mt-1"
+                        className="mt-1 h-12"
                       />
                     </div>
 
@@ -233,14 +230,14 @@ const Index = () => {
                         value={newContact.services}
                         onChange={(e) => setNewContact({...newContact, services: e.target.value})}
                         placeholder="web design, logo design, branding"
-                        className="mt-1"
+                        className="mt-1 h-12"
                       />
                     </div>
 
                     <div>
                       <Label htmlFor="tier" className="text-sm font-medium">Referral Tier</Label>
                       <Select value={newContact.tier} onValueChange={(value: "A-player" | "Acquaintance") => setNewContact({...newContact, tier: value})}>
-                        <SelectTrigger className="mt-1">
+                        <SelectTrigger className="mt-1 h-12">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -263,42 +260,43 @@ const Index = () => {
                     </div>
 
                     <div className="flex gap-2 pt-4">
-                      <Button onClick={handleAddContact} className="flex-1">
+                      <Button onClick={handleAddContact} className="flex-1 h-12">
                         Add Contact
                       </Button>
-                      <Button variant="outline" onClick={() => setIsAddingContact(false)}>
+                      <Button variant="outline" onClick={() => setIsAddingContact(false)} className="h-12">
                         Cancel
                       </Button>
                     </div>
                   </div>
-                </DialogContent>
-              </Dialog>
+                </SheetContent>
+              </Sheet>
             </div>
           </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="max-w-6xl mx-auto px-6 py-8">
-        {/* Search & Filter Section */}
-        <div className="mb-8 space-y-4">
-          <div className="relative max-w-md">
+      <main className="px-4 sm:px-6 lg:px-8 py-6 sm:py-8 max-w-6xl mx-auto">
+        {/* Mobile-Optimized Search & Filter Section */}
+        <div className="mb-6 sm:mb-8 space-y-4">
+          <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
             <Input
               type="text"
               placeholder="Search by name, service, or industry..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 py-3 text-base border-slate-200 focus:border-indigo-500 focus:ring-indigo-500 transition-colors"
+              className="pl-10 py-3 text-base border-slate-200 focus:border-indigo-500 focus:ring-indigo-500 transition-colors h-12"
             />
           </div>
           
-          <div className="flex items-center space-x-4">
+          {/* Mobile Filter Buttons */}
+          <div className="flex flex-wrap gap-2">
             <Button
               variant={filterTier === "all" ? "default" : "outline"}
               size="sm"
               onClick={() => setFilterTier("all")}
-              className="transition-all duration-200"
+              className="transition-all duration-200 h-10"
             >
               All ({contacts.length})
             </Button>
@@ -306,7 +304,7 @@ const Index = () => {
               variant={filterTier === "A-player" ? "default" : "outline"}
               size="sm"
               onClick={() => handleTierFilter("A-player")}
-              className="transition-all duration-200"
+              className="transition-all duration-200 h-10"
             >
               <Star className="w-3 h-3 mr-1 fill-current" />
               A-Players ({contacts.filter(c => c.tier === "A-player").length})
@@ -315,101 +313,92 @@ const Index = () => {
               variant={filterTier === "Acquaintance" ? "default" : "outline"}
               size="sm"
               onClick={() => setFilterTier("Acquaintance")}
-              className="transition-all duration-200"
+              className="transition-all duration-200 h-10"
             >
               Acquaintances ({contacts.filter(c => c.tier === "Acquaintance").length})
             </Button>
           </div>
         </div>
 
-        {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="bg-white rounded-xl p-6 border border-slate-200">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-slate-600">Total Contacts</p>
-                <p className="text-2xl font-bold text-slate-900">{contacts.length}</p>
-              </div>
-              <Users className="w-5 h-5 text-slate-400" />
+        {/* Mobile-Optimized Stats */}
+        <div className="grid grid-cols-3 gap-3 sm:gap-6 mb-6 sm:mb-8">
+          <div className="bg-white rounded-xl p-3 sm:p-6 border border-slate-200">
+            <div className="text-center">
+              <p className="text-xs sm:text-sm font-medium text-slate-600 mb-1">Total</p>
+              <p className="text-lg sm:text-2xl font-bold text-slate-900">{contacts.length}</p>
             </div>
           </div>
           
-          <div className="bg-white rounded-xl p-6 border border-slate-200">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-slate-600">A-Players</p>
-                <p className="text-2xl font-bold text-slate-900">{contacts.filter(c => c.tier === "A-player").length}</p>
-              </div>
-              <Star className="w-5 h-5 text-amber-400 fill-current" />
+          <div className="bg-white rounded-xl p-3 sm:p-6 border border-slate-200">
+            <div className="text-center">
+              <p className="text-xs sm:text-sm font-medium text-slate-600 mb-1">A-Players</p>
+              <p className="text-lg sm:text-2xl font-bold text-slate-900">{contacts.filter(c => c.tier === "A-player").length}</p>
             </div>
           </div>
           
-          <div className="bg-white rounded-xl p-6 border border-slate-200">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-slate-600">Industries</p>
-                <p className="text-2xl font-bold text-slate-900">{new Set(contacts.map(c => c.industry)).size}</p>
-              </div>
-              <Network className="w-5 h-5 text-slate-400" />
+          <div className="bg-white rounded-xl p-3 sm:p-6 border border-slate-200">
+            <div className="text-center">
+              <p className="text-xs sm:text-sm font-medium text-slate-600 mb-1">Industries</p>
+              <p className="text-lg sm:text-2xl font-bold text-slate-900">{new Set(contacts.map(c => c.industry)).size}</p>
             </div>
           </div>
         </div>
 
-        {/* Contacts Grid */}
-        <div className="space-y-4">
+        {/* Mobile-Optimized Contacts Grid */}
+        <div className="space-y-3 sm:space-y-4">
           {filteredContacts.map((contact) => (
-            <Card key={contact.id} className="bg-white border border-slate-200 hover:shadow-md transition-all duration-200 hover-scale">
+            <Card key={contact.id} className="bg-white border border-slate-200 hover:shadow-md transition-all duration-200">
               <Accordion type="single" collapsible>
                 <AccordionItem value={contact.id} className="border-none">
-                  <CardHeader className="pb-3">
+                  <CardHeader className="pb-3 px-4 sm:px-6">
                     <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center space-x-3 mb-2">
-                          <CardTitle className="text-lg font-semibold text-slate-900">{contact.name}</CardTitle>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center space-x-2 sm:space-x-3 mb-2">
+                          <CardTitle className="text-base sm:text-lg font-semibold text-slate-900 truncate">{contact.name}</CardTitle>
                           <Badge 
                             className={`${
                               contact.tier === "A-player" 
                                 ? "bg-amber-50 text-amber-700 border-amber-200" 
                                 : "bg-slate-50 text-slate-600 border-slate-200"
-                            } flex items-center gap-1`}
+                            } flex items-center gap-1 text-xs`}
                           >
                             {contact.tier === "A-player" ? <Star className="w-3 h-3 fill-current" /> : <Users className="w-3 h-3" />}
-                            {contact.tier}
+                            <span className="hidden sm:inline">{contact.tier}</span>
                           </Badge>
                         </div>
-                        <p className="text-sm text-slate-600 mb-1">{contact.company}</p>
-                        <p className="text-sm text-slate-500">{contact.industry}</p>
+                        <p className="text-sm text-slate-600 mb-1 truncate">{contact.company}</p>
+                        <p className="text-sm text-slate-500 truncate">{contact.industry}</p>
                       </div>
-                      <AccordionTrigger className="hover:no-underline p-2">
+                      <AccordionTrigger className="hover:no-underline p-2 ml-2">
                         <ChevronDown className="w-4 h-4 text-slate-400" />
                       </AccordionTrigger>
                     </div>
                     
                     <div className="flex flex-wrap gap-1 mt-3">
-                      {contact.services.slice(0, 3).map((service, index) => (
+                      {contact.services.slice(0, 2).map((service, index) => (
                         <Badge key={index} variant="secondary" className="text-xs bg-indigo-50 text-indigo-700 border-indigo-200">
                           {service}
                         </Badge>
                       ))}
-                      {contact.services.length > 3 && (
+                      {contact.services.length > 2 && (
                         <Badge variant="secondary" className="text-xs bg-slate-50 text-slate-600">
-                          +{contact.services.length - 3} more
+                          +{contact.services.length - 2}
                         </Badge>
                       )}
                     </div>
                   </CardHeader>
 
                   <AccordionContent>
-                    <CardContent className="pt-0">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <CardContent className="pt-0 px-4 sm:px-6">
+                      <div className="space-y-4">
                         <div className="space-y-3">
                           <div className="flex items-center space-x-2">
-                            <Mail className="w-4 h-4 text-slate-400" />
-                            <span className="text-sm text-slate-700">{contact.email}</span>
+                            <Mail className="w-4 h-4 text-slate-400 flex-shrink-0" />
+                            <span className="text-sm text-slate-700 break-all">{contact.email}</span>
                           </div>
                           {contact.phone && (
                             <div className="flex items-center space-x-2">
-                              <Phone className="w-4 h-4 text-slate-400" />
+                              <Phone className="w-4 h-4 text-slate-400 flex-shrink-0" />
                               <span className="text-sm text-slate-700">{contact.phone}</span>
                             </div>
                           )}
@@ -421,16 +410,17 @@ const Index = () => {
                           )}
                         </div>
                         
-                        <div className="flex flex-col space-y-2">
-                          <Button size="sm" className="justify-start">
+                        {/* Mobile-Optimized Action Buttons */}
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                          <Button size="sm" className="justify-center h-10">
                             <UserPlus className="w-4 h-4 mr-2" />
                             Refer
                           </Button>
-                          <Button variant="outline" size="sm" className="justify-start">
+                          <Button variant="outline" size="sm" className="justify-center h-10">
                             <Edit className="w-4 h-4 mr-2" />
                             Edit
                           </Button>
-                          <Button variant="outline" size="sm" className="justify-start">
+                          <Button variant="outline" size="sm" className="justify-center h-10">
                             <Plus className="w-4 h-4 mr-2" />
                             Add Note
                           </Button>
@@ -450,7 +440,7 @@ const Index = () => {
             <h3 className="text-lg font-medium text-slate-900 mb-2">
               {searchTerm || filterTier !== "all" ? "No contacts found" : "No contacts yet"}
             </h3>
-            <p className="text-slate-600 mb-4 leading-relaxed">
+            <p className="text-slate-600 mb-4 leading-relaxed px-4">
               {searchTerm || filterTier !== "all" 
                 ? "Try adjusting your search or filters" 
                 : "Add your first contact to start building your referral network"}
@@ -467,9 +457,9 @@ const Index = () => {
 
       {/* Footer */}
       <footer className="bg-white border-t border-slate-200 mt-16">
-        <div className="max-w-6xl mx-auto px-6 py-8">
+        <div className="px-4 sm:px-6 lg:px-8 py-8 max-w-6xl mx-auto">
           <div className="text-center">
-            <p className="text-slate-600 leading-relaxed">
+            <p className="text-slate-600 leading-relaxed text-sm sm:text-base">
               <span className="font-semibold">Networq</span> - Turn every introduction into a referral opportunity
             </p>
           </div>
