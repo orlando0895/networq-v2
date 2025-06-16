@@ -8,8 +8,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, Plus, Users, Star, UserPlus, Network } from "lucide-react";
+import { Search, Plus, Users, Star, UserPlus, Network, Mail, Phone, Edit, Filter, ChevronDown } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 interface Contact {
   id: string;
@@ -66,6 +67,7 @@ const Index = () => {
 
   const [searchTerm, setSearchTerm] = useState("");
   const [isAddingContact, setIsAddingContact] = useState(false);
+  const [filterTier, setFilterTier] = useState<"all" | "A-player" | "Acquaintance">("all");
   const [newContact, setNewContact] = useState({
     name: "",
     email: "",
@@ -73,22 +75,22 @@ const Index = () => {
     company: "",
     industry: "",
     services: "",
-    tier: "Acquaintance" as const,
+    tier: "Acquaintance" as "A-player" | "Acquaintance",
     notes: ""
   });
 
   const { toast } = useToast();
 
   const filteredContacts = contacts.filter(contact => {
-    if (!searchTerm) return true;
+    const matchesSearch = !searchTerm || 
+      contact.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      contact.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      contact.industry.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      contact.services.some(service => service.toLowerCase().includes(searchTerm.toLowerCase()));
     
-    const searchLower = searchTerm.toLowerCase();
-    return (
-      contact.name.toLowerCase().includes(searchLower) ||
-      contact.company.toLowerCase().includes(searchLower) ||
-      contact.industry.toLowerCase().includes(searchLower) ||
-      contact.services.some(service => service.toLowerCase().includes(searchLower))
-    );
+    const matchesTier = filterTier === "all" || contact.tier === filterTier;
+    
+    return matchesSearch && matchesTier;
   });
 
   const handleAddContact = () => {
@@ -122,276 +124,339 @@ const Index = () => {
     setIsAddingContact(false);
     
     toast({
-      title: "Contact Added",
+      title: "Contact Added! 🎉",
       description: `${contact.name} has been added to your network.`
     });
   };
 
-  const getTierColor = (tier: string) => {
-    return tier === "A-player" ? "bg-yellow-100 text-yellow-800" : "bg-gray-100 text-gray-600";
-  };
-
-  const getTierIcon = (tier: string) => {
-    return tier === "A-player" ? <Star className="w-3 h-3 fill-current" /> : <Users className="w-3 h-3" />;
+  const handleTierFilter = (tier: "A-player") => {
+    setFilterTier(tier);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-slate-50">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <header className="bg-white border-b border-slate-200 sticky top-0 z-40">
+        <div className="max-w-6xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg p-2">
+            <div className="flex items-center space-x-4">
+              <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl p-2.5">
                 <Network className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">Networq</h1>
-                <p className="text-sm text-gray-600">Your digital referral rolodex</p>
+                <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Networq</h1>
+                <p className="text-sm text-slate-600 leading-relaxed">Your personal referral engine</p>
               </div>
             </div>
-            <Dialog open={isAddingContact} onOpenChange={setIsAddingContact}>
-              <DialogTrigger asChild>
-                <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700">
-                  <Plus className="w-4 h-4 mr-2" />
-                  Add Contact
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-md">
-                <DialogHeader>
-                  <DialogTitle className="flex items-center gap-2">
-                    <UserPlus className="w-5 h-5" />
-                    Add New Contact
-                  </DialogTitle>
-                </DialogHeader>
-                <div className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
+            <div className="flex items-center space-x-3">
+              <Button variant="outline" className="hidden sm:flex">
+                <UserPlus className="w-4 h-4 mr-2" />
+                Invite to Circle
+              </Button>
+              <Dialog open={isAddingContact} onOpenChange={setIsAddingContact}>
+                <DialogTrigger asChild>
+                  <Button className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 transition-all duration-200">
+                    <Plus className="w-4 h-4 mr-2" />
+                    Add Contact
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-md">
+                  <DialogHeader>
+                    <DialogTitle className="flex items-center gap-2 text-lg font-semibold">
+                      <UserPlus className="w-5 h-5" />
+                      Add New Contact
+                    </DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="name" className="text-sm font-medium">Name *</Label>
+                        <Input
+                          id="name"
+                          value={newContact.name}
+                          onChange={(e) => setNewContact({...newContact, name: e.target.value})}
+                          placeholder="John Doe"
+                          className="mt-1"
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="email" className="text-sm font-medium">Email *</Label>
+                        <Input
+                          id="email"
+                          type="email"
+                          value={newContact.email}
+                          onChange={(e) => setNewContact({...newContact, email: e.target.value})}
+                          placeholder="john@company.com"
+                          className="mt-1"
+                        />
+                      </div>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="phone" className="text-sm font-medium">Phone</Label>
+                        <Input
+                          id="phone"
+                          value={newContact.phone}
+                          onChange={(e) => setNewContact({...newContact, phone: e.target.value})}
+                          placeholder="(555) 123-4567"
+                          className="mt-1"
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="company" className="text-sm font-medium">Company</Label>
+                        <Input
+                          id="company"
+                          value={newContact.company}
+                          onChange={(e) => setNewContact({...newContact, company: e.target.value})}
+                          placeholder="Company Name"
+                          className="mt-1"
+                        />
+                      </div>
+                    </div>
+
                     <div>
-                      <Label htmlFor="name">Name *</Label>
+                      <Label htmlFor="industry" className="text-sm font-medium">Industry</Label>
                       <Input
-                        id="name"
-                        value={newContact.name}
-                        onChange={(e) => setNewContact({...newContact, name: e.target.value})}
-                        placeholder="John Doe"
+                        id="industry"
+                        value={newContact.industry}
+                        onChange={(e) => setNewContact({...newContact, industry: e.target.value})}
+                        placeholder="e.g., Marketing & Design"
+                        className="mt-1"
                       />
                     </div>
+
                     <div>
-                      <Label htmlFor="email">Email *</Label>
+                      <Label htmlFor="services" className="text-sm font-medium">Services (comma-separated)</Label>
                       <Input
-                        id="email"
-                        type="email"
-                        value={newContact.email}
-                        onChange={(e) => setNewContact({...newContact, email: e.target.value})}
-                        placeholder="john@company.com"
+                        id="services"
+                        value={newContact.services}
+                        onChange={(e) => setNewContact({...newContact, services: e.target.value})}
+                        placeholder="web design, logo design, branding"
+                        className="mt-1"
                       />
                     </div>
-                  </div>
-                  
-                  <div className="grid grid-cols-2 gap-4">
+
                     <div>
-                      <Label htmlFor="phone">Phone</Label>
-                      <Input
-                        id="phone"
-                        value={newContact.phone}
-                        onChange={(e) => setNewContact({...newContact, phone: e.target.value})}
-                        placeholder="(555) 123-4567"
+                      <Label htmlFor="tier" className="text-sm font-medium">Referral Tier</Label>
+                      <Select value={newContact.tier} onValueChange={(value: "A-player" | "Acquaintance") => setNewContact({...newContact, tier: value})}>
+                        <SelectTrigger className="mt-1">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="A-player">A-player (Highly Recommended)</SelectItem>
+                          <SelectItem value="Acquaintance">Acquaintance</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div>
+                      <Label htmlFor="notes" className="text-sm font-medium">Notes</Label>
+                      <Textarea
+                        id="notes"
+                        value={newContact.notes}
+                        onChange={(e) => setNewContact({...newContact, notes: e.target.value})}
+                        placeholder="How you met, their specialties, quality of work..."
+                        rows={3}
+                        className="mt-1"
                       />
                     </div>
-                    <div>
-                      <Label htmlFor="company">Company</Label>
-                      <Input
-                        id="company"
-                        value={newContact.company}
-                        onChange={(e) => setNewContact({...newContact, company: e.target.value})}
-                        placeholder="Company Name"
-                      />
+
+                    <div className="flex gap-2 pt-4">
+                      <Button onClick={handleAddContact} className="flex-1">
+                        Add Contact
+                      </Button>
+                      <Button variant="outline" onClick={() => setIsAddingContact(false)}>
+                        Cancel
+                      </Button>
                     </div>
                   </div>
-
-                  <div>
-                    <Label htmlFor="industry">Industry</Label>
-                    <Input
-                      id="industry"
-                      value={newContact.industry}
-                      onChange={(e) => setNewContact({...newContact, industry: e.target.value})}
-                      placeholder="e.g., Marketing & Design"
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="services">Services (comma-separated)</Label>
-                    <Input
-                      id="services"
-                      value={newContact.services}
-                      onChange={(e) => setNewContact({...newContact, services: e.target.value})}
-                      placeholder="web design, logo design, branding"
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="tier">Referral Tier</Label>
-                    <Select value={newContact.tier} onValueChange={(value: "A-player" | "Acquaintance") => setNewContact({...newContact, tier: value})}>
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="A-player">A-player (Highly Recommended)</SelectItem>
-                        <SelectItem value="Acquaintance">Acquaintance</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div>
-                    <Label htmlFor="notes">Notes</Label>
-                    <Textarea
-                      id="notes"
-                      value={newContact.notes}
-                      onChange={(e) => setNewContact({...newContact, notes: e.target.value})}
-                      placeholder="How you met, their specialties, quality of work..."
-                      rows={3}
-                    />
-                  </div>
-
-                  <div className="flex gap-2 pt-4">
-                    <Button onClick={handleAddContact} className="flex-1">
-                      Add Contact
-                    </Button>
-                    <Button variant="outline" onClick={() => setIsAddingContact(false)}>
-                      Cancel
-                    </Button>
-                  </div>
-                </div>
-              </DialogContent>
-            </Dialog>
+                </DialogContent>
+              </Dialog>
+            </div>
           </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Search Section */}
-        <div className="mb-8">
-          <div className="relative max-w-md mx-auto">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+      <main className="max-w-6xl mx-auto px-6 py-8">
+        {/* Search & Filter Section */}
+        <div className="mb-8 space-y-4">
+          <div className="relative max-w-md">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
             <Input
               type="text"
               placeholder="Search by name, service, or industry..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 py-3 text-lg shadow-lg border-0 focus:ring-2 focus:ring-blue-500"
+              className="pl-10 py-3 text-base border-slate-200 focus:border-indigo-500 focus:ring-indigo-500 transition-colors"
             />
+          </div>
+          
+          <div className="flex items-center space-x-4">
+            <Button
+              variant={filterTier === "all" ? "default" : "outline"}
+              size="sm"
+              onClick={() => setFilterTier("all")}
+              className="transition-all duration-200"
+            >
+              All ({contacts.length})
+            </Button>
+            <Button
+              variant={filterTier === "A-player" ? "default" : "outline"}
+              size="sm"
+              onClick={() => handleTierFilter("A-player")}
+              className="transition-all duration-200"
+            >
+              <Star className="w-3 h-3 mr-1 fill-current" />
+              A-Players ({contacts.filter(c => c.tier === "A-player").length})
+            </Button>
+            <Button
+              variant={filterTier === "Acquaintance" ? "default" : "outline"}
+              size="sm"
+              onClick={() => setFilterTier("Acquaintance")}
+              className="transition-all duration-200"
+            >
+              Acquaintances ({contacts.filter(c => c.tier === "Acquaintance").length})
+            </Button>
           </div>
         </div>
 
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <Card className="bg-gradient-to-r from-blue-500 to-blue-600 text-white">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-blue-100">Total Contacts</p>
-                  <p className="text-3xl font-bold">{contacts.length}</p>
-                </div>
-                <Users className="w-8 h-8 text-blue-200" />
+          <div className="bg-white rounded-xl p-6 border border-slate-200">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-slate-600">Total Contacts</p>
+                <p className="text-2xl font-bold text-slate-900">{contacts.length}</p>
               </div>
-            </CardContent>
-          </Card>
+              <Users className="w-5 h-5 text-slate-400" />
+            </div>
+          </div>
           
-          <Card className="bg-gradient-to-r from-yellow-500 to-yellow-600 text-white">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-yellow-100">A-Players</p>
-                  <p className="text-3xl font-bold">{contacts.filter(c => c.tier === "A-player").length}</p>
-                </div>
-                <Star className="w-8 h-8 text-yellow-200 fill-current" />
+          <div className="bg-white rounded-xl p-6 border border-slate-200">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-slate-600">A-Players</p>
+                <p className="text-2xl font-bold text-slate-900">{contacts.filter(c => c.tier === "A-player").length}</p>
               </div>
-            </CardContent>
-          </Card>
+              <Star className="w-5 h-5 text-amber-400 fill-current" />
+            </div>
+          </div>
           
-          <Card className="bg-gradient-to-r from-green-500 to-green-600 text-white">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-green-100">Industries</p>
-                  <p className="text-3xl font-bold">{new Set(contacts.map(c => c.industry)).size}</p>
-                </div>
-                <Network className="w-8 h-8 text-green-200" />
+          <div className="bg-white rounded-xl p-6 border border-slate-200">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-slate-600">Industries</p>
+                <p className="text-2xl font-bold text-slate-900">{new Set(contacts.map(c => c.industry)).size}</p>
               </div>
-            </CardContent>
-          </Card>
+              <Network className="w-5 h-5 text-slate-400" />
+            </div>
+          </div>
         </div>
 
         {/* Contacts Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="space-y-4">
           {filteredContacts.map((contact) => (
-            <Card key={contact.id} className="hover:shadow-lg transition-shadow duration-200 bg-white">
-              <CardHeader className="pb-3">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <CardTitle className="text-lg">{contact.name}</CardTitle>
-                    <p className="text-sm text-gray-600">{contact.company}</p>
-                  </div>
-                  <Badge className={`${getTierColor(contact.tier)} flex items-center gap-1`}>
-                    {getTierIcon(contact.tier)}
-                    {contact.tier}
-                  </Badge>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <div>
-                    <p className="text-sm font-medium text-gray-700">Industry</p>
-                    <p className="text-sm text-gray-600">{contact.industry}</p>
-                  </div>
-                  
-                  <div>
-                    <p className="text-sm font-medium text-gray-700">Services</p>
-                    <div className="flex flex-wrap gap-1 mt-1">
+            <Card key={contact.id} className="bg-white border border-slate-200 hover:shadow-md transition-all duration-200 hover-scale">
+              <Accordion type="single" collapsible>
+                <AccordionItem value={contact.id} className="border-none">
+                  <CardHeader className="pb-3">
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center space-x-3 mb-2">
+                          <CardTitle className="text-lg font-semibold text-slate-900">{contact.name}</CardTitle>
+                          <Badge 
+                            className={`${
+                              contact.tier === "A-player" 
+                                ? "bg-amber-50 text-amber-700 border-amber-200" 
+                                : "bg-slate-50 text-slate-600 border-slate-200"
+                            } flex items-center gap-1`}
+                          >
+                            {contact.tier === "A-player" ? <Star className="w-3 h-3 fill-current" /> : <Users className="w-3 h-3" />}
+                            {contact.tier}
+                          </Badge>
+                        </div>
+                        <p className="text-sm text-slate-600 mb-1">{contact.company}</p>
+                        <p className="text-sm text-slate-500">{contact.industry}</p>
+                      </div>
+                      <AccordionTrigger className="hover:no-underline p-2">
+                        <ChevronDown className="w-4 h-4 text-slate-400" />
+                      </AccordionTrigger>
+                    </div>
+                    
+                    <div className="flex flex-wrap gap-1 mt-3">
                       {contact.services.slice(0, 3).map((service, index) => (
-                        <Badge key={index} variant="secondary" className="text-xs">
+                        <Badge key={index} variant="secondary" className="text-xs bg-indigo-50 text-indigo-700 border-indigo-200">
                           {service}
                         </Badge>
                       ))}
                       {contact.services.length > 3 && (
-                        <Badge variant="secondary" className="text-xs">
+                        <Badge variant="secondary" className="text-xs bg-slate-50 text-slate-600">
                           +{contact.services.length - 3} more
                         </Badge>
                       )}
                     </div>
-                  </div>
+                  </CardHeader>
 
-                  <div>
-                    <p className="text-sm font-medium text-gray-700">Contact</p>
-                    <p className="text-sm text-gray-600">{contact.email}</p>
-                    {contact.phone && <p className="text-sm text-gray-600">{contact.phone}</p>}
-                  </div>
-
-                  {contact.notes && (
-                    <div>
-                      <p className="text-sm font-medium text-gray-700">Notes</p>
-                      <p className="text-sm text-gray-600 line-clamp-2">{contact.notes}</p>
-                    </div>
-                  )}
-                </div>
-              </CardContent>
+                  <AccordionContent>
+                    <CardContent className="pt-0">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-3">
+                          <div className="flex items-center space-x-2">
+                            <Mail className="w-4 h-4 text-slate-400" />
+                            <span className="text-sm text-slate-700">{contact.email}</span>
+                          </div>
+                          {contact.phone && (
+                            <div className="flex items-center space-x-2">
+                              <Phone className="w-4 h-4 text-slate-400" />
+                              <span className="text-sm text-slate-700">{contact.phone}</span>
+                            </div>
+                          )}
+                          {contact.notes && (
+                            <div>
+                              <p className="text-sm font-medium text-slate-700 mb-1">Notes</p>
+                              <p className="text-sm text-slate-600 leading-relaxed">{contact.notes}</p>
+                            </div>
+                          )}
+                        </div>
+                        
+                        <div className="flex flex-col space-y-2">
+                          <Button size="sm" className="justify-start">
+                            <UserPlus className="w-4 h-4 mr-2" />
+                            Refer
+                          </Button>
+                          <Button variant="outline" size="sm" className="justify-start">
+                            <Edit className="w-4 h-4 mr-2" />
+                            Edit
+                          </Button>
+                          <Button variant="outline" size="sm" className="justify-start">
+                            <Plus className="w-4 h-4 mr-2" />
+                            Add Note
+                          </Button>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
             </Card>
           ))}
         </div>
 
         {filteredContacts.length === 0 && (
           <div className="text-center py-12">
-            <Users className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
-              {searchTerm ? "No contacts found" : "No contacts yet"}
+            <Users className="w-16 h-16 text-slate-300 mx-auto mb-4" />
+            <h3 className="text-lg font-medium text-slate-900 mb-2">
+              {searchTerm || filterTier !== "all" ? "No contacts found" : "No contacts yet"}
             </h3>
-            <p className="text-gray-600 mb-4">
-              {searchTerm 
-                ? "Try searching for different services or contact names" 
+            <p className="text-slate-600 mb-4 leading-relaxed">
+              {searchTerm || filterTier !== "all" 
+                ? "Try adjusting your search or filters" 
                 : "Add your first contact to start building your referral network"}
             </p>
-            {!searchTerm && (
-              <Button onClick={() => setIsAddingContact(true)} className="bg-gradient-to-r from-blue-600 to-indigo-600">
+            {!searchTerm && filterTier === "all" && (
+              <Button onClick={() => setIsAddingContact(true)} className="bg-gradient-to-r from-indigo-600 to-purple-600">
                 <Plus className="w-4 h-4 mr-2" />
                 Add Your First Contact
               </Button>
@@ -401,10 +466,10 @@ const Index = () => {
       </main>
 
       {/* Footer */}
-      <footer className="bg-white border-t mt-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <footer className="bg-white border-t border-slate-200 mt-16">
+        <div className="max-w-6xl mx-auto px-6 py-8">
           <div className="text-center">
-            <p className="text-gray-600">
+            <p className="text-slate-600 leading-relaxed">
               <span className="font-semibold">Networq</span> - Turn every introduction into a referral opportunity
             </p>
           </div>
