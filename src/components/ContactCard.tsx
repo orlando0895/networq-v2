@@ -4,7 +4,8 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Star, Users, Mail, Phone, UserPlus, Edit, Plus, ChevronDown } from "lucide-react";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { Star, Users, Mail, Phone, UserPlus, Edit, Plus, ChevronDown, Trash2 } from "lucide-react";
 import EditContactForm from "./EditContactForm";
 import type { Database } from '@/integrations/supabase/types';
 
@@ -13,10 +14,15 @@ type Contact = Database['public']['Tables']['contacts']['Row'];
 interface ContactCardProps {
   contact: Contact;
   onUpdateContact: (id: string, updates: Partial<Contact>) => Promise<any>;
+  onDeleteContact: (id: string) => Promise<any>;
 }
 
-const ContactCard = ({ contact, onUpdateContact }: ContactCardProps) => {
+const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardProps) => {
   const [isEditingContact, setIsEditingContact] = useState(false);
+
+  const handleDelete = async () => {
+    await onDeleteContact(contact.id);
+  };
 
   return (
     <>
@@ -83,7 +89,7 @@ const ContactCard = ({ contact, onUpdateContact }: ContactCardProps) => {
                     )}
                   </div>
                   
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                     <Button size="sm" className="justify-center h-10">
                       <UserPlus className="w-4 h-4 mr-2" />
                       Refer
@@ -101,6 +107,31 @@ const ContactCard = ({ contact, onUpdateContact }: ContactCardProps) => {
                       <Plus className="w-4 h-4 mr-2" />
                       Add Note
                     </Button>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button variant="outline" size="sm" className="justify-center h-10 text-red-600 hover:text-red-700 hover:bg-red-50">
+                          <Trash2 className="w-4 h-4 mr-2" />
+                          Delete
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Delete Contact</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Are you sure you want to delete {contact.name}? This action cannot be undone.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={handleDelete}
+                            className="bg-red-600 hover:bg-red-700 text-white"
+                          >
+                            Delete
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
                   </div>
                 </div>
               </CardContent>

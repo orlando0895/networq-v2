@@ -12,7 +12,7 @@ import type { Database } from '@/integrations/supabase/types';
 type Contact = Database['public']['Tables']['contacts']['Row'];
 
 const Index = () => {
-  const { contacts, loading, addContact, updateContact } = useContacts();
+  const { contacts, loading, addContact, updateContact, deleteContact } = useContacts();
   const [searchTerm, setSearchTerm] = useState("");
   const [isAddingContact, setIsAddingContact] = useState(false);
   const [filterTier, setFilterTier] = useState<"all" | "A-player" | "Acquaintance">("all");
@@ -84,6 +84,7 @@ const Index = () => {
               key={contact.id} 
               contact={contact} 
               onUpdateContact={updateContact}
+              onDeleteContact={deleteContact}
             />
           ))}
         </div>
