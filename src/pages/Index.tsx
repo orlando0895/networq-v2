@@ -3,14 +3,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, Plus, Users, Star, UserPlus, Network, Mail, Phone, Edit, Filter, ChevronDown, Menu } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { Search, Plus, Users, Star, UserPlus, Network, Mail, Phone, Edit, ChevronDown } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { useContacts } from "@/hooks/useContacts";
 
 interface Contact {
   id: string;
@@ -26,45 +25,7 @@ interface Contact {
 }
 
 const Index = () => {
-  const [contacts, setContacts] = useState<Contact[]>([
-    {
-      id: "1",
-      name: "Sarah Chen",
-      email: "sarah@designstudio.com",
-      phone: "(555) 123-4567",
-      company: "Design Studio Pro",
-      industry: "Marketing & Design",
-      services: ["logo design", "web design", "branding", "graphic design"],
-      tier: "A-player",
-      notes: "Met at BNI meeting. Excellent work quality, very reliable.",
-      addedDate: "2024-01-15"
-    },
-    {
-      id: "2",
-      name: "Mike Rodriguez",
-      email: "mike@handyhelp.com",
-      phone: "(555) 987-6543",
-      company: "HandyHelp Services",
-      industry: "Home Services",
-      services: ["handyman", "plumbing", "electrical", "home repair"],
-      tier: "A-player",
-      notes: "Highly recommended by 3 clients. Always on time.",
-      addedDate: "2024-02-03"
-    },
-    {
-      id: "3",
-      name: "Jennifer Walsh",
-      email: "jen@coachingpro.com",
-      phone: "(555) 456-7890",
-      company: "Executive Coaching Pro",
-      industry: "Professional Services",
-      services: ["business coaching", "executive coaching", "leadership training"],
-      tier: "Acquaintance",
-      notes: "Met at networking mixer. Good speaker.",
-      addedDate: "2024-02-10"
-    }
-  ]);
-
+  const { contacts, loading, addContact } = useContacts();
   const [searchTerm, setSearchTerm] = useState("");
   const [isAddingContact, setIsAddingContact] = useState(false);
   const [filterTier, setFilterTier] = useState<"all" | "A-player" | "Acquaintance">("all");
@@ -79,59 +40,54 @@ const Index = () => {
     notes: ""
   });
 
-  const { toast } = useToast();
-
   const filteredContacts = contacts.filter(contact => {
     const matchesSearch = !searchTerm || 
       contact.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      contact.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      contact.industry.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      contact.services.some(service => service.toLowerCase().includes(searchTerm.toLowerCase()));
+      contact.company?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      contact.industry?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      contact.services?.some(service => service.toLowerCase().includes(searchTerm.toLowerCase()));
     
     const matchesTier = filterTier === "all" || contact.tier === filterTier;
     
     return matchesSearch && matchesTier;
   });
 
-  const handleAddContact = () => {
+  const handleAddContact = async () => {
     if (!newContact.name || !newContact.email) {
-      toast({
-        title: "Missing Information",
-        description: "Please fill in at least name and email.",
-        variant: "destructive"
-      });
       return;
     }
 
-    const contact: Contact = {
-      id: Date.now().toString(),
+    const result = await addContact({
       ...newContact,
-      services: newContact.services.split(",").map(s => s.trim().toLowerCase()).filter(s => s),
-      addedDate: new Date().toISOString().split('T')[0]
-    };
+      services: newContact.services.split(",").map(s => s.trim().toLowerCase()).filter(s => s)
+    });
 
-    setContacts([contact, ...contacts]);
-    setNewContact({
-      name: "",
-      email: "",
-      phone: "",
-      company: "",
-      industry: "",
-      services: "",
-      tier: "Acquaintance",
-      notes: ""
-    });
-    setIsAddingContact(false);
-    
-    toast({
-      title: "Contact Added! 🎉",
-      description: `${contact.name} has been added to your network.`
-    });
+    if (result?.success) {
+      setNewContact({
+        name: "",
+        email: "",
+        phone: "",
+        company: "",
+        industry: "",
+        services: "",
+        tier: "Acquaintance",
+        notes: ""
+      });
+      setIsAddingContact(false);
+    }
   };
 
   const handleTierFilter = (tier: "A-player") => {
     setFilterTier(tier);
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -339,7 +295,7 @@ const Index = () => {
           <div className="bg-white rounded-xl p-3 sm:p-6 border border-slate-200">
             <div className="text-center">
               <p className="text-xs sm:text-sm font-medium text-slate-600 mb-1">Industries</p>
-              <p className="text-lg sm:text-2xl font-bold text-slate-900">{new Set(contacts.map(c => c.industry)).size}</p>
+              <p className="text-lg sm:text-2xl font-bold text-slate-900">{new Set(contacts.map(c => c.industry).filter(Boolean)).size}</p>
             </div>
           </div>
         </div>
@@ -375,12 +331,12 @@ const Index = () => {
                     </div>
                     
                     <div className="flex flex-wrap gap-1 mt-3">
-                      {contact.services.slice(0, 2).map((service, index) => (
+                      {contact.services?.slice(0, 2).map((service, index) => (
                         <Badge key={index} variant="secondary" className="text-xs bg-indigo-50 text-indigo-700 border-indigo-200">
                           {service}
                         </Badge>
                       ))}
-                      {contact.services.length > 2 && (
+                      {contact.services && contact.services.length > 2 && (
                         <Badge variant="secondary" className="text-xs bg-slate-50 text-slate-600">
                           +{contact.services.length - 2}
                         </Badge>
