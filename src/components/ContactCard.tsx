@@ -7,6 +7,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Star, Users, Mail, Phone, UserPlus, Edit, Plus, ChevronDown, Trash2 } from "lucide-react";
 import EditContactForm from "./EditContactForm";
+import AddNoteForm from "./AddNoteForm";
 import type { Database } from '@/integrations/supabase/types';
 
 type Contact = Database['public']['Tables']['contacts']['Row'];
@@ -19,6 +20,7 @@ interface ContactCardProps {
 
 const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardProps) => {
   const [isEditingContact, setIsEditingContact] = useState(false);
+  const [isAddingNote, setIsAddingNote] = useState(false);
 
   const handleDelete = async () => {
     await onDeleteContact(contact.id);
@@ -103,7 +105,12 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
                       <Edit className="w-4 h-4 mr-2" />
                       Edit
                     </Button>
-                    <Button variant="outline" size="sm" className="justify-center h-10">
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="justify-center h-10"
+                      onClick={() => setIsAddingNote(true)}
+                    >
                       <Plus className="w-4 h-4 mr-2" />
                       Add Note
                     </Button>
@@ -144,6 +151,13 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
         contact={contact}
         isOpen={isEditingContact}
         onOpenChange={setIsEditingContact}
+        onUpdateContact={onUpdateContact}
+      />
+
+      <AddNoteForm
+        contact={contact}
+        isOpen={isAddingNote}
+        onOpenChange={setIsAddingNote}
         onUpdateContact={onUpdateContact}
       />
     </>
