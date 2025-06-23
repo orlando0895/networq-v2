@@ -1,4 +1,5 @@
 
+
 import { Button } from "@/components/ui/button";
 import type { Database } from '@/integrations/supabase/types';
 
@@ -13,16 +14,19 @@ const ContactStats = ({ contacts }: ContactStatsProps) => {
 
   return (
     <div className="mb-6 sm:mb-8">
-      <Button
-        variant="outline"
-        size="lg"
-        disabled
-        className="flex-1 sm:flex-none transition-all duration-200 h-12 text-base cursor-default"
-      >
-        Industries ({industriesCount})
-      </Button>
+      <div className="flex flex-col sm:flex-row gap-3">
+        <Button
+          variant="outline"
+          size="lg"
+          disabled
+          className="flex-1 sm:flex-none transition-all duration-200 h-12 text-base cursor-default"
+        >
+          Industries ({industriesCount})
+        </Button>
+      </div>
     </div>
   );
 };
 
 export default ContactStats;
+
