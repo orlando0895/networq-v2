@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Network } from "lucide-react";
 import { useContacts } from "@/hooks/useContacts";
@@ -18,7 +17,7 @@ type Contact = Database['public']['Tables']['contacts']['Row'];
 
 const Index = () => {
   const { contacts, loading, addContact, updateContact, deleteContact } = useContacts();
-  const { fetchContactCardByShareCode, addContact: addContactFromCard } = useUserContactCard();
+  const { fetchContactCardByShareCode } = useUserContactCard();
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
   const [isAddingContact, setIsAddingContact] = useState(false);
