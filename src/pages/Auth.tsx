@@ -79,16 +79,25 @@ const Auth = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 px-4">
       <Card className="w-full max-w-md">
-        <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl text-center">
-            {isLogin ? 'Sign in to Networq' : 'Create your Networq account'}
-          </CardTitle>
-          <CardDescription className="text-center">
-            {isLogin 
-              ? 'Enter your credentials to access your network' 
-              : 'Start building your professional network today'
-            }
-          </CardDescription>
+        <CardHeader className="space-y-4 text-center">
+          <div className="flex justify-center">
+            <img 
+              src="/lovable-uploads/5fd3099a-4877-4566-8bd3-54ab04eb7899.png" 
+              alt="Networq Logo" 
+              className="h-16 w-auto"
+            />
+          </div>
+          <div className="space-y-1">
+            <CardTitle className="text-2xl">
+              {isLogin ? 'Sign in to Networq' : 'Create your Networq account'}
+            </CardTitle>
+            <CardDescription>
+              {isLogin 
+                ? 'Enter your credentials to access your network' 
+                : 'Start building your professional network today'
+              }
+            </CardDescription>
+          </div>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleAuth} className="space-y-4">
