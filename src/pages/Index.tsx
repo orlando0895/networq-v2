@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { LogOut, User } from "lucide-react";
 import { useContacts } from "@/hooks/useContacts";
@@ -121,7 +120,7 @@ const Index = () => {
         <div className="px-4 sm:px-6 py-4 sm:py-5">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl p-2.5">
+              <div className="bg-white rounded-xl p-2.5">
                 <img 
                   src="/lovable-uploads/13a3c462-48e9-462a-b56d-edb9dd1a2bbb.png" 
                   alt="Networq Logo" 
