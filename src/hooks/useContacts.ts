@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
@@ -48,6 +47,10 @@ export const useContacts = () => {
     services: string[];
     tier: 'A-player' | 'Acquaintance';
     notes?: string;
+    linkedin?: string;
+    facebook?: string;
+    whatsapp?: string;
+    websites: string[];
   }) => {
     if (!user) return;
 
@@ -55,7 +58,11 @@ export const useContacts = () => {
       const newContact: ContactInsert = {
         ...contactData,
         user_id: user.id,
-        added_date: new Date().toISOString().split('T')[0]
+        added_date: new Date().toISOString().split('T')[0],
+        linkedin: contactData.linkedin || null,
+        facebook: contactData.facebook || null,
+        whatsapp: contactData.whatsapp || null,
+        websites: contactData.websites.length > 0 ? contactData.websites : null
       };
 
       const { data, error } = await supabase

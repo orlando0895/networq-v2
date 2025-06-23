@@ -15,8 +15,10 @@ export type Database = {
           company: string | null
           created_at: string
           email: string
+          facebook: string | null
           id: string
           industry: string | null
+          linkedin: string | null
           name: string
           notes: string | null
           phone: string | null
@@ -24,14 +26,18 @@ export type Database = {
           tier: string
           updated_at: string
           user_id: string
+          websites: string[] | null
+          whatsapp: string | null
         }
         Insert: {
           added_date?: string
           company?: string | null
           created_at?: string
           email: string
+          facebook?: string | null
           id?: string
           industry?: string | null
+          linkedin?: string | null
           name: string
           notes?: string | null
           phone?: string | null
@@ -39,14 +45,18 @@ export type Database = {
           tier: string
           updated_at?: string
           user_id: string
+          websites?: string[] | null
+          whatsapp?: string | null
         }
         Update: {
           added_date?: string
           company?: string | null
           created_at?: string
           email?: string
+          facebook?: string | null
           id?: string
           industry?: string | null
+          linkedin?: string | null
           name?: string
           notes?: string | null
           phone?: string | null
@@ -54,6 +64,8 @@ export type Database = {
           tier?: string
           updated_at?: string
           user_id?: string
+          websites?: string[] | null
+          whatsapp?: string | null
         }
         Relationships: []
       }

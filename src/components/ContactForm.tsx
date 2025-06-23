@@ -17,6 +17,10 @@ interface NewContact {
   services: string[];
   tier: "A-player" | "Acquaintance";
   notes: string;
+  linkedin: string;
+  facebook: string;
+  whatsapp: string;
+  websites: string[];
 }
 
 interface ContactFormProps {
@@ -34,7 +38,11 @@ const ContactForm = ({ isOpen, onOpenChange, onAddContact }: ContactFormProps) =
     industry: "",
     services: "",
     tier: "Acquaintance" as "A-player" | "Acquaintance",
-    notes: ""
+    notes: "",
+    linkedin: "",
+    facebook: "",
+    whatsapp: "",
+    websites: ""
   });
 
   const handleAddContact = async () => {
@@ -44,7 +52,8 @@ const ContactForm = ({ isOpen, onOpenChange, onAddContact }: ContactFormProps) =
 
     const contactData: NewContact = {
       ...newContact,
-      services: newContact.services.split(",").map(s => s.trim().toLowerCase()).filter(s => s)
+      services: newContact.services.split(",").map(s => s.trim().toLowerCase()).filter(s => s),
+      websites: newContact.websites.split(",").map(w => w.trim()).filter(w => w)
     };
 
     const result = await onAddContact(contactData);
@@ -58,7 +67,11 @@ const ContactForm = ({ isOpen, onOpenChange, onAddContact }: ContactFormProps) =
         industry: "",
         services: "",
         tier: "Acquaintance",
-        notes: ""
+        notes: "",
+        linkedin: "",
+        facebook: "",
+        whatsapp: "",
+        websites: ""
       });
       onOpenChange(false);
     }
@@ -160,6 +173,55 @@ const ContactForm = ({ isOpen, onOpenChange, onAddContact }: ContactFormProps) =
                 <SelectItem value="Acquaintance">Acquaintance</SelectItem>
               </SelectContent>
             </Select>
+          </div>
+
+          {/* Social Media Section */}
+          <div className="space-y-4 pt-2 border-t border-slate-200">
+            <h3 className="text-base font-medium text-slate-900">Social Media & Online Presence</h3>
+            
+            <div>
+              <Label htmlFor="linkedin" className="text-base font-medium">LinkedIn</Label>
+              <Input
+                id="linkedin"
+                value={newContact.linkedin}
+                onChange={(e) => setNewContact({...newContact, linkedin: e.target.value})}
+                placeholder="linkedin.com/in/johndoe or johndoe"
+                className="mt-2 h-12 text-base"
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="facebook" className="text-base font-medium">Facebook</Label>
+              <Input
+                id="facebook"
+                value={newContact.facebook}
+                onChange={(e) => setNewContact({...newContact, facebook: e.target.value})}
+                placeholder="facebook.com/johndoe or johndoe"
+                className="mt-2 h-12 text-base"
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="whatsapp" className="text-base font-medium">WhatsApp</Label>
+              <Input
+                id="whatsapp"
+                value={newContact.whatsapp}
+                onChange={(e) => setNewContact({...newContact, whatsapp: e.target.value})}
+                placeholder="+1234567890 or wa.me/1234567890"
+                className="mt-2 h-12 text-base"
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="websites" className="text-base font-medium">Websites (comma-separated)</Label>
+              <Input
+                id="websites"
+                value={newContact.websites}
+                onChange={(e) => setNewContact({...newContact, websites: e.target.value})}
+                placeholder="company.com, portfolio.com"
+                className="mt-2 h-12 text-base"
+              />
+            </div>
           </div>
 
           <div>

@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Star, Users, Mail, Phone, UserPlus, Edit, Plus, ChevronDown, Trash2, MoreVertical } from "lucide-react";
+import { Star, Users, Mail, Phone, UserPlus, Edit, Plus, ChevronDown, Trash2, MoreVertical, Linkedin, Facebook, MessageCircle, Globe } from "lucide-react";
 import EditContactForm from "./EditContactForm";
 import AddNoteForm from "./AddNoteForm";
 import type { Database } from '@/integrations/supabase/types';
@@ -25,6 +25,39 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
 
   const handleDelete = async () => {
     await onDeleteContact(contact.id);
+  };
+
+  const formatSocialLink = (platform: string, value: string) => {
+    if (!value) return '';
+    
+    // If it's already a full URL, return as is
+    if (value.startsWith('http://') || value.startsWith('https://')) {
+      return value;
+    }
+    
+    // Handle different platform formats
+    switch (platform) {
+      case 'linkedin':
+        if (value.includes('linkedin.com')) return `https://${value}`;
+        return `https://linkedin.com/in/${value.replace('@', '')}`;
+      case 'facebook':
+        if (value.includes('facebook.com')) return `https://${value}`;
+        return `https://facebook.com/${value.replace('@', '')}`;
+      case 'whatsapp':
+        if (value.includes('wa.me')) return `https://${value}`;
+        const cleanNumber = value.replace(/[^\d+]/g, '');
+        return `https://wa.me/${cleanNumber}`;
+      default:
+        return value;
+    }
+  };
+
+  const formatWebsiteLink = (url: string) => {
+    if (!url) return '';
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      return url;
+    }
+    return `https://${url}`;
   };
 
   return (
@@ -80,7 +113,7 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
                         <MoreVertical className="w-4 h-4" />
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-48 bg-white shadow-lg border">
+                    <DropdownMenuContent align="end" className="w-48 bg-white shadow-lg border z-50">
                       <DropdownMenuItem onClick={() => setIsEditingContact(true)} className="cursor-pointer">
                         <Edit className="w-4 h-4 mr-2" />
                         Edit Contact
@@ -164,6 +197,60 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
                       </div>
                     )}
                   </div>
+
+                  {/* Social Media & Websites */}
+                  {(contact.linkedin || contact.facebook || contact.whatsapp || (contact.websites && contact.websites.length > 0)) && (
+                    <div className="space-y-3">
+                      <p className="text-sm font-medium text-slate-700">Connect</p>
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                        {contact.linkedin && (
+                          <a
+                            href={formatSocialLink('linkedin', contact.linkedin)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-2 p-2 text-xs bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors"
+                          >
+                            <Linkedin className="w-4 h-4" />
+                            <span className="hidden sm:inline">LinkedIn</span>
+                          </a>
+                        )}
+                        {contact.facebook && (
+                          <a
+                            href={formatSocialLink('facebook', contact.facebook)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-2 p-2 text-xs bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors"
+                          >
+                            <Facebook className="w-4 h-4" />
+                            <span className="hidden sm:inline">Facebook</span>
+                          </a>
+                        )}
+                        {contact.whatsapp && (
+                          <a
+                            href={formatSocialLink('whatsapp', contact.whatsapp)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-2 p-2 text-xs bg-green-50 text-green-700 rounded-lg hover:bg-green-100 transition-colors"
+                          >
+                            <MessageCircle className="w-4 h-4" />
+                            <span className="hidden sm:inline">WhatsApp</span>
+                          </a>
+                        )}
+                        {contact.websites && contact.websites.map((website, index) => (
+                          <a
+                            key={index}
+                            href={formatWebsiteLink(website)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-2 p-2 text-xs bg-slate-50 text-slate-700 rounded-lg hover:bg-slate-100 transition-colors"
+                          >
+                            <Globe className="w-4 h-4" />
+                            <span className="hidden sm:inline truncate">{website.replace(/^https?:\/\//, '')}</span>
+                          </a>
+                        ))}
+                      </div>
+                    </div>
+                  )}
 
                   {contact.notes && (
                     <div>

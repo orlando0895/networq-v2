@@ -27,7 +27,11 @@ const EditContactForm = ({ contact, isOpen, onOpenChange, onUpdateContact }: Edi
     industry: contact.industry || "",
     services: contact.services?.join(", ") || "",
     tier: contact.tier as "A-player" | "Acquaintance",
-    notes: contact.notes || ""
+    notes: contact.notes || "",
+    linkedin: contact.linkedin || "",
+    facebook: contact.facebook || "",
+    whatsapp: contact.whatsapp || "",
+    websites: contact.websites?.join(", ") || ""
   });
 
   const handleUpdateContact = async () => {
@@ -43,7 +47,11 @@ const EditContactForm = ({ contact, isOpen, onOpenChange, onUpdateContact }: Edi
       industry: editedContact.industry || null,
       services: editedContact.services.split(",").map(s => s.trim().toLowerCase()).filter(s => s),
       tier: editedContact.tier,
-      notes: editedContact.notes || null
+      notes: editedContact.notes || null,
+      linkedin: editedContact.linkedin || null,
+      facebook: editedContact.facebook || null,
+      whatsapp: editedContact.whatsapp || null,
+      websites: editedContact.websites.split(",").map(w => w.trim()).filter(w => w)
     };
 
     const result = await onUpdateContact(contact.id, updates);
@@ -143,6 +151,55 @@ const EditContactForm = ({ contact, isOpen, onOpenChange, onUpdateContact }: Edi
                 <SelectItem value="Acquaintance">Acquaintance</SelectItem>
               </SelectContent>
             </Select>
+          </div>
+
+          {/* Social Media Section */}
+          <div className="space-y-4 pt-2 border-t border-slate-200">
+            <h3 className="text-sm font-medium text-slate-900">Social Media & Online Presence</h3>
+            
+            <div>
+              <Label htmlFor="edit-linkedin" className="text-sm font-medium">LinkedIn</Label>
+              <Input
+                id="edit-linkedin"
+                value={editedContact.linkedin}
+                onChange={(e) => setEditedContact({...editedContact, linkedin: e.target.value})}
+                placeholder="linkedin.com/in/johndoe or johndoe"
+                className="mt-1 h-12"
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="edit-facebook" className="text-sm font-medium">Facebook</Label>
+              <Input
+                id="edit-facebook"
+                value={editedContact.facebook}
+                onChange={(e) => setEditedContact({...editedContact, facebook: e.target.value})}
+                placeholder="facebook.com/johndoe or johndoe"
+                className="mt-1 h-12"
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="edit-whatsapp" className="text-sm font-medium">WhatsApp</Label>
+              <Input
+                id="edit-whatsapp"
+                value={editedContact.whatsapp}
+                onChange={(e) => setEditedContact({...editedContact, whatsapp: e.target.value})}
+                placeholder="+1234567890 or wa.me/1234567890"
+                className="mt-1 h-12"
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="edit-websites" className="text-sm font-medium">Websites (comma-separated)</Label>
+              <Input
+                id="edit-websites"
+                value={editedContact.websites}
+                onChange={(e) => setEditedContact({...editedContact, websites: e.target.value})}
+                placeholder="company.com, portfolio.com"
+                className="mt-1 h-12"
+              />
+            </div>
           </div>
 
           <div>
