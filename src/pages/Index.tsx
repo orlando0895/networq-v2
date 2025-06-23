@@ -37,6 +37,23 @@ const Index = () => {
   const [filterTier, setFilterTier] = useState<"all" | "A-player" | "Acquaintance">("all");
   const [filterIndustry, setFilterIndustry] = useState("all");
 
+  const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut();
+    
+    if (error) {
+      toast({
+        title: "Error",
+        description: "Failed to sign out.",
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: "Signed out",
+        description: "You have been successfully signed out.",
+      });
+    }
+  };
+
   // Check URL for share code on page load
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
