@@ -1,21 +1,75 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Network } from "lucide-react";
 import { useContacts } from "@/hooks/useContacts";
+import { useUserContactCard } from "@/hooks/useUserContactCard";
 import ContactCard from "@/components/ContactCard";
 import ContactForm from "@/components/ContactForm";
 import ContactStats from "@/components/ContactStats";
 import ContactFilters from "@/components/ContactFilters";
 import EmptyState from "@/components/EmptyState";
+import MyContactCardForm from "@/components/MyContactCardForm";
+import AddContactByCode from "@/components/AddContactByCode";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useToast } from "@/hooks/use-toast";
 import type { Database } from '@/integrations/supabase/types';
 
 type Contact = Database['public']['Tables']['contacts']['Row'];
 
 const Index = () => {
   const { contacts, loading, addContact, updateContact, deleteContact } = useContacts();
+  const { fetchContactCardByShareCode, addContact: addContactFromCard } = useUserContactCard();
+  const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
   const [isAddingContact, setIsAddingContact] = useState(false);
   const [filterTier, setFilterTier] = useState<"all" | "A-player" | "Acquaintance">("all");
+
+  // Check URL for share code on page load
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const shareCode = urlParams.get('add');
+    
+    if (shareCode) {
+      handleShareCodeFromUrl(shareCode);
+      // Clean up URL
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }, []);
+
+  const handleShareCodeFromUrl = async (shareCode: string) => {
+    const result = await fetchContactCardByShareCode(shareCode);
+    
+    if (result.success && result.data) {
+      const cardData = result.data;
+      const addResult = await addContact({
+        name: cardData.name,
+        email: cardData.email,
+        phone: cardData.phone || undefined,
+        company: cardData.company || undefined,
+        industry: cardData.industry || undefined,
+        services: cardData.services || [],
+        tier: 'Acquaintance',
+        notes: cardData.notes || undefined,
+        linkedin: cardData.linkedin || undefined,
+        facebook: cardData.facebook || undefined,
+        whatsapp: cardData.whatsapp || undefined,
+        websites: cardData.websites || []
+      });
+
+      if (addResult.success) {
+        toast({
+          title: "Contact Added! 🎉",
+          description: `${cardData.name} has been added from the shared link.`
+        });
+      }
+    } else {
+      toast({
+        title: "Invalid Link",
+        description: "The shared contact link is invalid or expired.",
+        variant: "destructive"
+      });
+    }
+  };
 
   const filteredContacts = contacts.filter(contact => {
     const matchesSearch = !searchTerm || 
@@ -54,47 +108,66 @@ const Index = () => {
                 <p className="text-sm sm:text-base text-slate-600 leading-relaxed">Your personal referral engine</p>
               </div>
             </div>
-            <div className="flex items-center">
-              <ContactForm 
-                isOpen={isAddingContact}
-                onOpenChange={setIsAddingContact}
-                onAddContact={addContact}
-              />
-            </div>
           </div>
         </div>
       </header>
 
       {/* Main Content */}
       <main className="px-4 sm:px-6 lg:px-8 py-6 sm:py-8 max-w-4xl mx-auto">
-        <ContactFilters
-          searchTerm={searchTerm}
-          onSearchChange={setSearchTerm}
-          filterTier={filterTier}
-          onFilterChange={setFilterTier}
-          contacts={contacts}
-        />
+        <Tabs defaultValue="contacts" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="contacts">My Contacts</TabsTrigger>
+            <TabsTrigger value="my-card">My Contact Card</TabsTrigger>
+            <TabsTrigger value="add-by-code">Add by Code</TabsTrigger>
+          </TabsList>
 
-        <ContactStats contacts={contacts} />
+          <TabsContent value="contacts" className="space-y-6">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-semibold text-slate-900">My Network</h2>
+              <ContactForm 
+                isOpen={isAddingContact}
+                onOpenChange={setIsAddingContact}
+                onAddContact={addContact}
+              />
+            </div>
 
-        {/* Contacts List */}
-        <div className="space-y-4 sm:space-y-6">
-          {filteredContacts.map((contact) => (
-            <ContactCard 
-              key={contact.id} 
-              contact={contact} 
-              onUpdateContact={updateContact}
-              onDeleteContact={deleteContact}
+            <ContactFilters
+              searchTerm={searchTerm}
+              onSearchChange={setSearchTerm}
+              filterTier={filterTier}
+              onFilterChange={setFilterTier}
+              contacts={contacts}
             />
-          ))}
-        </div>
 
-        {filteredContacts.length === 0 && (
-          <EmptyState 
-            hasFilters={hasFilters}
-            onAddContact={() => setIsAddingContact(true)}
-          />
-        )}
+            <ContactStats contacts={contacts} />
+
+            <div className="space-y-4 sm:space-y-6">
+              {filteredContacts.map((contact) => (
+                <ContactCard 
+                  key={contact.id} 
+                  contact={contact} 
+                  onUpdateContact={updateContact}
+                  onDeleteContact={deleteContact}
+                />
+              ))}
+            </div>
+
+            {filteredContacts.length === 0 && (
+              <EmptyState 
+                hasFilters={hasFilters}
+                onAddContact={() => setIsAddingContact(true)}
+              />
+            )}
+          </TabsContent>
+
+          <TabsContent value="my-card">
+            <MyContactCardForm />
+          </TabsContent>
+
+          <TabsContent value="add-by-code">
+            <AddContactByCode />
+          </TabsContent>
+        </Tabs>
       </main>
 
       {/* Footer */}

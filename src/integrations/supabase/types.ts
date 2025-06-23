@@ -96,12 +96,75 @@ export type Database = {
         }
         Relationships: []
       }
+      user_contact_cards: {
+        Row: {
+          company: string | null
+          created_at: string
+          email: string
+          facebook: string | null
+          id: string
+          industry: string | null
+          is_active: boolean
+          linkedin: string | null
+          name: string
+          notes: string | null
+          phone: string | null
+          services: string[] | null
+          share_code: string
+          updated_at: string
+          user_id: string
+          websites: string[] | null
+          whatsapp: string | null
+        }
+        Insert: {
+          company?: string | null
+          created_at?: string
+          email: string
+          facebook?: string | null
+          id?: string
+          industry?: string | null
+          is_active?: boolean
+          linkedin?: string | null
+          name: string
+          notes?: string | null
+          phone?: string | null
+          services?: string[] | null
+          share_code?: string
+          updated_at?: string
+          user_id: string
+          websites?: string[] | null
+          whatsapp?: string | null
+        }
+        Update: {
+          company?: string | null
+          created_at?: string
+          email?: string
+          facebook?: string | null
+          id?: string
+          industry?: string | null
+          is_active?: boolean
+          linkedin?: string | null
+          name?: string
+          notes?: string | null
+          phone?: string | null
+          services?: string[] | null
+          share_code?: string
+          updated_at?: string
+          user_id?: string
+          websites?: string[] | null
+          whatsapp?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      regenerate_share_code: {
+        Args: { card_id: string }
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never
