@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { Network, LogOut, User } from "lucide-react";
+import { LogOut, User } from "lucide-react";
 import { useContacts } from "@/hooks/useContacts";
 import { useUserContactCard } from "@/hooks/useUserContactCard";
 import { useAuth } from "@/contexts/AuthContext";
@@ -122,7 +122,11 @@ const Index = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl p-2.5">
-                <Network className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
+                <img 
+                  src="/lovable-uploads/13a3c462-48e9-462a-b56d-edb9dd1a2bbb.png" 
+                  alt="Networq Logo" 
+                  className="w-6 h-6 sm:w-7 sm:h-7"
+                />
               </div>
               <div>
                 <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">Networq</h1>
