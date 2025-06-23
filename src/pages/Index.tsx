@@ -43,18 +43,18 @@ const Index = () => {
     <div className="min-h-screen bg-slate-50">
       {/* Header */}
       <header className="bg-white border-b border-slate-200 sticky top-0 z-40">
-        <div className="px-4 sm:px-6 py-3 sm:py-4">
+        <div className="px-4 sm:px-6 py-4 sm:py-5">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl p-2">
-                <Network className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+              <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl p-2.5">
+                <Network className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
               </div>
               <div>
-                <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">Networq</h1>
-                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">Your personal referral engine</p>
+                <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">Networq</h1>
+                <p className="text-sm sm:text-base text-slate-600 leading-relaxed">Your personal referral engine</p>
               </div>
             </div>
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center">
               <ContactForm 
                 isOpen={isAddingContact}
                 onOpenChange={setIsAddingContact}
@@ -66,7 +66,7 @@ const Index = () => {
       </header>
 
       {/* Main Content */}
-      <main className="px-4 sm:px-6 lg:px-8 py-6 sm:py-8 max-w-6xl mx-auto">
+      <main className="px-4 sm:px-6 lg:px-8 py-6 sm:py-8 max-w-4xl mx-auto">
         <ContactFilters
           searchTerm={searchTerm}
           onSearchChange={setSearchTerm}
@@ -77,8 +77,8 @@ const Index = () => {
 
         <ContactStats contacts={contacts} />
 
-        {/* Contacts Grid */}
-        <div className="space-y-3 sm:space-y-4">
+        {/* Contacts List */}
+        <div className="space-y-4 sm:space-y-6">
           {filteredContacts.map((contact) => (
             <ContactCard 
               key={contact.id} 
@@ -99,7 +99,7 @@ const Index = () => {
 
       {/* Footer */}
       <footer className="bg-white border-t border-slate-200 mt-16">
-        <div className="px-4 sm:px-6 lg:px-8 py-8 max-w-6xl mx-auto">
+        <div className="px-4 sm:px-6 lg:px-8 py-6 sm:py-8 max-w-4xl mx-auto">
           <div className="text-center">
             <p className="text-slate-600 leading-relaxed text-sm sm:text-base">
               <span className="font-semibold">Networq</span> - Turn every introduction into a referral opportunity
