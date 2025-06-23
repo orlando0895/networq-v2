@@ -13,9 +13,11 @@ type Contact = Database['public']['Tables']['contacts']['Row'];
 
 interface ContactStatsProps {
   contacts: Contact[];
+  filterIndustry: string;
+  onIndustryFilterChange: (industry: string) => void;
 }
 
-const ContactStats = ({ contacts }: ContactStatsProps) => {
+const ContactStats = ({ contacts, filterIndustry, onIndustryFilterChange }: ContactStatsProps) => {
   const industries = Array.from(
     new Set(contacts.map(c => c.industry).filter(Boolean))
   ).sort();
@@ -31,18 +33,24 @@ const ContactStats = ({ contacts }: ContactStatsProps) => {
               size="lg"
               className="flex-1 sm:flex-none transition-all duration-200 h-12 text-base bg-slate-900 text-white hover:bg-slate-800"
             >
-              Industries ({industriesCount})
+              {filterIndustry === "all" ? `Industries (${industriesCount})` : filterIndustry}
               <ChevronDown className="ml-2 h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-56 bg-white">
+            <DropdownMenuItem onClick={() => onIndustryFilterChange("all")}>
+              All Industries
+            </DropdownMenuItem>
             {industries.length === 0 ? (
               <DropdownMenuItem disabled>
                 No industries found
               </DropdownMenuItem>
             ) : (
               industries.map((industry) => (
-                <DropdownMenuItem key={industry}>
+                <DropdownMenuItem 
+                  key={industry}
+                  onClick={() => onIndustryFilterChange(industry)}
+                >
                   {industry}
                 </DropdownMenuItem>
               ))

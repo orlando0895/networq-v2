@@ -15,7 +15,9 @@ import AddContactByCode from "@/components/AddContactByCode";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import type { Database } from '@/integrations/supabase/types';
+
 type Contact = Database['public']['Tables']['contacts']['Row'];
+
 const Index = () => {
   const {
     contacts,
@@ -27,32 +29,13 @@ const Index = () => {
   const {
     fetchContactCardByShareCode
   } = useUserContactCard();
-  const {
-    user
-  } = useAuth();
-  const {
-    toast
-  } = useToast();
+  const { user } = useAuth();
+  const { toast } = useToast();
+  
   const [searchTerm, setSearchTerm] = useState("");
   const [isAddingContact, setIsAddingContact] = useState(false);
   const [filterTier, setFilterTier] = useState<"all" | "A-player" | "Acquaintance">("all");
-  const handleLogout = async () => {
-    const {
-      error
-    } = await supabase.auth.signOut();
-    if (error) {
-      toast({
-        title: "Error",
-        description: "Failed to sign out.",
-        variant: "destructive"
-      });
-    } else {
-      toast({
-        title: "Signed out",
-        description: "You have been successfully signed out."
-      });
-    }
-  };
+  const [filterIndustry, setFilterIndustry] = useState("all");
 
   // Check URL for share code on page load
   useEffect(() => {
@@ -96,18 +79,29 @@ const Index = () => {
       });
     }
   };
+
   const filteredContacts = contacts.filter(contact => {
-    const matchesSearch = !searchTerm || contact.name.toLowerCase().includes(searchTerm.toLowerCase()) || contact.company?.toLowerCase().includes(searchTerm.toLowerCase()) || contact.industry?.toLowerCase().includes(searchTerm.toLowerCase()) || contact.services?.some(service => service.toLowerCase().includes(searchTerm.toLowerCase()));
+    const matchesSearch = !searchTerm || 
+      contact.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+      contact.company?.toLowerCase().includes(searchTerm.toLowerCase()) || 
+      contact.industry?.toLowerCase().includes(searchTerm.toLowerCase()) || 
+      contact.services?.some(service => service.toLowerCase().includes(searchTerm.toLowerCase()));
+    
     const matchesTier = filterTier === "all" || contact.tier === filterTier;
-    return matchesSearch && matchesTier;
+    const matchesIndustry = filterIndustry === "all" || contact.industry === filterIndustry;
+    
+    return matchesSearch && matchesTier && matchesIndustry;
   });
-  const hasFilters = searchTerm !== "" || filterTier !== "all";
+
+  const hasFilters = searchTerm !== "" || filterTier !== "all" || filterIndustry !== "all";
+
   if (loading) {
     return <div className="min-h-screen bg-slate-50 flex items-center justify-center">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
       </div>;
   }
-  return <div className="min-h-screen bg-slate-50">
+  return (
+    <div className="min-h-screen bg-slate-50">
       {/* Header */}
       <header className="bg-white border-b border-slate-200 sticky top-0 z-40">
         <div className="px-4 sm:px-6 py-4 sm:py-5">
@@ -122,16 +116,17 @@ const Index = () => {
               </div>
             </div>
             
-            {user && <div className="flex items-center space-x-4">
+            {user && (
+              <div className="flex items-center space-x-4">
                 <div className="flex items-center space-x-2 text-sm text-gray-600">
-                  
                   <span className="hidden sm:inline">{user.email}</span>
                 </div>
                 <Button variant="outline" size="sm" onClick={handleLogout} className="flex items-center space-x-2">
                   <LogOut className="h-4 w-4" />
                   <span>Sign Out</span>
                 </Button>
-              </div>}
+              </div>
+            )}
           </div>
         </div>
       </header>
@@ -151,15 +146,37 @@ const Index = () => {
               <ContactForm isOpen={isAddingContact} onOpenChange={setIsAddingContact} onAddContact={addContact} />
             </div>
 
-            <ContactFilters searchTerm={searchTerm} onSearchChange={setSearchTerm} filterTier={filterTier} onFilterChange={setFilterTier} contacts={contacts} />
+            <ContactFilters 
+              searchTerm={searchTerm} 
+              onSearchChange={setSearchTerm} 
+              filterTier={filterTier} 
+              onFilterChange={setFilterTier} 
+              contacts={contacts} 
+            />
 
-            <ContactStats contacts={contacts} />
+            <ContactStats 
+              contacts={contacts} 
+              filterIndustry={filterIndustry}
+              onIndustryFilterChange={setFilterIndustry}
+            />
 
             <div className="space-y-4 sm:space-y-6">
-              {filteredContacts.map(contact => <ContactCard key={contact.id} contact={contact} onUpdateContact={updateContact} onDeleteContact={deleteContact} />)}
+              {filteredContacts.map(contact => (
+                <ContactCard 
+                  key={contact.id} 
+                  contact={contact} 
+                  onUpdateContact={updateContact} 
+                  onDeleteContact={deleteContact} 
+                />
+              ))}
             </div>
 
-            {filteredContacts.length === 0 && <EmptyState hasFilters={hasFilters} onAddContact={() => setIsAddingContact(true)} />}
+            {filteredContacts.length === 0 && (
+              <EmptyState 
+                hasFilters={hasFilters} 
+                onAddContact={() => setIsAddingContact(true)} 
+              />
+            )}
           </TabsContent>
 
           <TabsContent value="my-card">
@@ -182,6 +199,8 @@ const Index = () => {
           </div>
         </div>
       </footer>
-    </div>;
+    </div>
+  );
 };
+
 export default Index;
