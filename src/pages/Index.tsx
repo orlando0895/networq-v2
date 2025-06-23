@@ -1,7 +1,11 @@
+
 import { useState, useEffect } from "react";
-import { Network } from "lucide-react";
+import { Network, LogOut, User } from "lucide-react";
 import { useContacts } from "@/hooks/useContacts";
 import { useUserContactCard } from "@/hooks/useUserContactCard";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
+import { Button } from "@/components/ui/button";
 import ContactCard from "@/components/ContactCard";
 import ContactForm from "@/components/ContactForm";
 import ContactStats from "@/components/ContactStats";
@@ -18,10 +22,28 @@ type Contact = Database['public']['Tables']['contacts']['Row'];
 const Index = () => {
   const { contacts, loading, addContact, updateContact, deleteContact } = useContacts();
   const { fetchContactCardByShareCode } = useUserContactCard();
+  const { user } = useAuth();
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
   const [isAddingContact, setIsAddingContact] = useState(false);
   const [filterTier, setFilterTier] = useState<"all" | "A-player" | "Acquaintance">("all");
+
+  const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut();
+    
+    if (error) {
+      toast({
+        title: "Error",
+        description: "Failed to sign out.",
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: "Signed out",
+        description: "You have been successfully signed out.",
+      });
+    }
+  };
 
   // Check URL for share code on page load
   useEffect(() => {
@@ -107,6 +129,24 @@ const Index = () => {
                 <p className="text-sm sm:text-base text-slate-600 leading-relaxed">Your personal referral engine</p>
               </div>
             </div>
+            
+            {user && (
+              <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-2 text-sm text-gray-600">
+                  <User className="h-4 w-4" />
+                  <span className="hidden sm:inline">{user.email}</span>
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleLogout}
+                  className="flex items-center space-x-2"
+                >
+                  <LogOut className="h-4 w-4" />
+                  <span>Sign Out</span>
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       </header>
