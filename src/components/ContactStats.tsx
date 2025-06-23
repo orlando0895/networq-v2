@@ -1,4 +1,5 @@
 
+import { Button } from "@/components/ui/button";
 import type { Database } from '@/integrations/supabase/types';
 
 type Contact = Database['public']['Tables']['contacts']['Row'];
@@ -12,10 +13,14 @@ const ContactStats = ({ contacts }: ContactStatsProps) => {
 
   return (
     <div className="mb-6 sm:mb-8">
-      <div className="bg-white rounded-xl p-6 border border-slate-200 text-center">
-        <p className="text-sm font-medium text-slate-600 mb-2">Industries</p>
-        <p className="text-3xl font-bold text-slate-900">{industriesCount}</p>
-      </div>
+      <Button
+        variant="outline"
+        size="lg"
+        disabled
+        className="flex-1 sm:flex-none transition-all duration-200 h-12 text-base cursor-default"
+      >
+        Industries ({industriesCount})
+      </Button>
     </div>
   );
 };
