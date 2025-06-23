@@ -1,5 +1,4 @@
 
-
 import { Button } from "@/components/ui/button";
 import type { Database } from '@/integrations/supabase/types';
 
@@ -16,10 +15,10 @@ const ContactStats = ({ contacts }: ContactStatsProps) => {
     <div className="mb-6 sm:mb-8">
       <div className="flex flex-col sm:flex-row gap-3">
         <Button
-          variant="outline"
+          variant="default"
           size="lg"
           disabled
-          className="flex-1 sm:flex-none transition-all duration-200 h-12 text-base cursor-default"
+          className="flex-1 sm:flex-none transition-all duration-200 h-12 text-base cursor-default bg-slate-900 text-white hover:bg-slate-900"
         >
           Industries ({industriesCount})
         </Button>
@@ -29,4 +28,3 @@ const ContactStats = ({ contacts }: ContactStatsProps) => {
 };
 
 export default ContactStats;
-
