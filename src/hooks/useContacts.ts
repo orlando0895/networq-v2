@@ -38,6 +38,55 @@ export const useContacts = () => {
     }
   };
 
+  const addMutualContact = async (contactEmail: string, myContactCard: any) => {
+    try {
+      // Find the user by email
+      const { data: profiles, error: profileError } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('email', contactEmail)
+        .maybeSingle();
+
+      if (profileError) {
+        console.error('Error finding user profile:', profileError);
+        return;
+      }
+
+      if (!profiles) {
+        console.log('User not found in profiles, they may not have signed up yet');
+        return;
+      }
+
+      // Add my contact card to their contacts
+      const mutualContact: ContactInsert = {
+        user_id: profiles.id,
+        name: myContactCard.name,
+        email: myContactCard.email,
+        phone: myContactCard.phone || null,
+        company: myContactCard.company || null,
+        industry: myContactCard.industry || null,
+        services: myContactCard.services || null,
+        tier: 'Acquaintance',
+        notes: 'Added automatically through mutual contact addition',
+        linkedin: myContactCard.linkedin || null,
+        facebook: myContactCard.facebook || null,
+        whatsapp: myContactCard.whatsapp || null,
+        websites: myContactCard.websites || null,
+        added_date: new Date().toISOString().split('T')[0]
+      };
+
+      const { error: insertError } = await supabase
+        .from('contacts')
+        .insert([mutualContact]);
+
+      if (insertError) {
+        console.error('Error adding mutual contact:', insertError);
+      }
+    } catch (error: any) {
+      console.error('Error in mutual contact addition:', error);
+    }
+  };
+
   const addContact = async (contactData: {
     name: string;
     email: string;
@@ -74,6 +123,24 @@ export const useContacts = () => {
       if (error) throw error;
 
       setContacts(prev => [data, ...prev]);
+
+      // Try to add mutual contact - fetch my contact card first
+      try {
+        const { data: myContactCard, error: cardError } = await supabase
+          .from('user_contact_cards')
+          .select('*')
+          .eq('user_id', user.id)
+          .eq('is_active', true)
+          .maybeSingle();
+
+        if (!cardError && myContactCard) {
+          await addMutualContact(contactData.email, myContactCard);
+        }
+      } catch (mutualError) {
+        console.error('Error adding mutual contact:', mutualError);
+        // Don't fail the main contact addition if mutual addition fails
+      }
+
       toast({
         title: "Contact Added! 🎉",
         description: `${contactData.name} has been added to your network.`
