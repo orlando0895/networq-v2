@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
@@ -11,6 +10,7 @@ import { Separator } from '@/components/ui/separator';
 import { Copy, RefreshCw, Share2, Trash2, Plus } from 'lucide-react';
 import { useUserContactCard } from '@/hooks/useUserContactCard';
 import { useToast } from '@/hooks/use-toast';
+import DeleteAccountDialog from '@/components/DeleteAccountDialog';
 
 interface ContactCardFormData {
   name: string;
@@ -275,6 +275,18 @@ const MyContactCardForm = () => {
               {isSubmitting ? 'Saving...' : contactCard ? 'Update Contact Card' : 'Create Contact Card'}
             </Button>
           </form>
+        </CardContent>
+      </Card>
+
+      <Card className="border-red-200 bg-red-50">
+        <CardHeader>
+          <CardTitle className="text-red-600">Danger Zone</CardTitle>
+          <CardDescription>
+            Permanently delete your account and all associated data. This action cannot be undone.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <DeleteAccountDialog />
         </CardContent>
       </Card>
     </div>
