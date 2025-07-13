@@ -94,6 +94,7 @@ const BusinessCardScanner = ({ isOpen, onOpenChange, onContactExtracted }: Busin
   const processImage = async (imageData: string) => {
     setIsScanning(true);
     console.log('Starting business card processing...');
+    console.log('Image data starts with:', imageData.substring(0, 50));
     
     try {
       console.log('Calling scan-business-card function with image data length:', imageData.length);
