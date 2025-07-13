@@ -117,7 +117,23 @@ Guidelines:
     // Parse the JSON response
     let contactInfo;
     try {
-      contactInfo = JSON.parse(extractedText);
+      // Clean the text to extract just the JSON part
+      let jsonText = extractedText.trim();
+      
+      // If the response is wrapped in code blocks, extract the JSON
+      if (jsonText.includes('```json')) {
+        const jsonMatch = jsonText.match(/```json\s*([\s\S]*?)\s*```/);
+        if (jsonMatch) {
+          jsonText = jsonMatch[1];
+        }
+      } else if (jsonText.includes('```')) {
+        const jsonMatch = jsonText.match(/```\s*([\s\S]*?)\s*```/);
+        if (jsonMatch) {
+          jsonText = jsonMatch[1];
+        }
+      }
+      
+      contactInfo = JSON.parse(jsonText);
       console.log('Successfully parsed contact info:', contactInfo);
     } catch (e) {
       console.error('Failed to parse JSON:', e, 'Raw text:', extractedText);
