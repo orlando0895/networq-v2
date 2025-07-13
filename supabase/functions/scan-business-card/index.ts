@@ -16,7 +16,13 @@ serve(async (req) => {
     const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
     if (!openAIApiKey) {
       console.error('OPENAI_API_KEY not configured');
-      throw new Error('OPENAI_API_KEY not configured');
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          error: 'OpenAI API key not configured' 
+        }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
     console.log('API key found, parsing request...');
 
@@ -26,11 +32,15 @@ serve(async (req) => {
     if (!imageData) {
       console.error('No image data provided');
       return new Response(
-        JSON.stringify({ error: 'Image data is required' }),
+        JSON.stringify({ 
+          success: false, 
+          error: 'Image data is required' 
+        }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
+    console.log('Making OpenAI API call...');
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -38,7 +48,7 @@ serve(async (req) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o',
+        model: 'gpt-4o-mini',
         messages: [
           {
             role: 'system',
@@ -86,20 +96,38 @@ Guidelines:
       }),
     });
 
+    console.log('OpenAI API response status:', response.status);
     const data = await response.json();
+    console.log('OpenAI API response data:', data);
     
     if (!response.ok) {
-      throw new Error(data.error?.message || 'OpenAI API error');
+      console.error('OpenAI API error:', data);
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          error: data.error?.message || `OpenAI API error: ${response.status}` 
+        }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     const extractedText = data.choices[0].message.content;
+    console.log('Extracted text from OpenAI:', extractedText);
     
     // Parse the JSON response
     let contactInfo;
     try {
       contactInfo = JSON.parse(extractedText);
+      console.log('Successfully parsed contact info:', contactInfo);
     } catch (e) {
-      throw new Error('Failed to parse extracted contact information');
+      console.error('Failed to parse JSON:', e, 'Raw text:', extractedText);
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          error: 'Failed to parse extracted contact information' 
+        }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     return new Response(
