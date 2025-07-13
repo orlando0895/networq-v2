@@ -12,14 +12,19 @@ serve(async (req) => {
   }
 
   try {
+    console.log('Function called, checking API key...');
     const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
     if (!openAIApiKey) {
+      console.error('OPENAI_API_KEY not configured');
       throw new Error('OPENAI_API_KEY not configured');
     }
+    console.log('API key found, parsing request...');
 
     const { imageData } = await req.json();
+    console.log('Request parsed, image data length:', imageData?.length || 'undefined');
     
     if (!imageData) {
+      console.error('No image data provided');
       return new Response(
         JSON.stringify({ error: 'Image data is required' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }

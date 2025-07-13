@@ -93,15 +93,24 @@ const BusinessCardScanner = ({ isOpen, onOpenChange, onContactExtracted }: Busin
 
   const processImage = async (imageData: string) => {
     setIsScanning(true);
+    console.log('Starting business card processing...');
     
     try {
+      console.log('Calling scan-business-card function with image data length:', imageData.length);
+      
       const { data, error } = await supabase.functions.invoke('scan-business-card', {
         body: { imageData }
       });
 
-      if (error) throw error;
+      console.log('Function response:', { data, error });
 
-      if (data.success && data.contactInfo) {
+      if (error) {
+        console.error('Supabase function error:', error);
+        throw error;
+      }
+
+      if (data?.success && data?.contactInfo) {
+        console.log('Successfully extracted contact info:', data.contactInfo);
         onContactExtracted(data.contactInfo);
         onOpenChange(false);
         toast({
@@ -109,7 +118,8 @@ const BusinessCardScanner = ({ isOpen, onOpenChange, onContactExtracted }: Busin
           description: "Business card information extracted successfully."
         });
       } else {
-        throw new Error(data.error || 'Failed to extract information');
+        console.error('Function returned error or no data:', data);
+        throw new Error(data?.error || 'Failed to extract information');
       }
     } catch (error) {
       console.error('Error processing business card:', error);
