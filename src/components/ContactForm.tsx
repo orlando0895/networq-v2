@@ -6,7 +6,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { Plus, UserPlus } from "lucide-react";
+import { Plus, UserPlus, Camera } from "lucide-react";
+import BusinessCardScanner from '@/components/BusinessCardScanner';
 
 interface NewContact {
   name: string;
@@ -44,6 +45,7 @@ const ContactForm = ({ isOpen, onOpenChange, onAddContact }: ContactFormProps) =
     whatsapp: "",
     websites: ""
   });
+  const [showScanner, setShowScanner] = useState(false);
 
   const handleAddContact = async () => {
     if (!newContact.name || !newContact.email) {
@@ -77,6 +79,23 @@ const ContactForm = ({ isOpen, onOpenChange, onAddContact }: ContactFormProps) =
     }
   };
 
+  const handleBusinessCardExtracted = (contactInfo: any) => {
+    setNewContact({
+      name: contactInfo.name || '',
+      email: contactInfo.email || '',
+      phone: contactInfo.phone || '',
+      company: contactInfo.company || '',
+      industry: contactInfo.industry || '',
+      services: Array.isArray(contactInfo.services) ? contactInfo.services.join(', ') : contactInfo.services || '',
+      tier: "Acquaintance",
+      notes: contactInfo.notes || '',
+      linkedin: contactInfo.linkedin || '',
+      facebook: contactInfo.facebook || '',
+      whatsapp: contactInfo.whatsapp || '',
+      websites: Array.isArray(contactInfo.websites) ? contactInfo.websites.join(', ') : contactInfo.websites || ''
+    });
+  };
+
   return (
     <Sheet open={isOpen} onOpenChange={onOpenChange}>
       <SheetTrigger asChild>
@@ -87,10 +106,21 @@ const ContactForm = ({ isOpen, onOpenChange, onAddContact }: ContactFormProps) =
       </SheetTrigger>
       <SheetContent className="w-full sm:max-w-md overflow-y-auto">
         <SheetHeader className="pb-6">
-          <SheetTitle className="flex items-center gap-2 text-xl font-semibold">
-            <UserPlus className="w-6 h-6" />
-            Add New Contact
-          </SheetTitle>
+          <div className="flex items-center justify-between">
+            <SheetTitle className="flex items-center gap-2 text-xl font-semibold">
+              <UserPlus className="w-6 h-6" />
+              Add New Contact
+            </SheetTitle>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowScanner(true)}
+              className="flex items-center gap-2"
+            >
+              <Camera className="w-4 h-4" />
+              Scan Card
+            </Button>
+          </div>
         </SheetHeader>
         <div className="space-y-6">
           <div className="grid grid-cols-1 gap-4">
@@ -246,6 +276,12 @@ const ContactForm = ({ isOpen, onOpenChange, onAddContact }: ContactFormProps) =
           </div>
         </div>
       </SheetContent>
+
+      <BusinessCardScanner
+        isOpen={showScanner}
+        onOpenChange={setShowScanner}
+        onContactExtracted={handleBusinessCardExtracted}
+      />
     </Sheet>
   );
 };

@@ -7,10 +7,11 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { Copy, RefreshCw, Share2, Trash2, Plus } from 'lucide-react';
+import { Copy, RefreshCw, Share2, Trash2, Plus, Camera } from 'lucide-react';
 import { useUserContactCard } from '@/hooks/useUserContactCard';
 import { useToast } from '@/hooks/use-toast';
 import DeleteAccountDialog from '@/components/DeleteAccountDialog';
+import BusinessCardScanner from '@/components/BusinessCardScanner';
 
 interface ContactCardFormData {
   name: string;
@@ -31,6 +32,7 @@ const MyContactCardForm = () => {
   const { toast } = useToast();
   const [websites, setWebsites] = useState<string[]>(contactCard?.websites || []);
   const [newWebsite, setNewWebsite] = useState('');
+  const [showScanner, setShowScanner] = useState(false);
 
   const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm<ContactCardFormData>({
     defaultValues: {
@@ -118,6 +120,24 @@ const MyContactCardForm = () => {
     }
   };
 
+  const handleBusinessCardExtracted = (contactInfo: any) => {
+    reset({
+      name: contactInfo.name || '',
+      email: contactInfo.email || '',
+      phone: contactInfo.phone || '',
+      company: contactInfo.company || '',
+      industry: contactInfo.industry || '',
+      services: Array.isArray(contactInfo.services) ? contactInfo.services.join(', ') : '',
+      notes: contactInfo.notes || '',
+      linkedin: contactInfo.linkedin || '',
+      facebook: contactInfo.facebook || '',
+      whatsapp: contactInfo.whatsapp || ''
+    });
+    if (contactInfo.websites && Array.isArray(contactInfo.websites)) {
+      setWebsites(contactInfo.websites);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center p-8">
@@ -164,12 +184,25 @@ const MyContactCardForm = () => {
 
       <Card>
         <CardHeader>
-          <CardTitle>
-            {contactCard ? 'Edit Your Contact Card' : 'Create Your Contact Card'}
-          </CardTitle>
-          <CardDescription>
-            {contactCard ? 'Update your contact information' : 'Create a contact card that you can share with others'}
-          </CardDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>
+                {contactCard ? 'Edit Your Contact Card' : 'Create Your Contact Card'}
+              </CardTitle>
+              <CardDescription>
+                {contactCard ? 'Update your contact information' : 'Create a contact card that you can share with others'}
+              </CardDescription>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowScanner(true)}
+              className="flex items-center gap-2"
+            >
+              <Camera className="w-4 h-4" />
+              Scan Card
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -289,6 +322,12 @@ const MyContactCardForm = () => {
           <DeleteAccountDialog />
         </CardContent>
       </Card>
+
+      <BusinessCardScanner
+        isOpen={showScanner}
+        onOpenChange={setShowScanner}
+        onContactExtracted={handleBusinessCardExtracted}
+      />
     </div>
   );
 };

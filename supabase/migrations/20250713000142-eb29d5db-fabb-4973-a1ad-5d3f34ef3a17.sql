@@ -1,0 +1,1 @@
+-- No database changes needed for business card scanning functionality
