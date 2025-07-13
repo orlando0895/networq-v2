@@ -137,19 +137,30 @@ const BusinessCardScanner = ({ isOpen, onOpenChange, onContactExtracted }: Busin
     setIsScanning(true);
     console.log('Starting business card processing...');
     console.log('Image data starts with:', imageData.substring(0, 50));
+    console.log('Image data length:', imageData.length);
     
     try {
-      console.log('Calling scan-business-card function with image data length:', imageData.length);
+      // Validate image data format
+      if (!imageData.startsWith('data:image/')) {
+        throw new Error('Invalid image data format');
+      }
+      
+      console.log('Calling scan-business-card function...');
       
       const { data, error } = await supabase.functions.invoke('scan-business-card', {
         body: { imageData }
       });
 
-      console.log('Function response:', { data, error });
+      console.log('Function response received:', { data, error });
 
       if (error) {
         console.error('Supabase function error:', error);
-        throw error;
+        throw new Error(`Function call failed: ${error.message || 'Unknown error'}`);
+      }
+
+      if (!data) {
+        console.error('No data returned from function');
+        throw new Error('No response data received from function');
       }
 
       if (data?.success && data?.contactInfo) {
@@ -162,13 +173,28 @@ const BusinessCardScanner = ({ isOpen, onOpenChange, onContactExtracted }: Busin
         });
       } else {
         console.error('Function returned error or no data:', data);
-        throw new Error(data?.error || 'Failed to extract information');
+        const errorMessage = data?.error || 'Failed to extract information from business card';
+        throw new Error(errorMessage);
       }
     } catch (error) {
       console.error('Error processing business card:', error);
+      
+      // More specific error messages
+      let errorMessage = "Could not extract information from the business card. Please try again.";
+      
+      if (error instanceof Error) {
+        if (error.message.includes('Function call failed')) {
+          errorMessage = "Service temporarily unavailable. Please try again in a moment.";
+        } else if (error.message.includes('Invalid image data')) {
+          errorMessage = "Invalid image format. Please try a different image.";
+        } else if (error.message.includes('No response data')) {
+          errorMessage = "Service error. Please check your connection and try again.";
+        }
+      }
+      
       toast({
         title: "Processing Error",
-        description: "Could not extract information from the business card. Please try again.",
+        description: errorMessage,
         variant: "destructive"
       });
     } finally {
