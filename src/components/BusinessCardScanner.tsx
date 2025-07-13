@@ -58,13 +58,27 @@ const BusinessCardScanner = ({ isOpen, onOpenChange, onContactExtracted }: Busin
     const canvas = canvasRef.current;
     const video = videoRef.current;
     
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
+    // Set reasonable dimensions to avoid oversized images
+    const maxWidth = 1024;
+    const maxHeight = 768;
+    
+    let { videoWidth, videoHeight } = video;
+    
+    // Scale down if too large
+    if (videoWidth > maxWidth || videoHeight > maxHeight) {
+      const ratio = Math.min(maxWidth / videoWidth, maxHeight / videoHeight);
+      videoWidth *= ratio;
+      videoHeight *= ratio;
+    }
+    
+    canvas.width = videoWidth;
+    canvas.height = videoHeight;
     
     const ctx = canvas.getContext('2d');
     if (ctx) {
-      ctx.drawImage(video, 0, 0);
-      const imageData = canvas.toDataURL('image/jpeg', 0.8);
+      ctx.drawImage(video, 0, 0, videoWidth, videoHeight);
+      // Use JPEG with quality 0.7 to reduce file size
+      const imageData = canvas.toDataURL('image/jpeg', 0.7);
       stopCamera();
       processImage(imageData);
     }
@@ -83,10 +97,38 @@ const BusinessCardScanner = ({ isOpen, onOpenChange, onContactExtracted }: Busin
       return;
     }
 
+    // Create an image element to resize if needed
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      
+      if (!ctx) return;
+      
+      // Set max dimensions
+      const maxWidth = 1024;
+      const maxHeight = 768;
+      
+      let { width, height } = img;
+      
+      // Scale down if too large
+      if (width > maxWidth || height > maxHeight) {
+        const ratio = Math.min(maxWidth / width, maxHeight / height);
+        width *= ratio;
+        height *= ratio;
+      }
+      
+      canvas.width = width;
+      canvas.height = height;
+      
+      ctx.drawImage(img, 0, 0, width, height);
+      const imageData = canvas.toDataURL('image/jpeg', 0.7);
+      processImage(imageData);
+    };
+    
     const reader = new FileReader();
     reader.onload = (e) => {
-      const imageData = e.target?.result as string;
-      processImage(imageData);
+      img.src = e.target?.result as string;
     };
     reader.readAsDataURL(file);
   };
