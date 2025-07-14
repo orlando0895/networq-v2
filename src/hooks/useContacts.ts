@@ -48,50 +48,29 @@ export const useContacts = () => {
         return;
       }
 
-      // Check if I'm already in their contacts to prevent duplicates
-      const { data: existingContact, error: checkError } = await supabase
-        .from('contacts')
-        .select('id')
-        .eq('user_id', contactUserId)
-        .eq('email', myContactCard.email)
-        .maybeSingle();
+      // Use the database function to add mutual contact (bypasses RLS)
+      const { data: success, error } = await supabase.rpc('add_mutual_contact', {
+        target_user_id: contactUserId,
+        contact_name: myContactCard.name,
+        contact_email: myContactCard.email,
+        contact_phone: myContactCard.phone || null,
+        contact_company: myContactCard.company || null,
+        contact_industry: myContactCard.industry || null,
+        contact_services: myContactCard.services || null,
+        contact_tier: 'Acquaintance',
+        contact_notes: 'Added through mutual contact',
+        contact_linkedin: myContactCard.linkedin || null,
+        contact_facebook: myContactCard.facebook || null,
+        contact_whatsapp: myContactCard.whatsapp || null,
+        contact_websites: myContactCard.websites || null,
+      });
 
-      if (checkError) {
-        console.error('Error checking existing contact:', checkError);
-        return;
-      }
-
-      if (existingContact) {
-        console.log('Mutual contact already exists, skipping addition');
-        return;
-      }
-
-      // Add my contact card to their contacts
-      const mutualContact: ContactInsert = {
-        user_id: contactUserId,
-        name: myContactCard.name,
-        email: myContactCard.email,
-        phone: myContactCard.phone || null,
-        company: myContactCard.company || null,
-        industry: myContactCard.industry || null,
-        services: myContactCard.services || null,
-        tier: 'Acquaintance',
-        notes: 'Added automatically through mutual contact addition',
-        linkedin: myContactCard.linkedin || null,
-        facebook: myContactCard.facebook || null,
-        whatsapp: myContactCard.whatsapp || null,
-        websites: myContactCard.websites || null,
-        added_date: new Date().toISOString().split('T')[0]
-      };
-
-      const { error: insertError } = await supabase
-        .from('contacts')
-        .insert([mutualContact]);
-
-      if (insertError) {
-        console.error('Error adding mutual contact:', insertError);
+      if (error) {
+        console.error('Error adding mutual contact:', error);
+      } else if (success) {
+        console.log('Mutual contact added successfully');
       } else {
-        console.log('Successfully added mutual contact');
+        console.log('Mutual contact addition failed');
       }
     } catch (error: any) {
       console.error('Error in mutual contact addition:', error);

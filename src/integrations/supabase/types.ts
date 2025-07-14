@@ -166,6 +166,24 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      add_mutual_contact: {
+        Args: {
+          target_user_id: string
+          contact_name: string
+          contact_email: string
+          contact_phone?: string
+          contact_company?: string
+          contact_industry?: string
+          contact_services?: string[]
+          contact_tier?: string
+          contact_notes?: string
+          contact_linkedin?: string
+          contact_facebook?: string
+          contact_whatsapp?: string
+          contact_websites?: string[]
+        }
+        Returns: boolean
+      }
       regenerate_share_code: {
         Args: { card_id: string }
         Returns: string
