@@ -14,8 +14,9 @@ export const QRCodeShare = () => {
 
   useEffect(() => {
     if (contactCard?.share_code) {
-      // Generate QR code containing just the share code
-      QRCode.toDataURL(contactCard.share_code, {
+      // Generate QR code containing a URL to view the contact card
+      const contactUrl = `${window.location.origin}/contact/${contactCard.share_code}`;
+      QRCode.toDataURL(contactUrl, {
         width: 256,
         margin: 2,
         color: {
