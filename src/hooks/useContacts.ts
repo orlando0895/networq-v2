@@ -57,7 +57,7 @@ export const useContacts = () => {
         return;
       }
 
-      if (!profiles) {
+      if (!profiles || !profiles.id) {
         console.log('User not found in profiles, they may not have signed up yet');
         return;
       }
