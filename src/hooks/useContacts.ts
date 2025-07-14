@@ -40,12 +40,17 @@ export const useContacts = () => {
 
   const addMutualContact = async (contactEmail: string, myContactCard: any) => {
     try {
+      console.log('Starting mutual contact addition for:', contactEmail);
+      console.log('My contact card:', myContactCard);
+      
       // Find the user by email
       const { data: profiles, error: profileError } = await supabase
         .from('profiles')
         .select('id')
         .eq('email', contactEmail)
         .maybeSingle();
+
+      console.log('Profile lookup result:', { profiles, profileError });
 
       if (profileError) {
         console.error('Error finding user profile:', profileError);
