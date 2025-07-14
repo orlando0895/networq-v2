@@ -11,7 +11,6 @@ import ContactStats from "@/components/ContactStats";
 import ContactFilters from "@/components/ContactFilters";
 import EmptyState from "@/components/EmptyState";
 import MyContactCardForm from "@/components/MyContactCardForm";
-import AddContactByCode from "@/components/AddContactByCode";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { QRCodeShare } from "@/components/QRCodeShare";
 import { useToast } from "@/hooks/use-toast";
@@ -152,11 +151,10 @@ const Index = () => {
       {/* Main Content */}
       <main className="px-4 sm:px-6 lg:px-8 py-6 sm:py-8 max-w-4xl mx-auto">
         <Tabs defaultValue="contacts" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="contacts">My Contacts</TabsTrigger>
             <TabsTrigger value="my-card">My Card</TabsTrigger>
             <TabsTrigger value="qr-share">QR Share</TabsTrigger>
-            <TabsTrigger value="add-by-code">Add by Code</TabsTrigger>
           </TabsList>
 
           <TabsContent value="contacts" className="space-y-6">
@@ -204,10 +202,6 @@ const Index = () => {
 
           <TabsContent value="qr-share" className="flex justify-center">
             <QRCodeShare />
-          </TabsContent>
-
-          <TabsContent value="add-by-code">
-            <AddContactByCode />
           </TabsContent>
         </Tabs>
       </main>
