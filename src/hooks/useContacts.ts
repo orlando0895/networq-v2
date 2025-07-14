@@ -57,6 +57,24 @@ export const useContacts = () => {
         return;
       }
 
+      // Check if I'm already in their contacts to prevent duplicates
+      const { data: existingContact, error: checkError } = await supabase
+        .from('contacts')
+        .select('id')
+        .eq('user_id', profiles.id)
+        .eq('email', myContactCard.email)
+        .maybeSingle();
+
+      if (checkError) {
+        console.error('Error checking existing contact:', checkError);
+        return;
+      }
+
+      if (existingContact) {
+        console.log('Mutual contact already exists, skipping addition');
+        return;
+      }
+
       // Add my contact card to their contacts
       const mutualContact: ContactInsert = {
         user_id: profiles.id,
@@ -81,6 +99,8 @@ export const useContacts = () => {
 
       if (insertError) {
         console.error('Error adding mutual contact:', insertError);
+      } else {
+        console.log('Successfully added mutual contact');
       }
     } catch (error: any) {
       console.error('Error in mutual contact addition:', error);
