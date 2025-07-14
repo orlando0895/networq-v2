@@ -217,13 +217,15 @@ const Auth = () => {
             ) : (
               <>
                 {isLogin && (
-                  <button
-                    type="button"
-                    onClick={() => setIsResetPassword(true)}
-                    className="text-sm text-blue-600 hover:underline block"
-                  >
-                    Forgot your password?
-                  </button>
+                  <div className="mb-2">
+                    <button
+                      type="button"
+                      onClick={() => setIsResetPassword(true)}
+                      className="text-sm text-blue-600 hover:underline"
+                    >
+                      Forgot your password?
+                    </button>
+                  </div>
                 )}
                 <button
                   type="button"
