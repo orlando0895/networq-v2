@@ -1,5 +1,6 @@
 
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -22,6 +23,7 @@ import { useToast } from '@/hooks/use-toast';
 const DeleteAccountDialog = () => {
   const { user } = useAuth();
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [confirmText, setConfirmText] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -43,6 +45,9 @@ const DeleteAccountDialog = () => {
         title: "Account Deleted",
         description: "Your account and all data have been permanently deleted.",
       });
+
+      // Redirect to sign up page
+      navigate('/auth');
 
     } catch (error) {
       console.error('Error deleting account:', error);
