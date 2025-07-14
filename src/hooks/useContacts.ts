@@ -38,27 +38,13 @@ export const useContacts = () => {
     }
   };
 
-  const addMutualContact = async (contactEmail: string, myContactCard: any) => {
+  const addMutualContact = async (contactUserId: string, myContactCard: any) => {
     try {
-      console.log('Starting mutual contact addition for:', contactEmail);
+      console.log('Starting mutual contact addition for user ID:', contactUserId);
       console.log('My contact card:', myContactCard);
-      
-      // Find the user by email
-      const { data: profiles, error: profileError } = await supabase
-        .from('profiles')
-        .select('id')
-        .eq('email', contactEmail)
-        .maybeSingle();
 
-      console.log('Profile lookup result:', { profiles, profileError });
-
-      if (profileError) {
-        console.error('Error finding user profile:', profileError);
-        return;
-      }
-
-      if (!profiles || !profiles.id) {
-        console.log('User not found in profiles, they may not have signed up yet');
+      if (!contactUserId) {
+        console.log('No user ID provided for mutual contact');
         return;
       }
 
@@ -66,7 +52,7 @@ export const useContacts = () => {
       const { data: existingContact, error: checkError } = await supabase
         .from('contacts')
         .select('id')
-        .eq('user_id', profiles.id)
+        .eq('user_id', contactUserId)
         .eq('email', myContactCard.email)
         .maybeSingle();
 
@@ -82,7 +68,7 @@ export const useContacts = () => {
 
       // Add my contact card to their contacts
       const mutualContact: ContactInsert = {
-        user_id: profiles.id,
+        user_id: contactUserId,
         name: myContactCard.name,
         email: myContactCard.email,
         phone: myContactCard.phone || null,
@@ -125,6 +111,7 @@ export const useContacts = () => {
     facebook?: string;
     whatsapp?: string;
     websites: string[];
+    user_id?: string; // Optional for mutual contact addition
   }) => {
     if (!user) return;
 
@@ -158,8 +145,8 @@ export const useContacts = () => {
           .eq('is_active', true)
           .maybeSingle();
 
-        if (!cardError && myContactCard) {
-          await addMutualContact(contactData.email, myContactCard);
+        if (!cardError && myContactCard && contactData.user_id) {
+          await addMutualContact(contactData.user_id, myContactCard);
         }
       } catch (mutualError) {
         console.error('Error adding mutual contact:', mutualError);

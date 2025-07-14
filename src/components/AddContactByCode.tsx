@@ -54,7 +54,8 @@ const AddContactByCode = () => {
       linkedin: foundCard.linkedin || undefined,
       facebook: foundCard.facebook || undefined,
       whatsapp: foundCard.whatsapp || undefined,
-      websites: foundCard.websites || []
+      websites: foundCard.websites || [],
+      user_id: foundCard.user_id // Pass the user_id for mutual contact addition
     });
 
     if (result.success) {
