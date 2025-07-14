@@ -242,30 +242,30 @@ const ContactForm = ({ isOpen, onOpenChange, onAddContact }: ContactFormProps) =
           </SheetTitle>
           
           {activeView === 'form' && (
-            <div className="flex flex-col gap-2 mt-4">
+            <div className="grid grid-cols-3 gap-2 mt-4">
               <Button
                 variant="outline"
                 onClick={() => setActiveView('scanner')}
-                className="flex items-center gap-2 h-12"
+                className="flex items-center gap-1 h-10 text-sm"
               >
-                <Camera className="w-4 h-4" />
+                <Camera className="w-3 h-3" />
                 Scan Card
               </Button>
               <Button
                 variant="outline"
                 onClick={() => setActiveView('share-code')}
-                className="flex items-center gap-2 h-12"
+                className="flex items-center gap-1 h-10 text-sm"
               >
-                <Share className="w-4 h-4" />
+                <Share className="w-3 h-3" />
                 Share Code
               </Button>
               <Button
                 variant="outline"
                 onClick={() => setActiveView('qr-scanner')}
-                className="flex items-center gap-2 h-12"
+                className="flex items-center gap-1 h-10 text-sm"
               >
-                <QrCode className="w-4 h-4" />
-                Scan QR Code
+                <QrCode className="w-3 h-3" />
+                Scan QR
               </Button>
             </div>
           )}
