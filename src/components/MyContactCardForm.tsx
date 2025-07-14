@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import QRCode from 'qrcode';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -33,6 +34,7 @@ const MyContactCardForm = () => {
   const [websites, setWebsites] = useState<string[]>(contactCard?.websites || []);
   const [newWebsite, setNewWebsite] = useState('');
   const [showScanner, setShowScanner] = useState(false);
+  const [qrCodeUrl, setQrCodeUrl] = useState<string>('');
 
   const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm<ContactCardFormData>({
     defaultValues: {
@@ -66,6 +68,23 @@ const MyContactCardForm = () => {
       setWebsites(contactCard.websites || []);
     }
   }, [contactCard, reset]);
+
+  // Generate QR code when contact card changes
+  useEffect(() => {
+    if (contactCard?.share_code) {
+      const contactUrl = `${window.location.origin}/contact/${contactCard.share_code}`;
+      QRCode.toDataURL(contactUrl, {
+        width: 200,
+        margin: 2,
+        color: {
+          dark: '#000000',
+          light: '#FFFFFF'
+        }
+      })
+        .then((url) => setQrCodeUrl(url))
+        .catch((err) => console.error('Error generating QR code:', err));
+    }
+  }, [contactCard?.share_code]);
 
   const addWebsite = () => {
     if (newWebsite.trim() && !websites.includes(newWebsite.trim())) {
@@ -160,6 +179,17 @@ const MyContactCardForm = () => {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
+            {qrCodeUrl && (
+              <div className="flex justify-center">
+                <div className="p-3 bg-white rounded-lg shadow-sm border">
+                  <img 
+                    src={qrCodeUrl} 
+                    alt="Contact QR Code" 
+                    className="w-32 h-32"
+                  />
+                </div>
+              </div>
+            )}
             <div className="flex items-center gap-2">
               <Label>Share Code:</Label>
               <Badge variant="secondary" className="font-mono text-sm">
