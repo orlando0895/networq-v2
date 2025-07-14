@@ -12,6 +12,7 @@ import { useEffect } from 'react';
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
+  const [isResetPassword, setIsResetPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
@@ -76,6 +77,35 @@ const Auth = () => {
     }
   };
 
+  const handleResetPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/auth`,
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Reset email sent!",
+        description: "Please check your email for password reset instructions.",
+      });
+      
+      setIsResetPassword(false);
+      setEmail('');
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "An error occurred while sending reset email.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 px-4">
       <Card className="w-full max-w-md">
@@ -89,10 +119,17 @@ const Auth = () => {
           </div>
           <div className="space-y-1">
             <CardTitle className="text-2xl">
-              {isLogin ? 'Sign in to Networq' : 'Create your Networq account'}
+              {isResetPassword 
+                ? 'Reset your password'
+                : isLogin 
+                ? 'Sign in to Networq' 
+                : 'Create your Networq account'
+              }
             </CardTitle>
             <CardDescription>
-              {isLogin 
+              {isResetPassword
+                ? 'Enter your email to receive password reset instructions'
+                : isLogin 
                 ? 'Enter your credentials to access your network' 
                 : 'Start building your professional network today'
               }
@@ -100,62 +137,106 @@ const Auth = () => {
           </div>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleAuth} className="space-y-4">
-            {!isLogin && (
+          {isResetPassword ? (
+            <form onSubmit={handleResetPassword} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="fullName">Full Name</Label>
+                <Label htmlFor="reset-email">Email</Label>
                 <Input
-                  id="fullName"
-                  type="text"
-                  placeholder="Enter your full name"
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
+                  id="reset-email"
+                  type="email"
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   required
                 />
               </div>
-            )}
-            
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="Enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                minLength={6}
-              />
-            </div>
-            
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? 'Please wait...' : (isLogin ? 'Sign In' : 'Sign Up')}
-            </Button>
-          </form>
+              
+              <Button type="submit" className="w-full" disabled={loading}>
+                {loading ? 'Sending...' : 'Send Reset Email'}
+              </Button>
+            </form>
+          ) : (
+            <form onSubmit={handleAuth} className="space-y-4">
+              {!isLogin && (
+                <div className="space-y-2">
+                  <Label htmlFor="fullName">Full Name</Label>
+                  <Input
+                    id="fullName"
+                    type="text"
+                    placeholder="Enter your full name"
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    required
+                  />
+                </div>
+              )}
+              
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="password">Password</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="Enter your password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  minLength={6}
+                />
+              </div>
+              
+              <Button type="submit" className="w-full" disabled={loading}>
+                {loading ? 'Please wait...' : (isLogin ? 'Sign In' : 'Sign Up')}
+              </Button>
+            </form>
+          )}
           
-          <div className="mt-4 text-center">
-            <button
-              type="button"
-              onClick={() => setIsLogin(!isLogin)}
-              className="text-sm text-blue-600 hover:underline"
-            >
-              {isLogin 
-                ? "Don't have an account? Sign up" 
-                : "Already have an account? Sign in"
-              }
-            </button>
+          <div className="mt-4 text-center space-y-2">
+            {isResetPassword ? (
+              <button
+                type="button"
+                onClick={() => {
+                  setIsResetPassword(false);
+                  setEmail('');
+                }}
+                className="text-sm text-blue-600 hover:underline"
+              >
+                Back to sign in
+              </button>
+            ) : (
+              <>
+                {isLogin && (
+                  <button
+                    type="button"
+                    onClick={() => setIsResetPassword(true)}
+                    className="text-sm text-blue-600 hover:underline block"
+                  >
+                    Forgot your password?
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={() => setIsLogin(!isLogin)}
+                  className="text-sm text-blue-600 hover:underline"
+                >
+                  {isLogin 
+                    ? "Don't have an account? Sign up" 
+                    : "Already have an account? Sign in"
+                  }
+                </button>
+              </>
+            )}
           </div>
         </CardContent>
       </Card>
