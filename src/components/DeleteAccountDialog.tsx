@@ -34,37 +34,10 @@ const DeleteAccountDialog = () => {
     setIsDeleting(true);
 
     try {
-      // Delete user's contacts
-      const { error: contactsError } = await supabase
-        .from('contacts')
-        .delete()
-        .eq('user_id', user.id);
+      // Call the edge function to delete the user and all their data
+      const { data, error } = await supabase.functions.invoke('delete-user');
 
-      if (contactsError) throw contactsError;
-
-      // Delete user's contact card
-      const { error: cardError } = await supabase
-        .from('user_contact_cards')
-        .delete()
-        .eq('user_id', user.id);
-
-      if (cardError) throw cardError;
-
-      // Delete user profile
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .delete()
-        .eq('id', user.id);
-
-      if (profileError) throw profileError;
-
-      // Finally, delete the auth user
-      const { error: authError } = await supabase.auth.admin.deleteUser(user.id);
-
-      if (authError) {
-        // If admin delete fails, try regular sign out
-        await supabase.auth.signOut();
-      }
+      if (error) throw error;
 
       toast({
         title: "Account Deleted",
