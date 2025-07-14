@@ -165,20 +165,28 @@ const ContactForm = ({ isOpen, onOpenChange, onAddContact }: ContactFormProps) =
   };
 
   const startScanning = async () => {
-    if (!videoRef.current) return;
+    console.log('startScanning called');
+    if (!videoRef.current) {
+      console.log('No video ref available');
+      return;
+    }
 
     try {
+      console.log('Starting camera...');
       setCameraError('');
       setIsScanning(true);
 
       if (qrScannerRef.current) {
+        console.log('Existing scanner found, starting...');
         await qrScannerRef.current.start();
         return;
       }
 
+      console.log('Creating new QR scanner...');
       qrScannerRef.current = new QrScanner(
         videoRef.current,
         (result) => {
+          console.log('QR code detected:', result.data);
           let shareCode = result.data;
           
           if (shareCode.includes('/contact/')) {
@@ -197,7 +205,9 @@ const ContactForm = ({ isOpen, onOpenChange, onAddContact }: ContactFormProps) =
         }
       );
 
+      console.log('Starting QR scanner...');
       await qrScannerRef.current.start();
+      console.log('QR scanner started successfully');
     } catch (error: any) {
       console.error('Camera error:', error);
       setCameraError(error.message || 'Failed to access camera');
