@@ -16,6 +16,7 @@ interface Contact {
   name: string;
   email: string;
   company?: string;
+  added_via?: string;
 }
 
 interface NewMessageDialogProps {
