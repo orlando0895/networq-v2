@@ -231,11 +231,11 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
 
               {/* Mobile "View Details" button */}
               <div className="block sm:hidden mt-3">
-                <AccordionTrigger className="hover:no-underline p-0 w-full">
-                  <Button variant="ghost" size="sm" className="w-full justify-center text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50">
+                <AccordionTrigger className="hover:no-underline p-0 w-full text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 rounded-md transition-colors">
+                  <span className="flex items-center justify-center text-sm font-medium py-2">
                     View Details
                     <ChevronDown className="w-4 h-4 ml-2" />
-                  </Button>
+                  </span>
                 </AccordionTrigger>
               </div>
             </CardHeader>
