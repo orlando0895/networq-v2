@@ -294,56 +294,74 @@ export default function Messages() {
   }
 
   return (
-    <div className="flex h-full bg-background">
-      {/* Sidebar with conversations - only show when no conversation is selected or on larger screens */}
-      <div className={`${selectedConversationId ? 'hidden lg:flex' : 'flex'} w-full lg:w-80 border-r border-border flex-col`}>
-        <div className="p-4 border-b border-border">
-          <div className="flex items-center justify-between">
-            <h1 className="text-xl font-semibold">Messages</h1>
-            <Button
-              size="sm"
-              onClick={() => setIsNewMessageOpen(true)}
-              className="flex items-center gap-2"
-            >
-              <Plus className="h-4 w-4" />
-              New
-            </Button>
-          </div>
+    <div className="space-y-6">
+      {/* Messages header - consistent with other dashboard sections */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-2xl font-bold tracking-tight">Messages</h2>
+          <p className="text-muted-foreground">
+            Connect and communicate with your network
+          </p>
         </div>
-
-        <div className="flex-1 overflow-y-auto">
-          <ConversationList
-            conversations={conversations}
-            selectedConversationId={selectedConversationId}
-            onSelectConversation={setSelectedConversationId}
-            loading={loading}
-          />
-        </div>
+        <Button
+          onClick={() => setIsNewMessageOpen(true)}
+          className="flex items-center gap-2"
+        >
+          <Plus className="h-4 w-4" />
+          New Message
+        </Button>
       </div>
 
-      {/* Main chat area */}
-      <div className={`${selectedConversationId ? 'flex' : 'hidden lg:flex'} flex-1 flex-col`}>
-        {selectedConversationId ? (
-          <ChatWindow
-            conversationId={selectedConversationId}
-            currentUserId={user.id}
-            onBack={() => setSelectedConversationId(null)}
-          />
-        ) : (
-          <div className="flex-1 flex items-center justify-center">
-            <div className="text-center">
-              <MessageSquare className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
-              <h2 className="text-xl font-semibold mb-2">No conversations yet</h2>
-              <p className="text-muted-foreground mb-4">
-                Start a conversation with one of your contacts
-              </p>
-              <Button onClick={() => setIsNewMessageOpen(true)}>
-                <Plus className="h-4 w-4 mr-2" />
-                Start New Conversation
-              </Button>
+      {/* Messages content area */}
+      <div className="rounded-lg border bg-card">
+        <div className="flex h-[600px]">
+          {/* Sidebar with conversations - only show when no conversation is selected or on larger screens */}
+          <div className={`${selectedConversationId ? 'hidden lg:flex' : 'flex'} w-full lg:w-80 border-r flex-col`}>
+            <div className="p-4 border-b">
+              <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">
+                Conversations
+              </h3>
+            </div>
+
+            <div className="flex-1 overflow-y-auto">
+              <ConversationList
+                conversations={conversations}
+                selectedConversationId={selectedConversationId}
+                onSelectConversation={setSelectedConversationId}
+                loading={loading}
+              />
             </div>
           </div>
-        )}
+
+          {/* Main chat area */}
+          <div className={`${selectedConversationId ? 'flex' : 'hidden lg:flex'} flex-1 flex-col`}>
+            {selectedConversationId ? (
+              <ChatWindow
+                conversationId={selectedConversationId}
+                currentUserId={user.id}
+                onBack={() => setSelectedConversationId(null)}
+              />
+            ) : (
+              <div className="flex-1 flex items-center justify-center bg-muted/20">
+                <div className="text-center space-y-4 p-8">
+                  <div className="mx-auto w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
+                    <MessageSquare className="h-6 w-6 text-primary" />
+                  </div>
+                  <div className="space-y-2">
+                    <h3 className="text-lg font-semibold">Select a conversation</h3>
+                    <p className="text-sm text-muted-foreground max-w-sm">
+                      Choose a conversation from the list to start messaging, or create a new conversation with one of your contacts.
+                    </p>
+                  </div>
+                  <Button onClick={() => setIsNewMessageOpen(true)} variant="outline">
+                    <Plus className="h-4 w-4 mr-2" />
+                    Start New Conversation
+                  </Button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
 
       {/* New message dialog */}
