@@ -105,9 +105,12 @@ export default function Messages() {
             p => p.conversation_id === convId
           );
 
+          // Skip conversations without other participants
+          if (!otherParticipant) return;
+
           // Find profile for other participant
           const profile = profilesData?.find(
-            p => p.id === otherParticipant?.user_id
+            p => p.id === otherParticipant.user_id
           );
 
           // Find last message for this specific conversation
@@ -116,25 +119,36 @@ export default function Messages() {
           );
 
           // Get participant info
-          let participantName = profile?.full_name || 'Unknown User';
+          let participantName = profile?.full_name || '';
           let participantEmail = profile?.email || '';
 
-          // If no profile found, try to get name from contacts
-          if (!profile && otherParticipant) {
-            const contact = contacts?.find(c => c.id === otherParticipant.user_id);
+          // If no profile found, try to get name from contacts by matching email
+          if (!profile) {
+            const contact = contacts?.find(c => c.email === participantEmail);
             if (contact) {
               participantName = contact.name;
               participantEmail = contact.email;
             }
           }
 
+          // Skip conversations where we can't identify the participant
+          if (!participantName && !participantEmail) return;
+
+          // Use email as fallback name if no name is available
+          if (!participantName && participantEmail) {
+            participantName = participantEmail;
+          }
+
+          // Skip conversations with "Unknown User" unless they have messages
+          if (participantName === 'Unknown User' && !lastMessage) return;
+
           conversationMap.set(convId, {
             id: conversation.id,
             updated_at: conversation.updated_at,
             last_message_at: conversation.last_message_at,
             participant: {
-              id: otherParticipant?.user_id || '',
-              name: participantName,
+              id: otherParticipant.user_id,
+              name: participantName || 'Unknown User',
               email: participantEmail
             },
             last_message: lastMessage
