@@ -6,9 +6,12 @@ import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Star, Users, Mail, Phone, UserPlus, Edit, Plus, ChevronDown, Trash2, MoreVertical, Linkedin, Facebook, MessageCircle, Globe } from "lucide-react";
+import { Star, Users, Mail, Phone, UserPlus, Edit, Plus, ChevronDown, Trash2, MoreVertical, Linkedin, Facebook, MessageCircle, Globe, MessageSquare } from "lucide-react";
 import EditContactForm from "./EditContactForm";
 import AddNoteForm from "./AddNoteForm";
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
+import { useNavigate } from 'react-router-dom';
 import type { Database } from '@/integrations/supabase/types';
 
 type Contact = Database['public']['Tables']['contacts']['Row'];
@@ -22,9 +25,61 @@ interface ContactCardProps {
 const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardProps) => {
   const [isEditingContact, setIsEditingContact] = useState(false);
   const [isAddingNote, setIsAddingNote] = useState(false);
+  const { toast } = useToast();
+  const navigate = useNavigate();
 
   const handleDelete = async () => {
     await onDeleteContact(contact.id);
+  };
+
+  const handleStartConversation = async () => {
+    try {
+      // First, get the profile associated with this contact
+      const { data: profileData, error: profileError } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('email', contact.email)
+        .single();
+
+      if (profileError || !profileData) {
+        toast({
+          title: "Contact not on platform",
+          description: `${contact.name} hasn't joined Networq yet, so you can't message them directly.`,
+          variant: "destructive"
+        });
+        return;
+      }
+
+      // Create or get existing conversation
+      const { data: conversationId, error: convError } = await supabase.rpc('get_or_create_direct_conversation', {
+        other_user_id: profileData.id
+      });
+
+      if (convError) {
+        console.error('Error creating conversation:', convError);
+        toast({
+          title: "Error",
+          description: "Failed to start conversation",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      // Navigate to messages page
+      navigate('/messages');
+      
+      toast({
+        title: "Conversation started",
+        description: `You can now message ${contact.name}`,
+      });
+    } catch (error: any) {
+      console.error('Error starting conversation:', error);
+      toast({
+        title: "Error",
+        description: "Failed to start conversation",
+        variant: "destructive"
+      });
+    }
   };
 
   const formatSocialLink = (platform: string, value: string) => {
@@ -114,6 +169,10 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-48 bg-white shadow-lg border z-50">
+                      <DropdownMenuItem onClick={handleStartConversation} className="cursor-pointer">
+                        <MessageSquare className="w-4 h-4 mr-2" />
+                        Message
+                      </DropdownMenuItem>
                       <DropdownMenuItem onClick={() => setIsEditingContact(true)} className="cursor-pointer">
                         <Edit className="w-4 h-4 mr-2" />
                         Edit Contact
@@ -260,10 +319,19 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
                   )}
                   
                   {/* Desktop action buttons */}
-                  <div className="hidden sm:grid grid-cols-2 lg:grid-cols-4 gap-2">
+                  <div className="hidden sm:grid grid-cols-2 lg:grid-cols-5 gap-2">
                     <Button size="sm" className="justify-center h-10">
                       <UserPlus className="w-4 h-4 mr-2" />
                       Refer
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="justify-center h-10"
+                      onClick={handleStartConversation}
+                    >
+                      <MessageSquare className="w-4 h-4 mr-2" />
+                      Message
                     </Button>
                     <Button 
                       variant="outline" 

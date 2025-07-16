@@ -3,11 +3,13 @@ import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { LogOut, User } from 'lucide-react';
+import { LogOut, User, MessageSquare } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
 
 const Header = () => {
   const { user } = useAuth();
   const { toast } = useToast();
+  const location = useLocation();
 
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
@@ -30,8 +32,31 @@ const Header = () => {
     <header className="bg-white shadow-sm border-b">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          <div className="flex items-center space-x-2">
-            <h1 className="text-xl font-bold text-gray-900">Networq</h1>
+          <div className="flex items-center space-x-6">
+            <Link to="/" className="text-xl font-bold text-gray-900">
+              Networq
+            </Link>
+            {user && (
+              <nav className="flex items-center space-x-4">
+                <Link
+                  to="/"
+                  className={`text-sm font-medium transition-colors hover:text-primary ${
+                    location.pathname === '/' ? 'text-primary' : 'text-gray-600'
+                  }`}
+                >
+                  Contacts
+                </Link>
+                <Link
+                  to="/messages"
+                  className={`flex items-center space-x-1 text-sm font-medium transition-colors hover:text-primary ${
+                    location.pathname === '/messages' ? 'text-primary' : 'text-gray-600'
+                  }`}
+                >
+                  <MessageSquare className="h-4 w-4" />
+                  <span>Messages</span>
+                </Link>
+              </nav>
+            )}
           </div>
           
           {user && (
