@@ -118,29 +118,32 @@ export default function Messages() {
             m => m.conversation_id === convId
           );
 
-          // Get participant info
+          // Get participant info - start with profile data
           let participantName = profile?.full_name || '';
           let participantEmail = profile?.email || '';
 
-          // If no profile found, try to get name from contacts by matching email
-          if (!profile) {
-            const contact = contacts?.find(c => c.email === participantEmail);
-            if (contact) {
-              participantName = contact.name;
-              participantEmail = contact.email;
-            }
+          // If no profile found, try to get info from contacts
+          if (!profile && otherParticipant) {
+            // Since contacts don't store user_id references, we can't directly match
+            // We'll rely on the profile data being present for proper messaging
+            participantName = 'Contact User';
+            participantEmail = '';
           }
 
-          // Skip conversations where we can't identify the participant
-          if (!participantName && !participantEmail) return;
+          // Skip conversations where we can't identify the participant at all
+          if (!participantName && !participantEmail && !profile) {
+            return;
+          }
 
-          // Use email as fallback name if no name is available
+          // Use email as fallback name if no name is available but email exists
           if (!participantName && participantEmail) {
-            participantName = participantEmail;
+            participantName = participantEmail.split('@')[0]; // Use email username part
           }
 
-          // Skip conversations with "Unknown User" unless they have messages
-          if (participantName === 'Unknown User' && !lastMessage) return;
+          // Final fallback for completely unknown users
+          if (!participantName) {
+            participantName = 'Unknown User';
+          }
 
           conversationMap.set(convId, {
             id: conversation.id,
