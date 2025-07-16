@@ -298,6 +298,10 @@ export type Database = {
         Args: { card_id: string }
         Returns: string
       }
+      user_is_in_conversation: {
+        Args: { _conversation_id: string; _user_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
       [_ in never]: never
