@@ -76,7 +76,8 @@ const AddContactByCode = () => {
       facebook: foundCard.facebook || undefined,
       whatsapp: foundCard.whatsapp || undefined,
       websites: foundCard.websites || [],
-      user_id: foundCard.user_id // Pass the user_id for mutual contact addition
+      user_id: foundCard.user_id, // Pass the user_id for mutual contact addition
+      added_via: 'share_code' // Track how this contact was added
     });
 
     if (result.success) {

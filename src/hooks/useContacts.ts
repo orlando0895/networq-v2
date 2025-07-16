@@ -91,6 +91,7 @@ export const useContacts = () => {
     whatsapp?: string;
     websites: string[];
     user_id?: string; // Optional for mutual contact addition
+    added_via?: string; // Track how contact was added
   }) => {
     if (!user) return;
 
@@ -102,7 +103,8 @@ export const useContacts = () => {
         linkedin: contactData.linkedin || null,
         facebook: contactData.facebook || null,
         whatsapp: contactData.whatsapp || null,
-        websites: contactData.websites.length > 0 ? contactData.websites : null
+        websites: contactData.websites.length > 0 ? contactData.websites : null,
+        added_via: contactData.added_via || 'manual'
       };
 
       const { data, error } = await supabase

@@ -25,6 +25,7 @@ interface NewContact {
   facebook: string;
   whatsapp: string;
   websites: string[];
+  added_via?: string;
 }
 
 interface ContactFormProps {
@@ -46,7 +47,8 @@ const ContactForm = ({ isOpen, onOpenChange, onAddContact }: ContactFormProps) =
     linkedin: "",
     facebook: "",
     whatsapp: "",
-    websites: ""
+    websites: "",
+    added_via: "manual"
   });
   const [activeView, setActiveView] = useState<'form' | 'scanner' | 'share-code' | 'qr-scanner'>('form');
   const [shareCode, setShareCode] = useState('');
@@ -87,7 +89,8 @@ const ContactForm = ({ isOpen, onOpenChange, onAddContact }: ContactFormProps) =
         linkedin: "",
         facebook: "",
         whatsapp: "",
-        websites: ""
+        websites: "",
+        added_via: "manual"
       });
       onOpenChange(false);
     }
@@ -106,7 +109,8 @@ const ContactForm = ({ isOpen, onOpenChange, onAddContact }: ContactFormProps) =
       linkedin: contactInfo.linkedin || '',
       facebook: contactInfo.facebook || '',
       whatsapp: contactInfo.whatsapp || '',
-      websites: Array.isArray(contactInfo.websites) ? contactInfo.websites.join(', ') : contactInfo.websites || ''
+      websites: Array.isArray(contactInfo.websites) ? contactInfo.websites.join(', ') : contactInfo.websites || '',
+      added_via: 'business_card'
     });
     setActiveView('form');
   };
@@ -140,7 +144,7 @@ const ContactForm = ({ isOpen, onOpenChange, onAddContact }: ContactFormProps) =
   const addFoundContact = async () => {
     if (!foundCard) return;
     
-    const contactData: NewContact = {
+    const contactData: any = {
       name: foundCard.name,
       email: foundCard.email,
       phone: foundCard.phone || "",
@@ -152,7 +156,8 @@ const ContactForm = ({ isOpen, onOpenChange, onAddContact }: ContactFormProps) =
       linkedin: foundCard.linkedin || "",
       facebook: foundCard.facebook || "",
       whatsapp: foundCard.whatsapp || "",
-      websites: foundCard.websites || []
+      websites: foundCard.websites || [],
+      added_via: 'share_code'
     };
 
     const result = await onAddContact(contactData);

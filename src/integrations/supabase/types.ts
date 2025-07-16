@@ -17,6 +17,7 @@ export type Database = {
       contacts: {
         Row: {
           added_date: string
+          added_via: string | null
           company: string | null
           created_at: string
           email: string
@@ -36,6 +37,7 @@ export type Database = {
         }
         Insert: {
           added_date?: string
+          added_via?: string | null
           company?: string | null
           created_at?: string
           email: string
@@ -55,6 +57,7 @@ export type Database = {
         }
         Update: {
           added_date?: string
+          added_via?: string | null
           company?: string | null
           created_at?: string
           email?: string

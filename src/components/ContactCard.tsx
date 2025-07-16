@@ -33,6 +33,16 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
   };
 
   const handleStartConversation = async () => {
+    // Check if contact was added through allowed methods
+    if (!contact.added_via || !['share_code', 'qr_code', 'mutual_contact', 'business_card'].includes(contact.added_via)) {
+      toast({
+        title: "Messaging Not Available",
+        description: "You can only message contacts added through share codes, QR codes, business cards, or mutual contacts.",
+        variant: "destructive"
+      });
+      return;
+    }
+
     try {
       // First, get the profile associated with this contact
       const { data: profileData, error: profileError } = await supabase

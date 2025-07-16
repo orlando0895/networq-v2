@@ -33,11 +33,16 @@ export function NewMessageDialog({
 }: NewMessageDialogProps) {
   const [searchTerm, setSearchTerm] = useState('');
 
-  const filteredContacts = contacts.filter(contact =>
-    contact.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    contact.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    contact.company?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredContacts = contacts.filter(contact => {
+    // Only show contacts added through allowed methods
+    const isAllowedContact = contact.added_via && ['share_code', 'qr_code', 'mutual_contact', 'business_card'].includes(contact.added_via);
+    if (!isAllowedContact) return false;
+    
+    // Apply search filter
+    return contact.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+           contact.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+           contact.company?.toLowerCase().includes(searchTerm.toLowerCase());
+  });
 
   const handleSelectContact = (contactId: string) => {
     onSelectContact(contactId);
