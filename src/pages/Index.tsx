@@ -121,26 +121,26 @@ const Index = () => {
     <div className="min-h-screen bg-slate-50">
       {/* Header */}
       <header className="bg-white border-b border-slate-200 sticky top-0 z-40">
-        <div className="px-4 sm:px-6 py-4 sm:py-5">
+        <div className="px-4 sm:px-6 py-3 sm:py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="bg-white rounded-xl p-2.5">
-                <img src="/lovable-uploads/13a3c462-48e9-462a-b56d-edb9dd1a2bbb.png" alt="Networq Logo" className="w-6 h-6 sm:w-7 sm:h-7" />
+            <div className="flex items-center space-x-2 sm:space-x-3">
+              <div className="bg-white rounded-xl p-2">
+                <img src="/lovable-uploads/13a3c462-48e9-462a-b56d-edb9dd1a2bbb.png" alt="Networq Logo" className="w-6 h-6" />
               </div>
               <div>
-                <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">Networq</h1>
-                <p className="text-sm sm:text-base text-slate-600 leading-relaxed">Your personal referral engine</p>
+                <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-slate-900 tracking-tight">Networq</h1>
+                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed hidden sm:block">Your personal referral engine</p>
               </div>
             </div>
             
             {user && (
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-2 sm:space-x-4">
                 <div className="flex items-center space-x-2 text-sm text-gray-600">
-                  <span className="hidden sm:inline">{user.email}</span>
+                  <span className="hidden sm:inline truncate max-w-32 lg:max-w-none">{user.email}</span>
                 </div>
-                <Button variant="outline" size="sm" onClick={handleLogout} className="flex items-center space-x-2">
+                <Button variant="outline" size="sm" onClick={handleLogout} className="flex items-center space-x-1 sm:space-x-2">
                   <LogOut className="h-4 w-4" />
-                  <span>Sign Out</span>
+                  <span className="hidden sm:inline">Sign Out</span>
                 </Button>
               </div>
             )}
@@ -149,20 +149,26 @@ const Index = () => {
       </header>
 
       {/* Main Content */}
-      <main className="px-4 sm:px-6 lg:px-8 py-6 sm:py-8 max-w-4xl mx-auto">
-        <Tabs defaultValue="contacts" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="contacts">My Contacts</TabsTrigger>
-            <TabsTrigger value="my-card">My Card</TabsTrigger>
-            <TabsTrigger value="messages" className="flex items-center gap-2">
-              <MessageSquare className="h-4 w-4" />
-              Messages
+      <main className="px-3 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 max-w-4xl mx-auto">
+        <Tabs defaultValue="contacts" className="space-y-4 sm:space-y-6">
+          <TabsList className="grid w-full grid-cols-3 h-12 sm:h-10">
+            <TabsTrigger value="contacts" className="text-xs sm:text-sm px-2 sm:px-4">
+              <span className="hidden sm:inline">My Contacts</span>
+              <span className="sm:hidden">Contacts</span>
+            </TabsTrigger>
+            <TabsTrigger value="my-card" className="text-xs sm:text-sm px-2 sm:px-4">
+              <span className="hidden sm:inline">My Card</span>
+              <span className="sm:hidden">Card</span>
+            </TabsTrigger>
+            <TabsTrigger value="messages" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm px-2 sm:px-4">
+              <MessageSquare className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span>Messages</span>
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="contacts" className="space-y-6">
+          <TabsContent value="contacts" className="space-y-4 sm:space-y-6">
             <div className="flex items-center justify-between">
-              <h2 className="text-xl font-semibold text-slate-900">My Network</h2>
+              <h2 className="text-lg sm:text-xl font-semibold text-slate-900">My Network</h2>
               <ContactForm isOpen={isAddingContact} onOpenChange={setIsAddingContact} onAddContact={addContact} />
             </div>
 
@@ -180,7 +186,7 @@ const Index = () => {
               onIndustryFilterChange={setFilterIndustry}
             />
 
-            <div className="space-y-4 sm:space-y-6">
+            <div className="space-y-3 sm:space-y-4 lg:space-y-6">
               {filteredContacts.map(contact => (
                 <ContactCard 
                   key={contact.id} 
@@ -203,17 +209,17 @@ const Index = () => {
             <MyContactCardForm />
           </TabsContent>
 
-          <TabsContent value="messages" className="h-[calc(100vh-200px)]">
+          <TabsContent value="messages" className="h-[calc(100vh-140px)] sm:h-[calc(100vh-160px)]">
             <Messages />
           </TabsContent>
         </Tabs>
       </main>
 
       {/* Footer */}
-      <footer className="bg-white border-t border-slate-200 mt-16">
-        <div className="px-4 sm:px-6 lg:px-8 py-6 sm:py-8 max-w-4xl mx-auto">
+      <footer className="bg-white border-t border-slate-200 mt-8 sm:mt-16">
+        <div className="px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 max-w-4xl mx-auto">
           <div className="text-center">
-            <p className="text-slate-600 leading-relaxed text-sm sm:text-base">
+            <p className="text-slate-600 leading-relaxed text-xs sm:text-sm lg:text-base">
               <span className="font-semibold">Networq</span> - Turn every introduction into a referral opportunity
             </p>
           </div>
