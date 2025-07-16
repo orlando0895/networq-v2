@@ -294,36 +294,38 @@ export default function Messages() {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Messages header - consistent with other dashboard sections */}
+    <div className="space-y-4 md:space-y-6">
+      {/* Messages header - mobile optimized */}
       <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold tracking-tight">Messages</h2>
-          <p className="text-muted-foreground">
+        <div className="min-w-0">
+          <h2 className="text-xl md:text-2xl font-bold tracking-tight">Messages</h2>
+          <p className="text-muted-foreground text-sm md:text-base hidden sm:block">
             Connect and communicate with your network
           </p>
         </div>
         <Button
           onClick={() => setIsNewMessageOpen(true)}
           className="flex items-center gap-2"
+          size="sm"
         >
           <Plus className="h-4 w-4" />
-          New Message
+          <span className="hidden sm:inline">New Message</span>
+          <span className="sm:hidden">New</span>
         </Button>
       </div>
 
-      {/* Messages content area */}
-      <div className="rounded-lg border bg-card">
-        <div className="flex h-[600px]">
-          {/* Sidebar with conversations - only show when no conversation is selected or on larger screens */}
-          <div className={`${selectedConversationId ? 'hidden lg:flex' : 'flex'} w-full lg:w-80 border-r flex-col`}>
-            <div className="p-4 border-b">
+      {/* Messages content area - mobile responsive */}
+      <div className="rounded-lg border bg-card h-[calc(100vh-200px)] md:h-[600px] flex flex-col">
+        <div className="flex flex-1 min-h-0">
+          {/* Conversations sidebar - mobile responsive */}
+          <div className={`${selectedConversationId ? 'hidden lg:flex' : 'flex'} w-full lg:w-80 border-r flex-col min-h-0`}>
+            <div className="p-3 md:p-4 border-b flex-shrink-0">
               <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">
                 Conversations
               </h3>
             </div>
 
-            <div className="flex-1 overflow-y-auto">
+            <div className="flex-1 overflow-y-auto min-h-0">
               <ConversationList
                 conversations={conversations}
                 selectedConversationId={selectedConversationId}
@@ -333,8 +335,8 @@ export default function Messages() {
             </div>
           </div>
 
-          {/* Main chat area */}
-          <div className={`${selectedConversationId ? 'flex' : 'hidden lg:flex'} flex-1 flex-col`}>
+          {/* Main chat area - mobile responsive */}
+          <div className={`${selectedConversationId ? 'flex' : 'hidden lg:flex'} flex-1 flex-col min-h-0`}>
             {selectedConversationId ? (
               <ChatWindow
                 conversationId={selectedConversationId}
@@ -343,17 +345,17 @@ export default function Messages() {
               />
             ) : (
               <div className="flex-1 flex items-center justify-center bg-muted/20">
-                <div className="text-center space-y-4 p-8">
+                <div className="text-center space-y-4 p-4 md:p-8 max-w-sm">
                   <div className="mx-auto w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
                     <MessageSquare className="h-6 w-6 text-primary" />
                   </div>
                   <div className="space-y-2">
                     <h3 className="text-lg font-semibold">Select a conversation</h3>
-                    <p className="text-sm text-muted-foreground max-w-sm">
+                    <p className="text-sm text-muted-foreground">
                       Choose a conversation from the list to start messaging, or create a new conversation with one of your contacts.
                     </p>
                   </div>
-                  <Button onClick={() => setIsNewMessageOpen(true)} variant="outline">
+                  <Button onClick={() => setIsNewMessageOpen(true)} variant="outline" size="sm">
                     <Plus className="h-4 w-4 mr-2" />
                     Start New Conversation
                   </Button>

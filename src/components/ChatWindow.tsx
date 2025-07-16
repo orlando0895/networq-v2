@@ -173,22 +173,22 @@ export function ChatWindow({ conversationId, currentUserId, onBack }: ChatWindow
   }
 
   return (
-    <div className="flex-1 flex flex-col">
-      {/* Chat header */}
-      <div className="p-4 border-b border-border">
-        <div className="flex items-center space-x-3">
+    <div className="flex-1 flex flex-col min-h-0">
+      {/* Chat header - mobile optimized */}
+      <div className="p-3 md:p-4 border-b border-border flex-shrink-0">
+        <div className="flex items-center space-x-2 md:space-x-3">
           {onBack && (
             <Button 
               variant="ghost" 
               size="icon"
               onClick={onBack}
-              className="lg:hidden"
+              className="lg:hidden h-8 w-8 md:h-9 md:w-9"
             >
               <ArrowLeft className="h-4 w-4" />
             </Button>
           )}
-          <Avatar className="h-8 w-8">
-            <AvatarFallback>
+          <Avatar className="h-8 w-8 md:h-9 md:w-9 flex-shrink-0">
+            <AvatarFallback className="text-xs md:text-sm">
               {otherParticipant?.full_name
                 ?.split(' ')
                 .map((n: string) => n[0])
@@ -196,20 +196,20 @@ export function ChatWindow({ conversationId, currentUserId, onBack }: ChatWindow
                 .toUpperCase() || '?'}
             </AvatarFallback>
           </Avatar>
-          <div>
-            <h2 className="font-semibold">
+          <div className="min-w-0 flex-1">
+            <h2 className="font-semibold text-sm md:text-base truncate">
               {otherParticipant?.full_name || otherParticipant?.email || 'Unknown User'}
             </h2>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-xs md:text-sm text-muted-foreground truncate">
               {otherParticipant?.email}
             </p>
           </div>
         </div>
       </div>
 
-      {/* Messages area */}
-      <ScrollArea className="flex-1 p-4">
-        <div className="space-y-4">
+      {/* Messages area - mobile optimized */}
+      <ScrollArea className="flex-1 p-3 md:p-4">
+        <div className="space-y-3 md:space-y-4">
           {messages.map((message) => {
             const isFromCurrentUser = message.sender_id === currentUserId;
             
@@ -223,20 +223,20 @@ export function ChatWindow({ conversationId, currentUserId, onBack }: ChatWindow
               >
                 <div
                   className={cn(
-                    "max-w-[70%] rounded-lg px-3 py-2",
+                    "max-w-[85%] md:max-w-[70%] rounded-lg px-3 py-2",
                     isFromCurrentUser
                       ? "bg-primary text-primary-foreground"
                       : "bg-muted"
                   )}
                 >
                   {message.message_type === 'text' && (
-                    <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                    <p className="text-sm whitespace-pre-wrap break-words">{message.content}</p>
                   )}
                   
                   {message.message_type === 'file' && (
                     <div className="flex items-center space-x-2">
-                      <Paperclip className="h-4 w-4" />
-                      <span className="text-sm">{message.file_name}</span>
+                      <Paperclip className="h-4 w-4 flex-shrink-0" />
+                      <span className="text-sm truncate">{message.file_name}</span>
                     </div>
                   )}
                   
@@ -250,7 +250,7 @@ export function ChatWindow({ conversationId, currentUserId, onBack }: ChatWindow
                         />
                       )}
                       {message.content && (
-                        <p className="text-sm">{message.content}</p>
+                        <p className="text-sm break-words">{message.content}</p>
                       )}
                     </div>
                   )}
@@ -271,13 +271,14 @@ export function ChatWindow({ conversationId, currentUserId, onBack }: ChatWindow
         </div>
       </ScrollArea>
 
-      {/* Message input */}
-      <div className="p-4 border-t border-border">
+      {/* Message input - mobile optimized */}
+      <div className="p-3 md:p-4 border-t border-border flex-shrink-0">
         <div className="flex items-center space-x-2">
           <Button
             variant="outline"
             size="icon"
             onClick={() => fileInputRef.current?.click()}
+            className="h-9 w-9 md:h-10 md:w-10 flex-shrink-0"
           >
             <Paperclip className="h-4 w-4" />
           </Button>
@@ -287,7 +288,7 @@ export function ChatWindow({ conversationId, currentUserId, onBack }: ChatWindow
             onChange={(e) => setNewMessage(e.target.value)}
             onKeyPress={handleKeyPress}
             placeholder="Type a message..."
-            className="flex-1"
+            className="flex-1 min-w-0 text-sm md:text-base"
             disabled={sending}
           />
           
@@ -295,6 +296,7 @@ export function ChatWindow({ conversationId, currentUserId, onBack }: ChatWindow
             onClick={sendMessage} 
             disabled={!newMessage.trim() || sending}
             size="icon"
+            className="h-9 w-9 md:h-10 md:w-10 flex-shrink-0"
           >
             <Send className="h-4 w-4" />
           </Button>
