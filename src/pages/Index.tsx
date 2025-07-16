@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { LogOut, User } from "lucide-react";
+import { LogOut, User, MessageSquare } from "lucide-react";
 import { useContacts } from "@/hooks/useContacts";
 import { useUserContactCard } from "@/hooks/useUserContactCard";
 import { useAuth } from "@/contexts/AuthContext";
@@ -11,6 +11,7 @@ import ContactStats from "@/components/ContactStats";
 import ContactFilters from "@/components/ContactFilters";
 import EmptyState from "@/components/EmptyState";
 import MyContactCardForm from "@/components/MyContactCardForm";
+import Messages from "@/pages/Messages";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import type { Database } from '@/integrations/supabase/types';
@@ -150,9 +151,13 @@ const Index = () => {
       {/* Main Content */}
       <main className="px-4 sm:px-6 lg:px-8 py-6 sm:py-8 max-w-4xl mx-auto">
         <Tabs defaultValue="contacts" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2">
+          <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="contacts">My Contacts</TabsTrigger>
             <TabsTrigger value="my-card">My Card</TabsTrigger>
+            <TabsTrigger value="messages" className="flex items-center gap-2">
+              <MessageSquare className="h-4 w-4" />
+              Messages
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="contacts" className="space-y-6">
@@ -196,6 +201,10 @@ const Index = () => {
 
           <TabsContent value="my-card">
             <MyContactCardForm />
+          </TabsContent>
+
+          <TabsContent value="messages" className="h-[calc(100vh-200px)]">
+            <Messages />
           </TabsContent>
         </Tabs>
       </main>
