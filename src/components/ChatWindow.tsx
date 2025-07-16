@@ -5,7 +5,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Send, Paperclip, Image as ImageIcon } from 'lucide-react';
+import { Send, Paperclip, Image as ImageIcon, ArrowLeft } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { cn } from '@/lib/utils';
 
@@ -26,9 +26,10 @@ interface Message {
 interface ChatWindowProps {
   conversationId: string;
   currentUserId: string;
+  onBack?: () => void;
 }
 
-export function ChatWindow({ conversationId, currentUserId }: ChatWindowProps) {
+export function ChatWindow({ conversationId, currentUserId, onBack }: ChatWindowProps) {
   const { toast } = useToast();
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState('');
@@ -176,6 +177,16 @@ export function ChatWindow({ conversationId, currentUserId }: ChatWindowProps) {
       {/* Chat header */}
       <div className="p-4 border-b border-border">
         <div className="flex items-center space-x-3">
+          {onBack && (
+            <Button 
+              variant="ghost" 
+              size="icon"
+              onClick={onBack}
+              className="lg:hidden"
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+          )}
           <Avatar className="h-8 w-8">
             <AvatarFallback>
               {otherParticipant?.full_name

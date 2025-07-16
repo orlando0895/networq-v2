@@ -327,6 +327,7 @@ export default function Messages() {
           <ChatWindow
             conversationId={selectedConversationId}
             currentUserId={user.id}
+            onBack={() => setSelectedConversationId(null)}
           />
         ) : (
           <div className="flex-1 flex items-center justify-center">
