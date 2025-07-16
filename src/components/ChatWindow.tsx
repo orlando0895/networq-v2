@@ -272,13 +272,12 @@ export function ChatWindow({ conversationId, currentUserId, onBack }: ChatWindow
       </ScrollArea>
 
       {/* Message input */}
-      <div className="p-3 sm:p-4 border-t border-border">
+      <div className="p-4 border-t border-border">
         <div className="flex items-center space-x-2">
           <Button
             variant="outline"
             size="icon"
             onClick={() => fileInputRef.current?.click()}
-            className="h-9 w-9 sm:h-10 sm:w-10"
           >
             <Paperclip className="h-4 w-4" />
           </Button>
@@ -288,7 +287,7 @@ export function ChatWindow({ conversationId, currentUserId, onBack }: ChatWindow
             onChange={(e) => setNewMessage(e.target.value)}
             onKeyPress={handleKeyPress}
             placeholder="Type a message..."
-            className="flex-1 h-9 sm:h-10 text-sm sm:text-base"
+            className="flex-1"
             disabled={sending}
           />
           
@@ -296,7 +295,6 @@ export function ChatWindow({ conversationId, currentUserId, onBack }: ChatWindow
             onClick={sendMessage} 
             disabled={!newMessage.trim() || sending}
             size="icon"
-            className="h-9 w-9 sm:h-10 sm:w-10"
           >
             <Send className="h-4 w-4" />
           </Button>

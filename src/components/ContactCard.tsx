@@ -120,54 +120,52 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
       <Card className="bg-white border border-slate-200 hover:shadow-md transition-all duration-200">
         <Accordion type="single" collapsible>
           <AccordionItem value={contact.id} className="border-none">
-            <CardHeader className="pb-2 px-3 sm:px-6 py-3 sm:py-4">
-              <div className="flex items-start justify-between gap-2 sm:gap-3">
+            <CardHeader className="pb-2 px-4 sm:px-6 py-4">
+              <div className="flex items-start justify-between gap-3">
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-start flex-col gap-2 mb-2 sm:mb-3">
-                    <div className="flex items-center gap-2 w-full">
-                      <CardTitle className="text-base sm:text-lg lg:text-xl font-semibold text-slate-900 leading-tight truncate flex-1">{contact.name}</CardTitle>
-                      <Badge 
-                        className={`${
-                          contact.tier === "A-player" 
-                            ? "bg-amber-50 text-amber-700 border-amber-200" 
-                            : "bg-slate-50 text-slate-600 border-slate-200"
-                        } flex items-center gap-1 text-xs flex-shrink-0`}
-                      >
-                        {contact.tier === "A-player" ? <Star className="w-3 h-3 fill-current" /> : <Users className="w-3 h-3" />}
-                        <span className="hidden sm:inline">{contact.tier}</span>
-                      </Badge>
-                    </div>
+                  <div className="flex items-start flex-col sm:flex-row sm:items-center gap-2 mb-3">
+                    <CardTitle className="text-lg sm:text-xl font-semibold text-slate-900 leading-tight">{contact.name}</CardTitle>
+                    <Badge 
+                      className={`${
+                        contact.tier === "A-player" 
+                          ? "bg-amber-50 text-amber-700 border-amber-200" 
+                          : "bg-slate-50 text-slate-600 border-slate-200"
+                      } flex items-center gap-1 text-xs self-start`}
+                    >
+                      {contact.tier === "A-player" ? <Star className="w-3 h-3 fill-current" /> : <Users className="w-3 h-3" />}
+                      <span>{contact.tier}</span>
+                    </Badge>
                   </div>
-                  <div className="space-y-1 mb-2 sm:mb-3">
-                    <p className="text-sm sm:text-base font-medium text-slate-700 truncate">{contact.company}</p>
-                    <p className="text-xs sm:text-sm text-slate-500 truncate">{contact.industry}</p>
+                  <div className="space-y-1 mb-3">
+                    <p className="text-base font-medium text-slate-700">{contact.company}</p>
+                    <p className="text-sm text-slate-500">{contact.industry}</p>
                   </div>
                   
-                  {/* Contact info - always visible */}
-                  <div className="space-y-1 sm:space-y-2 mb-2 sm:mb-3">
+                  {/* Contact info - show on mobile */}
+                  <div className="block sm:hidden space-y-2 mb-3">
                     <div className="flex items-center space-x-2">
-                      <Mail className="w-3 h-3 sm:w-4 sm:h-4 text-slate-400 flex-shrink-0" />
-                      <span className="text-xs sm:text-sm text-slate-700 truncate">{contact.email}</span>
+                      <Mail className="w-4 h-4 text-slate-400 flex-shrink-0" />
+                      <span className="text-sm text-slate-700 break-all">{contact.email}</span>
                     </div>
                     {contact.phone && (
                       <div className="flex items-center space-x-2">
-                        <Phone className="w-3 h-3 sm:w-4 sm:h-4 text-slate-400 flex-shrink-0" />
-                        <span className="text-xs sm:text-sm text-slate-700">{contact.phone}</span>
+                        <Phone className="w-4 h-4 text-slate-400 flex-shrink-0" />
+                        <span className="text-sm text-slate-700">{contact.phone}</span>
                       </div>
                     )}
                   </div>
                 </div>
 
-                {/* Mobile action buttons */}
-                <div className="flex flex-col gap-2 sm:hidden">
-                  <Button size="sm" className="h-8 px-2 bg-indigo-600 hover:bg-indigo-700 text-xs">
-                    <UserPlus className="w-3 h-3 mr-1" />
+                {/* Mobile actions menu */}
+                <div className="flex items-center gap-2 sm:hidden">
+                  <Button size="sm" className="h-9 px-3 bg-indigo-600 hover:bg-indigo-700">
+                    <UserPlus className="w-4 h-4 mr-1" />
                     Refer
                   </Button>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="outline" size="sm" className="h-8 w-8 p-0">
-                        <MoreVertical className="w-3 h-3" />
+                      <Button variant="outline" size="sm" className="h-9 w-9 p-0">
+                        <MoreVertical className="w-4 h-4" />
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-48 bg-white shadow-lg border z-50">
@@ -190,18 +188,18 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
                             Delete Contact
                           </DropdownMenuItem>
                         </AlertDialogTrigger>
-                        <AlertDialogContent className="mx-4 max-w-sm">
+                        <AlertDialogContent>
                           <AlertDialogHeader>
                             <AlertDialogTitle>Delete Contact</AlertDialogTitle>
                             <AlertDialogDescription>
                               Are you sure you want to delete {contact.name}? This action cannot be undone.
                             </AlertDialogDescription>
                           </AlertDialogHeader>
-                          <AlertDialogFooter className="flex-col gap-2 sm:flex-row">
-                            <AlertDialogCancel className="w-full sm:w-auto">Cancel</AlertDialogCancel>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
                             <AlertDialogAction
                               onClick={handleDelete}
-                              className="w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white"
+                              className="bg-red-600 hover:bg-red-700 text-white"
                             >
                               Delete
                             </AlertDialogAction>
@@ -218,21 +216,21 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
                 </AccordionTrigger>
               </div>
               
-              <div className="flex flex-wrap gap-1 mt-1 sm:mt-2">
-                {contact.services?.slice(0, 2).map((service, index) => (
-                  <Badge key={index} variant="secondary" className="text-xs bg-indigo-50 text-indigo-700 border-indigo-200 truncate max-w-24 sm:max-w-none">
+              <div className="flex flex-wrap gap-1 mt-2">
+                {contact.services?.slice(0, 3).map((service, index) => (
+                  <Badge key={index} variant="secondary" className="text-xs bg-indigo-50 text-indigo-700 border-indigo-200">
                     {service}
                   </Badge>
                 ))}
-                {contact.services && contact.services.length > 2 && (
+                {contact.services && contact.services.length > 3 && (
                   <Badge variant="secondary" className="text-xs bg-slate-50 text-slate-600">
-                    +{contact.services.length - 2}
+                    +{contact.services.length - 3}
                   </Badge>
                 )}
               </div>
 
               {/* Mobile "View Details" button */}
-              <div className="block sm:hidden mt-2">
+              <div className="block sm:hidden mt-3">
                 <AccordionTrigger className="hover:no-underline p-0 w-full text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 rounded-md transition-colors">
                   <span className="flex items-center justify-center text-sm font-medium py-2">
                     View Details
@@ -243,13 +241,27 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
             </CardHeader>
 
             <AccordionContent>
-              <CardContent className="pt-0 px-3 sm:px-6 pb-3 sm:pb-4">
-                <div className="space-y-3 sm:space-y-4">
+              <CardContent className="pt-0 px-4 sm:px-6 pb-4">
+                <div className="space-y-4">
+                  {/* Desktop contact info */}
+                  <div className="hidden sm:block space-y-3">
+                    <div className="flex items-center space-x-2">
+                      <Mail className="w-4 h-4 text-slate-400 flex-shrink-0" />
+                      <span className="text-sm text-slate-700 break-all">{contact.email}</span>
+                    </div>
+                    {contact.phone && (
+                      <div className="flex items-center space-x-2">
+                        <Phone className="w-4 h-4 text-slate-400 flex-shrink-0" />
+                        <span className="text-sm text-slate-700">{contact.phone}</span>
+                      </div>
+                    )}
+                  </div>
+
                   {/* Social Media & Websites */}
                   {(contact.linkedin || contact.facebook || contact.whatsapp || (contact.websites && contact.websites.length > 0)) && (
-                    <div className="space-y-2 sm:space-y-3">
+                    <div className="space-y-3">
                       <p className="text-sm font-medium text-slate-700">Connect</p>
-                      <div className="grid grid-cols-2 gap-2">
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                         {contact.linkedin && (
                           <a
                             href={formatSocialLink('linkedin', contact.linkedin)}
@@ -257,8 +269,8 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
                             rel="noopener noreferrer"
                             className="flex items-center gap-2 p-2 text-xs bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors"
                           >
-                            <Linkedin className="w-4 h-4 flex-shrink-0" />
-                            <span className="truncate">LinkedIn</span>
+                            <Linkedin className="w-4 h-4" />
+                            <span className="hidden sm:inline">LinkedIn</span>
                           </a>
                         )}
                         {contact.facebook && (
@@ -268,8 +280,8 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
                             rel="noopener noreferrer"
                             className="flex items-center gap-2 p-2 text-xs bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors"
                           >
-                            <Facebook className="w-4 h-4 flex-shrink-0" />
-                            <span className="truncate">Facebook</span>
+                            <Facebook className="w-4 h-4" />
+                            <span className="hidden sm:inline">Facebook</span>
                           </a>
                         )}
                         {contact.whatsapp && (
@@ -279,8 +291,8 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
                             rel="noopener noreferrer"
                             className="flex items-center gap-2 p-2 text-xs bg-green-50 text-green-700 rounded-lg hover:bg-green-100 transition-colors"
                           >
-                            <MessageCircle className="w-4 h-4 flex-shrink-0" />
-                            <span className="truncate">WhatsApp</span>
+                            <MessageCircle className="w-4 h-4" />
+                            <span className="hidden sm:inline">WhatsApp</span>
                           </a>
                         )}
                         {contact.websites && contact.websites.map((website, index) => (
@@ -291,8 +303,8 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
                             rel="noopener noreferrer"
                             className="flex items-center gap-2 p-2 text-xs bg-slate-50 text-slate-700 rounded-lg hover:bg-slate-100 transition-colors"
                           >
-                            <Globe className="w-4 h-4 flex-shrink-0" />
-                            <span className="truncate">{website.replace(/^https?:\/\//, '')}</span>
+                            <Globe className="w-4 h-4" />
+                            <span className="hidden sm:inline truncate">{website.replace(/^https?:\/\//, '')}</span>
                           </a>
                         ))}
                       </div>
@@ -346,18 +358,18 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
                           Delete
                         </Button>
                       </AlertDialogTrigger>
-                      <AlertDialogContent className="mx-4 max-w-sm sm:max-w-lg">
+                      <AlertDialogContent>
                         <AlertDialogHeader>
                           <AlertDialogTitle>Delete Contact</AlertDialogTitle>
                           <AlertDialogDescription>
                             Are you sure you want to delete {contact.name}? This action cannot be undone.
                           </AlertDialogDescription>
                         </AlertDialogHeader>
-                        <AlertDialogFooter className="flex-col gap-2 sm:flex-row">
-                          <AlertDialogCancel className="w-full sm:w-auto">Cancel</AlertDialogCancel>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
                           <AlertDialogAction
                             onClick={handleDelete}
-                            className="w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white"
+                            className="bg-red-600 hover:bg-red-700 text-white"
                           >
                             Delete
                           </AlertDialogAction>
