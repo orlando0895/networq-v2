@@ -40,7 +40,7 @@ export default function Messages() {
 
     const fetchConversations = async () => {
       try {
-        // First get conversations for the current user
+        // Get conversations for the current user
         const { data: conversationData, error: convError } = await supabase
           .from('conversation_participants')
           .select(`
@@ -57,26 +57,24 @@ export default function Messages() {
 
         if (!conversationData || conversationData.length === 0) {
           setConversations([]);
+          setLoading(false);
           return;
         }
 
-        // Get all conversation IDs
-        const conversationIds = conversationData.map(cp => cp.conversation_id);
+        // Get unique conversation IDs to avoid duplicates
+        const uniqueConversationIds = [...new Set(conversationData.map(cp => cp.conversation_id))];
 
         // Get other participants for each conversation
         const { data: participantsData, error: participantsError } = await supabase
           .from('conversation_participants')
-          .select(`
-            conversation_id,
-            user_id
-          `)
-          .in('conversation_id', conversationIds)
+          .select('conversation_id, user_id')
+          .in('conversation_id', uniqueConversationIds)
           .neq('user_id', user.id);
 
         if (participantsError) throw participantsError;
 
         // Get profiles for other participants
-        const otherUserIds = participantsData?.map(p => p.user_id) || [];
+        const otherUserIds = [...new Set(participantsData?.map(p => p.user_id) || [])];
         const { data: profilesData, error: profilesError } = await supabase
           .from('profiles')
           .select('id, full_name, email')
@@ -88,19 +86,23 @@ export default function Messages() {
         const { data: messagesData, error: messagesError } = await supabase
           .from('messages')
           .select('conversation_id, content, created_at, message_type')
-          .in('conversation_id', conversationIds)
+          .in('conversation_id', uniqueConversationIds)
           .order('created_at', { ascending: false });
 
         if (messagesError) throw messagesError;
 
-        // Process conversations
-        const processedConversations = conversationData.map(cp => {
-          const conversation = cp.conversations;
-          if (!conversation) return null;
+        // Process conversations and remove duplicates
+        const conversationMap = new Map();
+        
+        uniqueConversationIds.forEach(convId => {
+          const convData = conversationData.find(cp => cp.conversation_id === convId);
+          if (!convData?.conversations) return;
 
+          const conversation = convData.conversations;
+          
           // Find other participant
           const otherParticipant = participantsData?.find(
-            p => p.conversation_id === conversation.id
+            p => p.conversation_id === convId
           );
 
           // Find profile for other participant
@@ -108,23 +110,44 @@ export default function Messages() {
             p => p.id === otherParticipant?.user_id
           );
 
-          // Find last message
+          // Find last message for this specific conversation
           const lastMessage = messagesData?.find(
-            m => m.conversation_id === conversation.id
+            m => m.conversation_id === convId
           );
 
-          return {
+          // Get participant info
+          let participantName = profile?.full_name || 'Unknown User';
+          let participantEmail = profile?.email || '';
+
+          // If no profile found, try to get name from contacts
+          if (!profile && otherParticipant) {
+            const contact = contacts?.find(c => c.id === otherParticipant.user_id);
+            if (contact) {
+              participantName = contact.name;
+              participantEmail = contact.email;
+            }
+          }
+
+          conversationMap.set(convId, {
             id: conversation.id,
             updated_at: conversation.updated_at,
             last_message_at: conversation.last_message_at,
             participant: {
               id: otherParticipant?.user_id || '',
-              name: profile?.full_name || 'Unknown',
-              email: profile?.email || ''
+              name: participantName,
+              email: participantEmail
             },
             last_message: lastMessage
-          };
-        }).filter(Boolean) as Conversation[];
+          });
+        });
+
+        // Convert map to array and sort by last message time
+        const processedConversations = Array.from(conversationMap.values())
+          .sort((a, b) => {
+            const timeA = a.last_message?.created_at || a.updated_at;
+            const timeB = b.last_message?.created_at || b.updated_at;
+            return new Date(timeB).getTime() - new Date(timeA).getTime();
+          });
 
         setConversations(processedConversations);
       } catch (error: any) {
@@ -185,92 +208,7 @@ export default function Messages() {
       setIsNewMessageOpen(false);
       
       // Refresh conversations to include the new one
-      const fetchConversations = async () => {
-        try {
-          const { data: conversationData, error: convError } = await supabase
-            .from('conversation_participants')
-            .select(`
-              conversation_id,
-              conversations (
-                id,
-                updated_at,
-                last_message_at
-              )
-            `)
-            .eq('user_id', user.id);
-
-          if (convError) throw convError;
-
-          if (!conversationData || conversationData.length === 0) {
-            setConversations([]);
-            return;
-          }
-
-          const conversationIds = conversationData.map(cp => cp.conversation_id);
-
-          const { data: participantsData, error: participantsError } = await supabase
-            .from('conversation_participants')
-            .select(`
-              conversation_id,
-              user_id
-            `)
-            .in('conversation_id', conversationIds)
-            .neq('user_id', user.id);
-
-          if (participantsError) throw participantsError;
-
-          const otherUserIds = participantsData?.map(p => p.user_id) || [];
-          const { data: profilesData, error: profilesError } = await supabase
-            .from('profiles')
-            .select('id, full_name, email')
-            .in('id', otherUserIds);
-
-          if (profilesError) throw profilesError;
-
-          const { data: messagesData, error: messagesError } = await supabase
-            .from('messages')
-            .select('conversation_id, content, created_at, message_type')
-            .in('conversation_id', conversationIds)
-            .order('created_at', { ascending: false });
-
-          if (messagesError) throw messagesError;
-
-          const processedConversations = conversationData.map(cp => {
-            const conversation = cp.conversations;
-            if (!conversation) return null;
-
-            const otherParticipant = participantsData?.find(
-              p => p.conversation_id === conversation.id
-            );
-
-            const profile = profilesData?.find(
-              p => p.id === otherParticipant?.user_id
-            );
-
-            const lastMessage = messagesData?.find(
-              m => m.conversation_id === conversation.id
-            );
-
-            return {
-              id: conversation.id,
-              updated_at: conversation.updated_at,
-              last_message_at: conversation.last_message_at,
-              participant: {
-                id: otherParticipant?.user_id || '',
-                name: profile?.full_name || 'Unknown',
-                email: profile?.email || ''
-              },
-              last_message: lastMessage
-            };
-          }).filter(Boolean) as Conversation[];
-
-          setConversations(processedConversations);
-        } catch (error: any) {
-          console.error('Error fetching conversations:', error);
-        }
-      };
-      
-      fetchConversations();
+      window.location.reload(); // Simple refresh to get updated data
     } catch (error: any) {
       console.error('Error creating conversation:', error);
       toast({
