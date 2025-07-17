@@ -40,7 +40,6 @@ export default function Messages() {
     if (!user) return;
     
     try {
-        console.log('Fetching conversations for user:', user.id);
         // Get conversations for the current user (excluding deleted ones)
         const { data: conversationData, error: convError } = await supabase
           .from('conversation_participants')
@@ -54,9 +53,6 @@ export default function Messages() {
           `)
           .eq('user_id', user.id)
           .is('deleted_at', null);
-
-        console.log('Raw conversation data:', conversationData);
-        console.log('Conversation fetch error:', convError);
 
       if (convError) throw convError;
 
@@ -271,20 +267,15 @@ export default function Messages() {
   };
 
   const handleDeleteConversation = async (conversationId: string, deleteType: 'hide' | 'delete') => {
-    console.log('Starting delete operation:', { conversationId, deleteType, userId: user?.id });
-    
     try {
       if (deleteType === 'hide') {
         // Soft delete - mark as deleted for this user only
-        console.log('Attempting soft delete...');
-        const { data, error } = await supabase
+        const { error } = await supabase
           .from('conversation_participants')
           .update({ deleted_at: new Date().toISOString() })
           .eq('conversation_id', conversationId)
-          .eq('user_id', user!.id)
-          .select();
+          .eq('user_id', user!.id);
 
-        console.log('Soft delete result:', { data, error });
         if (error) throw error;
 
         toast({
@@ -293,8 +284,6 @@ export default function Messages() {
         });
       } else {
         // Hard delete - remove entire conversation and all messages
-        console.log('Attempting hard delete...');
-        
         // Delete in reverse order to avoid foreign key conflicts
         // First delete messages
         const { error: messagesError } = await supabase
@@ -302,7 +291,6 @@ export default function Messages() {
           .delete()
           .eq('conversation_id', conversationId);
 
-        console.log('Messages delete result:', { messagesError });
         if (messagesError) throw messagesError;
 
         // Then delete all participants (not just current user)
@@ -311,7 +299,6 @@ export default function Messages() {
           .delete()
           .eq('conversation_id', conversationId);
 
-        console.log('Participants delete result:', { participantsError });
         if (participantsError) throw participantsError;
 
         // Finally delete the conversation itself
@@ -320,7 +307,6 @@ export default function Messages() {
           .delete()
           .eq('id', conversationId);
 
-        console.log('Conversation delete result:', { conversationError });
         if (conversationError) throw conversationError;
 
         toast({
@@ -334,13 +320,11 @@ export default function Messages() {
         setSelectedConversationId(null);
       }
 
-      console.log('About to refresh conversations...');
       // Add a small delay to ensure database operations are committed
       await new Promise(resolve => setTimeout(resolve, 500));
       
       // Refresh conversations list to ensure consistency
       await fetchConversations();
-      console.log('Conversations refreshed');
     } catch (error: any) {
       console.error('Error deleting conversation:', error);
       toast({
