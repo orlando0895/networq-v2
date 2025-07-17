@@ -311,12 +311,15 @@ export default function Messages() {
         });
       }
 
+      // Update local state immediately for instant feedback
+      setConversations(prev => prev.filter(conv => conv.id !== conversationId));
+      
       // Clear selection if we deleted the selected conversation
       if (selectedConversationId === conversationId) {
         setSelectedConversationId(null);
       }
 
-      // Refresh conversations list
+      // Refresh conversations list to ensure consistency
       await fetchConversations();
     } catch (error: any) {
       console.error('Error deleting conversation:', error);
