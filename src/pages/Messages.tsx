@@ -35,150 +35,153 @@ export default function Messages() {
   const [isNewMessageOpen, setIsNewMessageOpen] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  // Fetch conversations
-  useEffect(() => {
+  // Fetch conversations function
+  const fetchConversations = async () => {
     if (!user) return;
+    
+    try {
+      // Get conversations for the current user
+      const { data: conversationData, error: convError } = await supabase
+        .from('conversation_participants')
+        .select(`
+          conversation_id,
+          conversations (
+            id,
+            updated_at,
+            last_message_at
+          )
+        `)
+        .eq('user_id', user.id);
 
-    const fetchConversations = async () => {
-      try {
-        // Get conversations for the current user
-        const { data: conversationData, error: convError } = await supabase
-          .from('conversation_participants')
-          .select(`
-            conversation_id,
-            conversations (
-              id,
-              updated_at,
-              last_message_at
-            )
-          `)
-          .eq('user_id', user.id);
+      if (convError) throw convError;
 
-        if (convError) throw convError;
+      if (!conversationData || conversationData.length === 0) {
+        setConversations([]);
+        setLoading(false);
+        return;
+      }
 
-        if (!conversationData || conversationData.length === 0) {
-          setConversations([]);
-          setLoading(false);
+      // Get unique conversation IDs to avoid duplicates
+      const uniqueConversationIds = [...new Set(conversationData.map(cp => cp.conversation_id))];
+
+      // Get other participants for each conversation
+      const { data: participantsData, error: participantsError } = await supabase
+        .from('conversation_participants')
+        .select('conversation_id, user_id')
+        .in('conversation_id', uniqueConversationIds)
+        .neq('user_id', user.id);
+
+      if (participantsError) throw participantsError;
+
+      // Get profiles for other participants
+      const otherUserIds = [...new Set(participantsData?.map(p => p.user_id) || [])];
+      const { data: profilesData, error: profilesError } = await supabase
+        .from('profiles')
+        .select('id, full_name, email')
+        .in('id', otherUserIds);
+
+      if (profilesError) throw profilesError;
+
+      // Get last messages for each conversation
+      const { data: messagesData, error: messagesError } = await supabase
+        .from('messages')
+        .select('conversation_id, content, created_at, message_type')
+        .in('conversation_id', uniqueConversationIds)
+        .order('created_at', { ascending: false });
+
+      if (messagesError) throw messagesError;
+
+      // Process conversations and remove duplicates
+      const conversationMap = new Map();
+      
+      uniqueConversationIds.forEach(convId => {
+        const convData = conversationData.find(cp => cp.conversation_id === convId);
+        if (!convData?.conversations) return;
+
+        const conversation = convData.conversations;
+        
+        // Find other participant
+        const otherParticipant = participantsData?.find(
+          p => p.conversation_id === convId
+        );
+
+        // Skip conversations without other participants
+        if (!otherParticipant) return;
+
+        // Find profile for other participant
+        const profile = profilesData?.find(
+          p => p.id === otherParticipant.user_id
+        );
+
+        // Find last message for this specific conversation
+        const lastMessage = messagesData?.find(
+          m => m.conversation_id === convId
+        );
+
+        // Get participant info - start with profile data
+        let participantName = profile?.full_name || '';
+        let participantEmail = profile?.email || '';
+
+        // If no profile found, try to get info from contacts
+        if (!profile && otherParticipant) {
+          // Since contacts don't store user_id references, we can't directly match
+          // We'll rely on the profile data being present for proper messaging
+          participantName = 'Contact User';
+          participantEmail = '';
+        }
+
+        // Skip conversations where we can't identify the participant at all
+        if (!participantName && !participantEmail && !profile) {
           return;
         }
 
-        // Get unique conversation IDs to avoid duplicates
-        const uniqueConversationIds = [...new Set(conversationData.map(cp => cp.conversation_id))];
+        // Use email as fallback name if no name is available but email exists
+        if (!participantName && participantEmail) {
+          participantName = participantEmail.split('@')[0]; // Use email username part
+        }
 
-        // Get other participants for each conversation
-        const { data: participantsData, error: participantsError } = await supabase
-          .from('conversation_participants')
-          .select('conversation_id, user_id')
-          .in('conversation_id', uniqueConversationIds)
-          .neq('user_id', user.id);
+        // Final fallback for completely unknown users
+        if (!participantName) {
+          participantName = 'Unknown User';
+        }
 
-        if (participantsError) throw participantsError;
+        conversationMap.set(convId, {
+          id: conversation.id,
+          updated_at: conversation.updated_at,
+          last_message_at: conversation.last_message_at,
+          participant: {
+            id: otherParticipant.user_id,
+            name: participantName || 'Unknown User',
+            email: participantEmail
+          },
+          last_message: lastMessage
+        });
+      });
 
-        // Get profiles for other participants
-        const otherUserIds = [...new Set(participantsData?.map(p => p.user_id) || [])];
-        const { data: profilesData, error: profilesError } = await supabase
-          .from('profiles')
-          .select('id, full_name, email')
-          .in('id', otherUserIds);
-
-        if (profilesError) throw profilesError;
-
-        // Get last messages for each conversation
-        const { data: messagesData, error: messagesError } = await supabase
-          .from('messages')
-          .select('conversation_id, content, created_at, message_type')
-          .in('conversation_id', uniqueConversationIds)
-          .order('created_at', { ascending: false });
-
-        if (messagesError) throw messagesError;
-
-        // Process conversations and remove duplicates
-        const conversationMap = new Map();
-        
-        uniqueConversationIds.forEach(convId => {
-          const convData = conversationData.find(cp => cp.conversation_id === convId);
-          if (!convData?.conversations) return;
-
-          const conversation = convData.conversations;
-          
-          // Find other participant
-          const otherParticipant = participantsData?.find(
-            p => p.conversation_id === convId
-          );
-
-          // Skip conversations without other participants
-          if (!otherParticipant) return;
-
-          // Find profile for other participant
-          const profile = profilesData?.find(
-            p => p.id === otherParticipant.user_id
-          );
-
-          // Find last message for this specific conversation
-          const lastMessage = messagesData?.find(
-            m => m.conversation_id === convId
-          );
-
-          // Get participant info - start with profile data
-          let participantName = profile?.full_name || '';
-          let participantEmail = profile?.email || '';
-
-          // If no profile found, try to get info from contacts
-          if (!profile && otherParticipant) {
-            // Since contacts don't store user_id references, we can't directly match
-            // We'll rely on the profile data being present for proper messaging
-            participantName = 'Contact User';
-            participantEmail = '';
-          }
-
-          // Skip conversations where we can't identify the participant at all
-          if (!participantName && !participantEmail && !profile) {
-            return;
-          }
-
-          // Use email as fallback name if no name is available but email exists
-          if (!participantName && participantEmail) {
-            participantName = participantEmail.split('@')[0]; // Use email username part
-          }
-
-          // Final fallback for completely unknown users
-          if (!participantName) {
-            participantName = 'Unknown User';
-          }
-
-          conversationMap.set(convId, {
-            id: conversation.id,
-            updated_at: conversation.updated_at,
-            last_message_at: conversation.last_message_at,
-            participant: {
-              id: otherParticipant.user_id,
-              name: participantName || 'Unknown User',
-              email: participantEmail
-            },
-            last_message: lastMessage
-          });
+      // Convert map to array and sort by last message time
+      const processedConversations = Array.from(conversationMap.values())
+        .sort((a, b) => {
+          const timeA = a.last_message?.created_at || a.updated_at;
+          const timeB = b.last_message?.created_at || b.updated_at;
+          return new Date(timeB).getTime() - new Date(timeA).getTime();
         });
 
-        // Convert map to array and sort by last message time
-        const processedConversations = Array.from(conversationMap.values())
-          .sort((a, b) => {
-            const timeA = a.last_message?.created_at || a.updated_at;
-            const timeB = b.last_message?.created_at || b.updated_at;
-            return new Date(timeB).getTime() - new Date(timeA).getTime();
-          });
+      setConversations(processedConversations);
+    } catch (error: any) {
+      console.error('Error fetching conversations:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load conversations",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
-        setConversations(processedConversations);
-      } catch (error: any) {
-        console.error('Error fetching conversations:', error);
-        toast({
-          title: "Error",
-          description: "Failed to load conversations",
-          variant: "destructive"
-        });
-      } finally {
-        setLoading(false);
-      }
-    };
+  // Fetch conversations on mount and set up real-time subscriptions
+  useEffect(() => {
+    if (!user) return;
 
     fetchConversations();
 
@@ -251,7 +254,7 @@ export default function Messages() {
       setIsNewMessageOpen(false);
       
       // Refresh conversations to include the new one
-      window.location.reload(); // Simple refresh to get updated data
+      await fetchConversations();
     } catch (error: any) {
       console.error('Error creating conversation:', error);
       toast({
