@@ -216,8 +216,33 @@ export default function Messages() {
 
   const handleNewConversation = async (contactId: string) => {
     try {
+      // First, get the contact details
+      const contact = contacts?.find(c => c.id === contactId);
+      if (!contact) {
+        throw new Error('Contact not found');
+      }
+
+      // Find the user_id by matching email with profiles table
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('email', contact.email)
+        .maybeSingle();
+
+      if (profileError) throw profileError;
+      
+      if (!profile) {
+        toast({
+          title: "Error",
+          description: "This contact is not registered as a user yet",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      // Now create or get the conversation using the actual user_id
       const { data, error } = await supabase.rpc('get_or_create_direct_conversation', {
-        other_user_id: contactId
+        other_user_id: profile.id
       });
 
       if (error) throw error;
@@ -231,7 +256,7 @@ export default function Messages() {
       console.error('Error creating conversation:', error);
       toast({
         title: "Error",
-        description: "Failed to start conversation",
+        description: error.message || "Failed to start conversation",
         variant: "destructive"
       });
     }
