@@ -146,7 +146,7 @@ export function NewMessageDialog({
                     <Button
                       key={contact.id}
                       variant="ghost"
-                      className="w-full justify-start h-auto p-3"
+                      className="w-full justify-start h-auto p-3 bg-white hover:bg-gray-50 border border-gray-200"
                       onClick={() => handleSelectContact(contact.id)}
                     >
                       <div className="flex items-center space-x-3 w-full">
