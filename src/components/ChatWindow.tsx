@@ -47,7 +47,7 @@ export function ChatWindow({ conversationId, currentUserId, onBack }: ChatWindow
   useEffect(() => {
     if (!conversationId) return;
 
-    const fetchData = async () => {
+    const fetchData = async (retryCount = 0) => {
       try {
         // Fetch messages
         const { data: messagesData, error: messagesError } = await supabase
@@ -87,15 +87,23 @@ export function ChatWindow({ conversationId, currentUserId, onBack }: ChatWindow
         }
 
         setMessages(messagesData || []);
+        setLoading(false);
       } catch (error: any) {
         console.error('Error fetching chat data:', error);
+        
+        // Retry up to 3 times for network errors
+        if (retryCount < 3 && error.message?.includes('Failed to fetch')) {
+          console.log(`Retrying fetch attempt ${retryCount + 1}`);
+          setTimeout(() => fetchData(retryCount + 1), 1000 * (retryCount + 1));
+          return;
+        }
+        
+        setLoading(false);
         toast({
           title: "Error",
-          description: "Failed to load conversation",
+          description: "Failed to load conversation. Please refresh the page.",
           variant: "destructive"
         });
-      } finally {
-        setLoading(false);
       }
     };
 
