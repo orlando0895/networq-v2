@@ -25,6 +25,8 @@ interface Contact {
   company?: string;
   industry?: string;
   added_via?: string;
+  created_at?: string;
+  added_date?: string;
 }
 
 interface NewMessageDialogProps {
@@ -55,22 +57,34 @@ export function NewMessageDialog({
     return uniqueIndustries;
   }, [contacts]);
 
-  const filteredContacts = contacts.filter(contact => {
-    // Only show contacts added through allowed methods
-    const isAllowedContact = contact.added_via && ['share_code', 'qr_code', 'mutual_contact', 'business_card'].includes(contact.added_via);
-    if (!isAllowedContact) return false;
-    
-    // Apply industry filter
-    if (selectedIndustry !== 'all' && contact.industry !== selectedIndustry) {
-      return false;
-    }
-    
-    // Apply search filter
-    return contact.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-           contact.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-           contact.company?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-           contact.industry?.toLowerCase().includes(searchTerm.toLowerCase());
-  });
+  const filteredContacts = useMemo(() => {
+    // First filter by allowed contact types and get the 10 most recent
+    const allowedContacts = contacts
+      .filter(contact => 
+        contact.added_via && ['share_code', 'qr_code', 'mutual_contact', 'business_card'].includes(contact.added_via)
+      )
+      .sort((a, b) => {
+        // Sort by created_at or added_date (most recent first)
+        const dateA = new Date(a.created_at || a.added_date || 0).getTime();
+        const dateB = new Date(b.created_at || b.added_date || 0).getTime();
+        return dateB - dateA;
+      })
+      .slice(0, 10); // Take only the 10 most recent
+
+    // Then apply industry and search filters to these 10 contacts
+    return allowedContacts.filter(contact => {
+      // Apply industry filter
+      if (selectedIndustry !== 'all' && contact.industry !== selectedIndustry) {
+        return false;
+      }
+      
+      // Apply search filter
+      return contact.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+             contact.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+             contact.company?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+             contact.industry?.toLowerCase().includes(searchTerm.toLowerCase());
+    });
+  }, [contacts, selectedIndustry, searchTerm]);
 
   const handleSelectContact = (contactId: string) => {
     onSelectContact(contactId);
