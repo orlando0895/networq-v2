@@ -294,6 +294,9 @@ export default function Messages() {
       } else {
         // Hard delete - remove entire conversation and all messages
         console.log('Attempting hard delete...');
+        
+        // Delete in reverse order to avoid foreign key conflicts
+        // First delete messages
         const { error: messagesError } = await supabase
           .from('messages')
           .delete()
@@ -302,6 +305,7 @@ export default function Messages() {
         console.log('Messages delete result:', { messagesError });
         if (messagesError) throw messagesError;
 
+        // Then delete all participants (not just current user)
         const { error: participantsError } = await supabase
           .from('conversation_participants')
           .delete()
@@ -310,6 +314,7 @@ export default function Messages() {
         console.log('Participants delete result:', { participantsError });
         if (participantsError) throw participantsError;
 
+        // Finally delete the conversation itself
         const { error: conversationError } = await supabase
           .from('conversations')
           .delete()
@@ -330,6 +335,9 @@ export default function Messages() {
       }
 
       console.log('About to refresh conversations...');
+      // Add a small delay to ensure database operations are committed
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
       // Refresh conversations list to ensure consistency
       await fetchConversations();
       console.log('Conversations refreshed');
