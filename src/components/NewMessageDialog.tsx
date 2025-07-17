@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -8,14 +8,22 @@ import {
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { Search, MessageSquare } from 'lucide-react';
+import { Search, MessageSquare, Filter } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 interface Contact {
   id: string;
   name: string;
   email: string;
   company?: string;
+  industry?: string;
   added_via?: string;
 }
 
@@ -33,21 +41,41 @@ export function NewMessageDialog({
   onSelectContact
 }: NewMessageDialogProps) {
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedIndustry, setSelectedIndustry] = useState<string>('all');
+
+  // Get unique industries from contacts
+  const industries = useMemo(() => {
+    const allowedContacts = contacts.filter(contact => 
+      contact.added_via && ['share_code', 'qr_code', 'mutual_contact', 'business_card'].includes(contact.added_via)
+    );
+    const uniqueIndustries = [...new Set(allowedContacts
+      .map(contact => contact.industry)
+      .filter(Boolean)
+    )].sort();
+    return uniqueIndustries;
+  }, [contacts]);
 
   const filteredContacts = contacts.filter(contact => {
     // Only show contacts added through allowed methods
     const isAllowedContact = contact.added_via && ['share_code', 'qr_code', 'mutual_contact', 'business_card'].includes(contact.added_via);
     if (!isAllowedContact) return false;
     
+    // Apply industry filter
+    if (selectedIndustry !== 'all' && contact.industry !== selectedIndustry) {
+      return false;
+    }
+    
     // Apply search filter
     return contact.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
            contact.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-           contact.company?.toLowerCase().includes(searchTerm.toLowerCase());
+           contact.company?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+           contact.industry?.toLowerCase().includes(searchTerm.toLowerCase());
   });
 
   const handleSelectContact = (contactId: string) => {
     onSelectContact(contactId);
     setSearchTerm('');
+    setSelectedIndustry('all');
   };
 
   return (
@@ -58,14 +86,35 @@ export function NewMessageDialog({
         </DialogHeader>
         
         <div className="flex flex-col space-y-4 min-h-0 flex-1">
-          <div className="relative flex-shrink-0">
-            <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Search contacts..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-8"
-            />
+          <div className="flex flex-col space-y-3 flex-shrink-0">
+            <div className="relative">
+              <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search contacts..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-8"
+              />
+            </div>
+            
+            {industries.length > 0 && (
+              <div className="flex items-center space-x-2">
+                <Filter className="h-4 w-4 text-muted-foreground" />
+                <Select value={selectedIndustry} onValueChange={setSelectedIndustry}>
+                  <SelectTrigger className="flex-1">
+                    <SelectValue placeholder="Filter by industry" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Industries</SelectItem>
+                    {industries.map((industry) => (
+                      <SelectItem key={industry} value={industry}>
+                        {industry}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
           </div>
 
           <div className="flex-1 min-h-0">
@@ -105,6 +154,12 @@ export function NewMessageDialog({
                               <>
                                 <span>•</span>
                                 <span className="truncate">{contact.company}</span>
+                              </>
+                            )}
+                            {contact.industry && (
+                              <>
+                                <span>•</span>
+                                <span className="truncate">{contact.industry}</span>
                               </>
                             )}
                           </div>
