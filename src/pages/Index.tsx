@@ -24,7 +24,8 @@ const Index = () => {
     loading,
     addContact,
     updateContact,
-    deleteContact
+    deleteContact,
+    refetch: refetchContacts
   } = useContacts();
   const {
     fetchContactCardByShareCode

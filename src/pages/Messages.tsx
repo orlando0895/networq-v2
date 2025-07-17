@@ -27,8 +27,13 @@ interface Conversation {
 
 export default function Messages() {
   const { user } = useAuth();
-  const { contacts } = useContacts();
+  const { contacts, refetch: refetchContacts } = useContacts();
   const { toast } = useToast();
+
+  // Refresh contacts when Messages component mounts to ensure fresh data
+  useEffect(() => {
+    refetchContacts();
+  }, [refetchContacts]);
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [selectedConversationId, setSelectedConversationId] = useState<string | null>(null);
   const [isNewMessageOpen, setIsNewMessageOpen] = useState(false);
