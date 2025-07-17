@@ -58,11 +58,29 @@ export function NewMessageDialog({
   }, [contacts]);
 
   const filteredContacts = useMemo(() => {
-    // First filter by allowed contact types and get the 10 most recent
-    const allowedContacts = contacts
-      .filter(contact => 
-        contact.added_via && ['share_code', 'qr_code', 'mutual_contact', 'business_card'].includes(contact.added_via)
-      )
+    // First filter by allowed contact types (messageable contacts)
+    const allowedContacts = contacts.filter(contact => 
+      contact.added_via && ['share_code', 'qr_code', 'mutual_contact', 'business_card'].includes(contact.added_via)
+    );
+
+    // If there's a search term, search through ALL messageable contacts
+    if (searchTerm.trim()) {
+      return allowedContacts.filter(contact => {
+        // Apply industry filter
+        if (selectedIndustry !== 'all' && contact.industry !== selectedIndustry) {
+          return false;
+        }
+        
+        // Apply search filter
+        return contact.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+               contact.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+               contact.company?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+               contact.industry?.toLowerCase().includes(searchTerm.toLowerCase());
+      });
+    }
+
+    // If no search term, show only the 9 most recent contacts
+    const recentContacts = allowedContacts
       .sort((a, b) => {
         // Sort by created_at or added_date (most recent first)
         const dateA = new Date(a.created_at || a.added_date || 0).getTime();
@@ -71,18 +89,12 @@ export function NewMessageDialog({
       })
       .slice(0, 9); // Take only the 9 most recent
 
-    // Then apply industry and search filters to these 10 contacts
-    return allowedContacts.filter(contact => {
-      // Apply industry filter
+    // Apply industry filter to recent contacts
+    return recentContacts.filter(contact => {
       if (selectedIndustry !== 'all' && contact.industry !== selectedIndustry) {
         return false;
       }
-      
-      // Apply search filter
-      return contact.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-             contact.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-             contact.company?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-             contact.industry?.toLowerCase().includes(searchTerm.toLowerCase());
+      return true;
     });
   }, [contacts, selectedIndustry, searchTerm]);
 
