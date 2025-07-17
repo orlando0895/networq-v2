@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -236,9 +237,13 @@ export default function Messages() {
     }
   };
 
+  const handleBackToConversations = () => {
+    setSelectedConversationId(null);
+  };
+
   if (!user) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
           <MessageSquare className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
           <h2 className="text-xl font-semibold mb-2">Please log in to access messages</h2>
@@ -249,12 +254,12 @@ export default function Messages() {
   }
 
   return (
-    <div className="space-y-4 md:space-y-6">
-      {/* Messages header - mobile optimized */}
+    <div className="space-y-4">
+      {/* Messages header */}
       <div className="flex items-center justify-between">
         <div className="min-w-0">
           <h2 className="text-xl md:text-2xl font-bold tracking-tight">Messages</h2>
-          <p className="text-muted-foreground text-sm md:text-base hidden sm:block">
+          <p className="text-muted-foreground text-sm md:text-base">
             Connect and communicate with your network
           </p>
         </div>
@@ -269,10 +274,10 @@ export default function Messages() {
         </Button>
       </div>
 
-      {/* Messages content area - mobile responsive */}
-      <div className="rounded-lg border bg-card h-[calc(100vh-200px)] md:h-[600px] flex flex-col">
+      {/* Messages content area - constrained height for tab context */}
+      <div className="rounded-lg border bg-card h-[500px] flex flex-col">
         <div className="flex flex-1 min-h-0">
-          {/* Conversations sidebar - mobile responsive */}
+          {/* Conversations sidebar */}
           <div className={`${selectedConversationId ? 'hidden lg:flex' : 'flex'} w-full lg:w-80 border-r flex-col min-h-0`}>
             <div className="p-3 md:p-4 border-b flex-shrink-0">
               <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">
@@ -290,13 +295,13 @@ export default function Messages() {
             </div>
           </div>
 
-          {/* Main chat area - mobile responsive */}
+          {/* Main chat area */}
           <div className={`${selectedConversationId ? 'flex' : 'hidden lg:flex'} flex-1 flex-col min-h-0`}>
             {selectedConversationId ? (
               <ChatWindow
                 conversationId={selectedConversationId}
                 currentUserId={user.id}
-                onBack={() => setSelectedConversationId(null)}
+                onBack={handleBackToConversations}
               />
             ) : (
               <div className="flex-1 flex items-center justify-center bg-muted/20">

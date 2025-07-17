@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -5,7 +6,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Send, Paperclip, Image as ImageIcon, ArrowLeft } from 'lucide-react';
+import { Send, Paperclip, ArrowLeft } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { cn } from '@/lib/utils';
 
@@ -182,19 +183,17 @@ export function ChatWindow({ conversationId, currentUserId, onBack }: ChatWindow
 
   return (
     <div className="flex-1 flex flex-col min-h-0">
-      {/* Chat header - mobile optimized */}
+      {/* Chat header */}
       <div className="p-3 md:p-4 border-b border-border flex-shrink-0">
         <div className="flex items-center space-x-2 md:space-x-3">
-          {onBack && (
-            <Button 
-              variant="ghost" 
-              size="icon"
-              onClick={onBack}
-              className="lg:hidden h-8 w-8 md:h-9 md:w-9"
-            >
-              <ArrowLeft className="h-4 w-4" />
-            </Button>
-          )}
+          <Button 
+            variant="ghost" 
+            size="icon"
+            onClick={onBack}
+            className="h-8 w-8 md:h-9 md:w-9 lg:hidden"
+          >
+            <ArrowLeft className="h-4 w-4" />
+          </Button>
           <Avatar className="h-8 w-8 md:h-9 md:w-9 flex-shrink-0">
             <AvatarFallback className="text-xs md:text-sm">
               {otherParticipant?.full_name
@@ -215,7 +214,7 @@ export function ChatWindow({ conversationId, currentUserId, onBack }: ChatWindow
         </div>
       </div>
 
-      {/* Messages area - mobile optimized */}
+      {/* Messages area */}
       <ScrollArea className="flex-1 p-3 md:p-4">
         <div className="space-y-3 md:space-y-4">
           {messages.map((message) => {
@@ -279,7 +278,7 @@ export function ChatWindow({ conversationId, currentUserId, onBack }: ChatWindow
         </div>
       </ScrollArea>
 
-      {/* Message input - mobile optimized */}
+      {/* Message input */}
       <div className="p-3 md:p-4 border-t border-border flex-shrink-0">
         <div className="flex items-center space-x-2">
           <Button
