@@ -158,7 +158,7 @@ export function ConversationList({
               <button
                 onClick={() => onSelectConversation(conversation.id)}
                 className={cn(
-                  "w-full p-3 md:p-4 text-left hover:bg-muted/50 transition-colors active:bg-muted/70 touch-manipulation",
+                  "w-full p-3 md:p-4 text-left hover:bg-muted/50 transition-colors active:bg-muted/70 touch-manipulation group relative",
                   selectedConversationId === conversation.id && "bg-muted"
                 )}
               >
@@ -178,13 +178,26 @@ export function ConversationList({
                       <h3 className="font-medium text-sm md:text-sm truncate">
                         {conversation.participant.name || conversation.participant.email}
                       </h3>
-                      {conversation.last_message && (
-                        <span className="text-xs text-muted-foreground flex-shrink-0 ml-2">
-                          {formatDistanceToNow(new Date(conversation.last_message.created_at), {
-                            addSuffix: true
-                          })}
-                        </span>
-                      )}
+                      <div className="flex items-center space-x-2">
+                        {conversation.last_message && (
+                          <span className="text-xs text-muted-foreground flex-shrink-0">
+                            {formatDistanceToNow(new Date(conversation.last_message.created_at), {
+                              addSuffix: true
+                            })}
+                          </span>
+                        )}
+                        {/* Desktop delete button - shown on hover */}
+                        {onDeleteConversation && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={(e) => handleDeleteClick(conversation.id, e)}
+                            className="opacity-0 group-hover:opacity-100 transition-opacity h-6 w-6 p-0 hover:bg-destructive hover:text-destructive-foreground hidden md:flex"
+                          >
+                            <Trash2 className="h-3 w-3" />
+                          </Button>
+                        )}
+                      </div>
                     </div>
                     
                     <div className="flex items-center space-x-1">
