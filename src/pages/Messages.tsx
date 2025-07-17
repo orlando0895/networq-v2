@@ -40,18 +40,19 @@ export default function Messages() {
     if (!user) return;
     
     try {
-      // Get conversations for the current user
-      const { data: conversationData, error: convError } = await supabase
-        .from('conversation_participants')
-        .select(`
-          conversation_id,
-          conversations (
-            id,
-            updated_at,
-            last_message_at
-          )
-        `)
-        .eq('user_id', user.id);
+        // Get conversations for the current user (excluding deleted ones)
+        const { data: conversationData, error: convError } = await supabase
+          .from('conversation_participants')
+          .select(`
+            conversation_id,
+            conversations (
+              id,
+              updated_at,
+              last_message_at
+            )
+          `)
+          .eq('user_id', user.id)
+          .is('deleted_at', null);
 
       if (convError) throw convError;
 
@@ -265,6 +266,68 @@ export default function Messages() {
     }
   };
 
+  const handleDeleteConversation = async (conversationId: string, deleteType: 'hide' | 'delete') => {
+    try {
+      if (deleteType === 'hide') {
+        // Soft delete - mark as deleted for this user only
+        const { error } = await supabase
+          .from('conversation_participants')
+          .update({ deleted_at: new Date().toISOString() })
+          .eq('conversation_id', conversationId)
+          .eq('user_id', user!.id);
+
+        if (error) throw error;
+
+        toast({
+          title: "Conversation hidden",
+          description: "The conversation has been hidden from your view",
+        });
+      } else {
+        // Hard delete - remove entire conversation and all messages
+        const { error: messagesError } = await supabase
+          .from('messages')
+          .delete()
+          .eq('conversation_id', conversationId);
+
+        if (messagesError) throw messagesError;
+
+        const { error: participantsError } = await supabase
+          .from('conversation_participants')
+          .delete()
+          .eq('conversation_id', conversationId);
+
+        if (participantsError) throw participantsError;
+
+        const { error: conversationError } = await supabase
+          .from('conversations')
+          .delete()
+          .eq('id', conversationId);
+
+        if (conversationError) throw conversationError;
+
+        toast({
+          title: "Conversation deleted",
+          description: "The conversation has been completely deleted for all participants",
+        });
+      }
+
+      // Clear selection if we deleted the selected conversation
+      if (selectedConversationId === conversationId) {
+        setSelectedConversationId(null);
+      }
+
+      // Refresh conversations list
+      await fetchConversations();
+    } catch (error: any) {
+      console.error('Error deleting conversation:', error);
+      toast({
+        title: "Error",
+        description: "Failed to delete conversation",
+        variant: "destructive"
+      });
+    }
+  };
+
   const handleBackToConversations = () => {
     setSelectedConversationId(null);
   };
@@ -326,6 +389,7 @@ export default function Messages() {
                   conversations={conversations}
                   selectedConversationId={selectedConversationId}
                   onSelectConversation={setSelectedConversationId}
+                  onDeleteConversation={handleDeleteConversation}
                   loading={loading}
                 />
               </div>
