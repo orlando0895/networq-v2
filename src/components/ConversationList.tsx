@@ -199,7 +199,7 @@ export function ConversationList({
             </div>
 
             {/* Delete button revealed on swipe */}
-            {onDeleteConversation && (
+            {onDeleteConversation && swipedConversation === conversation.id && (
               <div className="absolute right-0 top-0 h-full w-16 bg-destructive flex items-center justify-center">
                 <Button
                   variant="ghost"
