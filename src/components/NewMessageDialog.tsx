@@ -69,7 +69,7 @@ export function NewMessageDialog({
         const dateB = new Date(b.created_at || b.added_date || 0).getTime();
         return dateB - dateA;
       })
-      .slice(0, 10); // Take only the 10 most recent
+      .slice(0, 9); // Take only the 9 most recent
 
     // Then apply industry and search filters to these 10 contacts
     return allowedContacts.filter(contact => {
