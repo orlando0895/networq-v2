@@ -145,8 +145,8 @@ export function NewMessageDialog({
                   {filteredContacts.map((contact) => (
                     <Button
                       key={contact.id}
-                      variant="ghost"
-                      className="w-full justify-start h-auto p-3 bg-white hover:bg-gray-50 border border-gray-200"
+                      variant="outline"
+                      className="w-full justify-start h-auto p-3 bg-background hover:bg-accent hover:text-accent-foreground border-border"
                       onClick={() => handleSelectContact(contact.id)}
                     >
                       <div className="flex items-center space-x-3 w-full">
