@@ -40,6 +40,7 @@ export default function Messages() {
     if (!user) return;
     
     try {
+        console.log('Fetching conversations for user:', user.id);
         // Get conversations for the current user (excluding deleted ones)
         const { data: conversationData, error: convError } = await supabase
           .from('conversation_participants')
@@ -53,6 +54,9 @@ export default function Messages() {
           `)
           .eq('user_id', user.id)
           .is('deleted_at', null);
+
+        console.log('Raw conversation data:', conversationData);
+        console.log('Conversation fetch error:', convError);
 
       if (convError) throw convError;
 
