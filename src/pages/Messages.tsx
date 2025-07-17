@@ -267,15 +267,20 @@ export default function Messages() {
   };
 
   const handleDeleteConversation = async (conversationId: string, deleteType: 'hide' | 'delete') => {
+    console.log('Starting delete operation:', { conversationId, deleteType, userId: user?.id });
+    
     try {
       if (deleteType === 'hide') {
         // Soft delete - mark as deleted for this user only
-        const { error } = await supabase
+        console.log('Attempting soft delete...');
+        const { data, error } = await supabase
           .from('conversation_participants')
           .update({ deleted_at: new Date().toISOString() })
           .eq('conversation_id', conversationId)
-          .eq('user_id', user!.id);
+          .eq('user_id', user!.id)
+          .select();
 
+        console.log('Soft delete result:', { data, error });
         if (error) throw error;
 
         toast({
@@ -284,11 +289,13 @@ export default function Messages() {
         });
       } else {
         // Hard delete - remove entire conversation and all messages
+        console.log('Attempting hard delete...');
         const { error: messagesError } = await supabase
           .from('messages')
           .delete()
           .eq('conversation_id', conversationId);
 
+        console.log('Messages delete result:', { messagesError });
         if (messagesError) throw messagesError;
 
         const { error: participantsError } = await supabase
@@ -296,6 +303,7 @@ export default function Messages() {
           .delete()
           .eq('conversation_id', conversationId);
 
+        console.log('Participants delete result:', { participantsError });
         if (participantsError) throw participantsError;
 
         const { error: conversationError } = await supabase
@@ -303,6 +311,7 @@ export default function Messages() {
           .delete()
           .eq('id', conversationId);
 
+        console.log('Conversation delete result:', { conversationError });
         if (conversationError) throw conversationError;
 
         toast({
@@ -311,16 +320,15 @@ export default function Messages() {
         });
       }
 
-      // Update local state immediately for instant feedback
-      setConversations(prev => prev.filter(conv => conv.id !== conversationId));
-      
       // Clear selection if we deleted the selected conversation
       if (selectedConversationId === conversationId) {
         setSelectedConversationId(null);
       }
 
+      console.log('About to refresh conversations...');
       // Refresh conversations list to ensure consistency
       await fetchConversations();
+      console.log('Conversations refreshed');
     } catch (error: any) {
       console.error('Error deleting conversation:', error);
       toast({
