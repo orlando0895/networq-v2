@@ -277,52 +277,32 @@ export default function Messages() {
       {/* Messages content area - constrained height for tab context */}
       <div className="rounded-lg border bg-card h-[500px] flex flex-col">
         <div className="flex flex-1 min-h-0">
-          {/* Conversations sidebar */}
-          <div className={`${selectedConversationId ? 'hidden lg:flex' : 'flex'} w-full lg:w-80 border-r flex-col min-h-0`}>
-            <div className="p-3 md:p-4 border-b flex-shrink-0">
-              <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">
-                Conversations
-              </h3>
-            </div>
-
-            <div className="flex-1 overflow-y-auto min-h-0">
-              <ConversationList
-                conversations={conversations}
-                selectedConversationId={selectedConversationId}
-                onSelectConversation={setSelectedConversationId}
-                loading={loading}
-              />
-            </div>
-          </div>
-
-          {/* Main chat area */}
-          <div className={`${selectedConversationId ? 'flex' : 'hidden lg:flex'} flex-1 flex-col min-h-0`}>
-            {selectedConversationId ? (
-              <ChatWindow
-                conversationId={selectedConversationId}
-                currentUserId={user.id}
-                onBack={handleBackToConversations}
-              />
-            ) : (
-              <div className="flex-1 flex items-center justify-center bg-muted/20">
-                <div className="text-center space-y-4 p-4 md:p-8 max-w-sm">
-                  <div className="mx-auto w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
-                    <MessageSquare className="h-6 w-6 text-primary" />
-                  </div>
-                  <div className="space-y-2">
-                    <h3 className="text-lg font-semibold">Select a conversation</h3>
-                    <p className="text-sm text-muted-foreground">
-                      Choose a conversation from the list to start messaging, or create a new conversation with one of your contacts.
-                    </p>
-                  </div>
-                  <Button onClick={() => setIsNewMessageOpen(true)} variant="outline" size="sm">
-                    <Plus className="h-4 w-4 mr-2" />
-                    Start New Conversation
-                  </Button>
-                </div>
+          {selectedConversationId ? (
+            /* Chat view - full width */
+            <ChatWindow
+              conversationId={selectedConversationId}
+              currentUserId={user.id}
+              onBack={handleBackToConversations}
+            />
+          ) : (
+            /* Conversations list - full width */
+            <div className="flex w-full flex-col min-h-0">
+              <div className="p-3 md:p-4 border-b flex-shrink-0">
+                <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">
+                  Conversations
+                </h3>
               </div>
-            )}
-          </div>
+
+              <div className="flex-1 overflow-y-auto min-h-0">
+                <ConversationList
+                  conversations={conversations}
+                  selectedConversationId={selectedConversationId}
+                  onSelectConversation={setSelectedConversationId}
+                  loading={loading}
+                />
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
