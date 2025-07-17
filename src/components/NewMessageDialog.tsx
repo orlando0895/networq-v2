@@ -52,13 +52,13 @@ export function NewMessageDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
+      <DialogContent className="sm:max-w-md max-h-[80vh] flex flex-col">
+        <DialogHeader className="flex-shrink-0">
           <DialogTitle>Start New Conversation</DialogTitle>
         </DialogHeader>
         
-        <div className="space-y-4">
-          <div className="relative">
+        <div className="flex flex-col space-y-4 min-h-0 flex-1">
+          <div className="relative flex-shrink-0">
             <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Search contacts..."
@@ -68,7 +68,7 @@ export function NewMessageDialog({
             />
           </div>
 
-          <ScrollArea className="h-80">
+          <div className="flex-1 min-h-0">
             {filteredContacts.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-32 text-center">
                 <MessageSquare className="h-8 w-8 text-muted-foreground mb-2" />
@@ -77,43 +77,45 @@ export function NewMessageDialog({
                 </p>
               </div>
             ) : (
-              <div className="space-y-2">
-                {filteredContacts.map((contact) => (
-                  <Button
-                    key={contact.id}
-                    variant="ghost"
-                    className="w-full justify-start h-auto p-3"
-                    onClick={() => handleSelectContact(contact.id)}
-                  >
-                    <div className="flex items-center space-x-3 w-full">
-                      <Avatar className="h-8 w-8">
-                        <AvatarFallback>
-                          {contact.name
-                            .split(' ')
-                            .map(n => n[0])
-                            .join('')
-                            .toUpperCase()}
-                        </AvatarFallback>
-                      </Avatar>
-                      
-                      <div className="flex-1 text-left">
-                        <p className="font-medium text-sm">{contact.name}</p>
-                        <div className="flex items-center space-x-2 text-xs text-muted-foreground">
-                          <span>{contact.email}</span>
-                          {contact.company && (
-                            <>
-                              <span>•</span>
-                              <span>{contact.company}</span>
-                            </>
-                          )}
+              <ScrollArea className="h-full">
+                <div className="space-y-2 pr-4">
+                  {filteredContacts.map((contact) => (
+                    <Button
+                      key={contact.id}
+                      variant="ghost"
+                      className="w-full justify-start h-auto p-3"
+                      onClick={() => handleSelectContact(contact.id)}
+                    >
+                      <div className="flex items-center space-x-3 w-full">
+                        <Avatar className="h-8 w-8 flex-shrink-0">
+                          <AvatarFallback>
+                            {contact.name
+                              .split(' ')
+                              .map(n => n[0])
+                              .join('')
+                              .toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                        
+                        <div className="flex-1 text-left min-w-0">
+                          <p className="font-medium text-sm truncate">{contact.name}</p>
+                          <div className="flex items-center space-x-2 text-xs text-muted-foreground">
+                            <span className="truncate">{contact.email}</span>
+                            {contact.company && (
+                              <>
+                                <span>•</span>
+                                <span className="truncate">{contact.company}</span>
+                              </>
+                            )}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </Button>
-                ))}
-              </div>
+                    </Button>
+                  ))}
+                </div>
+              </ScrollArea>
             )}
-          </ScrollArea>
+          </div>
         </div>
       </DialogContent>
     </Dialog>
