@@ -124,6 +124,9 @@ const Messages = ({ targetConversationId }: MessagesProps) => {
           m => m.conversation_id === convId
         );
 
+        // Skip conversations without any messages
+        if (!lastMessage) return;
+
         // Get participant info - start with profile data
         let participantName = profile?.full_name || '';
         let participantEmail = profile?.email || '';
