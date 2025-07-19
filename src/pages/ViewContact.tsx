@@ -60,7 +60,7 @@ export default function ViewContact() {
     };
 
     loadContactCard();
-  }, [shareCode, fetchContactCardByShareCode, toast]);
+  }, [shareCode]); // Only depend on shareCode to prevent infinite loop
 
   const handleAddContact = async () => {
     if (!contactCard || adding) return;
