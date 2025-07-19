@@ -66,6 +66,9 @@ const AddContactByCode = () => {
   const addFoundContact = async () => {
     if (!foundCard) return;
     
+    console.log('Adding contact:', foundCard);
+    console.log('Contact user_id:', foundCard.user_id);
+    
     setIsAdding(true);
     const result = await addContact({
       name: foundCard.name,
@@ -83,6 +86,8 @@ const AddContactByCode = () => {
       user_id: foundCard.user_id, // Pass the user_id for mutual contact addition
       added_via: 'share_code' // Track how this contact was added
     });
+
+    console.log('Add contact result:', result);
 
     if (result.success) {
       setShareCode('');
