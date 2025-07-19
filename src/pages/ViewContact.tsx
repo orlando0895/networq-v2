@@ -26,8 +26,12 @@ export default function ViewContact() {
 
   useEffect(() => {
     const loadContactCard = async () => {
-      if (!shareCode) return;
+      if (!shareCode) {
+        console.log('No share code provided');
+        return;
+      }
       
+      console.log('Loading contact card with share code:', shareCode);
       setLoading(true);
       try {
         const result = await fetchContactCardByShareCode(shareCode, false);
