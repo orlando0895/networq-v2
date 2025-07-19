@@ -35,11 +35,14 @@ const AddContactByCode = () => {
     const codeToSearch = code || shareCode.trim();
     if (!codeToSearch) return;
     
+    console.log('Searching for contact with code:', codeToSearch);
     setIsSearching(true);
     const result = await fetchContactCardByShareCode(codeToSearch);
+    console.log('Search result:', result);
     
     if (result.success && result.data) {
       setFoundCard(result.data);
+      console.log('Found contact card:', result.data);
       if (code) {
         // If code came from QR scanner, update the input field
         setShareCode(code);
@@ -48,6 +51,7 @@ const AddContactByCode = () => {
       }
     } else {
       setFoundCard(null);
+      console.log('No contact found for code:', codeToSearch);
       if (code) {
         toast({
           title: "QR Code Invalid",
@@ -104,17 +108,21 @@ const AddContactByCode = () => {
       qrScannerRef.current = new QrScanner(
         videoRef.current,
         (result) => {
+          console.log('QR code scanned:', result.data);
           // Extract share code from URL or use the result directly
           let shareCode = result.data;
           
           // If it's a URL containing our contact path, extract the share code
           if (shareCode.includes('/contact/')) {
+            console.log('Found contact URL, extracting share code...');
             const match = shareCode.match(/\/contact\/([a-f0-9]{8})/);
             if (match) {
               shareCode = match[1];
+              console.log('Extracted share code:', shareCode);
             }
           }
           
+          console.log('Searching for contact with share code:', shareCode);
           // Search for the contact
           searchByCode(shareCode);
         },
