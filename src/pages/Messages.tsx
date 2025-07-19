@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Plus, MessageSquare } from 'lucide-react';
 import { useContacts } from '@/hooks/useContacts';
 import { useToast } from '@/hooks/use-toast';
+import { useParams, useNavigate } from 'react-router-dom';
 
 interface Conversation {
   id: string;
@@ -30,6 +31,8 @@ export default function Messages() {
   const { user } = useAuth();
   const { contacts } = useContacts();
   const { toast } = useToast();
+  const { conversationId } = useParams();
+  const navigate = useNavigate();
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [selectedConversationId, setSelectedConversationId] = useState<string | null>(null);
   const [isNewMessageOpen, setIsNewMessageOpen] = useState(false);
@@ -168,6 +171,11 @@ export default function Messages() {
         });
 
       setConversations(processedConversations);
+      
+      // Auto-select conversation from URL parameter
+      if (conversationId && processedConversations.some(conv => conv.id === conversationId)) {
+        setSelectedConversationId(conversationId);
+      }
     } catch (error: any) {
       console.error('Error fetching conversations:', error);
       toast({
@@ -253,6 +261,7 @@ export default function Messages() {
 
       setSelectedConversationId(data);
       setIsNewMessageOpen(false);
+      navigate(`/messages/${data}`);
       
       // Refresh conversations to include the new one
       await fetchConversations();
@@ -337,6 +346,7 @@ export default function Messages() {
 
   const handleBackToConversations = () => {
     setSelectedConversationId(null);
+    navigate('/messages');
   };
 
   if (!user) {

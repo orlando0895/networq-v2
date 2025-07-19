@@ -29,6 +29,11 @@ const App = () => (
                 <Messages />
               </ProtectedRoute>
             } />
+            <Route path="/messages/:conversationId" element={
+              <ProtectedRoute>
+                <Messages />
+              </ProtectedRoute>
+            } />
             <Route path="/" element={
               <ProtectedRoute>
                 <Index />
