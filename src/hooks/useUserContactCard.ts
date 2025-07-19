@@ -179,7 +179,6 @@ export const useUserContactCard = () => {
         return { success: false };
       }
 
-      
       return { success: true, data };
     } catch (error: any) {
       console.error('Error fetching contact card by share code:', error);
