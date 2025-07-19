@@ -83,43 +83,36 @@ export const useMutualContacts = () => {
         console.log('Successfully added to my contacts');
       }
 
-      // Step 3: Add my info to their contacts using the database function
-      console.log('Step 3: Adding my contact to their list...');
-      console.log('Calling add_mutual_contact with params:', {
-        target_user_id: otherUserContactCard.user_id,
-        contact_name: myContactCard.name,
-        contact_email: myContactCard.email
-      });
+      // Step 3: Use edge function for mutual contact addition
+      console.log('Step 3: Calling edge function for mutual contact addition...');
       
-      const { data: mutualSuccess, error: mutualError } = await supabase.rpc('add_mutual_contact', {
-        target_user_id: otherUserContactCard.user_id,
-        contact_name: myContactCard.name,
-        contact_email: myContactCard.email,
-        contact_phone: myContactCard.phone,
-        contact_company: myContactCard.company,
-        contact_industry: myContactCard.industry,
-        contact_services: myContactCard.services,
-        contact_tier: 'Acquaintance',
-        contact_notes: 'Added via mutual contact',
-        contact_linkedin: myContactCard.linkedin,
-        contact_facebook: myContactCard.facebook,
-        contact_whatsapp: myContactCard.whatsapp,
-        contact_websites: myContactCard.websites,
-      });
+      const { data: edgeFunctionResult, error: edgeFunctionError } = await supabase.functions.invoke(
+        'add-mutual-contact',
+        {
+          body: { otherUserContactCard }
+        }
+      );
 
-      console.log('RPC call result:', { mutualSuccess, mutualError });
+      console.log('Edge function result:', { edgeFunctionResult, edgeFunctionError });
 
-      if (mutualError) {
-        console.error('❌ Error in mutual contact addition:', mutualError);
+      if (edgeFunctionError) {
+        console.error('❌ Error in edge function:', edgeFunctionError);
         toast({
           title: "Partial Success",
           description: "Contact added to your list, but couldn't add you to theirs.",
           variant: "destructive"
         });
-      } else if (mutualSuccess) {
-        console.log('✅ Mutual contact added successfully');
+      } else if (edgeFunctionResult?.success) {
+        console.log('✅ Mutual contact added successfully via edge function');
+        if (edgeFunctionResult.partial) {
+          toast({
+            title: "Partial Success",
+            description: edgeFunctionResult.message,
+            variant: "destructive"
+          });
+        }
       } else {
-        console.log('⚠️ Mutual contact addition failed (function returned false)');
+        console.log('⚠️ Edge function returned unsuccessful result');
         toast({
           title: "Partial Success", 
           description: "Contact added to your list, but couldn't add you to theirs.",
