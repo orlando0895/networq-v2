@@ -30,15 +30,18 @@ export default function ViewContact() {
       
       setLoading(true);
       try {
-        const result = await fetchContactCardByShareCode(shareCode);
+        const result = await fetchContactCardByShareCode(shareCode, false);
         if (result.success && result.data) {
           setContactCard(result.data);
         } else {
-          toast({
-            title: "Contact Not Found",
-            description: "The contact card you're looking for doesn't exist or has been deactivated.",
-            variant: "destructive"
-          });
+          // Only show toast for logged-in users to avoid issues on public pages
+          if (user) {
+            toast({
+              title: "Contact Not Found",
+              description: "The contact card you're looking for doesn't exist or has been deactivated.",
+              variant: "destructive"
+            });
+          }
         }
       } catch (error) {
         console.error('Error fetching contact card:', error);
