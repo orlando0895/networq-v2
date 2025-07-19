@@ -11,6 +11,7 @@ export const useMutualContacts = () => {
 
   const addMutualContact = async (otherUserContactCard: UserContactCard) => {
     console.log('🚀 addMutualContact called with:', otherUserContactCard);
+    console.log('🔍 Current user:', user);
     
     if (!user) {
       console.log('❌ No authenticated user');
