@@ -41,8 +41,14 @@ export const useContacts = () => {
   const addMutualContact = async (contactUserId: string, myContactCard: any) => {
     try {
       if (!contactUserId) {
+        console.log('❌ No contactUserId provided for mutual contact');
         return;
       }
+
+      console.log('🔄 Adding mutual contact:', {
+        target_user_id: contactUserId,
+        my_card: myContactCard
+      });
 
       // Use the database function to add mutual contact (bypasses RLS)
       const { data: success, error } = await supabase.rpc('add_mutual_contact', {
@@ -62,14 +68,14 @@ export const useContacts = () => {
       });
 
       if (error) {
-        console.error('Error adding mutual contact:', error);
+        console.error('❌ Error adding mutual contact:', error);
       } else if (success) {
-        console.log('Mutual contact added successfully');
+        console.log('✅ Mutual contact added successfully');
       } else {
-        console.log('Mutual contact addition failed');
+        console.log('⚠️ Mutual contact addition returned false');
       }
     } catch (error: any) {
-      console.error('Error in mutual contact addition:', error);
+      console.error('💥 Error in mutual contact addition:', error);
     }
   };
 
