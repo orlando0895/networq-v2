@@ -119,6 +119,7 @@ export const useContacts = () => {
 
       // Try to add mutual contact - fetch my contact card first
       console.log('Attempting mutual contact addition for user_id:', contactData.user_id);
+      console.log('Full contactData object:', JSON.stringify(contactData, null, 2));
       try {
         const { data: myContactCard, error: cardError } = await supabase
           .from('user_contact_cards')
