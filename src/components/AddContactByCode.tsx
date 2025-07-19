@@ -135,6 +135,8 @@ const AddContactByCode = () => {
           highlightScanRegion: true,
           highlightCodeOutline: true,
           preferredCamera: 'environment', // Use back camera on mobile
+          maxScansPerSecond: 5, // Reduce scan frequency to improve accuracy
+          returnDetailedScanResult: true, // Get more detailed scan information
         }
       );
 
