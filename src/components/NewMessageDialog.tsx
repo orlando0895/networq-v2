@@ -106,7 +106,7 @@ export function NewMessageDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md max-h-[80vh] flex flex-col">
+      <DialogContent className="sm:max-w-md h-[80vh] flex flex-col">{" "}
         <DialogHeader className="flex-shrink-0">
           <DialogTitle>Start New Conversation</DialogTitle>
         </DialogHeader>
@@ -143,7 +143,7 @@ export function NewMessageDialog({
             )}
           </div>
 
-          <div className="flex-1 min-h-0">
+          <div className="flex-1 min-h-0 overflow-hidden">
             {filteredContacts.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-32 text-center">
                 <MessageSquare className="h-8 w-8 text-muted-foreground mb-2" />
@@ -152,8 +152,8 @@ export function NewMessageDialog({
                 </p>
               </div>
             ) : (
-              <ScrollArea className="h-full">
-                <div className="space-y-2 pr-4">
+              <ScrollArea className="h-full w-full">
+                <div className="space-y-2 pr-2">
                   {filteredContacts.map((contact) => (
                     <Button
                       key={contact.id}
