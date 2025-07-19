@@ -83,8 +83,8 @@ export const useMutualContacts = () => {
         console.log('Successfully added to my contacts');
       }
 
-      // Step 3: Use edge function for mutual contact addition
       console.log('Step 3: Calling edge function for mutual contact addition...');
+      console.log('Payload to edge function:', { otherUserContactCard });
       
       const { data: edgeFunctionResult, error: edgeFunctionError } = await supabase.functions.invoke(
         'add-mutual-contact',
