@@ -84,6 +84,12 @@ export const useMutualContacts = () => {
 
       // Step 3: Add my info to their contacts using the database function
       console.log('Step 3: Adding my contact to their list...');
+      console.log('Calling add_mutual_contact with params:', {
+        target_user_id: otherUserContactCard.user_id,
+        contact_name: myContactCard.name,
+        contact_email: myContactCard.email
+      });
+      
       const { data: mutualSuccess, error: mutualError } = await supabase.rpc('add_mutual_contact', {
         target_user_id: otherUserContactCard.user_id,
         contact_name: myContactCard.name,
@@ -99,6 +105,8 @@ export const useMutualContacts = () => {
         contact_whatsapp: myContactCard.whatsapp,
         contact_websites: myContactCard.websites,
       });
+
+      console.log('RPC call result:', { mutualSuccess, mutualError });
 
       if (mutualError) {
         console.error('❌ Error in mutual contact addition:', mutualError);
