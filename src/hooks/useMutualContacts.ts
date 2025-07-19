@@ -10,8 +10,10 @@ export const useMutualContacts = () => {
   const { toast } = useToast();
 
   const addMutualContact = async (otherUserContactCard: UserContactCard) => {
+    console.log('🚀 addMutualContact called with:', otherUserContactCard);
+    
     if (!user) {
-      console.log('No authenticated user');
+      console.log('❌ No authenticated user');
       return { success: false };
     }
 
