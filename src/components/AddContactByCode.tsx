@@ -43,6 +43,8 @@ const AddContactByCode = () => {
     if (result.success && result.data) {
       setFoundCard(result.data);
       console.log('Found contact card:', result.data);
+      console.log('Contact card user_id specifically:', result.data.user_id);
+      console.log('typeof user_id:', typeof result.data.user_id);
       if (code) {
         // If code came from QR scanner, update the input field
         setShareCode(code);
