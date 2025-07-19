@@ -296,6 +296,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      delete_mutual_contact: {
+        Args: { contact_id_to_delete: string; current_user_id: string }
+        Returns: boolean
+      }
       get_or_create_direct_conversation: {
         Args: { other_user_id: string }
         Returns: string
