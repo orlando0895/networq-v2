@@ -35,11 +35,11 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact, onSwitchToMess
   };
 
   const handleStartConversation = async () => {
-    // Check if contact was added through allowed methods
-    if (!contact.added_via || !['share_code', 'qr_code', 'mutual_contact', 'business_card'].includes(contact.added_via)) {
+    // Check if contact was added through allowed methods (only those with accounts)
+    if (!contactHasAccount(contact.added_via)) {
       toast({
         title: "Messaging Not Available",
-        description: "You can only message contacts added through share codes, QR codes, business cards, or mutual contacts.",
+        description: "You can only message contacts who have accounts (added via share codes, QR codes, or mutual contacts).",
         variant: "destructive"
       });
       return;
