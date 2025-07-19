@@ -193,24 +193,21 @@ export const useContacts = () => {
     if (!user) return;
 
     try {
-      // Use the mutual delete function instead of direct deletion
-      const { data: success, error } = await supabase.rpc('delete_mutual_contact', {
-        contact_id_to_delete: id,
-        current_user_id: user.id
-      });
+      const { error } = await supabase
+        .from('contacts')
+        .delete()
+        .eq('id', id)
+        .eq('user_id', user.id);
 
       if (error) throw error;
 
-      if (success) {
-        setContacts(prev => prev.filter(contact => contact.id !== id));
-        toast({
-          title: "Contact Deleted",
-          description: "Contact has been removed from both networks."
-        });
-        return { success: true };
-      } else {
-        throw new Error('Contact deletion failed');
-      }
+      setContacts(prev => prev.filter(contact => contact.id !== id));
+      toast({
+        title: "Contact Deleted",
+        description: "Contact has been removed from your network."
+      });
+
+      return { success: true };
     } catch (error: any) {
       console.error('Error deleting contact:', error);
       toast({

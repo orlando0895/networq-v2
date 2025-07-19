@@ -89,7 +89,7 @@ export function ConversationList({
   };
 
   const getMessagePreview = (message: Conversation['last_message']) => {
-    if (!message) return '';
+    if (!message) return 'No messages yet';
     
     switch (message.message_type) {
       case 'image':

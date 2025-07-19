@@ -157,7 +157,7 @@ export const useUserContactCard = () => {
     }
   };
 
-  const fetchContactCardByShareCode = async (shareCode: string, showToasts = true) => {
+  const fetchContactCardByShareCode = async (shareCode: string) => {
     try {
       const { data, error } = await supabase
         .from('user_contact_cards')
@@ -169,26 +169,22 @@ export const useUserContactCard = () => {
       if (error) throw error;
       
       if (!data) {
-        if (showToasts) {
-          toast({
-            title: "Invalid Code",
-            description: "No contact card found with this share code.",
-            variant: "destructive"
-          });
-        }
+        toast({
+          title: "Invalid Code",
+          description: "No contact card found with this share code.",
+          variant: "destructive"
+        });
         return { success: false };
       }
 
       return { success: true, data };
     } catch (error: any) {
       console.error('Error fetching contact card by share code:', error);
-      if (showToasts) {
-        toast({
-          title: "Error",
-          description: "Failed to load contact card.",
-          variant: "destructive"
-        });
-      }
+      toast({
+        title: "Error",
+        description: "Failed to load contact card.",
+        variant: "destructive"
+      });
       return { success: false };
     }
   };

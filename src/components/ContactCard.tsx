@@ -13,7 +13,6 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
 import type { Database } from '@/integrations/supabase/types';
-import { contactHasAccount } from '@/lib/utils';
 
 type Contact = Database['public']['Tables']['contacts']['Row'];
 
@@ -35,11 +34,11 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact, onSwitchToMess
   };
 
   const handleStartConversation = async () => {
-    // Check if contact was added through allowed methods (only those with accounts)
-    if (!contactHasAccount(contact.added_via)) {
+    // Check if contact was added through allowed methods
+    if (!contact.added_via || !['share_code', 'qr_code', 'mutual_contact', 'business_card'].includes(contact.added_via)) {
       toast({
         title: "Messaging Not Available",
-        description: "You can only message contacts who have accounts (added via share codes, QR codes, or mutual contacts).",
+        description: "You can only message contacts added through share codes, QR codes, business cards, or mutual contacts.",
         variant: "destructive"
       });
       return;
@@ -180,13 +179,11 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact, onSwitchToMess
                         <MoreVertical className="w-4 h-4" />
                       </Button>
                     </DropdownMenuTrigger>
-                     <DropdownMenuContent align="end" className="w-48 bg-white shadow-lg border z-50">
-                       {contactHasAccount(contact.added_via) && (
-                         <DropdownMenuItem onClick={onSwitchToMessages ? handleStartConversation : undefined} className="cursor-pointer">
-                           <MessageSquare className="w-4 h-4 mr-2" />
-                           Message
-                         </DropdownMenuItem>
-                       )}
+                    <DropdownMenuContent align="end" className="w-48 bg-white shadow-lg border z-50">
+                      <DropdownMenuItem onClick={onSwitchToMessages ? handleStartConversation : undefined} className="cursor-pointer">
+                        <MessageSquare className="w-4 h-4 mr-2" />
+                        Message
+                      </DropdownMenuItem>
                       <DropdownMenuItem onClick={() => setIsEditingContact(true)} className="cursor-pointer">
                         <Edit className="w-4 h-4 mr-2" />
                         Edit Contact
@@ -338,17 +335,15 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact, onSwitchToMess
                       <UserPlus className="w-4 h-4 mr-2" />
                       Refer
                     </Button>
-                     {contactHasAccount(contact.added_via) && (
-                       <Button 
-                         variant="outline" 
-                         size="sm" 
-                         className="justify-center h-10"
-                          onClick={onSwitchToMessages ? handleStartConversation : undefined}
-                       >
-                         <MessageSquare className="w-4 h-4 mr-2" />
-                         Message
-                       </Button>
-                     )}
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="justify-center h-10"
+                       onClick={onSwitchToMessages ? handleStartConversation : undefined}
+                    >
+                      <MessageSquare className="w-4 h-4 mr-2" />
+                      Message
+                    </Button>
                     <Button 
                       variant="outline" 
                       size="sm" 

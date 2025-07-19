@@ -17,7 +17,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { contactHasAccount } from '@/lib/utils';
 
 interface Contact {
   id: string;
@@ -46,9 +45,11 @@ export function NewMessageDialog({
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedIndustry, setSelectedIndustry] = useState<string>('all');
 
-  // Get unique industries from contacts that have accounts
+  // Get unique industries from contacts
   const industries = useMemo(() => {
-    const allowedContacts = contacts.filter(contact => contactHasAccount(contact.added_via));
+    const allowedContacts = contacts.filter(contact => 
+      contact.added_via && ['share_code', 'qr_code', 'mutual_contact', 'business_card'].includes(contact.added_via)
+    );
     const uniqueIndustries = [...new Set(allowedContacts
       .map(contact => contact.industry)
       .filter(Boolean)
@@ -57,8 +58,10 @@ export function NewMessageDialog({
   }, [contacts]);
 
   const filteredContacts = useMemo(() => {
-    // First filter by contacts that have accounts (messageable contacts)
-    const allowedContacts = contacts.filter(contact => contactHasAccount(contact.added_via));
+    // First filter by allowed contact types (messageable contacts)
+    const allowedContacts = contacts.filter(contact => 
+      contact.added_via && ['share_code', 'qr_code', 'mutual_contact', 'business_card'].includes(contact.added_via)
+    );
 
     // If there's a search term, search through ALL messageable contacts
     if (searchTerm.trim()) {
