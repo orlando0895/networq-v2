@@ -79,7 +79,9 @@ export default function ViewContact() {
         linkedin: contactCard.linkedin || '',
         facebook: contactCard.facebook || '',
         whatsapp: contactCard.whatsapp || '',
-        websites: contactCard.websites || []
+        websites: contactCard.websites || [],
+        user_id: contactCard.user_id, // Pass the user_id for mutual contact
+        added_via: 'qr_code' // Mark as QR code addition to enable messaging
       });
 
       setAdded(true);
