@@ -38,44 +38,6 @@ export const useContacts = () => {
     }
   };
 
-  const addMutualContact = async (contactUserId: string, myContactCard: any) => {
-    try {
-      console.log('Starting mutual contact addition for user ID:', contactUserId);
-      console.log('My contact card:', myContactCard);
-
-      if (!contactUserId) {
-        console.log('No user ID provided for mutual contact');
-        return;
-      }
-
-      // Use the database function to add mutual contact (bypasses RLS)
-      const { data: success, error } = await supabase.rpc('add_mutual_contact', {
-        target_user_id: contactUserId,
-        contact_name: myContactCard.name,
-        contact_email: myContactCard.email,
-        contact_phone: myContactCard.phone || null,
-        contact_company: myContactCard.company || null,
-        contact_industry: myContactCard.industry || null,
-        contact_services: myContactCard.services || null,
-        contact_tier: 'Acquaintance',
-        contact_notes: 'Added through mutual contact',
-        contact_linkedin: myContactCard.linkedin || null,
-        contact_facebook: myContactCard.facebook || null,
-        contact_whatsapp: myContactCard.whatsapp || null,
-        contact_websites: myContactCard.websites || null,
-      });
-
-      if (error) {
-        console.error('Error adding mutual contact:', error);
-      } else if (success) {
-        console.log('Mutual contact added successfully');
-      } else {
-        console.log('Mutual contact addition failed');
-      }
-    } catch (error: any) {
-      console.error('Error in mutual contact addition:', error);
-    }
-  };
 
   const addContact = async (contactData: {
     name: string;
@@ -90,8 +52,7 @@ export const useContacts = () => {
     facebook?: string;
     whatsapp?: string;
     websites: string[];
-    user_id?: string; // Optional for mutual contact addition
-    added_via?: string; // Track how contact was added
+    added_via?: string;
   }) => {
     if (!user) return;
 
@@ -116,23 +77,6 @@ export const useContacts = () => {
       if (error) throw error;
 
       setContacts(prev => [data, ...prev]);
-
-      // Try to add mutual contact - fetch my contact card first
-      try {
-        const { data: myContactCard, error: cardError } = await supabase
-          .from('user_contact_cards')
-          .select('*')
-          .eq('user_id', user.id)
-          .eq('is_active', true)
-          .maybeSingle();
-
-        if (!cardError && myContactCard && contactData.user_id) {
-          await addMutualContact(contactData.user_id, myContactCard);
-        }
-      } catch (mutualError) {
-        console.error('Error adding mutual contact:', mutualError);
-        // Don't fail the main contact addition if mutual addition fails
-      }
 
       toast({
         title: "Contact Added! 🎉",

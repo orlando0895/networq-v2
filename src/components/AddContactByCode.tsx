@@ -10,6 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { UserPlus, ExternalLink, QrCode, Camera, CameraOff } from 'lucide-react';
 import { useUserContactCard } from '@/hooks/useUserContactCard';
 import { useContacts } from '@/hooks/useContacts';
+import { useMutualContacts } from '@/hooks/useMutualContacts';
 import { useToast } from '@/hooks/use-toast';
 import QrScanner from 'qr-scanner';
 import type { Database } from '@/integrations/supabase/types';
@@ -29,6 +30,7 @@ const AddContactByCode = () => {
   
   const { fetchContactCardByShareCode } = useUserContactCard();
   const { addContact } = useContacts();
+  const { addMutualContact } = useMutualContacts();
   const { toast } = useToast();
 
   const searchByCode = async (code?: string) => {
@@ -63,22 +65,9 @@ const AddContactByCode = () => {
     if (!foundCard) return;
     
     setIsAdding(true);
-    const result = await addContact({
-      name: foundCard.name,
-      email: foundCard.email,
-      phone: foundCard.phone || undefined,
-      company: foundCard.company || undefined,
-      industry: foundCard.industry || undefined,
-      services: foundCard.services || [],
-      tier: 'Acquaintance', // Default tier for shared contacts
-      notes: foundCard.notes || undefined,
-      linkedin: foundCard.linkedin || undefined,
-      facebook: foundCard.facebook || undefined,
-      whatsapp: foundCard.whatsapp || undefined,
-      websites: foundCard.websites || [],
-      user_id: foundCard.user_id, // Pass the user_id for mutual contact addition
-      added_via: 'share_code' // Track how this contact was added
-    });
+    
+    // Use the new mutual contacts hook which handles both directions
+    const result = await addMutualContact(foundCard);
 
     if (result.success) {
       setShareCode('');
