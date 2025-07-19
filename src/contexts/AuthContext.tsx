@@ -38,10 +38,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     );
 
-    // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
+    // Get initial session with error handling
+    supabase.auth.getSession().then(({ data: { session }, error }) => {
+      if (error) {
+        console.warn('Auth session error:', error);
+        // Clear any invalid tokens and proceed without authentication
+        setSession(null);
+        setUser(null);
+      } else {
+        setSession(session);
+        setUser(session?.user ?? null);
+      }
+      setLoading(false);
+    }).catch((error) => {
+      console.warn('Auth initialization error:', error);
+      setSession(null);
+      setUser(null);
       setLoading(false);
     });
 
