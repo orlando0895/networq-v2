@@ -35,16 +35,11 @@ const AddContactByCode = () => {
     const codeToSearch = code || shareCode.trim();
     if (!codeToSearch) return;
     
-    console.log('Searching for contact with code:', codeToSearch);
     setIsSearching(true);
     const result = await fetchContactCardByShareCode(codeToSearch);
-    console.log('Search result:', result);
     
     if (result.success && result.data) {
       setFoundCard(result.data);
-      console.log('Found contact card:', result.data);
-      console.log('Contact card user_id specifically:', result.data.user_id);
-      console.log('typeof user_id:', typeof result.data.user_id);
       if (code) {
         // If code came from QR scanner, update the input field
         setShareCode(code);
@@ -53,7 +48,6 @@ const AddContactByCode = () => {
       }
     } else {
       setFoundCard(null);
-      console.log('No contact found for code:', codeToSearch);
       if (code) {
         toast({
           title: "QR Code Invalid",
@@ -85,8 +79,6 @@ const AddContactByCode = () => {
       user_id: foundCard.user_id, // Pass the user_id for mutual contact addition
       added_via: 'share_code' // Track how this contact was added
     });
-
-    console.log('Add contact result:', result);
 
     if (result.success) {
       setShareCode('');

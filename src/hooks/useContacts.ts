@@ -92,9 +92,12 @@ export const useContacts = () => {
     if (!user) return;
 
     try {
+      // Preserve the user_id for mutual contact addition before creating the contact
+      const mutualContactUserId = contactData.user_id;
+      
       const newContact: ContactInsert = {
         ...contactData,
-        user_id: user.id,
+        user_id: user.id, // This is the current user who owns this contact
         added_date: new Date().toISOString().split('T')[0],
         linkedin: contactData.linkedin || null,
         facebook: contactData.facebook || null,
@@ -122,8 +125,8 @@ export const useContacts = () => {
           .eq('is_active', true)
           .maybeSingle();
 
-        if (!cardError && myContactCard && contactData.user_id) {
-          await addMutualContact(contactData.user_id, myContactCard);
+        if (!cardError && myContactCard && mutualContactUserId) {
+          await addMutualContact(mutualContactUserId, myContactCard);
         }
       } catch (mutualError) {
         console.error('Error adding mutual contact:', mutualError);
