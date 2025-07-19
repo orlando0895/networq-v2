@@ -159,16 +159,12 @@ export const useUserContactCard = () => {
 
   const fetchContactCardByShareCode = async (shareCode: string, showToasts = true) => {
     try {
-      console.log('Fetching contact card with share code:', shareCode);
       const { data, error } = await supabase
         .from('user_contact_cards')
         .select('*')
         .eq('share_code', shareCode)
         .eq('is_active', true)
         .maybeSingle();
-
-      console.log('Raw Supabase response:', { data, error });
-      console.log('Data user_id specifically:', data?.user_id);
 
       if (error) throw error;
       
@@ -183,7 +179,7 @@ export const useUserContactCard = () => {
         return { success: false };
       }
 
-      console.log('Returning contact card data:', data);
+      
       return { success: true, data };
     } catch (error: any) {
       console.error('Error fetching contact card by share code:', error);

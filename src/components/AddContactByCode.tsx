@@ -68,10 +68,6 @@ const AddContactByCode = () => {
   const addFoundContact = async () => {
     if (!foundCard) return;
     
-    console.log('Adding contact:', foundCard);
-    console.log('Contact user_id from foundCard:', foundCard.user_id);
-    console.log('Full foundCard object:', JSON.stringify(foundCard, null, 2));
-    
     setIsAdding(true);
     const result = await addContact({
       name: foundCard.name,

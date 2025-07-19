@@ -40,11 +40,7 @@ export const useContacts = () => {
 
   const addMutualContact = async (contactUserId: string, myContactCard: any) => {
     try {
-      console.log('Starting mutual contact addition for user ID:', contactUserId);
-      console.log('My contact card:', myContactCard);
-
       if (!contactUserId) {
-        console.log('No user ID provided for mutual contact');
         return;
       }
 
@@ -118,8 +114,6 @@ export const useContacts = () => {
       setContacts(prev => [data, ...prev]);
 
       // Try to add mutual contact - fetch my contact card first
-      console.log('Attempting mutual contact addition for user_id:', contactData.user_id);
-      console.log('Full contactData object:', JSON.stringify(contactData, null, 2));
       try {
         const { data: myContactCard, error: cardError } = await supabase
           .from('user_contact_cards')
@@ -128,18 +122,8 @@ export const useContacts = () => {
           .eq('is_active', true)
           .maybeSingle();
 
-        console.log('My contact card:', myContactCard);
-        console.log('Card fetch error:', cardError);
-
         if (!cardError && myContactCard && contactData.user_id) {
-          console.log('Calling addMutualContact...');
           await addMutualContact(contactData.user_id, myContactCard);
-        } else {
-          console.log('Skipping mutual contact addition:', { 
-            hasCard: !!myContactCard, 
-            hasUserId: !!contactData.user_id,
-            cardError 
-          });
         }
       } catch (mutualError) {
         console.error('Error adding mutual contact:', mutualError);
