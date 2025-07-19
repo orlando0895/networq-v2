@@ -20,9 +20,10 @@ interface ContactCardProps {
   contact: Contact;
   onUpdateContact: (id: string, updates: Partial<Contact>) => Promise<any>;
   onDeleteContact: (id: string) => Promise<any>;
+  onSwitchToMessages?: (conversationId: string) => void;
 }
 
-const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardProps) => {
+const ContactCard = ({ contact, onUpdateContact, onDeleteContact, onSwitchToMessages }: ContactCardProps) => {
   const [isEditingContact, setIsEditingContact] = useState(false);
   const [isAddingNote, setIsAddingNote] = useState(false);
   const { toast } = useToast();
@@ -75,8 +76,8 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
         return;
       }
 
-      // Navigate to messages page with the conversation ID
-      navigate(`/messages/${conversationId}`);
+      // Switch to messages tab with the conversation ID
+      onSwitchToMessages(conversationId);
       
       toast({
         title: "Conversation started",
@@ -179,7 +180,7 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-48 bg-white shadow-lg border z-50">
-                      <DropdownMenuItem onClick={handleStartConversation} className="cursor-pointer">
+                      <DropdownMenuItem onClick={onSwitchToMessages ? handleStartConversation : undefined} className="cursor-pointer">
                         <MessageSquare className="w-4 h-4 mr-2" />
                         Message
                       </DropdownMenuItem>
@@ -338,7 +339,7 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
                       variant="outline" 
                       size="sm" 
                       className="justify-center h-10"
-                      onClick={handleStartConversation}
+                       onClick={onSwitchToMessages ? handleStartConversation : undefined}
                     >
                       <MessageSquare className="w-4 h-4 mr-2" />
                       Message

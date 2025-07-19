@@ -37,6 +37,8 @@ const Index = () => {
   const [isAddingContact, setIsAddingContact] = useState(false);
   const [filterTier, setFilterTier] = useState<"all" | "A-player" | "Acquaintance">("all");
   const [filterIndustry, setFilterIndustry] = useState("all");
+  const [activeTab, setActiveTab] = useState("contacts");
+  const [targetConversationId, setTargetConversationId] = useState<string | null>(null);
 
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
@@ -151,7 +153,7 @@ const Index = () => {
 
       {/* Main Content */}
       <main className="px-4 sm:px-6 lg:px-8 py-6 sm:py-8 max-w-4xl mx-auto">
-        <Tabs defaultValue="contacts" className="space-y-6">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="contacts">My Contacts</TabsTrigger>
             <TabsTrigger value="my-card">My Card</TabsTrigger>
@@ -187,7 +189,11 @@ const Index = () => {
                   key={contact.id} 
                   contact={contact} 
                   onUpdateContact={updateContact} 
-                  onDeleteContact={deleteContact} 
+                  onDeleteContact={deleteContact}
+                  onSwitchToMessages={(conversationId) => {
+                    setTargetConversationId(conversationId);
+                    setActiveTab("messages");
+                  }}
                 />
               ))}
             </div>
@@ -205,7 +211,7 @@ const Index = () => {
           </TabsContent>
 
           <TabsContent value="messages" className="h-[calc(100vh-200px)]">
-            <Messages />
+            <Messages targetConversationId={targetConversationId} />
           </TabsContent>
         </Tabs>
       </main>

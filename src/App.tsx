@@ -9,7 +9,7 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import ViewContact from "./pages/ViewContact";
-import Messages from "./pages/Messages";
+
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,16 +24,6 @@ const App = () => (
           <Routes>
             <Route path="/auth" element={<Auth />} />
             <Route path="/contact/:shareCode" element={<ViewContact />} />
-            <Route path="/messages" element={
-              <ProtectedRoute>
-                <Messages />
-              </ProtectedRoute>
-            } />
-            <Route path="/messages/:conversationId" element={
-              <ProtectedRoute>
-                <Messages />
-              </ProtectedRoute>
-            } />
             <Route path="/" element={
               <ProtectedRoute>
                 <Index />
