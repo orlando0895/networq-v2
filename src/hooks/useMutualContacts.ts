@@ -101,11 +101,21 @@ export const useMutualContacts = () => {
       });
 
       if (mutualError) {
-        console.error('Error in mutual contact addition:', mutualError);
+        console.error('❌ Error in mutual contact addition:', mutualError);
+        toast({
+          title: "Partial Success",
+          description: "Contact added to your list, but couldn't add you to theirs.",
+          variant: "destructive"
+        });
       } else if (mutualSuccess) {
-        console.log('Mutual contact added successfully');
+        console.log('✅ Mutual contact added successfully');
       } else {
-        console.log('Mutual contact addition failed (function returned false)');
+        console.log('⚠️ Mutual contact addition failed (function returned false)');
+        toast({
+          title: "Partial Success", 
+          description: "Contact added to your list, but couldn't add you to theirs.",
+          variant: "destructive"
+        });
       }
 
       console.log('=== MUTUAL CONTACT ADDITION COMPLETE ===');
