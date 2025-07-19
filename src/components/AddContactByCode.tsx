@@ -104,21 +104,22 @@ const AddContactByCode = () => {
       qrScannerRef.current = new QrScanner(
         videoRef.current,
         (result) => {
-          console.log('QR code scanned:', result.data);
+          console.log('🔍 QR code scanned:', result.data);
           // Extract share code from URL or use the result directly
           let shareCode = result.data;
           
           // If it's a URL containing our contact path, extract the share code
           if (shareCode.includes('/contact/')) {
-            console.log('Found contact URL, extracting share code...');
+            console.log('🔗 Found contact URL, extracting share code...');
             const match = shareCode.match(/\/contact\/([a-f0-9]{8})/);
             if (match) {
               shareCode = match[1];
-              console.log('Extracted share code:', shareCode);
+              console.log('✂️ Extracted share code:', shareCode);
             }
           }
           
-          console.log('Searching for contact with share code:', shareCode);
+          console.log('🔎 Searching for contact with share code:', shareCode);
+          console.log('📱 QR Scanner: About to call searchByCode with:', shareCode);
           // Search for the contact
           searchByCode(shareCode);
         },
