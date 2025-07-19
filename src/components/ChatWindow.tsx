@@ -223,19 +223,7 @@ export function ChatWindow({ conversationId, currentUserId, onBack }: ChatWindow
 
       {/* Messages area */}
       <ScrollArea className="flex-1 p-4">
-        {messages.length === 0 ? (
-          <div className="flex-1 flex flex-col items-center justify-center text-center py-16">
-            <div className="w-16 h-16 rounded-full border-4 border-primary mb-6 flex items-center justify-center">
-              <div className="w-8 h-8 rounded-full border-2 border-primary"></div>
-            </div>
-            <h3 className="text-lg font-semibold mb-2">
-              {otherParticipant?.full_name || 'User'} + You
-            </h3>
-            <p className="text-muted-foreground mb-2">This is where things begin.</p>
-            <p className="text-muted-foreground">Who will break the ice?</p>
-          </div>
-        ) : (
-          <div className="space-y-4">
+        <div className="space-y-4">
           {messages.map((message) => {
             const isFromCurrentUser = message.sender_id === currentUserId;
             
@@ -294,8 +282,7 @@ export function ChatWindow({ conversationId, currentUserId, onBack }: ChatWindow
             );
           })}
           <div ref={messagesEndRef} />
-          </div>
-        )}
+        </div>
       </ScrollArea>
 
       {/* Message input */}
