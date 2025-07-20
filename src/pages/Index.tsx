@@ -41,18 +41,30 @@ const Index = () => {
   const [targetConversationId, setTargetConversationId] = useState<string | null>(null);
 
   const handleLogout = async () => {
-    const { error } = await supabase.auth.signOut();
-    
-    if (error) {
+    try {
+      console.log('🔄 Attempting to sign out...');
+      const { error } = await supabase.auth.signOut();
+      
+      if (error) {
+        console.error('❌ Sign out error:', error);
+        toast({
+          title: "Error",
+          description: `Failed to sign out: ${error.message}`,
+          variant: "destructive",
+        });
+      } else {
+        console.log('✅ Successfully signed out');
+        toast({
+          title: "Signed out",
+          description: "You have been successfully signed out.",
+        });
+      }
+    } catch (err: any) {
+      console.error('💥 Unexpected sign out error:', err);
       toast({
         title: "Error",
-        description: "Failed to sign out.",
+        description: "An unexpected error occurred during sign out.",
         variant: "destructive",
-      });
-    } else {
-      toast({
-        title: "Signed out",
-        description: "You have been successfully signed out.",
       });
     }
   };
