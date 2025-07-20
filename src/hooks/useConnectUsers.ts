@@ -33,6 +33,8 @@ export const useConnectUsers = () => {
 
     try {
       console.log('📡 Calling connect-users function...');
+      console.log('🌐 Function details:', { shareCode: shareCode.trim(), currentUserId: user.id });
+      
       const { data, error } = await supabase.functions.invoke('connect-users', {
         body: {
           shareCode: shareCode.trim(),
