@@ -23,13 +23,17 @@ interface MutualContactRequest {
 }
 
 const handler = async (req: Request): Promise<Response> => {
+  console.log('🚀 EDGE FUNCTION: add-mutual-contact started');
+  console.log('📋 Request method:', req.method);
+
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
+    console.log('✅ CORS preflight handled');
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    // Create Supabase client with service role key for elevated privileges
+    // Create Supabase admin client with service role key
     const supabaseAdmin = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
@@ -40,11 +44,13 @@ const handler = async (req: Request): Promise<Response> => {
         }
       }
     );
+    console.log('✅ Admin client created');
 
     // Get the authenticated user from the request
     const authHeader = req.headers.get('Authorization');
     if (!authHeader) {
-      return new Response(JSON.stringify({ error: 'No authorization header' }), {
+      console.error('❌ No authorization header');
+      return new Response(JSON.stringify({ error: 'No authorization header', success: false }), {
         status: 401,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
@@ -55,18 +61,23 @@ const handler = async (req: Request): Promise<Response> => {
     const { data: { user }, error: authError } = await supabaseAdmin.auth.getUser(token);
     
     if (authError || !user) {
-      return new Response(JSON.stringify({ error: 'Invalid token' }), {
+      console.error('❌ Invalid token:', authError?.message);
+      return new Response(JSON.stringify({ error: 'Invalid token', success: false }), {
         status: 401,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
     }
 
-    const { otherUserContactCard }: MutualContactRequest = await req.json();
+    console.log('✅ User authenticated:', user.id);
 
-    console.log('Processing mutual contact addition for user:', user.id);
-    console.log('Adding contact:', otherUserContactCard.name);
+    const { otherUserContactCard }: MutualContactRequest = await req.json();
+    console.log('📥 Received payload:', { 
+      targetUserId: otherUserContactCard.user_id, 
+      targetName: otherUserContactCard.name 
+    });
 
     // Step 1: Get current user's contact card
+    console.log('📋 Getting current user contact card...');
     const { data: myContactCard, error: myCardError } = await supabaseAdmin
       .from('user_contact_cards')
       .select('*')
@@ -75,7 +86,7 @@ const handler = async (req: Request): Promise<Response> => {
       .maybeSingle();
 
     if (myCardError || !myContactCard) {
-      console.error('Error fetching user contact card:', myCardError);
+      console.error('❌ Error fetching user contact card:', myCardError);
       return new Response(JSON.stringify({ 
         error: 'User contact card not found',
         success: false 
@@ -85,31 +96,21 @@ const handler = async (req: Request): Promise<Response> => {
       });
     }
 
-    // Step 2: Add their contact to current user's list
-    const { error: addToMyListError } = await supabaseAdmin
-      .from('contacts')
-      .insert({
-        user_id: user.id,
-        name: otherUserContactCard.name,
-        email: otherUserContactCard.email,
-        phone: otherUserContactCard.phone,
-        company: otherUserContactCard.company,
-        industry: otherUserContactCard.industry,
-        services: otherUserContactCard.services,
-        tier: 'Acquaintance',
-        notes: 'Added via share code',
-        linkedin: otherUserContactCard.linkedin,
-        facebook: otherUserContactCard.facebook,
-        whatsapp: otherUserContactCard.whatsapp,
-        websites: otherUserContactCard.websites,
-        added_date: new Date().toISOString().split('T')[0],
-        added_via: 'share_code'
-      });
+    console.log('✅ Current user contact card found:', myContactCard.name);
 
-    if (addToMyListError && addToMyListError.code !== '23505') {
-      console.error('Error adding to my contacts:', addToMyListError);
+    // Step 2: Check if contact already exists in their list
+    console.log('🔍 Checking if contact already exists...');
+    const { data: existingContact, error: checkError } = await supabaseAdmin
+      .from('contacts')
+      .select('id')
+      .eq('user_id', otherUserContactCard.user_id)
+      .eq('email', myContactCard.email)
+      .maybeSingle();
+
+    if (checkError && checkError.code !== 'PGRST116') {
+      console.error('❌ Error checking existing contact:', checkError);
       return new Response(JSON.stringify({ 
-        error: 'Failed to add contact to your list',
+        error: 'Database error while checking existing contact',
         success: false 
       }), {
         status: 500,
@@ -117,7 +118,19 @@ const handler = async (req: Request): Promise<Response> => {
       });
     }
 
+    if (existingContact) {
+      console.log('ℹ️ Contact already exists in their list');
+      return new Response(JSON.stringify({ 
+        success: true,
+        message: 'Contact already exists in their list'
+      }), {
+        status: 200,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
     // Step 3: Add current user to their contact list (using admin privileges)
+    console.log('📝 Adding current user to their contact list...');
     const { error: addToTheirListError } = await supabaseAdmin
       .from('contacts')
       .insert({
@@ -138,20 +151,20 @@ const handler = async (req: Request): Promise<Response> => {
         added_via: 'mutual_contact'
       });
 
-    if (addToTheirListError && addToTheirListError.code !== '23505') {
-      console.error('Error adding to their contacts:', addToTheirListError);
-      // Don't fail completely - at least one direction worked
+    if (addToTheirListError) {
+      console.error('❌ Error adding to their contacts:', addToTheirListError);
       return new Response(JSON.stringify({ 
-        success: true,
-        partial: true,
-        message: 'Contact added to your list, but could not add you to theirs'
+        success: false,
+        error: `Failed to add contact: ${addToTheirListError.message}`,
+        details: addToTheirListError
       }), {
-        status: 200,
+        status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
     }
 
-    console.log('Mutual contact addition completed successfully');
+    console.log('✅ Successfully added to their contact list');
+    console.log('🏁 EDGE FUNCTION: Mutual contact addition completed successfully');
 
     return new Response(JSON.stringify({ 
       success: true,
@@ -162,10 +175,11 @@ const handler = async (req: Request): Promise<Response> => {
     });
 
   } catch (error: any) {
-    console.error('Error in add-mutual-contact function:', error);
+    console.error('💥 EDGE FUNCTION: Unexpected error:', error);
     return new Response(JSON.stringify({ 
-      error: error.message,
-      success: false 
+      error: `Unexpected error: ${error.message}`,
+      success: false,
+      stack: error.stack
     }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }

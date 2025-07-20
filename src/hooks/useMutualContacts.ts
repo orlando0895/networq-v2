@@ -10,21 +10,23 @@ export const useMutualContacts = () => {
   const { toast } = useToast();
 
   const addMutualContact = async (otherUserContactCard: UserContactCard) => {
-    console.log('🚀 addMutualContact called with:', otherUserContactCard);
-    console.log('🔍 Current user:', user);
+    console.log('🚀 MUTUAL CONTACT: Starting process');
+    console.log('🔍 Current user:', user?.id);
+    console.log('🎯 Target user card:', otherUserContactCard);
     
     if (!user) {
-      console.log('❌ No authenticated user');
+      console.error('❌ No authenticated user');
+      toast({
+        title: "Authentication Error",
+        description: "You must be logged in to add contacts.",
+        variant: "destructive"
+      });
       return { success: false };
     }
 
     try {
-      console.log('=== STARTING MUTUAL CONTACT ADDITION ===');
-      console.log('Current user ID:', user.id);
-      console.log('Other user card:', otherUserContactCard);
-
-      // Step 1: Get my contact card
-      console.log('Step 1: Getting my contact card...');
+      // Step 1: Verify my contact card exists
+      console.log('📋 Step 1: Checking my contact card...');
       const { data: myContactCard, error: myCardError } = await supabase
         .from('user_contact_cards')
         .select('*')
@@ -33,12 +35,17 @@ export const useMutualContacts = () => {
         .maybeSingle();
 
       if (myCardError) {
-        console.error('Error fetching my contact card:', myCardError);
+        console.error('❌ Error fetching my contact card:', myCardError);
+        toast({
+          title: "Error",
+          description: "Failed to fetch your contact card.",
+          variant: "destructive"
+        });
         return { success: false };
       }
 
       if (!myContactCard) {
-        console.log('No active contact card found for current user');
+        console.error('❌ No active contact card found');
         toast({
           title: "Setup Required",
           description: "Please create your contact card first.",
@@ -47,13 +54,13 @@ export const useMutualContacts = () => {
         return { success: false };
       }
 
-      console.log('My contact card:', myContactCard);
+      console.log('✅ My contact card found:', myContactCard.name);
 
-      // Step 2: Add their info to my contacts
-      console.log('Step 2: Adding their contact to my list...');
+      // Step 2: Add their contact to my list (normal RLS allows this)
+      console.log('📝 Step 2: Adding their contact to my list...');
       const { error: addToMyListError } = await supabase
         .from('contacts')
-        .insert([{
+        .insert({
           user_id: user.id,
           name: otherUserContactCard.name,
           email: otherUserContactCard.email,
@@ -69,22 +76,27 @@ export const useMutualContacts = () => {
           websites: otherUserContactCard.websites,
           added_date: new Date().toISOString().split('T')[0],
           added_via: 'share_code'
-        }]);
+        });
 
       if (addToMyListError) {
-        console.error('Error adding to my contacts:', addToMyListError);
         if (addToMyListError.code === '23505') {
-          // Duplicate entry - contact already exists
-          console.log('Contact already exists in my list');
+          console.log('ℹ️ Contact already exists in my list');
         } else {
+          console.error('❌ Error adding to my contacts:', addToMyListError);
+          toast({
+            title: "Error",
+            description: "Failed to add contact to your list.",
+            variant: "destructive"
+          });
           return { success: false };
         }
       } else {
-        console.log('Successfully added to my contacts');
+        console.log('✅ Successfully added to my contacts');
       }
 
-      console.log('Step 3: Calling edge function for mutual contact addition...');
-      console.log('Payload to edge function:', { otherUserContactCard });
+      // Step 3: Use edge function to add me to their contacts (bypasses RLS)
+      console.log('🚀 Step 3: Calling edge function for mutual addition...');
+      console.log('📤 Payload:', { otherUserContactCard });
       
       const { data: edgeFunctionResult, error: edgeFunctionError } = await supabase.functions.invoke(
         'add-mutual-contact',
@@ -93,47 +105,48 @@ export const useMutualContacts = () => {
         }
       );
 
-      console.log('Edge function result:', { edgeFunctionResult, edgeFunctionError });
+      console.log('📥 Edge function response:', { edgeFunctionResult, edgeFunctionError });
 
+      // Handle edge function results
       if (edgeFunctionError) {
-        console.error('❌ Error in edge function:', edgeFunctionError);
+        console.error('❌ Edge function error:', edgeFunctionError);
         toast({
           title: "Partial Success",
-          description: "Contact added to your list, but couldn't add you to theirs.",
+          description: "Contact added to your list, but couldn't add you to theirs. They may need to add you manually.",
           variant: "destructive"
         });
       } else if (edgeFunctionResult?.success) {
-        console.log('✅ Mutual contact added successfully via edge function');
         if (edgeFunctionResult.partial) {
+          console.log('⚠️ Partial success');
           toast({
             title: "Partial Success",
-            description: edgeFunctionResult.message,
+            description: edgeFunctionResult.message || "Contact added to your list, but mutual addition had issues.",
             variant: "destructive"
+          });
+        } else {
+          console.log('✅ Complete mutual contact success!');
+          toast({
+            title: "Contact Added! 🎉",
+            description: `${otherUserContactCard.name} has been added to your network, and you've been added to theirs!`
           });
         }
       } else {
         console.log('⚠️ Edge function returned unsuccessful result');
         toast({
-          title: "Partial Success", 
-          description: "Contact added to your list, but couldn't add you to theirs.",
+          title: "Partial Success",
+          description: "Contact added to your list, but couldn't add you to theirs. They may need to add you manually.",
           variant: "destructive"
         });
       }
 
-      console.log('=== MUTUAL CONTACT ADDITION COMPLETE ===');
-
-      toast({
-        title: "Contact Added! 🎉",
-        description: `${otherUserContactCard.name} has been added to your network.`
-      });
-
+      console.log('🏁 MUTUAL CONTACT: Process completed');
       return { success: true };
 
     } catch (error: any) {
-      console.error('Error in mutual contact process:', error);
+      console.error('💥 MUTUAL CONTACT: Unexpected error:', error);
       toast({
         title: "Error",
-        description: "Failed to add contact.",
+        description: "An unexpected error occurred while adding the contact.",
         variant: "destructive"
       });
       return { success: false };
