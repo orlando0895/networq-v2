@@ -95,7 +95,8 @@ const Index = () => {
         linkedin: cardData.linkedin || undefined,
         facebook: cardData.facebook || undefined,
         whatsapp: cardData.whatsapp || undefined,
-        websites: cardData.websites || []
+        websites: cardData.websites || [],
+        shareCode: shareCode // Pass the share code for mutual connection
       });
       if (addResult.success) {
         toast({

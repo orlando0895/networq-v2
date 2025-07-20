@@ -53,6 +53,7 @@ export const useContacts = () => {
     whatsapp?: string;
     websites: string[];
     added_via?: string;
+    shareCode?: string; // Add optional share code parameter
   }) => {
     if (!user) return;
 
@@ -80,15 +81,36 @@ export const useContacts = () => {
       setContacts(prev => [data, ...prev]);
 
       // Check if the contact is also a user in the system
-      const { data: contactProfile, error: profileError } = await supabase
-        .from('profiles')
-        .select('id')
-        .eq('email', contactData.email)
-        .single();
+      let contactProfile = null;
+      
+      if (contactData.shareCode) {
+        // If we have a share code, use it to find the user (more reliable)
+        const { data: contactCard, error: cardError } = await supabase
+          .from('user_contact_cards')
+          .select('user_id')
+          .eq('share_code', contactData.shareCode)
+          .eq('is_active', true)
+          .maybeSingle();
+          
+        if (contactCard && !cardError) {
+          contactProfile = { id: contactCard.user_id };
+        }
+      } else {
+        // Fallback to email lookup if no share code provided
+        const { data: profile, error: profileError } = await supabase
+          .from('profiles')
+          .select('id')
+          .eq('email', contactData.email)
+          .maybeSingle();
+          
+        if (profile && !profileError) {
+          contactProfile = profile;
+        }
+      }
 
       let isMutualConnection = false;
 
-      if (contactProfile && !profileError) {
+      if (contactProfile) {
         // Get current user's contact card info
         const { data: currentUserCard, error: cardError } = await supabase
           .from('user_contact_cards')

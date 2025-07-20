@@ -10,7 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { UserPlus, ExternalLink, QrCode, Camera, CameraOff } from 'lucide-react';
 import { useUserContactCard } from '@/hooks/useUserContactCard';
 import { useContacts } from '@/hooks/useContacts';
-import { useConnectUsers } from '@/hooks/useConnectUsers';
+
 import { useToast } from '@/hooks/use-toast';
 import QrScanner from 'qr-scanner';
 import type { Database } from '@/integrations/supabase/types';
@@ -28,7 +28,8 @@ const AddContactByCode = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const qrScannerRef = useRef<QrScanner | null>(null);
   
-  const { connectUsers } = useConnectUsers();
+  const { addContact } = useContacts();
+  const { fetchContactCardByShareCode } = useUserContactCard();
   const { toast } = useToast();
 
   const addContactByCode = async (code?: string) => {
@@ -36,13 +37,53 @@ const AddContactByCode = () => {
     if (!codeToAdd) return;
     
     setIsAdding(true);
-    const result = await connectUsers(codeToAdd);
     
-    if (result.success) {
-      setShareCode('');
-      setFoundCard(null);
+    try {
+      // First, fetch the contact card data using the share code
+      const result = await fetchContactCardByShareCode(codeToAdd);
+      
+      if (result.success && result.data) {
+        const cardData = result.data;
+        
+        // Add the contact with the share code for mutual connection
+        const addResult = await addContact({
+          name: cardData.name,
+          email: cardData.email,
+          phone: cardData.phone || undefined,
+          company: cardData.company || undefined,
+          industry: cardData.industry || undefined,
+          services: cardData.services || [],
+          tier: 'A-player',
+          notes: 'Added via share code',
+          linkedin: cardData.linkedin || undefined,
+          facebook: cardData.facebook || undefined,
+          whatsapp: cardData.whatsapp || undefined,
+          websites: cardData.websites || [],
+          added_via: 'share_code',
+          shareCode: codeToAdd // Pass the share code for mutual connection
+        });
+        
+        if (addResult?.success) {
+          setShareCode('');
+          setFoundCard(null);
+        }
+      } else {
+        toast({
+          title: "Contact Not Found",
+          description: "No contact found with that share code.",
+          variant: "destructive"
+        });
+      }
+    } catch (error) {
+      console.error('Error adding contact:', error);
+      toast({
+        title: "Error",
+        description: "Failed to add contact. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsAdding(false);
     }
-    setIsAdding(false);
   };
 
   const startScanning = async () => {

@@ -68,7 +68,8 @@ export default function ViewContact() {
         linkedin: contactCard.linkedin || '',
         facebook: contactCard.facebook || '',
         whatsapp: contactCard.whatsapp || '',
-        websites: contactCard.websites || []
+        websites: contactCard.websites || [],
+        shareCode: shareCode // Pass the share code for mutual connection
       });
 
       setAdded(true);
