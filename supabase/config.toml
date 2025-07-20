@@ -1,5 +1,8 @@
 project_id = "fchyjyclzxjncskiuohj"
 
+[functions.connect-users]
+verify_jwt = false
+
 [functions.add-mutual-contact]
 verify_jwt = false
 

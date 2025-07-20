@@ -10,7 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { UserPlus, ExternalLink, QrCode, Camera, CameraOff } from 'lucide-react';
 import { useUserContactCard } from '@/hooks/useUserContactCard';
 import { useContacts } from '@/hooks/useContacts';
-import { useMutualContacts } from '@/hooks/useMutualContacts';
+import { useConnectUsers } from '@/hooks/useConnectUsers';
 import { useToast } from '@/hooks/use-toast';
 import QrScanner from 'qr-scanner';
 import type { Database } from '@/integrations/supabase/types';
@@ -28,47 +28,16 @@ const AddContactByCode = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const qrScannerRef = useRef<QrScanner | null>(null);
   
-  const { fetchContactCardByShareCode } = useUserContactCard();
-  const { addContact } = useContacts();
-  const { addMutualContact } = useMutualContacts();
+  const { connectUsers } = useConnectUsers();
   const { toast } = useToast();
 
-  const searchByCode = async (code?: string) => {
-    const codeToSearch = code || shareCode.trim();
-    if (!codeToSearch) return;
-    
-    setIsSearching(true);
-    const result = await fetchContactCardByShareCode(codeToSearch);
-    
-    if (result.success && result.data) {
-      setFoundCard(result.data);
-      if (code) {
-        // If code came from QR scanner, update the input field
-        setShareCode(code);
-        // Stop scanning after successful QR code detection
-        stopScanning();
-      }
-    } else {
-      setFoundCard(null);
-      if (code) {
-        toast({
-          title: "QR Code Invalid",
-          description: "No contact found for this QR code.",
-          variant: "destructive"
-        });
-      }
-    }
-    setIsSearching(false);
-  };
-
-  const addFoundContact = async () => {
-    if (!foundCard) return;
+  const addContactByCode = async (code?: string) => {
+    const codeToAdd = code || shareCode.trim();
+    if (!codeToAdd) return;
     
     setIsAdding(true);
+    const result = await connectUsers(codeToAdd);
     
-    // Use the new mutual contacts hook which handles both directions
-    const result = await addMutualContact(foundCard);
-
     if (result.success) {
       setShareCode('');
       setFoundCard(null);
@@ -105,7 +74,7 @@ const AddContactByCode = () => {
           }
           
           // Search for the contact
-          searchByCode(shareCode);
+          addContactByCode(shareCode);
         },
         {
           highlightScanRegion: true,
@@ -197,12 +166,12 @@ const AddContactByCode = () => {
                     onChange={(e) => setShareCode(e.target.value)}
                     placeholder="Enter 8-character share code"
                     maxLength={8}
-                    onKeyPress={(e) => e.key === 'Enter' && searchByCode()}
+                    onKeyPress={(e) => e.key === 'Enter' && addContactByCode()}
                   />
                 </div>
                 <div className="flex items-end">
-                  <Button onClick={() => searchByCode()} disabled={isSearching || !shareCode.trim()}>
-                    {isSearching ? 'Searching...' : 'Search'}
+                  <Button onClick={() => addContactByCode()} disabled={isAdding || !shareCode.trim()}>
+                    {isAdding ? 'Adding...' : 'Add Contact'}
                   </Button>
                 </div>
               </div>
@@ -257,109 +226,6 @@ const AddContactByCode = () => {
               </div>
             </TabsContent>
           </Tabs>
-
-          {foundCard && (
-            <div className="mt-6">
-              <Separator className="mb-4" />
-              <div className="bg-slate-50 rounded-lg p-4 space-y-3">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <h3 className="font-semibold text-lg">{foundCard.name}</h3>
-                    <p className="text-slate-600">{foundCard.email}</p>
-                  </div>
-                  <Button onClick={addFoundContact} disabled={isAdding}>
-                    {isAdding ? 'Adding...' : 'Add Contact'}
-                  </Button>
-                </div>
-
-                {(foundCard.company || foundCard.industry) && (
-                  <div className="flex flex-wrap gap-2">
-                    {foundCard.company && (
-                      <Badge variant="outline">{foundCard.company}</Badge>
-                    )}
-                    {foundCard.industry && (
-                      <Badge variant="outline">{foundCard.industry}</Badge>
-                    )}
-                  </div>
-                )}
-
-                {foundCard.phone && (
-                  <p className="text-sm text-slate-600">
-                    <strong>Phone:</strong> {foundCard.phone}
-                  </p>
-                )}
-
-                {foundCard.services && foundCard.services.length > 0 && (
-                  <div>
-                    <p className="text-sm font-medium text-slate-700 mb-1">Services:</p>
-                    <div className="flex flex-wrap gap-1">
-                      {foundCard.services.map((service, index) => (
-                        <Badge key={index} variant="secondary" className="text-xs">
-                          {service}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {(foundCard.linkedin || foundCard.facebook || foundCard.whatsapp) && (
-                  <div className="flex flex-wrap gap-2">
-                    {foundCard.linkedin && (
-                      <a
-                        href={formatSocialLink('linkedin', foundCard.linkedin)}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800"
-                      >
-                        LinkedIn <ExternalLink className="w-3 h-3" />
-                      </a>
-                    )}
-                    {foundCard.facebook && (
-                      <a
-                        href={formatSocialLink('facebook', foundCard.facebook)}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800"
-                      >
-                        Facebook <ExternalLink className="w-3 h-3" />
-                      </a>
-                    )}
-                    {foundCard.whatsapp && (
-                      <span className="text-sm text-slate-600">
-                        WhatsApp: {foundCard.whatsapp}
-                      </span>
-                    )}
-                  </div>
-                )}
-
-                {foundCard.websites && foundCard.websites.length > 0 && (
-                  <div>
-                    <p className="text-sm font-medium text-slate-700 mb-1">Websites:</p>
-                    <div className="flex flex-wrap gap-2">
-                      {foundCard.websites.map((website, index) => (
-                        <a
-                          key={index}
-                          href={formatUrl(website)}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800"
-                        >
-                          {website} <ExternalLink className="w-3 h-3" />
-                        </a>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {foundCard.notes && (
-                  <div>
-                    <p className="text-sm font-medium text-slate-700 mb-1">Notes:</p>
-                    <p className="text-sm text-slate-600">{foundCard.notes}</p>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
         </CardContent>
       </Card>
     </div>
