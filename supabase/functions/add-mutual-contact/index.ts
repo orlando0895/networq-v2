@@ -46,29 +46,28 @@ const handler = async (req: Request): Promise<Response> => {
     );
     console.log('✅ Admin client created');
 
-    // Get the authenticated user from the request
-    const authHeader = req.headers.get('Authorization');
-    if (!authHeader) {
-      console.error('❌ No authorization header');
-      return new Response(JSON.stringify({ error: 'No authorization header', success: false }), {
-        status: 401,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      });
-    }
+    const body = await req.json();
+    console.log('📥 Request body:', body);
 
-    // Verify the user's JWT token
-    const token = authHeader.replace('Bearer ', '');
-    const { data: { user }, error: authError } = await supabaseAdmin.auth.getUser(token);
+    // Extract current user ID and target contact data
+    const { currentUserId, otherUserContactCard } = body;
     
-    if (authError || !user) {
-      console.error('❌ Invalid token:', authError?.message);
-      return new Response(JSON.stringify({ error: 'Invalid token', success: false }), {
-        status: 401,
+    if (!currentUserId || !otherUserContactCard) {
+      console.error('❌ Missing required data:', { currentUserId, otherUserContactCard });
+      return new Response(JSON.stringify({ 
+        error: 'Missing currentUserId or otherUserContactCard', 
+        success: false 
+      }), {
+        status: 400,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
     }
 
-    console.log('✅ User authenticated:', user.id);
+    console.log('✅ Processing mutual contact:', { 
+      currentUserId, 
+      targetUserId: otherUserContactCard.user_id,
+      targetName: otherUserContactCard.name 
+    });
 
     const { otherUserContactCard }: MutualContactRequest = await req.json();
     console.log('📥 Received payload:', { 
@@ -81,7 +80,7 @@ const handler = async (req: Request): Promise<Response> => {
     const { data: myContactCard, error: myCardError } = await supabaseAdmin
       .from('user_contact_cards')
       .select('*')
-      .eq('user_id', user.id)
+      .eq('user_id', currentUserId)
       .eq('is_active', true)
       .maybeSingle();
 

@@ -1,4 +1,7 @@
 project_id = "fchyjyclzxjncskiuohj"
 
+[functions.add-mutual-contact]
+verify_jwt = false
+
 [functions.scan-business-card]
 verify_jwt = false

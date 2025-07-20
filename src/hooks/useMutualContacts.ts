@@ -96,12 +96,15 @@ export const useMutualContacts = () => {
 
       // Step 3: Use edge function to add me to their contacts (bypasses RLS)
       console.log('🚀 Step 3: Calling edge function for mutual addition...');
-      console.log('📤 Payload:', { otherUserContactCard });
+      console.log('📤 Payload:', { currentUserId: user.id, otherUserContactCard });
       
       const { data: edgeFunctionResult, error: edgeFunctionError } = await supabase.functions.invoke(
         'add-mutual-contact',
         {
-          body: { otherUserContactCard }
+          body: { 
+            currentUserId: user.id,
+            otherUserContactCard 
+          }
         }
       );
 
