@@ -69,11 +69,6 @@ const handler = async (req: Request): Promise<Response> => {
       targetName: otherUserContactCard.name 
     });
 
-    const { otherUserContactCard }: MutualContactRequest = await req.json();
-    console.log('📥 Received payload:', { 
-      targetUserId: otherUserContactCard.user_id, 
-      targetName: otherUserContactCard.name 
-    });
 
     // Step 1: Get current user's contact card
     console.log('📋 Getting current user contact card...');
