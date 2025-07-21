@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -15,19 +15,27 @@ import {
   Linkedin, 
   Facebook, 
   MessageCircle,
-  ExternalLink
+  ExternalLink,
+  UserPlus,
+  LogIn
 } from 'lucide-react';
 import { downloadVCF, type ContactData } from '@/lib/vcf';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
+import { useContacts } from '@/hooks/useContacts';
 import type { Database } from '@/integrations/supabase/types';
 
 type UserContactCard = Database['public']['Tables']['user_contact_cards']['Row'];
 
 export const PublicProfile = () => {
   const { identifier } = useParams<{ identifier: string }>();
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const { addContact } = useContacts();
   const [contactCard, setContactCard] = useState<UserContactCard | null>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+  const [saving, setSaving] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -99,6 +107,60 @@ export const PublicProfile = () => {
       title: "Contact Downloaded! 📱",
       description: "Contact has been saved as a .vcf file"
     });
+  };
+
+  const handleSaveToApp = async () => {
+    if (!contactCard || !user) return;
+
+    setSaving(true);
+    try {
+      const visibility = contactCard.public_visibility as Record<string, boolean> || {};
+      
+      const contactData = {
+        name: visibility.name ? contactCard.name : 'Contact',
+        email: visibility.email ? contactCard.email : '',
+        phone: visibility.phone ? contactCard.phone || undefined : undefined,
+        company: visibility.company ? contactCard.company || undefined : undefined,
+        industry: visibility.industry ? contactCard.industry || undefined : undefined,
+        services: visibility.services ? (contactCard.services || []) : [],
+        tier: 'Acquaintance' as const,
+        linkedin: visibility.linkedin ? contactCard.linkedin || undefined : undefined,
+        facebook: visibility.facebook ? contactCard.facebook || undefined : undefined,
+        whatsapp: visibility.whatsapp ? contactCard.whatsapp || undefined : undefined,
+        websites: visibility.websites ? (contactCard.websites || []) : [],
+        notes: visibility.notes ? contactCard.notes || undefined : undefined,
+        added_via: 'qr_scan',
+        shareCode: contactCard.share_code
+      };
+
+      const result = await addContact(contactData);
+      
+      if (result.success) {
+        toast({
+          title: "Contact Saved! ✅",
+          description: `${contactData.name} has been added to your contacts`
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: "Failed to save contact. Please try again.",
+          variant: "destructive"
+        });
+      }
+    } catch (error) {
+      console.error('Error saving contact:', error);
+      toast({
+        title: "Error",
+        description: "Failed to save contact. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleGoToAuth = () => {
+    navigate('/auth');
   };
 
   if (loading) {
@@ -313,19 +375,62 @@ export const PublicProfile = () => {
           </CardContent>
         </Card>
 
-        {/* Download Button */}
-        <div className="text-center">
-          <Button
-            onClick={handleDownloadContact}
-            size="lg"
-            className="w-full max-w-sm"
-          >
-            <Download className="w-5 h-5 mr-2" />
-            Save to Contacts
-          </Button>
-          <p className="text-xs text-muted-foreground mt-2">
-            Downloads a .vcf file that you can import to your phone's address book
-          </p>
+        {/* Action Buttons */}
+        <div className="space-y-4">
+          {user ? (
+            // Signed-in user: Show both options
+            <div className="space-y-3">
+              <Button
+                onClick={handleSaveToApp}
+                size="lg"
+                className="w-full"
+                disabled={saving}
+              >
+                <UserPlus className="w-5 h-5 mr-2" />
+                {saving ? "Saving..." : "Save to My Contacts"}
+              </Button>
+              
+              <Button
+                onClick={handleDownloadContact}
+                variant="outline"
+                size="lg"
+                className="w-full"
+              >
+                <Download className="w-5 h-5 mr-2" />
+                Save to Phone
+              </Button>
+              
+              <p className="text-xs text-muted-foreground text-center">
+                Save to your Networq contacts or download as .vcf file
+              </p>
+            </div>
+          ) : (
+            // Not signed-in: Show phone save and auth option
+            <div className="space-y-3">
+              <Button
+                onClick={handleDownloadContact}
+                size="lg"
+                className="w-full"
+              >
+                <Download className="w-5 h-5 mr-2" />
+                Save to Phone
+              </Button>
+              
+              <Button
+                onClick={handleGoToAuth}
+                variant="outline"
+                size="lg"
+                className="w-full"
+              >
+                <LogIn className="w-5 h-5 mr-2" />
+                Sign In to Save to App
+              </Button>
+              
+              <p className="text-xs text-muted-foreground text-center">
+                Download .vcf file or create account to manage contacts digitally
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Footer */}
