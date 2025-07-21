@@ -191,18 +191,23 @@ export const useContacts = () => {
     if (!user) return;
 
     try {
-      const { error } = await supabase
-        .from('contacts')
-        .delete()
-        .eq('id', id)
-        .eq('user_id', user.id);
+      // Use the mutual deletion function with elevated privileges
+      const { data: success, error } = await supabase
+        .rpc('delete_mutual_contact', {
+          contact_id_to_delete: id,
+          current_user_id: user.id
+        });
 
       if (error) throw error;
+      
+      if (!success) {
+        throw new Error('Failed to delete contact - contact may not exist');
+      }
 
       setContacts(prev => prev.filter(contact => contact.id !== id));
       toast({
         title: "Contact Deleted",
-        description: "Contact has been removed from your network."
+        description: "Contact has been mutually removed from both networks."
       });
 
       return { success: true };
