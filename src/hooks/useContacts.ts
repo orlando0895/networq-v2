@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
+import { useMutualContacts } from '@/hooks/useMutualContacts';
 import type { Database } from '@/integrations/supabase/types';
 
 type Contact = Database['public']['Tables']['contacts']['Row'];
@@ -12,6 +13,7 @@ export const useContacts = () => {
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
   const { toast } = useToast();
+  const { addMutualContact } = useMutualContacts();
 
   const fetchContacts = async () => {
     if (!user) return;
@@ -111,39 +113,18 @@ export const useContacts = () => {
       let isMutualConnection = false;
 
       if (contactProfile) {
-        // Get current user's contact card info
-        const { data: currentUserCard, error: cardError } = await supabase
+        // Get the contact's card to use for mutual addition
+        const { data: otherUserCard, error: cardError } = await supabase
           .from('user_contact_cards')
           .select('*')
-          .eq('user_id', user.id)
+          .eq('user_id', contactProfile.id)
           .eq('is_active', true)
           .single();
 
-        if (currentUserCard && !cardError) {
-          // Add current user to the contact's contact list
-          const mutualContact: ContactInsert = {
-            user_id: contactProfile.id,
-            name: currentUserCard.name,
-            email: currentUserCard.email,
-            phone: currentUserCard.phone,
-            company: currentUserCard.company,
-            industry: currentUserCard.industry,
-            services: currentUserCard.services,
-            tier: 'A-player',
-            notes: 'Added via mutual connection',
-            linkedin: currentUserCard.linkedin,
-            facebook: currentUserCard.facebook,
-            whatsapp: currentUserCard.whatsapp,
-            websites: currentUserCard.websites,
-            added_date: new Date().toISOString().split('T')[0],
-            added_via: 'mutual_contact'
-          };
-
-          const { error: mutualError } = await supabase
-            .from('contacts')
-            .insert([mutualContact]);
-
-          if (!mutualError) {
+        if (otherUserCard && !cardError) {
+          // Use the mutual contacts hook with elevated privileges
+          const mutualResult = await addMutualContact(otherUserCard);
+          if (mutualResult.success) {
             isMutualConnection = true;
           }
         }
