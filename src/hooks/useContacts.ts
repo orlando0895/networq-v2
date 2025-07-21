@@ -48,7 +48,7 @@ export const useContacts = () => {
     company?: string;
     industry?: string;
     services: string[];
-    tier: 'A-player' | 'Acquaintance';
+    tier: 'A-player' | 'Acquaintance' | 'Client';
     notes?: string;
     linkedin?: string;
     facebook?: string;
@@ -57,6 +57,9 @@ export const useContacts = () => {
     added_via?: string;
     shareCode?: string; // Add optional share code parameter
   }) => {
+    console.log('🔍 addContact called with data:', contactData);
+    console.log('🔍 Current user:', user);
+    
     if (!user) return { success: false, error: 'User not authenticated' };
 
     try {
