@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import QRCode from 'qrcode';
+import { QRCodeShare } from './QRCodeShare';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -8,7 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { Copy, RefreshCw, Share2, Trash2, Plus, Camera } from 'lucide-react';
+import { Trash2, Plus, Camera } from 'lucide-react';
 import { useUserContactCard } from '@/hooks/useUserContactCard';
 import { useToast } from '@/hooks/use-toast';
 import DeleteAccountDialog from '@/components/DeleteAccountDialog';
@@ -29,12 +29,11 @@ interface ContactCardFormData {
 }
 
 const MyContactCardForm = () => {
-  const { contactCard, loading, createContactCard, updateContactCard, regenerateShareCode } = useUserContactCard();
+  const { contactCard, loading, createContactCard, updateContactCard } = useUserContactCard();
   const { toast } = useToast();
   const [websites, setWebsites] = useState<string[]>(contactCard?.websites || []);
   const [newWebsite, setNewWebsite] = useState('');
   const [showScanner, setShowScanner] = useState(false);
-  const [qrCodeUrl, setQrCodeUrl] = useState<string>('');
 
   const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm<ContactCardFormData>({
     defaultValues: {
@@ -69,22 +68,6 @@ const MyContactCardForm = () => {
     }
   }, [contactCard, reset]);
 
-  // Generate QR code when contact card changes
-  useEffect(() => {
-    if (contactCard?.share_code) {
-      const contactUrl = `${window.location.origin}/contact/${contactCard.share_code}`;
-      QRCode.toDataURL(contactUrl, {
-        width: 200,
-        margin: 2,
-        color: {
-          dark: '#000000',
-          light: '#FFFFFF'
-        }
-      })
-        .then((url) => setQrCodeUrl(url))
-        .catch((err) => console.error('Error generating QR code:', err));
-    }
-  }, [contactCard?.share_code]);
 
   const addWebsite = () => {
     if (newWebsite.trim() && !websites.includes(newWebsite.trim())) {
@@ -118,26 +101,6 @@ const MyContactCardForm = () => {
     }
   };
 
-  const copyShareCode = () => {
-    if (contactCard?.share_code) {
-      navigator.clipboard.writeText(contactCard.share_code);
-      toast({
-        title: "Copied!",
-        description: "Share code copied to clipboard."
-      });
-    }
-  };
-
-  const copyShareLink = () => {
-    if (contactCard?.share_code) {
-      const shareUrl = `${window.location.origin}/?add=${contactCard.share_code}`;
-      navigator.clipboard.writeText(shareUrl);
-      toast({
-        title: "Copied!",
-        description: "Share link copied to clipboard."
-      });
-    }
-  };
 
   const handleBusinessCardExtracted = (contactInfo: any) => {
     reset({
@@ -167,50 +130,7 @@ const MyContactCardForm = () => {
 
   return (
     <div className="space-y-6">
-      {contactCard && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Share2 className="w-5 h-5" />
-              Share Your Contact Card
-            </CardTitle>
-            <CardDescription>
-              Share your contact information with others using these options
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {qrCodeUrl && (
-              <div className="flex justify-center">
-                <div className="p-3 bg-white rounded-lg shadow-sm border">
-                  <img 
-                    src={qrCodeUrl} 
-                    alt="Contact QR Code" 
-                    className="w-32 h-32"
-                  />
-                </div>
-              </div>
-            )}
-            <div className="flex items-center gap-2">
-              <Label>Share Code:</Label>
-              <Badge variant="secondary" className="font-mono text-sm">
-                {contactCard.share_code}
-              </Badge>
-              <Button size="sm" variant="outline" onClick={copyShareCode}>
-                <Copy className="w-4 h-4" />
-              </Button>
-              <Button size="sm" variant="outline" onClick={regenerateShareCode}>
-                <RefreshCw className="w-4 h-4" />
-              </Button>
-            </div>
-            <div className="flex gap-2">
-              <Button onClick={copyShareLink} className="flex-1">
-                <Share2 className="w-4 h-4 mr-2" />
-                Copy Share Link
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      )}
+      {contactCard && <QRCodeShare />}
 
       <Card>
         <CardHeader>
