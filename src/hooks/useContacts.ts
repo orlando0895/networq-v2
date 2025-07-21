@@ -57,7 +57,7 @@ export const useContacts = () => {
     added_via?: string;
     shareCode?: string; // Add optional share code parameter
   }) => {
-    if (!user) return;
+    if (!user) return { success: false, error: 'User not authenticated' };
 
     try {
       // First, add the contact to current user's list
