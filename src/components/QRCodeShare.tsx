@@ -14,9 +14,12 @@ export const QRCodeShare = () => {
 
   useEffect(() => {
     if (contactCard?.share_code) {
-      // Generate QR code containing a URL to view the contact card
-      const contactUrl = `${window.location.origin}/contact/${contactCard.share_code}`;
-      QRCode.toDataURL(contactUrl, {
+      // Generate QR code pointing to public profile
+      const publicUrl = contactCard.username 
+        ? `${window.location.origin}/public/${contactCard.username}`
+        : `${window.location.origin}/public/${contactCard.share_code}`;
+        
+      QRCode.toDataURL(publicUrl, {
         width: 256,
         margin: 2,
         color: {
@@ -27,7 +30,7 @@ export const QRCodeShare = () => {
         .then((url) => setQrCodeUrl(url))
         .catch((err) => console.error('Error generating QR code:', err));
     }
-  }, [contactCard?.share_code]);
+  }, [contactCard?.share_code, contactCard?.username]);
 
   const handleCopyShareCode = async () => {
     if (contactCard?.share_code) {
@@ -60,18 +63,40 @@ export const QRCodeShare = () => {
 
   const handleShare = async () => {
     if (navigator.share && contactCard?.share_code) {
+      const publicUrl = contactCard.username 
+        ? `${window.location.origin}/public/${contactCard.username}`
+        : `${window.location.origin}/public/${contactCard.share_code}`;
+      
       try {
         await navigator.share({
           title: `Connect with ${contactCard.name}`,
-          text: `Add me to your network using share code: ${contactCard.share_code}`,
-          url: window.location.origin
+          text: `Check out my digital business card and save my contact info!`,
+          url: publicUrl
         });
       } catch (err) {
         // Fallback to copy if sharing is not supported
-        handleCopyShareCode();
+        handleCopyLink();
       }
     } else {
-      handleCopyShareCode();
+      handleCopyLink();
+    }
+  };
+
+  const handleCopyLink = async () => {
+    if (contactCard) {
+      const publicUrl = contactCard.username 
+        ? `${window.location.origin}/public/${contactCard.username}`
+        : `${window.location.origin}/public/${contactCard.share_code}`;
+      
+      try {
+        await navigator.clipboard.writeText(publicUrl);
+        toast({
+          title: "Link Copied! 🔗",
+          description: "Your public profile link has been copied to clipboard."
+        });
+      } catch (err) {
+        console.error('Failed to copy link:', err);
+      }
     }
   };
 
@@ -99,7 +124,7 @@ export const QRCodeShare = () => {
           Quick Share
         </CardTitle>
         <CardDescription>
-          Let others scan your QR code to add you instantly
+          Scan to view your public digital business card - no app required!
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -115,14 +140,35 @@ export const QRCodeShare = () => {
           </div>
         )}
         
-        <div className="text-center space-y-2">
-          <div className="text-sm text-muted-foreground">Share Code</div>
-          <div className="font-mono text-lg font-semibold tracking-wider">
-            {contactCard.share_code}
+        <div className="text-center space-y-3">
+          <div>
+            <div className="text-sm text-muted-foreground">Share Code</div>
+            <div className="font-mono text-lg font-semibold tracking-wider">
+              {contactCard.share_code}
+            </div>
+          </div>
+          
+          <div>
+            <div className="text-sm text-muted-foreground">Public URL</div>
+            <div className="text-xs font-mono bg-muted p-2 rounded">
+              {contactCard.username 
+                ? `${window.location.host}/public/${contactCard.username}`
+                : `${window.location.host}/public/${contactCard.share_code}`
+              }
+            </div>
           </div>
         </div>
 
         <div className="grid grid-cols-1 gap-2">
+          <Button
+            onClick={handleCopyLink}
+            variant="default"
+            className="w-full"
+          >
+            <Copy className="w-4 h-4 mr-2" />
+            Copy Public Link
+          </Button>
+          
           <Button
             onClick={handleCopyShareCode}
             variant="outline"
@@ -163,7 +209,7 @@ export const QRCodeShare = () => {
         </div>
 
         <div className="text-xs text-muted-foreground text-center">
-          Others can scan this QR code or enter your share code to add you to their network
+          Anyone can scan this QR code to view your digital business card and download your contact info - no app required!
         </div>
       </CardContent>
     </Card>

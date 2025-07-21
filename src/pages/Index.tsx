@@ -12,6 +12,7 @@ import ContactFilters from "@/components/ContactFilters";
 import EmptyState from "@/components/EmptyState";
 import MyContactCardForm from "@/components/MyContactCardForm";
 import Messages from "@/pages/Messages";
+import { PrivacySettings } from "@/components/PrivacySettings";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import type { Database } from '@/integrations/supabase/types';
@@ -167,9 +168,10 @@ const Index = () => {
       {/* Main Content */}
       <main className="px-4 sm:px-6 lg:px-8 py-6 sm:py-8 max-w-4xl mx-auto">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="contacts">My Contacts</TabsTrigger>
             <TabsTrigger value="my-card">My Card</TabsTrigger>
+            <TabsTrigger value="privacy">Privacy</TabsTrigger>
             <TabsTrigger value="messages" className="flex items-center gap-2">
               <MessageSquare className="h-4 w-4" />
               Messages
@@ -221,6 +223,10 @@ const Index = () => {
 
           <TabsContent value="my-card">
             <MyContactCardForm />
+          </TabsContent>
+
+          <TabsContent value="privacy">
+            <PrivacySettings />
           </TabsContent>
 
           <TabsContent value="messages" className="h-[calc(100vh-200px)]">

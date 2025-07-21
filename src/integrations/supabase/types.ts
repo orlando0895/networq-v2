@@ -226,10 +226,12 @@ export type Database = {
           name: string
           notes: string | null
           phone: string | null
+          public_visibility: Json | null
           services: string[] | null
           share_code: string
           updated_at: string
           user_id: string
+          username: string | null
           websites: string[] | null
           whatsapp: string | null
         }
@@ -245,10 +247,12 @@ export type Database = {
           name: string
           notes?: string | null
           phone?: string | null
+          public_visibility?: Json | null
           services?: string[] | null
           share_code?: string
           updated_at?: string
           user_id: string
+          username?: string | null
           websites?: string[] | null
           whatsapp?: string | null
         }
@@ -264,10 +268,12 @@ export type Database = {
           name?: string
           notes?: string | null
           phone?: string | null
+          public_visibility?: Json | null
           services?: string[] | null
           share_code?: string
           updated_at?: string
           user_id?: string
+          username?: string | null
           websites?: string[] | null
           whatsapp?: string | null
         }
@@ -281,6 +287,10 @@ export type Database = {
       delete_mutual_contact: {
         Args: { contact_id_to_delete: string; current_user_id: string }
         Returns: boolean
+      }
+      generate_username_from_name: {
+        Args: { _name: string }
+        Returns: string
       }
       get_or_create_direct_conversation: {
         Args: { other_user_id: string }

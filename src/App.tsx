@@ -9,6 +9,8 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import ViewContact from "./pages/ViewContact";
+import { PublicProfile } from "./pages/PublicProfile";
+import Messages from "./pages/Messages";
 
 import NotFound from "./pages/NotFound";
 
@@ -23,7 +25,16 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/auth" element={<Auth />} />
+            <Route path="/public/:identifier" element={<PublicProfile />} />
             <Route path="/contact/:shareCode" element={<ViewContact />} />
+            <Route
+              path="/messages"
+              element={
+                <ProtectedRoute>
+                  <Messages />
+                </ProtectedRoute>
+              }
+            />
             <Route path="/" element={
               <ProtectedRoute>
                 <Index />
