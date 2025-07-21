@@ -44,8 +44,8 @@ export const PublicProfile = () => {
           .eq('is_active', true);
 
         // Check if identifier looks like a share code (8 chars) or username
-        if (identifier.length === 8 && /^[a-f0-9]+$/.test(identifier)) {
-          query = query.eq('share_code', identifier);
+        if (identifier.length === 8 && /^[a-f0-9]+$/i.test(identifier)) {
+          query = query.eq('share_code', identifier.toLowerCase());
         } else {
           query = query.eq('username', identifier);
         }
