@@ -72,7 +72,7 @@ const MyContactCardForm = () => {
   // Generate QR code when contact card changes
   useEffect(() => {
     if (contactCard?.share_code) {
-      const contactUrl = `${window.location.origin}/contact/${contactCard.share_code}`;
+      const contactUrl = `${window.location.origin}/public/${contactCard.share_code}`;
       QRCode.toDataURL(contactUrl, {
         width: 200,
         margin: 2,
