@@ -229,6 +229,66 @@ export const useContacts = () => {
     fetchContacts();
   }, [user]);
 
+  // Real-time subscription for contacts updates
+  useEffect(() => {
+    if (!user) return;
+
+    const channel = supabase
+      .channel('contacts-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'contacts',
+          filter: `user_id=eq.${user.id}`
+        },
+        (payload) => {
+          console.log('🔄 Contact updated via realtime:', payload);
+          // Update the specific contact in the list
+          setContacts(prev => prev.map(contact => 
+            contact.id === payload.new.id ? payload.new as Contact : contact
+          ));
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'contacts',
+          filter: `user_id=eq.${user.id}`
+        },
+        (payload) => {
+          console.log('🔄 Contact added via realtime:', payload);
+          // Add new contact to the list if it's not already there
+          setContacts(prev => {
+            const exists = prev.some(contact => contact.id === payload.new.id);
+            return exists ? prev : [payload.new as Contact, ...prev];
+          });
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: 'DELETE',
+          schema: 'public',
+          table: 'contacts',
+          filter: `user_id=eq.${user.id}`
+        },
+        (payload) => {
+          console.log('🔄 Contact deleted via realtime:', payload);
+          // Remove contact from the list
+          setContacts(prev => prev.filter(contact => contact.id !== payload.old.id));
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [user]);
+
   return {
     contacts,
     loading,
