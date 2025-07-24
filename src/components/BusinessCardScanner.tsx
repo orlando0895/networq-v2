@@ -147,40 +147,29 @@ const BusinessCardScanner = ({ isOpen, onOpenChange, onContactExtracted }: Busin
       
       console.log('Calling scan-business-card function...');
       
-      const response = await fetch(`https://fchyjyclzxjncskiuohj.supabase.co/functions/v1/scan-business-card`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZjaHlqeWNsenhqbmNza2l1b2hqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAxMDE0MDgsImV4cCI6MjA2NTY3NzQwOH0.5j6qA7mCKSUQWFQFxKfsrJWSV6aez6UlPGlqcFAAw6U`,
-        },
-        body: JSON.stringify({ imageData })
+      const { data: functionData, error } = await supabase.functions.invoke('scan-business-card', {
+        body: { imageData }
       });
 
-      console.log('Raw response status:', response.status);
-      console.log('Raw response headers:', Object.fromEntries(response.headers.entries()));
+      console.log('Function response data:', functionData);
+      console.log('Function error:', error);
       
-      const responseText = await response.text();
-      console.log('Raw response text:', responseText);
-      
-      let data;
-      try {
-        data = JSON.parse(responseText);
-      } catch (e) {
-        console.error('Failed to parse response as JSON:', e);
-        throw new Error(`Invalid response format: ${responseText}`);
+      if (error) {
+        console.error('Function call failed:', error);
+        throw new Error(`Function call failed: ${error.message}`);
       }
 
-      if (data?.success && data?.contactInfo) {
-        console.log('Successfully extracted contact info:', data.contactInfo);
-        onContactExtracted(data.contactInfo);
+      if (functionData?.success && functionData?.contactInfo) {
+        console.log('Successfully extracted contact info:', functionData.contactInfo);
+        onContactExtracted(functionData.contactInfo);
         onOpenChange(false);
         toast({
           title: "Success!",
           description: "Business card information extracted successfully."
         });
       } else {
-        console.error('Function returned error or no data:', data);
-        const errorMessage = data?.error || 'Failed to extract information from business card';
+        console.error('Function returned error or no data:', functionData);
+        const errorMessage = functionData?.error || 'Failed to extract information from business card';
         throw new Error(errorMessage);
       }
     } catch (error) {
