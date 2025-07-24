@@ -13,6 +13,7 @@ import { useUserContactCard } from '@/hooks/useUserContactCard';
 import { useToast } from '@/hooks/use-toast';
 import DeleteAccountDialog from '@/components/DeleteAccountDialog';
 import BusinessCardScanner from '@/components/BusinessCardScanner';
+import { ProfilePictureUpload } from './ProfilePictureUpload';
 
 interface ContactCardFormData {
   name: string;
@@ -26,6 +27,7 @@ interface ContactCardFormData {
   facebook: string;
   whatsapp: string;
   websites: string;
+  avatar_url: string;
 }
 
 const MyContactCardForm = () => {
@@ -36,7 +38,7 @@ const MyContactCardForm = () => {
   const [showScanner, setShowScanner] = useState(false);
   const [qrCodeUrl, setQrCodeUrl] = useState<string>('');
 
-  const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm<ContactCardFormData>({
+  const { register, handleSubmit, formState: { errors, isSubmitting }, reset, watch, setValue } = useForm<ContactCardFormData>({
     defaultValues: {
       name: contactCard?.name || '',
       email: contactCard?.email || '',
@@ -47,7 +49,8 @@ const MyContactCardForm = () => {
       notes: contactCard?.notes || '',
       linkedin: contactCard?.linkedin || '',
       facebook: contactCard?.facebook || '',
-      whatsapp: contactCard?.whatsapp || ''
+      whatsapp: contactCard?.whatsapp || '',
+      avatar_url: contactCard?.avatar_url || ''
     }
   });
 
@@ -63,7 +66,8 @@ const MyContactCardForm = () => {
         notes: contactCard.notes || '',
         linkedin: contactCard.linkedin || '',
         facebook: contactCard.facebook || '',
-        whatsapp: contactCard.whatsapp || ''
+        whatsapp: contactCard.whatsapp || '',
+        avatar_url: contactCard.avatar_url || ''
       });
       setWebsites(contactCard.websites || []);
     }
@@ -235,6 +239,14 @@ const MyContactCardForm = () => {
           </div>
         </CardHeader>
         <CardContent>
+          <div className="mb-6">
+            <Label className="block text-sm font-medium mb-2">Profile Picture</Label>
+            <ProfilePictureUpload
+              currentAvatarUrl={watch('avatar_url')}
+              onAvatarUpdate={(url) => setValue('avatar_url', url || '')}
+              userInitials={watch('name')?.split(' ').map(n => n[0]).join('').toUpperCase() || 'U'}
+            />
+          </div>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>

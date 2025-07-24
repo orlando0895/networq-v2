@@ -7,6 +7,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Star, Users, Mail, Phone, UserPlus, Edit, Plus, ChevronDown, Trash2, MoreVertical, Linkedin, Facebook, MessageCircle, Globe, MessageSquare } from "lucide-react";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import EditContactForm from "./EditContactForm";
 import AddNoteForm from "./AddNoteForm";
 import { supabase } from '@/integrations/supabase/client';
@@ -133,8 +134,15 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact, onSwitchToMess
           <AccordionItem value={contact.id} className="border-none">
             <CardHeader className="pb-2 px-4 sm:px-6 py-4">
               <div className="flex items-start justify-between gap-3">
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-start flex-col sm:flex-row sm:items-center gap-2 mb-3">
+                <div className="flex items-start gap-3 flex-1 min-w-0">
+                  <Avatar className="h-12 w-12 flex-shrink-0">
+                    <AvatarImage src={contact.profile_picture_url || undefined} />
+                    <AvatarFallback className="text-sm font-medium">
+                      {contact.name.split(' ').map(n => n[0]).join('').toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-start flex-col sm:flex-row sm:items-center gap-2 mb-3">
                     <CardTitle className="text-lg sm:text-xl font-semibold text-slate-900 leading-tight">{contact.name}</CardTitle>
                     <Badge 
                       className={`${
@@ -164,6 +172,7 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact, onSwitchToMess
                         <span className="text-sm text-slate-700">{contact.phone}</span>
                       </div>
                     )}
+                    </div>
                   </div>
                 </div>
 

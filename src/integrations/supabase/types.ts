@@ -28,6 +28,7 @@ export type Database = {
           name: string
           notes: string | null
           phone: string | null
+          profile_picture_url: string | null
           services: string[] | null
           tier: string
           updated_at: string
@@ -48,6 +49,7 @@ export type Database = {
           name: string
           notes?: string | null
           phone?: string | null
+          profile_picture_url?: string | null
           services?: string[] | null
           tier: string
           updated_at?: string
@@ -68,6 +70,7 @@ export type Database = {
           name?: string
           notes?: string | null
           phone?: string | null
+          profile_picture_url?: string | null
           services?: string[] | null
           tier?: string
           updated_at?: string
@@ -215,6 +218,7 @@ export type Database = {
       }
       user_contact_cards: {
         Row: {
+          avatar_url: string | null
           company: string | null
           created_at: string
           email: string
@@ -236,6 +240,7 @@ export type Database = {
           whatsapp: string | null
         }
         Insert: {
+          avatar_url?: string | null
           company?: string | null
           created_at?: string
           email: string
@@ -257,6 +262,7 @@ export type Database = {
           whatsapp?: string | null
         }
         Update: {
+          avatar_url?: string | null
           company?: string | null
           created_at?: string
           email?: string
