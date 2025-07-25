@@ -10,6 +10,7 @@ import { Star, Users, Mail, Phone, UserPlus, Edit, Plus, ChevronDown, Trash2, Mo
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import EditContactForm from "./EditContactForm";
 import AddNoteForm from "./AddNoteForm";
+import { ShareContactDialog } from "./ShareContactDialog";
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
@@ -27,6 +28,7 @@ interface ContactCardProps {
 const ContactCard = ({ contact, onUpdateContact, onDeleteContact, onSwitchToMessages }: ContactCardProps) => {
   const [isEditingContact, setIsEditingContact] = useState(false);
   const [isAddingNote, setIsAddingNote] = useState(false);
+  const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -178,7 +180,7 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact, onSwitchToMess
 
                 {/* Mobile actions menu */}
                 <div className="flex items-center gap-2 sm:hidden">
-                  <Button size="sm" className="h-9 px-3 bg-indigo-600 hover:bg-indigo-700">
+                  <Button size="sm" className="h-9 px-3 bg-indigo-600 hover:bg-indigo-700" onClick={() => setIsShareDialogOpen(true)}>
                     <UserPlus className="w-4 h-4 mr-1" />
                     Refer
                   </Button>
@@ -340,7 +342,7 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact, onSwitchToMess
                   
                   {/* Desktop action buttons */}
                   <div className="hidden sm:grid grid-cols-2 lg:grid-cols-5 gap-2">
-                    <Button size="sm" className="justify-center h-10">
+                    <Button size="sm" className="justify-center h-10" onClick={() => setIsShareDialogOpen(true)}>
                       <UserPlus className="w-4 h-4 mr-2" />
                       Refer
                     </Button>
@@ -416,6 +418,12 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact, onSwitchToMess
         isOpen={isAddingNote}
         onOpenChange={setIsAddingNote}
         onUpdateContact={onUpdateContact}
+      />
+
+      <ShareContactDialog
+        contact={contact}
+        isOpen={isShareDialogOpen}
+        onClose={() => setIsShareDialogOpen(false)}
       />
     </>
   );
