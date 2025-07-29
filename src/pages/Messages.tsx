@@ -236,18 +236,41 @@ const Messages = ({ targetConversationId }: MessagesProps) => {
         },
         (payload) => {
           const newMessage = payload.new;
-          // Only update if this user is part of the conversation
-          supabase
-            .from('conversation_participants')
-            .select('conversation_id')
-            .eq('conversation_id', newMessage.conversation_id)
-            .eq('user_id', user.id)
-            .single()
-            .then(({ data, error }) => {
-              if (!error && data) {
-                updateConversationWithNewMessage(newMessage.conversation_id, newMessage);
-              }
-            });
+          console.log('New message received:', newMessage);
+          
+          // Update conversation state immediately without checking current state
+          // This ensures we don't miss messages due to stale state
+          setConversations(prev => {
+            const isUserInConversation = prev.some(conv => conv.id === newMessage.conversation_id);
+            
+            if (isUserInConversation) {
+              console.log('Updating conversation with new message');
+              return prev.map(conv => {
+                if (conv.id === newMessage.conversation_id) {
+                  return {
+                    ...conv,
+                    last_message: {
+                      content: newMessage.content,
+                      created_at: newMessage.created_at,
+                      message_type: newMessage.message_type
+                    },
+                    last_message_at: newMessage.created_at,
+                    updated_at: newMessage.created_at
+                  };
+                }
+                return conv;
+              }).sort((a, b) => {
+                const timeA = a.last_message?.created_at || a.updated_at;
+                const timeB = b.last_message?.created_at || b.updated_at;
+                return new Date(timeB).getTime() - new Date(timeA).getTime();
+              });
+            } else {
+              console.log('User not in conversation list, refetching conversations');
+              // Trigger refetch for new conversations
+              setTimeout(() => fetchConversations(), 100);
+              return prev;
+            }
+          });
         }
       )
       .on(
