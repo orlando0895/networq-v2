@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { ConversationList } from '@/components/ConversationList';
@@ -39,6 +39,7 @@ const Messages = ({ targetConversationId }: MessagesProps) => {
   const [selectedConversationId, setSelectedConversationId] = useState<string | null>(null);
   const [isNewMessageOpen, setIsNewMessageOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+  const channelRef = useRef<any>(null);
 
   // Fetch conversations function
   const fetchConversations = async () => {
@@ -224,6 +225,12 @@ const Messages = ({ targetConversationId }: MessagesProps) => {
 
     fetchConversations();
 
+    // Clean up any existing channel first
+    if (channelRef.current) {
+      supabase.removeChannel(channelRef.current);
+      channelRef.current = null;
+    }
+
     // Set up optimized real-time subscription for messages with unique channel name
     const messagesChannel = supabase
       .channel(`messages-${user.id}-${Date.now()}`)
@@ -290,11 +297,17 @@ const Messages = ({ targetConversationId }: MessagesProps) => {
             )
           );
         }
-      )
-      .subscribe();
+      );
+
+    // Store the channel reference and subscribe
+    channelRef.current = messagesChannel;
+    messagesChannel.subscribe();
 
     return () => {
-      supabase.removeChannel(messagesChannel);
+      if (channelRef.current) {
+        supabase.removeChannel(channelRef.current);
+        channelRef.current = null;
+      }
     };
   }, [user]);
 
