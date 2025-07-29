@@ -224,9 +224,9 @@ const Messages = ({ targetConversationId }: MessagesProps) => {
 
     fetchConversations();
 
-    // Set up optimized real-time subscription for messages
+    // Set up optimized real-time subscription for messages with unique channel name
     const messagesChannel = supabase
-      .channel('global-messages-changes')
+      .channel(`messages-${user.id}-${Date.now()}`)
       .on(
         'postgres_changes',
         {
