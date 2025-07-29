@@ -28,9 +28,10 @@ interface ChatWindowProps {
   conversationId: string;
   currentUserId: string;
   onBack?: () => void;
+  onMessageSent?: (conversationId: string, message: any) => void;
 }
 
-export function ChatWindow({ conversationId, currentUserId, onBack }: ChatWindowProps) {
+export function ChatWindow({ conversationId, currentUserId, onBack, onMessageSent }: ChatWindowProps) {
   const { toast } = useToast();
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState('');
@@ -122,7 +123,11 @@ export function ChatWindow({ conversationId, currentUserId, onBack }: ChatWindow
           filter: `conversation_id=eq.${conversationId}`
         },
         (payload) => {
-          setMessages(prev => [...prev, payload.new as Message]);
+          const newMessage = payload.new as Message;
+          // Only add if it's not from current user (to avoid duplicates)
+          if (newMessage.sender_id !== currentUserId) {
+            setMessages(prev => [...prev, newMessage]);
+          }
         }
       )
       .subscribe();
@@ -142,16 +147,28 @@ export function ChatWindow({ conversationId, currentUserId, onBack }: ChatWindow
 
     setSending(true);
     try {
-      const { error } = await supabase
+      const messageData = {
+        conversation_id: conversationId,
+        sender_id: currentUserId,
+        content: newMessage.trim(),
+        message_type: 'text'
+      };
+
+      const { data, error } = await supabase
         .from('messages')
-        .insert({
-          conversation_id: conversationId,
-          sender_id: currentUserId,
-          content: newMessage.trim(),
-          message_type: 'text'
-        });
+        .insert(messageData)
+        .select()
+        .single();
 
       if (error) throw error;
+
+      // Immediately update local state for instant feedback
+      setMessages(prev => [...prev, data]);
+      
+      // Notify parent component about the new message
+      if (onMessageSent && data) {
+        onMessageSent(conversationId, data);
+      }
 
       setNewMessage('');
     } catch (error: any) {

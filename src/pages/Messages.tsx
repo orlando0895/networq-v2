@@ -190,43 +190,90 @@ const Messages = ({ targetConversationId }: MessagesProps) => {
     }
   };
 
+  // Smart conversation list update function
+  const updateConversationWithNewMessage = (conversationId: string, message: any) => {
+    setConversations(prev => {
+      const updatedConversations = prev.map(conv => {
+        if (conv.id === conversationId) {
+          return {
+            ...conv,
+            last_message: {
+              content: message.content,
+              created_at: message.created_at,
+              message_type: message.message_type
+            },
+            last_message_at: message.created_at,
+            updated_at: message.created_at
+          };
+        }
+        return conv;
+      });
+      
+      // Sort conversations by last message time
+      return updatedConversations.sort((a, b) => {
+        const timeA = a.last_message?.created_at || a.updated_at;
+        const timeB = b.last_message?.created_at || b.updated_at;
+        return new Date(timeB).getTime() - new Date(timeA).getTime();
+      });
+    });
+  };
+
   // Fetch conversations on mount and set up real-time subscriptions
   useEffect(() => {
     if (!user) return;
 
     fetchConversations();
 
-    // Set up real-time subscription for conversations
-    const conversationChannel = supabase
-      .channel('conversations-changes')
+    // Set up optimized real-time subscription for messages
+    const messagesChannel = supabase
+      .channel('global-messages-changes')
       .on(
         'postgres_changes',
         {
-          event: '*',
+          event: 'INSERT',
           schema: 'public',
-          table: 'conversations'
+          table: 'messages'
         },
-        () => {
-          fetchConversations();
+        (payload) => {
+          const newMessage = payload.new;
+          // Only update if this user is part of the conversation
+          supabase
+            .from('conversation_participants')
+            .select('conversation_id')
+            .eq('conversation_id', newMessage.conversation_id)
+            .eq('user_id', user.id)
+            .single()
+            .then(({ data, error }) => {
+              if (!error && data) {
+                updateConversationWithNewMessage(newMessage.conversation_id, newMessage);
+              }
+            });
         }
       )
       .on(
         'postgres_changes',
         {
-          event: '*',
+          event: 'UPDATE',
           schema: 'public',
-          table: 'messages'
+          table: 'conversations'
         },
-        () => {
-          fetchConversations();
+        (payload) => {
+          // Update conversation timestamp when conversation is updated
+          setConversations(prev => 
+            prev.map(conv => 
+              conv.id === payload.new.id 
+                ? { ...conv, updated_at: payload.new.updated_at, last_message_at: payload.new.last_message_at }
+                : conv
+            )
+          );
         }
       )
       .subscribe();
 
     return () => {
-      supabase.removeChannel(conversationChannel);
+      supabase.removeChannel(messagesChannel);
     };
-  }, [user, toast]);
+  }, [user]);
 
   const handleNewConversation = async (contactId: string) => {
     try {
@@ -391,6 +438,7 @@ const Messages = ({ targetConversationId }: MessagesProps) => {
               conversationId={selectedConversationId}
               currentUserId={user.id}
               onBack={handleBackToConversations}
+              onMessageSent={updateConversationWithNewMessage}
             />
           ) : (
             /* Conversations list - full width */
