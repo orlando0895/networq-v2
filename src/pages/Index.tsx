@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-import { Plus } from "lucide-react";
+import { Plus, Download } from "lucide-react";
 import { useContacts } from "@/hooks/useContacts";
 import { useUserContactCard } from "@/hooks/useUserContactCard";
 import { Button } from "@/components/ui/button";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import ContactCard from "@/components/ContactCard";
 import ContactForm from "@/components/ContactForm";
 import ContactStats from "@/components/ContactStats";
@@ -10,6 +11,7 @@ import ContactFilters from "@/components/ContactFilters";
 import EmptyState from "@/components/EmptyState";
 import { MobileLayout, PageHeader } from "@/components/MobileLayout";
 import { useToast } from "@/hooks/use-toast";
+import { generateVCF } from "@/lib/vcf";
 import type { Database } from '@/integrations/supabase/types';
 
 type Contact = Database['public']['Tables']['contacts']['Row'];
@@ -77,6 +79,95 @@ const Index = () => {
     }
   };
 
+  // Export contacts functionality
+  const handleExportContacts = () => {
+    if (filteredContacts.length === 0) {
+      toast({
+        title: "No contacts to export",
+        description: "Add some contacts first or adjust your filters.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    try {
+      const vcfContent = filteredContacts
+        .map(contact => generateVCF(contact))
+        .join('\n\n');
+      
+      const blob = new Blob([vcfContent], { type: 'text/vcard' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `networq-contacts-${new Date().toISOString().split('T')[0]}.vcf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
+      toast({
+        title: "Contacts exported successfully",
+        description: `Exported ${filteredContacts.length} contacts to VCF file.`
+      });
+    } catch (error) {
+      console.error('Export error:', error);
+      toast({
+        title: "Export failed",
+        description: "Failed to export contacts. Please try again.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const exportFilteredAsCSV = () => {
+    if (filteredContacts.length === 0) {
+      toast({
+        title: "No contacts to export",
+        description: "Add some contacts first or adjust your filters.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    try {
+      const headers = ['Name', 'Email', 'Phone', 'Company', 'Industry', 'Tier', 'Notes'];
+      const csvContent = [
+        headers.join(','),
+        ...filteredContacts.map(contact => [
+          `"${contact.name || ''}"`,
+          `"${contact.email || ''}"`,
+          `"${contact.phone || ''}"`,
+          `"${contact.company || ''}"`,
+          `"${contact.industry || ''}"`,
+          `"${contact.tier || ''}"`,
+          `"${(contact.notes || '').replace(/"/g, '""')}"`
+        ].join(','))
+      ].join('\n');
+
+      const blob = new Blob([csvContent], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `networq-contacts-${new Date().toISOString().split('T')[0]}.csv`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
+      toast({
+        title: "Contacts exported successfully",
+        description: `Exported ${filteredContacts.length} contacts to CSV file.`
+      });
+    } catch (error) {
+      console.error('Export error:', error);
+      toast({
+        title: "Export failed",
+        description: "Failed to export contacts. Please try again.",
+        variant: "destructive"
+      });
+    }
+  };
+
   const filteredContacts = contacts.filter(contact => {
     const matchesSearch = !searchTerm || 
       contact.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
@@ -106,17 +197,45 @@ const Index = () => {
       header={
         <PageHeader
           title="Connections"
-          subtitle="Manage your network"
+          subtitle={`${contacts.length} contacts in your network`}
           action={
-            <Button size="sm" className="touch-target" onClick={() => setIsAddingContact(true)}>
-              <Plus className="h-4 w-4" />
-              <span className="ml-2 hidden sm:inline">Add</span>
-            </Button>
+            <div className="flex items-center gap-2">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button size="sm" variant="outline" className="touch-target">
+                    <Download className="h-4 w-4" />
+                    <span className="ml-2 hidden sm:inline">Export</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={handleExportContacts}>
+                    Export as VCF
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={exportFilteredAsCSV}>
+                    Export as CSV
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <Button size="sm" className="touch-target" onClick={() => setIsAddingContact(true)}>
+                <Plus className="h-4 w-4" />
+                <span className="ml-2 hidden sm:inline">Add</span>
+              </Button>
+            </div>
           }
         />
       }
     >
       <div className="space-y-4">
+        {/* Quick Stats */}
+        {contacts.length > 0 && (
+          <ContactStats 
+            contacts={contacts} 
+            filterIndustry={filterIndustry}
+            onIndustryFilterChange={setFilterIndustry}
+          />
+        )}
+
+        {/* Search and Filters */}
         <ContactFilters 
           searchTerm={searchTerm} 
           onSearchChange={setSearchTerm} 
@@ -125,12 +244,7 @@ const Index = () => {
           contacts={contacts} 
         />
 
-        <ContactStats 
-          contacts={contacts} 
-          filterIndustry={filterIndustry}
-          onIndustryFilterChange={setFilterIndustry}
-        />
-
+        {/* Contact Cards */}
         <div className="space-y-3">
           {filteredContacts.map(contact => (
             <ContactCard 
@@ -142,11 +256,35 @@ const Index = () => {
           ))}
         </div>
 
+        {/* Empty State */}
         {filteredContacts.length === 0 && (
           <EmptyState 
             hasFilters={hasFilters} 
             onAddContact={() => setIsAddingContact(true)} 
           />
+        )}
+
+        {/* Results Summary */}
+        {contacts.length > 0 && filteredContacts.length !== contacts.length && (
+          <div className="text-center py-4">
+            <p className="text-sm text-muted-foreground">
+              Showing {filteredContacts.length} of {contacts.length} contacts
+              {hasFilters && (
+                <Button 
+                  variant="link" 
+                  size="sm" 
+                  className="ml-2 p-0 h-auto"
+                  onClick={() => {
+                    setSearchTerm('');
+                    setFilterTier('all');
+                    setFilterIndustry('all');
+                  }}
+                >
+                  Clear filters
+                </Button>
+              )}
+            </p>
+          </div>
         )}
       </div>
 
