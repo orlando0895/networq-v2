@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MapPin, Calendar, Clock, Users, Tag } from 'lucide-react';
+import { MapPin, Calendar, Clock, Users, Tag, Upload, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -24,6 +24,7 @@ const eventSchema = z.object({
   address: z.string().optional(),
   max_attendees: z.number().min(1, 'At least 1 attendee required').max(10000, 'Too many attendees').optional(),
   tags: z.string().optional(),
+  image: z.any().optional(),
 });
 
 type EventFormData = z.infer<typeof eventSchema>;
@@ -46,6 +47,8 @@ const CreateEventForm: React.FC<CreateEventFormProps> = ({
   const [loading, setLoading] = useState(false);
   const [tagInput, setTagInput] = useState('');
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const form = useForm<EventFormData>({
     resolver: zodResolver(eventSchema),
@@ -60,6 +63,7 @@ const CreateEventForm: React.FC<CreateEventFormProps> = ({
       address: '',
       max_attendees: undefined,
       tags: '',
+      image: undefined,
     },
   });
 
@@ -81,6 +85,54 @@ const CreateEventForm: React.FC<CreateEventFormProps> = ({
     }
   };
 
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) { // 5MB limit
+        toast({
+          title: "Error",
+          description: "Image size must be less than 5MB",
+          variant: "destructive"
+        });
+        return;
+      }
+      
+      setSelectedImage(file);
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setImagePreview(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const removeImage = () => {
+    setSelectedImage(null);
+    setImagePreview(null);
+  };
+
+  const uploadImage = async (file: File): Promise<string | null> => {
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${user?.id}/${Date.now()}.${fileExt}`;
+      
+      const { error: uploadError } = await supabase.storage
+        .from('event-images')
+        .upload(fileName, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data } = supabase.storage
+        .from('event-images')
+        .getPublicUrl(fileName);
+
+      return data.publicUrl;
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      return null;
+    }
+  };
+
   const onSubmit = async (data: EventFormData) => {
     if (!user) {
       toast({
@@ -93,6 +145,20 @@ const CreateEventForm: React.FC<CreateEventFormProps> = ({
 
     setLoading(true);
     try {
+      let imageUrl = null;
+      
+      // Upload image if selected
+      if (selectedImage) {
+        imageUrl = await uploadImage(selectedImage);
+        if (!imageUrl) {
+          toast({
+            title: "Warning",
+            description: "Failed to upload image, but event will be created without it",
+            variant: "destructive"
+          });
+        }
+      }
+
       // Combine date and time
       const eventDateTime = new Date(`${data.event_date}T${data.event_time}`);
       let endDateTime;
@@ -116,6 +182,7 @@ const CreateEventForm: React.FC<CreateEventFormProps> = ({
         max_attendees: data.max_attendees || null,
         current_attendees: 0,
         tags: selectedTags.length > 0 ? selectedTags : null,
+        image_url: imageUrl,
         is_public: true,
         created_by: user.id,
       };
@@ -135,6 +202,8 @@ const CreateEventForm: React.FC<CreateEventFormProps> = ({
       form.reset();
       setSelectedTags([]);
       setTagInput('');
+      setSelectedImage(null);
+      setImagePreview(null);
       onOpenChange(false);
       onEventCreated();
 
@@ -300,6 +369,54 @@ const CreateEventForm: React.FC<CreateEventFormProps> = ({
                 </FormItem>
               )}
             />
+
+            {/* Image Upload Section */}
+            <div className="space-y-2">
+              <FormLabel>Event Image (Optional)</FormLabel>
+              
+              {imagePreview ? (
+                <div className="relative">
+                  <img 
+                    src={imagePreview} 
+                    alt="Event preview" 
+                    className="w-full h-40 object-cover rounded-md border"
+                  />
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    size="sm"
+                    className="absolute top-2 right-2"
+                    onClick={removeImage}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+              ) : (
+                <div className="border-2 border-dashed border-muted-foreground/25 rounded-md p-4">
+                  <div className="text-center">
+                    <Upload className="mx-auto h-8 w-8 text-muted-foreground mb-2" />
+                    <div className="text-sm text-muted-foreground mb-2">
+                      Click to upload an image (max 5MB)
+                    </div>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageSelect}
+                      className="hidden"
+                      id="image-upload"
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => document.getElementById('image-upload')?.click()}
+                    >
+                      Choose Image
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </div>
 
             {/* Tags Section */}
             <div className="space-y-2">
