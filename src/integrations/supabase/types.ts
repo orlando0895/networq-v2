@@ -196,6 +196,8 @@ export type Database = {
           email: string | null
           full_name: string | null
           id: string
+          is_premium: boolean
+          subscription_expires_at: string | null
           updated_at: string
         }
         Insert: {
@@ -204,6 +206,8 @@ export type Database = {
           email?: string | null
           full_name?: string | null
           id: string
+          is_premium?: boolean
+          subscription_expires_at?: string | null
           updated_at?: string
         }
         Update: {
@@ -212,6 +216,8 @@ export type Database = {
           email?: string | null
           full_name?: string | null
           id?: string
+          is_premium?: boolean
+          subscription_expires_at?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -285,11 +291,58 @@ export type Database = {
         }
         Relationships: []
       }
+      user_subscriptions: {
+        Row: {
+          created_at: string
+          expires_at: string | null
+          id: string
+          started_at: string
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
+          subscription_status: Database["public"]["Enums"]["subscription_status"]
+          subscription_type: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          started_at?: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          subscription_status?: Database["public"]["Enums"]["subscription_status"]
+          subscription_type?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          started_at?: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          subscription_status?: Database["public"]["Enums"]["subscription_status"]
+          subscription_type?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
+      check_subscription_expiry: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
+      current_user_is_premium: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
       delete_mutual_contact: {
         Args: { contact_id_to_delete: string; current_user_id: string }
         Returns: boolean
@@ -302,6 +355,14 @@ export type Database = {
         Args: { other_user_id: string }
         Returns: string
       }
+      get_user_premium_status: {
+        Args: { user_uuid: string }
+        Returns: Database["public"]["Enums"]["subscription_status"]
+      }
+      is_user_premium: {
+        Args: { user_uuid: string }
+        Returns: boolean
+      }
       regenerate_share_code: {
         Args: { card_id: string }
         Returns: string
@@ -312,7 +373,7 @@ export type Database = {
       }
     }
     Enums: {
-      [_ in never]: never
+      subscription_status: "free" | "premium" | "enterprise"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -439,6 +500,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      subscription_status: ["free", "premium", "enterprise"],
+    },
   },
 } as const
