@@ -10,6 +10,7 @@ import { MobileLayout, PageHeader } from '@/components/MobileLayout';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import CreateEventForm from '@/components/CreateEventForm';
 
 interface Event {
   id: string;
@@ -246,6 +247,14 @@ const Events = () => {
             </Button>
           </div>
         )}
+
+        {/* Create Event Form */}
+        <CreateEventForm
+          open={isCreateEventOpen}
+          onOpenChange={setIsCreateEventOpen}
+          onEventCreated={fetchEvents}
+          userLocation={userLocation}
+        />
 
         {/* Event Details Modal */}
         <Dialog open={isDetailModalOpen} onOpenChange={setIsDetailModalOpen}>
