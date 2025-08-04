@@ -277,15 +277,15 @@ export function ChatWindow({ conversationId, currentUserId, onBack, onMessageSen
 
   return (
     <div className="fixed inset-0 bg-background flex flex-col z-50">
-      {/* Chat header */}
-      <div className="p-4 border-b border-border flex-shrink-0">
+      {/* Enhanced mobile-optimized chat header */}
+      <div className="p-4 border-b border-border flex-shrink-0 bg-background/95 backdrop-blur-sm">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3 min-w-0 flex-1">
             <Button 
               variant="ghost" 
               size="icon"
               onClick={onBack}
-              className="h-9 w-9 flex-shrink-0"
+              className="h-10 w-10 flex-shrink-0 touch-target"
             >
               <ArrowLeft className="h-5 w-5" />
             </Button>
@@ -293,28 +293,31 @@ export function ChatWindow({ conversationId, currentUserId, onBack, onMessageSen
             {isGroupChat ? (
               <div className="flex items-center space-x-3 min-w-0 flex-1">
                 <div className="relative flex-shrink-0">
-                  <Avatar className="h-10 w-10">
-                    <AvatarFallback className="text-sm bg-primary text-primary-foreground">
+                  <Avatar className="h-11 w-11 border-2 border-primary/20">
+                    <AvatarFallback className="text-sm bg-gradient-to-br from-primary to-primary/80 text-primary-foreground">
                       <Users className="h-5 w-5" />
                     </AvatarFallback>
                   </Avatar>
-                  <Badge className="absolute -top-1 -right-1 h-5 w-5 p-0 text-xs">
+                  <Badge className="absolute -top-1 -right-1 h-6 w-6 p-0 text-xs font-semibold bg-accent text-accent-foreground">
                     {participants.length + 1}
                   </Badge>
                 </div>
                 <div className="min-w-0 flex-1">
-                  <h2 className="font-semibold text-base truncate">
+                  <h2 className="font-bold text-base truncate">
                     {getGroupChatTitle()}
                   </h2>
-                  <p className="text-xs text-muted-foreground truncate">
-                    {participants.length + 1} participants
-                  </p>
+                  <div className="flex items-center space-x-1">
+                    <div className="h-2 w-2 bg-green-500 rounded-full"></div>
+                    <p className="text-xs text-muted-foreground truncate">
+                      {participants.length + 1} participants
+                    </p>
+                  </div>
                 </div>
               </div>
             ) : (
               <div className="flex items-center space-x-3 min-w-0 flex-1">
-                <Avatar className="h-10 w-10 flex-shrink-0">
-                  <AvatarFallback className="text-sm">
+                <Avatar className="h-11 w-11 flex-shrink-0 border-2 border-primary/20">
+                  <AvatarFallback className="text-sm font-semibold">
                     {participants[0]?.full_name
                       ?.split(' ')
                       .map((n: string) => n[0])
@@ -323,9 +326,13 @@ export function ChatWindow({ conversationId, currentUserId, onBack, onMessageSen
                   </AvatarFallback>
                 </Avatar>
                 <div className="min-w-0">
-                  <h2 className="font-semibold text-base truncate">
+                  <h2 className="font-bold text-base truncate">
                     {getDisplayName(participants[0] || { id: '', full_name: '', email: '' })}
                   </h2>
+                  <div className="flex items-center space-x-1">
+                    <div className="h-2 w-2 bg-green-500 rounded-full"></div>
+                    <p className="text-xs text-muted-foreground">Online now</p>
+                  </div>
                 </div>
               </div>
             )}
@@ -334,7 +341,7 @@ export function ChatWindow({ conversationId, currentUserId, onBack, onMessageSen
           <Button 
             variant="ghost" 
             size="icon"
-            className="h-9 w-9 flex-shrink-0"
+            className="h-10 w-10 flex-shrink-0 touch-target"
           >
             <MoreVertical className="h-5 w-5" />
           </Button>
@@ -365,8 +372,9 @@ export function ChatWindow({ conversationId, currentUserId, onBack, onMessageSen
                   )}
                 >
                   {showSenderName && (
-                    <p className="text-xs font-medium mb-1 text-primary">
-                      {getSenderDisplayName(message)}
+                    <p className="text-xs font-semibold mb-1.5 text-primary flex items-center space-x-1">
+                      <span>{getSenderDisplayName(message)}</span>
+                      <div className="h-1 w-1 bg-primary/60 rounded-full"></div>
                     </p>
                   )}
                   
@@ -412,35 +420,49 @@ export function ChatWindow({ conversationId, currentUserId, onBack, onMessageSen
         </div>
       </ScrollArea>
 
-      {/* Message input */}
-      <div className="p-4 border-t border-border flex-shrink-0">
-        <div className="flex items-center space-x-2">
+      {/* Enhanced mobile-optimized message input */}
+      <div className="p-4 border-t border-border flex-shrink-0 bg-background/95 backdrop-blur-sm">
+        <div className="flex items-center space-x-3">
           <Button
             variant="outline"
             size="icon"
             onClick={() => fileInputRef.current?.click()}
-            className="h-12 w-12 rounded-full flex-shrink-0"
+            className="h-11 w-11 rounded-full flex-shrink-0 touch-target border-2"
           >
             <Paperclip className="h-5 w-5" />
           </Button>
           
-          <Input
-            value={newMessage}
-            onChange={(e) => setNewMessage(e.target.value)}
-            onKeyPress={handleKeyPress}
-            placeholder={isGroupChat ? "Message the group..." : "Say something..."}
-            className="flex-1 min-w-0 text-base h-12 rounded-full px-4"
-            disabled={sending}
-          />
+          <div className="flex-1 relative">
+            <Input
+              value={newMessage}
+              onChange={(e) => setNewMessage(e.target.value)}
+              onKeyPress={handleKeyPress}
+              placeholder={isGroupChat ? "Message the group..." : "Say something..."}
+              className="text-base h-11 rounded-full px-4 pr-12 border-2 focus:border-primary transition-colors"
+              disabled={sending}
+            />
+            {newMessage.trim() && (
+              <Button 
+                onClick={sendMessage} 
+                disabled={!newMessage.trim() || sending}
+                size="icon"
+                className="absolute right-1 top-1 h-9 w-9 rounded-full"
+              >
+                <Send className="h-4 w-4" />
+              </Button>
+            )}
+          </div>
           
-          <Button 
-            onClick={sendMessage} 
-            disabled={!newMessage.trim() || sending}
-            size="icon"
-            className="h-12 w-12 rounded-full flex-shrink-0"
-          >
-            <Send className="h-5 w-5" />
-          </Button>
+          {!newMessage.trim() && (
+            <Button 
+              onClick={sendMessage} 
+              disabled={!newMessage.trim() || sending}
+              size="icon"
+              className="h-11 w-11 rounded-full flex-shrink-0 touch-target"
+            >
+              <Send className="h-5 w-5" />
+            </Button>
+          )}
         </div>
         
         <input

@@ -149,29 +149,33 @@ export function ConversationList({
     if (conversation.is_group_chat) {
       return (
         <div className="relative">
-          <Avatar className="h-10 w-10 md:h-10 md:w-10 flex-shrink-0">
-            <AvatarFallback className="text-xs md:text-sm bg-primary text-primary-foreground">
-              <Users className="h-5 w-5" />
+          <Avatar className="h-12 w-12 flex-shrink-0 border-2 border-primary/20">
+            <AvatarFallback className="text-sm bg-gradient-to-br from-primary to-primary/80 text-primary-foreground">
+              <Users className="h-6 w-6" />
             </AvatarFallback>
           </Avatar>
-          <Badge className="absolute -top-1 -right-1 h-5 w-5 p-0 text-xs">
+          <Badge className="absolute -top-1 -right-1 h-6 w-6 p-0 text-xs font-semibold bg-accent text-accent-foreground border-2 border-background">
             {conversation.participant_count}
           </Badge>
+          <div className="absolute bottom-0 right-0 h-3 w-3 bg-green-500 border-2 border-background rounded-full"></div>
         </div>
       );
     }
 
     const participant = conversation.participants[0];
     return (
-      <Avatar className="h-10 w-10 md:h-10 md:w-10 flex-shrink-0">
-        <AvatarFallback className="text-xs md:text-sm">
-          {participant?.name
-            ?.split(' ')
-            .map(n => n[0])
-            .join('')
-            .toUpperCase() || '?'}
-        </AvatarFallback>
-      </Avatar>
+      <div className="relative">
+        <Avatar className="h-12 w-12 flex-shrink-0 border-2 border-primary/20">
+          <AvatarFallback className="text-sm font-semibold">
+            {participant?.name
+              ?.split(' ')
+              .map(n => n[0])
+              .join('')
+              .toUpperCase() || '?'}
+          </AvatarFallback>
+        </Avatar>
+        <div className="absolute bottom-0 right-0 h-3 w-3 bg-green-500 border-2 border-background rounded-full"></div>
+      </div>
     );
   };
 
@@ -218,24 +222,27 @@ export function ConversationList({
               onTouchMove={(e) => handleTouchMove(e, conversation.id)}
               onTouchEnd={handleTouchEnd}
             >
-              <button
+                <button
                 onClick={() => onSelectConversation(conversation.id)}
                 className={cn(
-                  "w-full p-3 md:p-4 text-left hover:bg-muted/50 transition-colors active:bg-muted/70 touch-manipulation group relative",
-                  selectedConversationId === conversation.id && "bg-muted"
+                  "w-full p-4 text-left hover:bg-muted/50 transition-all active:bg-muted/70 touch-manipulation group relative rounded-lg mx-2 my-1",
+                  selectedConversationId === conversation.id && "bg-primary/10 border border-primary/20"
                 )}
               >
-                <div className="flex items-center space-x-3">
+                <div className="flex items-center space-x-4">
                   {renderConversationAvatar(conversation)}
                   
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between mb-1">
+                    <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center space-x-2 min-w-0 flex-1">
-                        <h3 className="font-medium text-sm md:text-sm truncate">
+                        <h3 className="font-semibold text-base truncate">
                           {getConversationTitle(conversation)}
                         </h3>
                         {conversation.is_group_chat && (
-                          <Users className="h-3 w-3 text-muted-foreground flex-shrink-0" />
+                          <Badge variant="secondary" className="text-xs px-2 py-0.5">
+                            <Users className="h-3 w-3 mr-1" />
+                            Group
+                          </Badge>
                         )}
                       </div>
                       <div className="flex items-center space-x-2">

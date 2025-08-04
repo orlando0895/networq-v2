@@ -144,48 +144,58 @@ export function NewMessageDialog({
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-md h-[80vh] flex flex-col">
-        <DialogHeader className="flex-shrink-0">
+      <DialogContent className="w-[95vw] max-w-md h-[85vh] flex flex-col">
+        <DialogHeader className="flex-shrink-0 pb-3">
           <div className="flex items-center justify-between">
-            <DialogTitle>
+            <DialogTitle className="text-lg">
               {isGroupMode ? 'Create Group Chat' : 'Start New Conversation'}
             </DialogTitle>
             <Button
               variant={isGroupMode ? "default" : "outline"}
               size="sm"
               onClick={toggleGroupMode}
-              className="h-8"
+              className="h-9 px-3 text-xs touch-target"
             >
-              {isGroupMode ? <MessageSquare className="h-4 w-4 mr-1" /> : <Users className="h-4 w-4 mr-1" />}
+              {isGroupMode ? <MessageSquare className="h-4 w-4 mr-1.5" /> : <Users className="h-4 w-4 mr-1.5" />}
               {isGroupMode ? 'Direct' : 'Group'}
             </Button>
           </div>
           {isGroupMode && (
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-muted-foreground mt-1">
               Select multiple contacts to create a group chat
             </p>
           )}
         </DialogHeader>
         
         <div className="flex flex-col space-y-4 min-h-0 flex-1">
-          {/* Selected contacts in group mode */}
+          {/* Selected contacts in group mode with improved mobile UI */}
           {isGroupMode && selectedContacts.length > 0 && (
-            <div className="flex-shrink-0">
-              <div className="flex items-center space-x-2 mb-2">
-                <Users className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm font-medium">
-                  Selected ({selectedContacts.length})
-                </span>
+            <div className="flex-shrink-0 bg-muted/50 p-3 rounded-lg border">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center space-x-2">
+                  <Users className="h-4 w-4 text-primary" />
+                  <span className="text-sm font-medium">
+                    Selected ({selectedContacts.length})
+                  </span>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setSelectedContacts([])}
+                  className="h-8 px-2 text-xs text-muted-foreground hover:text-foreground"
+                >
+                  Clear all
+                </Button>
               </div>
-              <div className="flex flex-wrap gap-2 max-h-20 overflow-y-auto">
+              <div className="flex flex-wrap gap-2 max-h-24 overflow-y-auto">
                 {selectedContacts.map((contact) => (
                   <Badge
                     key={contact.id}
-                    variant="secondary"
-                    className="flex items-center space-x-2 pr-1"
+                    variant="default"
+                    className="flex items-center space-x-2 pr-1 py-1.5 touch-target"
                   >
                     <Avatar className="h-5 w-5">
-                      <AvatarFallback className="text-xs">
+                      <AvatarFallback className="text-xs bg-primary-foreground text-primary">
                         {contact.name
                           .split(' ')
                           .map(n => n[0])
@@ -193,12 +203,16 @@ export function NewMessageDialog({
                           .toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
-                    <span className="text-xs max-w-20 truncate">{contact.name}</span>
+                    <span className="text-xs max-w-20 truncate font-medium">{contact.name}</span>
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => handleRemoveFromSelection(contact.id)}
-                      className="h-4 w-4 p-0 hover:bg-destructive hover:text-destructive-foreground"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handleRemoveFromSelection(contact.id);
+                      }}
+                      className="h-5 w-5 p-0 hover:bg-primary-foreground/20 rounded-full touch-target"
                     >
                       <X className="h-3 w-3" />
                     </Button>
@@ -253,14 +267,14 @@ export function NewMessageDialog({
                   {filteredContacts.map((contact) => (
                     <Button
                       key={contact.id}
-                      variant="outline"
-                      className="w-full justify-start h-auto p-3 bg-background hover:bg-accent hover:text-accent-foreground border-border"
+                      variant="ghost"
+                      className="w-full justify-start h-auto p-4 bg-background hover:bg-accent hover:text-accent-foreground border border-border/50 rounded-lg touch-target transition-all"
                       onClick={() => handleSelectContact(contact)}
                     >
                       <div className="flex items-center space-x-3 w-full">
                         <div className="relative">
-                          <Avatar className="h-8 w-8 flex-shrink-0">
-                            <AvatarFallback>
+                          <Avatar className="h-10 w-10 flex-shrink-0">
+                            <AvatarFallback className="text-sm font-medium">
                               {contact.name
                                 .split(' ')
                                 .map(n => n[0])
@@ -269,26 +283,26 @@ export function NewMessageDialog({
                             </AvatarFallback>
                           </Avatar>
                           {isGroupMode && (
-                            <div className="absolute -top-1 -right-1 h-5 w-5 bg-primary rounded-full flex items-center justify-center">
-                              <UserPlus className="h-3 w-3 text-primary-foreground" />
+                            <div className="absolute -top-1 -right-1 h-6 w-6 bg-primary rounded-full flex items-center justify-center shadow-sm">
+                              <UserPlus className="h-3.5 w-3.5 text-primary-foreground" />
                             </div>
                           )}
                         </div>
                         
                         <div className="flex-1 text-left min-w-0">
-                          <p className="font-medium text-sm truncate">{contact.name}</p>
-                          <div className="flex items-center space-x-2 text-xs text-muted-foreground">
-                            <span className="truncate">{contact.email}</span>
+                          <p className="font-semibold text-sm truncate">{contact.name}</p>
+                          <div className="flex items-center space-x-2 text-xs text-muted-foreground mt-1">
+                            <span className="truncate max-w-32">{contact.email}</span>
                             {contact.company && (
                               <>
-                                <span>•</span>
-                                <span className="truncate">{contact.company}</span>
+                                <span className="hidden sm:inline">•</span>
+                                <span className="truncate max-w-24 hidden sm:inline">{contact.company}</span>
                               </>
                             )}
                             {contact.industry && (
                               <>
-                                <span>•</span>
-                                <span className="truncate">{contact.industry}</span>
+                                <span className="hidden md:inline">•</span>
+                                <span className="truncate max-w-20 hidden md:inline">{contact.industry}</span>
                               </>
                             )}
                           </div>
@@ -301,15 +315,16 @@ export function NewMessageDialog({
             )}
           </div>
 
-          {/* Create group chat button */}
+          {/* Create group chat button with enhanced mobile styling */}
           {isGroupMode && selectedContacts.length > 0 && (
-            <div className="flex-shrink-0 pt-2 border-t border-border">
+            <div className="flex-shrink-0 pt-4 border-t border-border">
               <Button
                 onClick={handleCreateGroupChat}
-                className="w-full"
+                className="w-full h-12 text-base font-semibold touch-target"
                 disabled={selectedContacts.length === 0}
+                size="lg"
               >
-                <Users className="h-4 w-4 mr-2" />
+                <Users className="h-5 w-5 mr-2" />
                 Create Group Chat ({selectedContacts.length})
               </Button>
             </div>
