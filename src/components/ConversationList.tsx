@@ -14,7 +14,10 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { cn } from '@/lib/utils';
-import { MessageSquare, Image, Paperclip, Trash2, UserMinus, Users } from 'lucide-react';
+import { MessageSquare, Image, Paperclip, Trash2, UserMinus, Users, Archive } from 'lucide-react';
+import { SwipeableItem } from '@/components/SwipeableItem';
+import { PullToRefresh } from '@/components/PullToRefresh';
+import { useHapticFeedback } from '@/hooks/use-haptic-feedback';
 
 interface Conversation {
   id: string;
@@ -40,6 +43,7 @@ interface ConversationListProps {
   selectedConversationId: string | null;
   onSelectConversation: (id: string) => void;
   onDeleteConversation?: (conversationId: string, deleteType: 'hide' | 'delete') => void;
+  onRefresh?: () => Promise<void> | void;
   loading: boolean;
 }
 
@@ -48,41 +52,31 @@ export function ConversationList({
   selectedConversationId,
   onSelectConversation,
   onDeleteConversation,
+  onRefresh,
   loading
 }: ConversationListProps) {
   const [swipedConversation, setSwipedConversation] = useState<string | null>(null);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [conversationToDelete, setConversationToDelete] = useState<string | null>(null);
-  const touchStartX = useRef<number>(0);
-  const touchCurrentX = useRef<number>(0);
+  const { impact } = useHapticFeedback();
   
-  const handleTouchStart = (e: React.TouchEvent, conversationId: string) => {
-    touchStartX.current = e.touches[0].clientX;
-    touchCurrentX.current = e.touches[0].clientX;
-  };
-
-  const handleTouchMove = (e: React.TouchEvent, conversationId: string) => {
-    touchCurrentX.current = e.touches[0].clientX;
-    const diff = touchStartX.current - touchCurrentX.current;
-    
-    if (diff > 50) { // Swiped left significantly
-      setSwipedConversation(conversationId);
-    } else if (diff < -20) { // Small swipe right to reset
-      setSwipedConversation(null);
-    }
-  };
-
-  const handleTouchEnd = () => {
-    // Reset touch tracking
-    touchStartX.current = 0;
-    touchCurrentX.current = 0;
-  };
-
-  const handleDeleteClick = (conversationId: string, e: React.MouseEvent) => {
-    e.stopPropagation();
+  const handleDeleteClick = (conversationId: string) => {
+    impact('medium');
     setConversationToDelete(conversationId);
     setShowDeleteDialog(true);
     setSwipedConversation(null);
+  };
+
+  const handleHideClick = (conversationId: string) => {
+    impact('light');
+    if (onDeleteConversation) {
+      onDeleteConversation(conversationId, 'hide');
+    }
+  };
+
+  const handleConversationClick = (conversationId: string) => {
+    impact('light');
+    onSelectConversation(conversationId);
   };
 
   const handleDeleteConfirm = (deleteType: 'hide' | 'delete') => {
@@ -207,26 +201,39 @@ export function ConversationList({
     );
   }
 
-  return (
+  const conversationContent = (
     <>
       <div className="divide-y divide-border">
-        {conversations.map((conversation) => (
-          <div key={conversation.id} className="relative overflow-hidden">
-            {/* Main conversation item */}
-            <div
-              className={cn(
-                "relative transition-transform duration-200 bg-background",
-                swipedConversation === conversation.id && "transform -translate-x-16"
-              )}
-              onTouchStart={(e) => handleTouchStart(e, conversation.id)}
-              onTouchMove={(e) => handleTouchMove(e, conversation.id)}
-              onTouchEnd={handleTouchEnd}
+        {conversations.map((conversation) => {
+          const swipeActions = onDeleteConversation ? [
+            {
+              id: 'hide',
+              label: 'Hide',
+              icon: <Archive className="h-4 w-4" />,
+              color: 'warning' as const,
+              onAction: () => handleHideClick(conversation.id)
+            },
+            {
+              id: 'delete',
+              label: 'Delete',
+              icon: <Trash2 className="h-4 w-4" />,
+              color: 'destructive' as const,
+              onAction: () => handleDeleteClick(conversation.id)
+            }
+          ] : [];
+
+          return (
+            <SwipeableItem
+              key={conversation.id}
+              rightActions={swipeActions}
+              className="bg-background"
+              hapticFeedback={true}
             >
-                <button
-                onClick={() => onSelectConversation(conversation.id)}
+              <button
+                onClick={() => handleConversationClick(conversation.id)}
                 className={cn(
-                  "w-full p-4 text-left hover:bg-muted/50 transition-all active:bg-muted/70 touch-manipulation group relative rounded-lg mx-2 my-1",
-                  selectedConversationId === conversation.id && "bg-primary/10 border border-primary/20"
+                  "w-full p-4 text-left hover:bg-muted/50 transition-all active:bg-muted/70 touch-target-large haptic-enabled group relative",
+                  selectedConversationId === conversation.id && "bg-primary/10 border-l-4 border-l-primary"
                 )}
               >
                 <div className="flex items-center space-x-4">
@@ -239,7 +246,7 @@ export function ConversationList({
                           {getConversationTitle(conversation)}
                         </h3>
                         {conversation.is_group_chat && (
-                          <Badge variant="secondary" className="text-xs px-2 py-0.5">
+                          <Badge variant="secondary" className="text-xs px-2 py-0.5 touch-no-select">
                             <Users className="h-3 w-3 mr-1" />
                             Group
                           </Badge>
@@ -253,24 +260,13 @@ export function ConversationList({
                             })}
                           </span>
                         )}
-                        {/* Desktop delete button - shown on hover */}
-                        {onDeleteConversation && (
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={(e) => handleDeleteClick(conversation.id, e)}
-                            className="opacity-0 group-hover:opacity-100 transition-opacity h-6 w-6 p-0 hover:bg-destructive hover:text-destructive-foreground hidden md:flex"
-                          >
-                            <Trash2 className="h-3 w-3" />
-                          </Button>
-                        )}
                       </div>
                     </div>
                     
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-1 min-w-0 flex-1">
                         {conversation.last_message && getMessageIcon(conversation.last_message.message_type)}
-                        <p className="text-xs md:text-sm text-muted-foreground truncate">
+                        <p className="text-sm text-muted-foreground truncate">
                           {getMessagePreview(conversation.last_message, conversation.is_group_chat)}
                         </p>
                       </div>
@@ -283,28 +279,14 @@ export function ConversationList({
                   </div>
                 </div>
               </button>
-            </div>
-
-            {/* Delete button revealed on swipe */}
-            {onDeleteConversation && swipedConversation === conversation.id && (
-              <div className="absolute right-0 top-0 h-full w-16 bg-destructive flex items-center justify-center">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={(e) => handleDeleteClick(conversation.id, e)}
-                  className="h-full w-full text-destructive-foreground hover:bg-destructive/90"
-                >
-                  <Trash2 className="h-5 w-5" />
-                </Button>
-              </div>
-            )}
-          </div>
-        ))}
+            </SwipeableItem>
+          );
+        })}
       </div>
 
       {/* Delete confirmation dialog */}
       <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
-        <AlertDialogContent>
+        <AlertDialogContent className="mx-4">
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Conversation</AlertDialogTitle>
             <AlertDialogDescription>
@@ -312,18 +294,18 @@ export function ConversationList({
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2">
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel className="touch-target">Cancel</AlertDialogCancel>
             <Button
               variant="outline"
               onClick={() => handleDeleteConfirm('hide')}
-              className="w-full sm:w-auto"
+              className="w-full sm:w-auto touch-target"
             >
               <UserMinus className="h-4 w-4 mr-2" />
               Hide from my side
             </Button>
             <AlertDialogAction
               onClick={() => handleDeleteConfirm('delete')}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90 w-full sm:w-auto"
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90 w-full sm:w-auto touch-target"
             >
               <Trash2 className="h-4 w-4 mr-2" />
               Delete completely
@@ -333,4 +315,10 @@ export function ConversationList({
       </AlertDialog>
     </>
   );
+
+  return onRefresh ? (
+    <PullToRefresh onRefresh={onRefresh} disabled={loading}>
+      {conversationContent}
+    </PullToRefresh>
+  ) : conversationContent;
 }
