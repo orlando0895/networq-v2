@@ -289,7 +289,7 @@ const Messages = ({ targetConversationId }: MessagesProps) => {
 
     // Clean up any existing channel first
     if (channelRef.current) {
-      supabase.removeChannel(channelRef.current);
+      channelRef.current.unsubscribe();
       channelRef.current = null;
     }
 
@@ -337,15 +337,15 @@ const Messages = ({ targetConversationId }: MessagesProps) => {
             }
           });
         }
-      );
+      )
+      .subscribe();
 
-    // Store the channel reference and subscribe
+    // Store the channel reference
     channelRef.current = messagesChannel;
-    messagesChannel.subscribe();
 
     return () => {
       if (channelRef.current) {
-        supabase.removeChannel(channelRef.current);
+        channelRef.current.unsubscribe();
         channelRef.current = null;
       }
     };
