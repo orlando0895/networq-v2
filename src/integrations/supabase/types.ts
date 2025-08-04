@@ -136,6 +136,101 @@ export type Database = {
         }
         Relationships: []
       }
+      event_attendees: {
+        Row: {
+          event_id: string
+          id: string
+          joined_at: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          event_id: string
+          id?: string
+          joined_at?: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          event_id?: string
+          id?: string
+          joined_at?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_attendees_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      events: {
+        Row: {
+          address: string | null
+          contact_info: Json | null
+          created_at: string
+          created_by: string
+          current_attendees: number | null
+          description: string | null
+          end_date: string | null
+          event_date: string
+          id: string
+          image_url: string | null
+          is_public: boolean | null
+          latitude: number
+          location_name: string
+          longitude: number
+          max_attendees: number | null
+          tags: string[] | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          address?: string | null
+          contact_info?: Json | null
+          created_at?: string
+          created_by: string
+          current_attendees?: number | null
+          description?: string | null
+          end_date?: string | null
+          event_date: string
+          id?: string
+          image_url?: string | null
+          is_public?: boolean | null
+          latitude: number
+          location_name: string
+          longitude: number
+          max_attendees?: number | null
+          tags?: string[] | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          address?: string | null
+          contact_info?: Json | null
+          created_at?: string
+          created_by?: string
+          current_attendees?: number | null
+          description?: string | null
+          end_date?: string | null
+          event_date?: string
+          id?: string
+          image_url?: string | null
+          is_public?: boolean | null
+          latitude?: number
+          location_name?: string
+          longitude?: number
+          max_attendees?: number | null
+          tags?: string[] | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       messages: {
         Row: {
           content: string | null
@@ -291,6 +386,42 @@ export type Database = {
         }
         Relationships: []
       }
+      user_location_settings: {
+        Row: {
+          auto_location: boolean | null
+          created_at: string
+          default_radius: number
+          id: string
+          latitude: number | null
+          location_name: string | null
+          longitude: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          auto_location?: boolean | null
+          created_at?: string
+          default_radius?: number
+          id?: string
+          latitude?: number | null
+          location_name?: string | null
+          longitude?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          auto_location?: boolean | null
+          created_at?: string
+          default_radius?: number
+          id?: string
+          latitude?: number | null
+          location_name?: string | null
+          longitude?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_subscriptions: {
         Row: {
           created_at: string
@@ -335,6 +466,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      calculate_distance: {
+        Args: { lat1: number; lon1: number; lat2: number; lon2: number }
+        Returns: number
+      }
       check_subscription_expiry: {
         Args: Record<PropertyKey, never>
         Returns: undefined
@@ -351,9 +486,48 @@ export type Database = {
         Args: { _name: string }
         Returns: string
       }
+      get_events_within_radius: {
+        Args: {
+          user_lat: number
+          user_lon: number
+          radius_km?: number
+          limit_count?: number
+        }
+        Returns: {
+          id: string
+          title: string
+          description: string
+          event_date: string
+          end_date: string
+          location_name: string
+          latitude: number
+          longitude: number
+          address: string
+          max_attendees: number
+          current_attendees: number
+          tags: string[]
+          image_url: string
+          created_by: string
+          distance_km: number
+        }[]
+      }
       get_or_create_direct_conversation: {
         Args: { other_user_id: string }
         Returns: string
+      }
+      get_user_location_settings: {
+        Args: { user_uuid: string }
+        Returns: {
+          auto_location: boolean | null
+          created_at: string
+          default_radius: number
+          id: string
+          latitude: number | null
+          location_name: string | null
+          longitude: number | null
+          updated_at: string
+          user_id: string
+        }
       }
       get_user_premium_status: {
         Args: { user_uuid: string }
