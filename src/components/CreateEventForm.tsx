@@ -231,6 +231,54 @@ const CreateEventForm: React.FC<CreateEventFormProps> = ({
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            {/* Image Upload Section */}
+            <div className="space-y-2">
+              <FormLabel>Event Image (Optional)</FormLabel>
+              
+              {imagePreview ? (
+                <div className="relative">
+                  <img 
+                    src={imagePreview} 
+                    alt="Event preview" 
+                    className="w-full h-40 object-cover rounded-md border"
+                  />
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    size="sm"
+                    className="absolute top-2 right-2"
+                    onClick={removeImage}
+                  >
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+              ) : (
+                <div className="border-2 border-dashed border-muted-foreground/25 rounded-md p-4">
+                  <div className="text-center">
+                    <Upload className="mx-auto h-8 w-8 text-muted-foreground mb-2" />
+                    <div className="text-sm text-muted-foreground mb-2">
+                      Click to upload an image (max 5MB)
+                    </div>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageSelect}
+                      className="hidden"
+                      id="image-upload"
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => document.getElementById('image-upload')?.click()}
+                    >
+                      Choose Image
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </div>
+
             <FormField
               control={form.control}
               name="title"
@@ -369,54 +417,6 @@ const CreateEventForm: React.FC<CreateEventFormProps> = ({
                 </FormItem>
               )}
             />
-
-            {/* Image Upload Section */}
-            <div className="space-y-2">
-              <FormLabel>Event Image (Optional)</FormLabel>
-              
-              {imagePreview ? (
-                <div className="relative">
-                  <img 
-                    src={imagePreview} 
-                    alt="Event preview" 
-                    className="w-full h-40 object-cover rounded-md border"
-                  />
-                  <Button
-                    type="button"
-                    variant="destructive"
-                    size="sm"
-                    className="absolute top-2 right-2"
-                    onClick={removeImage}
-                  >
-                    <X className="h-4 w-4" />
-                  </Button>
-                </div>
-              ) : (
-                <div className="border-2 border-dashed border-muted-foreground/25 rounded-md p-4">
-                  <div className="text-center">
-                    <Upload className="mx-auto h-8 w-8 text-muted-foreground mb-2" />
-                    <div className="text-sm text-muted-foreground mb-2">
-                      Click to upload an image (max 5MB)
-                    </div>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageSelect}
-                      className="hidden"
-                      id="image-upload"
-                    />
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => document.getElementById('image-upload')?.click()}
-                    >
-                      Choose Image
-                    </Button>
-                  </div>
-                </div>
-              )}
-            </div>
 
             {/* Tags Section */}
             <div className="space-y-2">
