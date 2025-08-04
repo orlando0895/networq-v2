@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -13,21 +14,24 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { cn } from '@/lib/utils';
-import { MessageSquare, Image, Paperclip, Trash2, UserMinus } from 'lucide-react';
+import { MessageSquare, Image, Paperclip, Trash2, UserMinus, Users } from 'lucide-react';
 
 interface Conversation {
   id: string;
   updated_at: string;
   last_message_at: string;
-  participant: {
+  participants: Array<{
     id: string;
     name: string;
     email: string;
-  };
+  }>;
+  participant_count: number;
+  is_group_chat: boolean;
   last_message?: {
     content: string;
     created_at: string;
     message_type: string;
+    sender_name?: string;
   };
 }
 
@@ -51,6 +55,7 @@ export function ConversationList({
   const [conversationToDelete, setConversationToDelete] = useState<string | null>(null);
   const touchStartX = useRef<number>(0);
   const touchCurrentX = useRef<number>(0);
+  
   const handleTouchStart = (e: React.TouchEvent, conversationId: string) => {
     touchStartX.current = e.touches[0].clientX;
     touchCurrentX.current = e.touches[0].clientX;
@@ -88,16 +93,44 @@ export function ConversationList({
     setConversationToDelete(null);
   };
 
-  const getMessagePreview = (message: Conversation['last_message']) => {
+  const getConversationTitle = (conversation: Conversation) => {
+    if (conversation.is_group_chat) {
+      if (conversation.participants.length === 0) return 'Group Chat';
+      if (conversation.participants.length === 1) return conversation.participants[0].name || conversation.participants[0].email;
+      if (conversation.participants.length === 2) {
+        return conversation.participants.map(p => (p.name || p.email).split(' ')[0]).join(', ');
+      }
+      return `${(conversation.participants[0].name || conversation.participants[0].email).split(' ')[0]} and ${conversation.participants.length - 1} others`;
+    }
+    
+    const participant = conversation.participants[0];
+    return participant?.name || participant?.email || 'Unknown User';
+  };
+
+  const getConversationSubtitle = (conversation: Conversation) => {
+    if (conversation.is_group_chat) {
+      return `${conversation.participant_count} participants`;
+    }
+    return conversation.participants[0]?.email || '';
+  };
+
+  const getMessagePreview = (message: Conversation['last_message'], isGroupChat: boolean) => {
     if (!message) return 'No messages yet';
+    
+    let preview = '';
+    
+    // Add sender name for group chats
+    if (isGroupChat && message.sender_name) {
+      preview = `${message.sender_name.split(' ')[0]}: `;
+    }
     
     switch (message.message_type) {
       case 'image':
-        return '📷 Image';
+        return preview + '📷 Image';
       case 'file':
-        return '📎 File';
+        return preview + '📎 File';
       default:
-        return message.content || 'Message';
+        return preview + (message.content || 'Message');
     }
   };
 
@@ -110,6 +143,36 @@ export function ConversationList({
       default:
         return null;
     }
+  };
+
+  const renderConversationAvatar = (conversation: Conversation) => {
+    if (conversation.is_group_chat) {
+      return (
+        <div className="relative">
+          <Avatar className="h-10 w-10 md:h-10 md:w-10 flex-shrink-0">
+            <AvatarFallback className="text-xs md:text-sm bg-primary text-primary-foreground">
+              <Users className="h-5 w-5" />
+            </AvatarFallback>
+          </Avatar>
+          <Badge className="absolute -top-1 -right-1 h-5 w-5 p-0 text-xs">
+            {conversation.participant_count}
+          </Badge>
+        </div>
+      );
+    }
+
+    const participant = conversation.participants[0];
+    return (
+      <Avatar className="h-10 w-10 md:h-10 md:w-10 flex-shrink-0">
+        <AvatarFallback className="text-xs md:text-sm">
+          {participant?.name
+            ?.split(' ')
+            .map(n => n[0])
+            .join('')
+            .toUpperCase() || '?'}
+        </AvatarFallback>
+      </Avatar>
+    );
   };
 
   if (loading) {
@@ -163,21 +226,18 @@ export function ConversationList({
                 )}
               >
                 <div className="flex items-center space-x-3">
-                  <Avatar className="h-10 w-10 md:h-10 md:w-10 flex-shrink-0">
-                    <AvatarFallback className="text-xs md:text-sm">
-                      {conversation.participant.name
-                        .split(' ')
-                        .map(n => n[0])
-                        .join('')
-                        .toUpperCase() || '?'}
-                    </AvatarFallback>
-                  </Avatar>
+                  {renderConversationAvatar(conversation)}
                   
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between mb-1">
-                      <h3 className="font-medium text-sm md:text-sm truncate">
-                        {conversation.participant.name || conversation.participant.email}
-                      </h3>
+                      <div className="flex items-center space-x-2 min-w-0 flex-1">
+                        <h3 className="font-medium text-sm md:text-sm truncate">
+                          {getConversationTitle(conversation)}
+                        </h3>
+                        {conversation.is_group_chat && (
+                          <Users className="h-3 w-3 text-muted-foreground flex-shrink-0" />
+                        )}
+                      </div>
                       <div className="flex items-center space-x-2">
                         {conversation.last_message && (
                           <span className="text-xs text-muted-foreground flex-shrink-0">
@@ -200,11 +260,18 @@ export function ConversationList({
                       </div>
                     </div>
                     
-                    <div className="flex items-center space-x-1">
-                      {conversation.last_message && getMessageIcon(conversation.last_message.message_type)}
-                      <p className="text-xs md:text-sm text-muted-foreground truncate">
-                        {getMessagePreview(conversation.last_message)}
-                      </p>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-1 min-w-0 flex-1">
+                        {conversation.last_message && getMessageIcon(conversation.last_message.message_type)}
+                        <p className="text-xs md:text-sm text-muted-foreground truncate">
+                          {getMessagePreview(conversation.last_message, conversation.is_group_chat)}
+                        </p>
+                      </div>
+                      {!conversation.is_group_chat && (
+                        <p className="text-xs text-muted-foreground truncate ml-2 flex-shrink-0 max-w-24">
+                          {getConversationSubtitle(conversation)}
+                        </p>
+                      )}
                     </div>
                   </div>
                 </div>

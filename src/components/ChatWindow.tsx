@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -6,7 +5,8 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Send, Paperclip, ArrowLeft, MoreVertical } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Send, Paperclip, ArrowLeft, MoreVertical, Users, UserPlus } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { cn } from '@/lib/utils';
 
@@ -24,6 +24,12 @@ interface Message {
   };
 }
 
+interface Participant {
+  id: string;
+  full_name: string;
+  email: string;
+}
+
 interface ChatWindowProps {
   conversationId: string;
   currentUserId: string;
@@ -37,7 +43,8 @@ export function ChatWindow({ conversationId, currentUserId, onBack, onMessageSen
   const [newMessage, setNewMessage] = useState('');
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
-  const [otherParticipant, setOtherParticipant] = useState<any>(null);
+  const [participants, setParticipants] = useState<Participant[]>([]);
+  const [isGroupChat, setIsGroupChat] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -68,27 +75,51 @@ export function ChatWindow({ conversationId, currentUserId, onBack, onMessageSen
 
         if (messagesError) throw messagesError;
 
-        // Fetch participant info
+        // Fetch sender profiles for messages
+        const senderIds = [...new Set(messagesData?.map(m => m.sender_id) || [])];
+        const { data: senderProfiles } = await supabase
+          .from('profiles')
+          .select('id, full_name, email')
+          .in('id', senderIds);
+
+        // Transform the data to match our expected format
+        const transformedMessages = messagesData?.map(msg => {
+          const senderProfile = senderProfiles?.find(p => p.id === msg.sender_id);
+          return {
+            ...msg,
+            sender: {
+              full_name: senderProfile?.full_name || '',
+              email: senderProfile?.email || ''
+            }
+          };
+        }) || [];
+
+        // Fetch participant info (excluding current user)
         const { data: participantsData, error: participantsError } = await supabase
           .from('conversation_participants')
           .select('user_id')
           .eq('conversation_id', conversationId)
-          .neq('user_id', currentUserId)
-          .single();
+          .neq('user_id', currentUserId);
 
         if (participantsError) throw participantsError;
 
-        if (participantsData) {
-          const { data: profileData } = await supabase
-            .from('profiles')
-            .select('full_name, email')
-            .eq('id', participantsData.user_id)
-            .single();
+        // Get participant profiles
+        const participantIds = participantsData?.map(p => p.user_id) || [];
+        const { data: participantProfiles } = await supabase
+          .from('profiles')
+          .select('id, full_name, email')
+          .in('id', participantIds);
 
-          setOtherParticipant(profileData);
-        }
+        // Transform participants data
+        const transformedParticipants = participantProfiles?.map(p => ({
+          id: p.id,
+          full_name: p.full_name || '',
+          email: p.email || ''
+        })) || [];
 
-        setMessages(messagesData || []);
+        setParticipants(transformedParticipants);
+        setIsGroupChat(transformedParticipants.length > 1);
+        setMessages(transformedMessages);
         setLoading(false);
       } catch (error: any) {
         console.error('Error fetching chat data:', error);
@@ -122,11 +153,21 @@ export function ChatWindow({ conversationId, currentUserId, onBack, onMessageSen
           table: 'messages',
           filter: `conversation_id=eq.${conversationId}`
         },
-        (payload) => {
+        async (payload) => {
           const newMessage = payload.new as Message;
           // Only add if it's not from current user (to avoid duplicates)
           if (newMessage.sender_id !== currentUserId) {
-            setMessages(prev => [...prev, newMessage]);
+            // Fetch sender info for the new message
+            const { data: senderData } = await supabase
+              .from('profiles')
+              .select('full_name, email')
+              .eq('id', newMessage.sender_id)
+              .single();
+
+            setMessages(prev => [...prev, {
+              ...newMessage,
+              sender: senderData || { full_name: '', email: '' }
+            }]);
           }
         }
       )
@@ -157,13 +198,33 @@ export function ChatWindow({ conversationId, currentUserId, onBack, onMessageSen
       const { data, error } = await supabase
         .from('messages')
         .insert(messageData)
-        .select()
+        .select(`
+          id,
+          content,
+          sender_id,
+          message_type,
+          file_url,
+          file_name,
+          created_at
+        `)
         .single();
 
       if (error) throw error;
 
+      // Get current user info for the message
+      const { data: currentUserData } = await supabase
+        .from('profiles')
+        .select('full_name, email')
+        .eq('id', currentUserId)
+        .single();
+
       // Immediately update local state for instant feedback
-      setMessages(prev => [...prev, data]);
+      const messageWithSender = {
+        ...data,
+        sender: currentUserData || { full_name: '', email: '' }
+      };
+      
+      setMessages(prev => [...prev, messageWithSender]);
       
       // Notify parent component about the new message
       if (onMessageSent && data) {
@@ -190,6 +251,22 @@ export function ChatWindow({ conversationId, currentUserId, onBack, onMessageSen
     }
   };
 
+  const getDisplayName = (participant: Participant) => {
+    return participant.full_name || participant.email || 'Unknown User';
+  };
+
+  const getGroupChatTitle = () => {
+    if (participants.length === 0) return 'Group Chat';
+    if (participants.length === 1) return getDisplayName(participants[0]);
+    if (participants.length === 2) return participants.map(p => getDisplayName(p).split(' ')[0]).join(', ');
+    return `${getDisplayName(participants[0]).split(' ')[0]} and ${participants.length - 1} others`;
+  };
+
+  const getSenderDisplayName = (message: Message) => {
+    if (message.sender_id === currentUserId) return 'You';
+    return message.sender?.full_name?.split(' ')[0] || message.sender?.email || 'Unknown';
+  };
+
   if (loading) {
     return (
       <div className="flex-1 flex items-center justify-center">
@@ -203,35 +280,61 @@ export function ChatWindow({ conversationId, currentUserId, onBack, onMessageSen
       {/* Chat header */}
       <div className="p-4 border-b border-border flex-shrink-0">
         <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-3 min-w-0 flex-1">
             <Button 
               variant="ghost" 
               size="icon"
               onClick={onBack}
-              className="h-9 w-9"
+              className="h-9 w-9 flex-shrink-0"
             >
               <ArrowLeft className="h-5 w-5" />
             </Button>
-            <Avatar className="h-10 w-10 flex-shrink-0">
-              <AvatarFallback className="text-sm">
-                {otherParticipant?.full_name
-                  ?.split(' ')
-                  .map((n: string) => n[0])
-                  .join('')
-                  .toUpperCase() || '?'}
-              </AvatarFallback>
-            </Avatar>
-            <div className="min-w-0">
-              <h2 className="font-semibold text-base truncate">
-                {otherParticipant?.full_name || otherParticipant?.email || 'Unknown User'}
-              </h2>
-            </div>
+            
+            {isGroupChat ? (
+              <div className="flex items-center space-x-3 min-w-0 flex-1">
+                <div className="relative flex-shrink-0">
+                  <Avatar className="h-10 w-10">
+                    <AvatarFallback className="text-sm bg-primary text-primary-foreground">
+                      <Users className="h-5 w-5" />
+                    </AvatarFallback>
+                  </Avatar>
+                  <Badge className="absolute -top-1 -right-1 h-5 w-5 p-0 text-xs">
+                    {participants.length + 1}
+                  </Badge>
+                </div>
+                <div className="min-w-0 flex-1">
+                  <h2 className="font-semibold text-base truncate">
+                    {getGroupChatTitle()}
+                  </h2>
+                  <p className="text-xs text-muted-foreground truncate">
+                    {participants.length + 1} participants
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div className="flex items-center space-x-3 min-w-0 flex-1">
+                <Avatar className="h-10 w-10 flex-shrink-0">
+                  <AvatarFallback className="text-sm">
+                    {participants[0]?.full_name
+                      ?.split(' ')
+                      .map((n: string) => n[0])
+                      .join('')
+                      .toUpperCase() || '?'}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="min-w-0">
+                  <h2 className="font-semibold text-base truncate">
+                    {getDisplayName(participants[0] || { id: '', full_name: '', email: '' })}
+                  </h2>
+                </div>
+              </div>
+            )}
           </div>
           
           <Button 
             variant="ghost" 
             size="icon"
-            className="h-9 w-9"
+            className="h-9 w-9 flex-shrink-0"
           >
             <MoreVertical className="h-5 w-5" />
           </Button>
@@ -243,6 +346,7 @@ export function ChatWindow({ conversationId, currentUserId, onBack, onMessageSen
         <div className="space-y-4">
           {messages.map((message) => {
             const isFromCurrentUser = message.sender_id === currentUserId;
+            const showSenderName = isGroupChat && !isFromCurrentUser;
             
             return (
               <div
@@ -260,6 +364,12 @@ export function ChatWindow({ conversationId, currentUserId, onBack, onMessageSen
                       : "bg-muted"
                   )}
                 >
+                  {showSenderName && (
+                    <p className="text-xs font-medium mb-1 text-primary">
+                      {getSenderDisplayName(message)}
+                    </p>
+                  )}
+                  
                   {message.message_type === 'text' && (
                     <p className="text-sm whitespace-pre-wrap break-words">{message.content}</p>
                   )}
@@ -318,7 +428,7 @@ export function ChatWindow({ conversationId, currentUserId, onBack, onMessageSen
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
             onKeyPress={handleKeyPress}
-            placeholder="Say something..."
+            placeholder={isGroupChat ? "Message the group..." : "Say something..."}
             className="flex-1 min-w-0 text-base h-12 rounded-full px-4"
             disabled={sending}
           />

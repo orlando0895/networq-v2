@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -10,20 +9,22 @@ import { Plus, MessageSquare } from 'lucide-react';
 import { useContacts } from '@/hooks/useContacts';
 import { useToast } from '@/hooks/use-toast';
 
-
 interface Conversation {
   id: string;
   updated_at: string;
   last_message_at: string;
-  participant: {
+  participants: Array<{
     id: string;
     name: string;
     email: string;
-  };
+  }>;
+  participant_count: number;
+  is_group_chat: boolean;
   last_message?: {
     content: string;
     created_at: string;
     message_type: string;
+    sender_name?: string;
   };
 }
 
@@ -43,142 +44,96 @@ const Messages = ({ targetConversationId }: MessagesProps) => {
 
   // Fetch conversations function
   const fetchConversations = async () => {
-    if (!user) return;
-    
     try {
-        // Get conversations for the current user (excluding deleted ones)
-        const { data: conversationData, error: convError } = await supabase
-          .from('conversation_participants')
-          .select(`
-            conversation_id,
-            conversations (
-              id,
-              updated_at,
-              last_message_at
-            )
-          `)
-          .eq('user_id', user.id)
-          .is('deleted_at', null);
+      if (!user) return;
 
-      if (convError) throw convError;
-
-      if (!conversationData || conversationData.length === 0) {
-        setConversations([]);
-        setLoading(false);
-        return;
-      }
-
-      // Get unique conversation IDs to avoid duplicates
-      const uniqueConversationIds = [...new Set(conversationData.map(cp => cp.conversation_id))];
-
-      // Get other participants for each conversation
-      const { data: participantsData, error: participantsError } = await supabase
+      const { data, error } = await supabase
         .from('conversation_participants')
-        .select('conversation_id, user_id')
-        .in('conversation_id', uniqueConversationIds)
-        .neq('user_id', user.id);
+        .select(`
+          conversation_id,
+          conversations!inner (
+            id,
+            updated_at,
+            last_message_at
+          )
+        `)
+        .eq('user_id', user.id)
+        .order('conversations(last_message_at)', { ascending: false });
 
-      if (participantsError) throw participantsError;
+      if (error) throw error;
 
-      // Get profiles for other participants
-      const otherUserIds = [...new Set(participantsData?.map(p => p.user_id) || [])];
-      const { data: profilesData, error: profilesError } = await supabase
-        .from('profiles')
-        .select('id, full_name, email')
-        .in('id', otherUserIds);
-
-      if (profilesError) throw profilesError;
-
-      // Get last messages for each conversation
-      const { data: messagesData, error: messagesError } = await supabase
-        .from('messages')
-        .select('conversation_id, content, created_at, message_type')
-        .in('conversation_id', uniqueConversationIds)
-        .order('created_at', { ascending: false });
-
-      if (messagesError) throw messagesError;
-
-      // Process conversations and remove duplicates
-      const conversationMap = new Map();
-      
-      uniqueConversationIds.forEach(convId => {
-        const convData = conversationData.find(cp => cp.conversation_id === convId);
-        if (!convData?.conversations) return;
-
-        const conversation = convData.conversations;
-        
-        // Find other participant
-        const otherParticipant = participantsData?.find(
-          p => p.conversation_id === convId
-        );
-
-        // Skip conversations without other participants
-        if (!otherParticipant) return;
-
-        // Find profile for other participant
-        const profile = profilesData?.find(
-          p => p.id === otherParticipant.user_id
-        );
-
-        // Find last message for this specific conversation
-        const lastMessage = messagesData?.find(
-          m => m.conversation_id === convId
-        );
-
-        // Get participant info - start with profile data
-        let participantName = profile?.full_name || '';
-        let participantEmail = profile?.email || '';
-
-        // If no profile found, try to get info from contacts
-        if (!profile && otherParticipant) {
-          // Since contacts don't store user_id references, we can't directly match
-          // We'll rely on the profile data being present for proper messaging
-          participantName = 'Contact User';
-          participantEmail = '';
+      // Get unique conversations
+      const uniqueConversations = data?.reduce((acc: any[], item) => {
+        const existingConv = acc.find(conv => conv.id === item.conversations.id);
+        if (!existingConv) {
+          acc.push(item.conversations);
         }
+        return acc;
+      }, []) || [];
 
-        // Skip conversations where we can't identify the participant at all
-        if (!participantName && !participantEmail && !profile) {
-          return;
-        }
+      // Fetch additional details for each conversation
+      const conversationsWithDetails = await Promise.all(
+        uniqueConversations.map(async (conv: any) => {
+          // Get participant IDs
+          const { data: participantData } = await supabase
+            .from('conversation_participants')
+            .select('user_id')
+            .eq('conversation_id', conv.id)
+            .neq('user_id', user.id);
 
-        // Use email as fallback name if no name is available but email exists
-        if (!participantName && participantEmail) {
-          participantName = participantEmail.split('@')[0]; // Use email username part
-        }
+          // Get participant profiles
+          const participantIds = participantData?.map(p => p.user_id) || [];
+          const { data: participantProfiles } = await supabase
+            .from('profiles')
+            .select('id, full_name, email')
+            .in('id', participantIds);
 
-        // Final fallback for completely unknown users
-        if (!participantName) {
-          participantName = 'Unknown User';
-        }
+          // Get total participant count
+          const { count: participantCount } = await supabase
+            .from('conversation_participants')
+            .select('*', { count: 'exact', head: true })
+            .eq('conversation_id', conv.id);
 
-        conversationMap.set(convId, {
-          id: conversation.id,
-          updated_at: conversation.updated_at,
-          last_message_at: conversation.last_message_at,
-          participant: {
-            id: otherParticipant.user_id,
-            name: participantName || 'Unknown User',
-            email: participantEmail
-          },
-          last_message: lastMessage
-        });
-      });
+          // Get last message
+          const { data: lastMessage } = await supabase
+            .from('messages')
+            .select('content, created_at, message_type, sender_id')
+            .eq('conversation_id', conv.id)
+            .order('created_at', { ascending: false })
+            .limit(1)
+            .single();
 
-      // Convert map to array and sort by last message time
-      const processedConversations = Array.from(conversationMap.values())
-        .sort((a, b) => {
-          const timeA = a.last_message?.created_at || a.updated_at;
-          const timeB = b.last_message?.created_at || b.updated_at;
-          return new Date(timeB).getTime() - new Date(timeA).getTime();
-        });
+          // Get sender name for last message
+          let senderName = '';
+          if (lastMessage?.sender_id) {
+            const { data: senderProfile } = await supabase
+              .from('profiles')
+              .select('full_name')
+              .eq('id', lastMessage.sender_id)
+              .single();
+            senderName = senderProfile?.full_name || '';
+          }
 
-      setConversations(processedConversations);
-      
-      // Auto-select conversation from target conversation ID
-      if (targetConversationId && processedConversations.some(conv => conv.id === targetConversationId)) {
-        setSelectedConversationId(targetConversationId);
-      }
+          const isGroupChat = (participantCount || 0) > 2;
+
+          return {
+            ...conv,
+            participants: participantProfiles?.map(p => ({
+              id: p.id,
+              name: p.full_name || '',
+              email: p.email || ''
+            })) || [],
+            participant_count: participantCount || 0,
+            is_group_chat: isGroupChat,
+            last_message: lastMessage ? {
+              ...lastMessage,
+              sender_name: senderName
+            } : null
+          };
+        })
+      );
+
+      setConversations(conversationsWithDetails);
     } catch (error: any) {
       console.error('Error fetching conversations:', error);
       toast({
@@ -188,6 +143,113 @@ const Messages = ({ targetConversationId }: MessagesProps) => {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Handle selecting a contact to message
+  const handleSelectContact = async (contactId: string) => {
+    try {
+      if (!user) return;
+
+      // Get the user ID from the contact
+      const { data: contact, error: contactError } = await supabase
+        .from('contacts')
+        .select('email')
+        .eq('id', contactId)
+        .eq('user_id', user.id)
+        .single();
+
+      if (contactError) throw contactError;
+
+      // Get the profile ID for this email
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('email', contact.email)
+        .single();
+
+      if (profileError) throw profileError;
+
+      // Create or get conversation using the function
+      const { data: conversationData, error: conversationError } = await supabase
+        .rpc('get_or_create_direct_conversation', {
+          other_user_id: profile.id
+        });
+
+      if (conversationError) throw conversationError;
+
+      setSelectedConversationId(conversationData);
+      setIsNewMessageOpen(false);
+      
+      // Refresh conversations to show the new one
+      await fetchConversations();
+    } catch (error: any) {
+      console.error('Error creating conversation:', error);
+      toast({
+        title: "Error",
+        description: "Failed to start conversation",
+        variant: "destructive"
+      });
+    }
+  };
+
+  // Handle creating a group chat
+  const handleCreateGroupChat = async (contactIds: string[]) => {
+    try {
+      if (!user || contactIds.length === 0) return;
+
+      // Create a new conversation
+      const { data: conversation, error: conversationError } = await supabase
+        .from('conversations')
+        .insert({})
+        .select()
+        .single();
+
+      if (conversationError) throw conversationError;
+
+      // Get profile IDs for the selected contacts
+      const { data: contacts, error: contactsError } = await supabase
+        .from('contacts')
+        .select('email')
+        .in('id', contactIds)
+        .eq('user_id', user.id);
+
+      if (contactsError) throw contactsError;
+
+      const { data: profiles, error: profilesError } = await supabase
+        .from('profiles')
+        .select('id')
+        .in('email', contacts.map(c => c.email));
+
+      if (profilesError) throw profilesError;
+
+      // Add current user and selected contacts as participants
+      const participantData = [
+        { conversation_id: conversation.id, user_id: user.id },
+        ...profiles.map(profile => ({
+          conversation_id: conversation.id,
+          user_id: profile.id
+        }))
+      ];
+
+      const { error: participantsError } = await supabase
+        .from('conversation_participants')
+        .insert(participantData);
+
+      if (participantsError) throw participantsError;
+
+      setSelectedConversationId(conversation.id);
+      setIsNewMessageOpen(false);
+      
+      // Refresh conversations to show the new group chat
+      await fetchConversations();
+    } catch (error: any) {
+      console.error('Error creating group chat:', error);
+      toast({
+        title: "Error",
+        description: "Failed to create group chat",
+        variant: "destructive"
+      });
     }
   };
 
@@ -245,13 +307,11 @@ const Messages = ({ targetConversationId }: MessagesProps) => {
           const newMessage = payload.new;
           console.log('New message received:', newMessage);
           
-          // Update conversation state immediately without checking current state
-          // This ensures we don't miss messages due to stale state
+          // Update conversation state immediately
           setConversations(prev => {
             const isUserInConversation = prev.some(conv => conv.id === newMessage.conversation_id);
             
             if (isUserInConversation) {
-              console.log('Updating conversation with new message');
               return prev.map(conv => {
                 if (conv.id === newMessage.conversation_id) {
                   return {
@@ -272,30 +332,10 @@ const Messages = ({ targetConversationId }: MessagesProps) => {
                 return new Date(timeB).getTime() - new Date(timeA).getTime();
               });
             } else {
-              console.log('User not in conversation list, refetching conversations');
-              // Trigger refetch for new conversations
               setTimeout(() => fetchConversations(), 100);
               return prev;
             }
           });
-        }
-      )
-      .on(
-        'postgres_changes',
-        {
-          event: 'UPDATE',
-          schema: 'public',
-          table: 'conversations'
-        },
-        (payload) => {
-          // Update conversation timestamp when conversation is updated
-          setConversations(prev => 
-            prev.map(conv => 
-              conv.id === payload.new.id 
-                ? { ...conv, updated_at: payload.new.updated_at, last_message_at: payload.new.last_message_at }
-                : conv
-            )
-          );
         }
       );
 
@@ -310,54 +350,6 @@ const Messages = ({ targetConversationId }: MessagesProps) => {
       }
     };
   }, [user]);
-
-  const handleNewConversation = async (contactId: string) => {
-    try {
-      // First, get the contact details
-      const contact = contacts?.find(c => c.id === contactId);
-      if (!contact) {
-        throw new Error('Contact not found');
-      }
-
-      // Find the user_id by matching email with profiles table
-      const { data: profile, error: profileError } = await supabase
-        .from('profiles')
-        .select('id')
-        .eq('email', contact.email)
-        .maybeSingle();
-
-      if (profileError) throw profileError;
-      
-      if (!profile) {
-        toast({
-          title: "Error",
-          description: "This contact is not registered as a user yet",
-          variant: "destructive"
-        });
-        return;
-      }
-
-      // Now create or get the conversation using the actual user_id
-      const { data, error } = await supabase.rpc('get_or_create_direct_conversation', {
-        other_user_id: profile.id
-      });
-
-      if (error) throw error;
-
-      setSelectedConversationId(data);
-      setIsNewMessageOpen(false);
-      
-      // Refresh conversations to include the new one
-      await fetchConversations();
-    } catch (error: any) {
-      console.error('Error creating conversation:', error);
-      toast({
-        title: "Error",
-        description: error.message || "Failed to start conversation",
-        variant: "destructive"
-      });
-    }
-  };
 
   const handleDeleteConversation = async (conversationId: string, deleteType: 'hide' | 'delete') => {
     try {
@@ -377,8 +369,6 @@ const Messages = ({ targetConversationId }: MessagesProps) => {
         });
       } else {
         // Hard delete - remove entire conversation and all messages
-        // Delete in reverse order to avoid foreign key conflicts
-        // First delete messages
         const { error: messagesError } = await supabase
           .from('messages')
           .delete()
@@ -386,7 +376,6 @@ const Messages = ({ targetConversationId }: MessagesProps) => {
 
         if (messagesError) throw messagesError;
 
-        // Then delete all participants (not just current user)
         const { error: participantsError } = await supabase
           .from('conversation_participants')
           .delete()
@@ -394,7 +383,6 @@ const Messages = ({ targetConversationId }: MessagesProps) => {
 
         if (participantsError) throw participantsError;
 
-        // Finally delete the conversation itself
         const { error: conversationError } = await supabase
           .from('conversations')
           .delete()
@@ -412,11 +400,8 @@ const Messages = ({ targetConversationId }: MessagesProps) => {
       if (selectedConversationId === conversationId) {
         setSelectedConversationId(null);
       }
-
-      // Add a small delay to ensure database operations are committed
-      await new Promise(resolve => setTimeout(resolve, 500));
       
-      // Refresh conversations list to ensure consistency
+      // Refresh conversations list
       await fetchConversations();
     } catch (error: any) {
       console.error('Error deleting conversation:', error);
@@ -465,11 +450,10 @@ const Messages = ({ targetConversationId }: MessagesProps) => {
         </Button>
       </div>
 
-      {/* Messages content area - constrained height for tab context */}
+      {/* Messages content area */}
       <div className="rounded-lg border bg-card h-[500px] flex flex-col">
         <div className="flex flex-1 min-h-0">
           {selectedConversationId ? (
-            /* Chat view - full width */
             <ChatWindow
               conversationId={selectedConversationId}
               currentUserId={user.id}
@@ -477,7 +461,6 @@ const Messages = ({ targetConversationId }: MessagesProps) => {
               onMessageSent={updateConversationWithNewMessage}
             />
           ) : (
-            /* Conversations list - full width */
             <div className="flex w-full flex-col min-h-0">
               <div className="p-3 md:p-4 border-b flex-shrink-0">
                 <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">
@@ -499,15 +482,15 @@ const Messages = ({ targetConversationId }: MessagesProps) => {
         </div>
       </div>
 
-      {/* New message dialog */}
       <NewMessageDialog
         open={isNewMessageOpen}
         onOpenChange={setIsNewMessageOpen}
-        contacts={contacts || []}
-        onSelectContact={handleNewConversation}
+        contacts={contacts}
+        onSelectContact={handleSelectContact}
+        onCreateGroupChat={handleCreateGroupChat}
       />
     </div>
-    );
+  );
 };
 
 export default Messages;
