@@ -430,57 +430,63 @@ const Messages = ({ targetConversationId }: MessagesProps) => {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="min-h-screen bg-background pb-20 md:pb-0">
       {/* Messages header */}
-      <div className="flex items-center justify-between">
-        <div className="min-w-0">
-          <h2 className="text-xl md:text-2xl font-bold tracking-tight">Messages</h2>
-          <p className="text-muted-foreground text-sm md:text-base">
-            Connect and communicate with your network
-          </p>
+      <header className="sticky top-0 z-40 bg-white border-b">
+        <div className="px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div className="min-w-0">
+              <h1 className="text-2xl font-bold tracking-tight">Messages</h1>
+              <p className="text-muted-foreground text-sm md:text-base">
+                Connect and communicate with your network
+              </p>
+            </div>
+            <Button
+              onClick={() => setIsNewMessageOpen(true)}
+              className="flex items-center gap-2"
+              size="sm"
+            >
+              <Plus className="h-4 w-4" />
+              <span className="hidden sm:inline">New Message</span>
+              <span className="sm:hidden">New</span>
+            </Button>
+          </div>
         </div>
-        <Button
-          onClick={() => setIsNewMessageOpen(true)}
-          className="flex items-center gap-2"
-          size="sm"
-        >
-          <Plus className="h-4 w-4" />
-          <span className="hidden sm:inline">New Message</span>
-          <span className="sm:hidden">New</span>
-        </Button>
-      </div>
+      </header>
 
       {/* Messages content area */}
-      <div className="rounded-lg border bg-card h-[500px] flex flex-col">
-        <div className="flex flex-1 min-h-0">
-          {selectedConversationId ? (
-            <ChatWindow
-              conversationId={selectedConversationId}
-              currentUserId={user.id}
-              onBack={handleBackToConversations}
-              onMessageSent={updateConversationWithNewMessage}
-            />
-          ) : (
-            <div className="flex w-full flex-col min-h-0">
-              <div className="p-3 md:p-4 border-b flex-shrink-0">
-                <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">
-                  Conversations
-                </h3>
-              </div>
+      <main className="px-4 py-6">
+        <div className="rounded-lg border bg-card h-[calc(100vh-180px)] flex flex-col">
+          <div className="flex flex-1 min-h-0">
+            {selectedConversationId ? (
+              <ChatWindow
+                conversationId={selectedConversationId}
+                currentUserId={user.id}
+                onBack={handleBackToConversations}
+                onMessageSent={updateConversationWithNewMessage}
+              />
+            ) : (
+              <div className="flex w-full flex-col min-h-0">
+                <div className="p-3 md:p-4 border-b flex-shrink-0">
+                  <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">
+                    Conversations
+                  </h3>
+                </div>
 
-              <div className="flex-1 overflow-y-auto min-h-0">
-                <ConversationList
-                  conversations={conversations}
-                  selectedConversationId={selectedConversationId}
-                  onSelectConversation={setSelectedConversationId}
-                  onDeleteConversation={handleDeleteConversation}
-                  loading={loading}
-                />
+                <div className="flex-1 overflow-y-auto min-h-0">
+                  <ConversationList
+                    conversations={conversations}
+                    selectedConversationId={selectedConversationId}
+                    onSelectConversation={setSelectedConversationId}
+                    onDeleteConversation={handleDeleteConversation}
+                    loading={loading}
+                  />
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
-      </div>
+      </main>
 
       <NewMessageDialog
         open={isNewMessageOpen}

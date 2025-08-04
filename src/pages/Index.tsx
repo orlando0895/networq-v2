@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { LogOut, User, MessageSquare } from "lucide-react";
+import { LogOut } from "lucide-react";
 import { useContacts } from "@/hooks/useContacts";
 import { useUserContactCard } from "@/hooks/useUserContactCard";
 import { useAuth } from "@/contexts/AuthContext";
@@ -11,7 +11,6 @@ import ContactStats from "@/components/ContactStats";
 import ContactFilters from "@/components/ContactFilters";
 import EmptyState from "@/components/EmptyState";
 import MyContactCardForm from "@/components/MyContactCardForm";
-import Messages from "@/pages/Messages";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import type { Database } from '@/integrations/supabase/types';
@@ -38,7 +37,6 @@ const Index = () => {
   const [filterTier, setFilterTier] = useState<"all" | "A-player" | "Acquaintance">("all");
   const [filterIndustry, setFilterIndustry] = useState("all");
   const [activeTab, setActiveTab] = useState("contacts");
-  const [targetConversationId, setTargetConversationId] = useState<string | null>(null);
 
   const handleLogout = async () => {
     try {
@@ -134,10 +132,10 @@ const Index = () => {
       </div>;
   }
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-background pb-20 md:pb-0">
       {/* Header */}
-      <header className="bg-white border-b border-slate-200 sticky top-0 z-40">
-        <div className="px-4 sm:px-6 py-4 sm:py-5">
+      <header className="sticky top-0 z-40 bg-white border-b">
+        <div className="px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="bg-white rounded-xl p-2.5">
@@ -165,15 +163,11 @@ const Index = () => {
       </header>
 
       {/* Main Content */}
-      <main className="px-4 sm:px-6 lg:px-8 py-6 sm:py-8 max-w-4xl mx-auto">
+      <main className="px-4 py-6 space-y-6">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="contacts">My Contacts</TabsTrigger>
             <TabsTrigger value="my-card">My Card</TabsTrigger>
-            <TabsTrigger value="messages" className="flex items-center gap-2">
-              <MessageSquare className="h-4 w-4" />
-              Messages
-            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="contacts" className="space-y-6">
@@ -203,10 +197,6 @@ const Index = () => {
                   contact={contact} 
                   onUpdateContact={updateContact} 
                   onDeleteContact={deleteContact}
-                  onSwitchToMessages={(conversationId) => {
-                    setTargetConversationId(conversationId);
-                    setActiveTab("messages");
-                  }}
                 />
               ))}
             </div>
@@ -222,24 +212,8 @@ const Index = () => {
           <TabsContent value="my-card">
             <MyContactCardForm />
           </TabsContent>
-
-
-          <TabsContent value="messages" className="h-[calc(100vh-200px)]">
-            <Messages targetConversationId={targetConversationId} />
-          </TabsContent>
         </Tabs>
       </main>
-
-      {/* Footer */}
-      <footer className="bg-white border-t border-slate-200 mt-16">
-        <div className="px-4 sm:px-6 lg:px-8 py-6 sm:py-8 max-w-4xl mx-auto">
-          <div className="text-center">
-            <p className="text-slate-600 leading-relaxed text-sm sm:text-base">
-              <span className="font-semibold">Networq</span> - Turn every introduction into a referral opportunity
-            </p>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 };

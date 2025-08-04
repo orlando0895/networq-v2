@@ -22,10 +22,9 @@ interface ContactCardProps {
   contact: Contact;
   onUpdateContact: (id: string, updates: Partial<Contact>) => Promise<any>;
   onDeleteContact: (id: string) => Promise<any>;
-  onSwitchToMessages?: (conversationId: string) => void;
 }
 
-const ContactCard = ({ contact, onUpdateContact, onDeleteContact, onSwitchToMessages }: ContactCardProps) => {
+const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardProps) => {
   const [isEditingContact, setIsEditingContact] = useState(false);
   const [isAddingNote, setIsAddingNote] = useState(false);
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
@@ -79,8 +78,8 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact, onSwitchToMess
         return;
       }
 
-      // Switch to messages tab with the conversation ID
-      onSwitchToMessages(conversationId);
+      // Navigate to messages page
+      navigate('/messages');
       
       toast({
         title: "Conversation started",
@@ -191,7 +190,7 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact, onSwitchToMess
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-48 bg-white shadow-lg border z-50">
-                      <DropdownMenuItem onClick={onSwitchToMessages ? handleStartConversation : undefined} className="cursor-pointer">
+                      <DropdownMenuItem onClick={handleStartConversation} className="cursor-pointer">
                         <MessageSquare className="w-4 h-4 mr-2" />
                         Message
                       </DropdownMenuItem>
@@ -350,7 +349,7 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact, onSwitchToMess
                       variant="outline" 
                       size="sm" 
                       className="justify-center h-10"
-                       onClick={onSwitchToMessages ? handleStartConversation : undefined}
+                       onClick={handleStartConversation}
                     >
                       <MessageSquare className="w-4 h-4 mr-2" />
                       Message
