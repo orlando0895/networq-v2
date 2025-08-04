@@ -136,6 +136,30 @@ export type Database = {
         }
         Relationships: []
       }
+      discovery_interactions: {
+        Row: {
+          created_at: string
+          id: string
+          interaction_type: string
+          viewed_user_id: string
+          viewer_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          interaction_type: string
+          viewed_user_id: string
+          viewer_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          interaction_type?: string
+          viewed_user_id?: string
+          viewer_id?: string
+        }
+        Relationships: []
+      }
       event_attendees: {
         Row: {
           event_id: string
@@ -287,33 +311,114 @@ export type Database = {
       profiles: {
         Row: {
           avatar_url: string | null
+          bio: string | null
+          company: string | null
           created_at: string
+          discovery_radius: number | null
+          discovery_settings: Json | null
+          discovery_visible: boolean | null
           email: string | null
           full_name: string | null
           id: string
+          interests: string[] | null
           is_premium: boolean
+          job_title: string | null
+          last_active_at: string | null
+          latitude: number | null
+          linkedin_url: string | null
+          location_name: string | null
+          longitude: number | null
           subscription_expires_at: string | null
           updated_at: string
+          website_url: string | null
         }
         Insert: {
           avatar_url?: string | null
+          bio?: string | null
+          company?: string | null
           created_at?: string
+          discovery_radius?: number | null
+          discovery_settings?: Json | null
+          discovery_visible?: boolean | null
           email?: string | null
           full_name?: string | null
           id: string
+          interests?: string[] | null
           is_premium?: boolean
+          job_title?: string | null
+          last_active_at?: string | null
+          latitude?: number | null
+          linkedin_url?: string | null
+          location_name?: string | null
+          longitude?: number | null
           subscription_expires_at?: string | null
           updated_at?: string
+          website_url?: string | null
         }
         Update: {
           avatar_url?: string | null
+          bio?: string | null
+          company?: string | null
           created_at?: string
+          discovery_radius?: number | null
+          discovery_settings?: Json | null
+          discovery_visible?: boolean | null
           email?: string | null
           full_name?: string | null
           id?: string
+          interests?: string[] | null
           is_premium?: boolean
+          job_title?: string | null
+          last_active_at?: string | null
+          latitude?: number | null
+          linkedin_url?: string | null
+          location_name?: string | null
+          longitude?: number | null
           subscription_expires_at?: string | null
           updated_at?: string
+          website_url?: string | null
+        }
+        Relationships: []
+      }
+      user_boosts: {
+        Row: {
+          boost_type: string
+          created_at: string
+          currency: string
+          expires_at: string
+          id: string
+          is_active: boolean
+          purchase_amount: number
+          started_at: string
+          stripe_payment_intent_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          boost_type: string
+          created_at?: string
+          currency?: string
+          expires_at: string
+          id?: string
+          is_active?: boolean
+          purchase_amount: number
+          started_at?: string
+          stripe_payment_intent_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          boost_type?: string
+          created_at?: string
+          currency?: string
+          expires_at?: string
+          id?: string
+          is_active?: boolean
+          purchase_amount?: number
+          started_at?: string
+          stripe_payment_intent_id?: string | null
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -466,6 +571,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      activate_user_boost: {
+        Args: {
+          user_uuid: string
+          boost_type_param: string
+          stripe_payment_intent_id_param?: string
+        }
+        Returns: string
+      }
       calculate_distance: {
         Args: { lat1: number; lon1: number; lat2: number; lon2: number }
         Returns: number
@@ -473,6 +586,10 @@ export type Database = {
       check_subscription_expiry: {
         Args: Record<PropertyKey, never>
         Returns: undefined
+      }
+      cleanup_expired_boosts: {
+        Args: Record<PropertyKey, never>
+        Returns: number
       }
       current_user_is_premium: {
         Args: Record<PropertyKey, never>
@@ -485,6 +602,17 @@ export type Database = {
       generate_username_from_name: {
         Args: { _name: string }
         Returns: string
+      }
+      get_boost_pricing: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          boost_type: string
+          duration_hours: number
+          price_cents: number
+          currency: string
+          display_name: string
+          description: string
+        }[]
       }
       get_events_within_radius: {
         Args: {
@@ -515,6 +643,15 @@ export type Database = {
         Args: { other_user_id: string }
         Returns: string
       }
+      get_user_discovery_stats: {
+        Args: { user_uuid: string }
+        Returns: {
+          profile_views: number
+          profile_likes: number
+          active_boost_expires_at: string
+          discovery_visible: boolean
+        }[]
+      }
       get_user_location_settings: {
         Args: { user_uuid: string }
         Returns: {
@@ -533,13 +670,48 @@ export type Database = {
         Args: { user_uuid: string }
         Returns: Database["public"]["Enums"]["subscription_status"]
       }
+      get_users_for_discovery: {
+        Args: {
+          current_user_lat: number
+          current_user_lon: number
+          radius_km?: number
+          limit_count?: number
+          exclude_viewed?: boolean
+        }
+        Returns: {
+          id: string
+          full_name: string
+          bio: string
+          job_title: string
+          company: string
+          avatar_url: string
+          interests: string[]
+          location_name: string
+          distance_km: number
+          has_boost: boolean
+          last_active_at: string
+          is_premium: boolean
+        }[]
+      }
       is_user_premium: {
         Args: { user_uuid: string }
         Returns: boolean
       }
+      record_discovery_interaction: {
+        Args: { viewed_user_uuid: string; interaction_type_param: string }
+        Returns: string
+      }
       regenerate_share_code: {
         Args: { card_id: string }
         Returns: string
+      }
+      update_user_last_active: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
+      user_has_active_boost: {
+        Args: { user_uuid: string }
+        Returns: boolean
       }
       user_is_in_conversation: {
         Args: { _conversation_id: string; _user_id: string }
