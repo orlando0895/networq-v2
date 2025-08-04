@@ -12,6 +12,7 @@ import Auth from "./pages/Auth";
 import Events from "./pages/Events";
 import Discovery from "./pages/Discovery";
 import Profile from "./pages/Profile";
+import ProfileManagement from "./pages/ProfileManagement";
 import ViewContact from "./pages/ViewContact";
 import { PublicProfile } from "./pages/PublicProfile";
 import Messages from "./pages/Messages";
@@ -60,6 +61,14 @@ const App = () => (
                 element={
                   <ProtectedRoute>
                     <Profile />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/profile/manage"
+                element={
+                  <ProtectedRoute>
+                    <ProfileManagement />
                   </ProtectedRoute>
                 }
               />

@@ -5,10 +5,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useNavigate } from 'react-router-dom';
 
 const Profile = () => {
   const { user } = useAuth();
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const handleLogout = async () => {
     try {
@@ -45,9 +47,9 @@ const Profile = () => {
               <h1 className="text-2xl font-bold">Profile</h1>
               <p className="text-muted-foreground">Manage your account</p>
             </div>
-            <Button size="sm" variant="outline" className="flex items-center gap-2">
+            <Button size="sm" variant="outline" className="flex items-center gap-2" onClick={() => navigate('/profile/manage')}>
               <Edit className="h-4 w-4" />
-              Edit
+              Edit Profile
             </Button>
           </div>
         </div>
@@ -86,7 +88,7 @@ const Profile = () => {
         <section>
           <h2 className="text-lg font-semibold mb-4">Quick Actions</h2>
           <div className="grid grid-cols-2 gap-4">
-            <Card className="cursor-pointer hover:bg-muted/50 transition-colors">
+            <Card className="cursor-pointer hover:bg-muted/50 transition-colors" onClick={() => navigate('/profile/manage')}>
               <CardContent className="p-4 text-center">
                 <Edit className="h-6 w-6 mx-auto text-primary mb-2" />
                 <div className="text-sm font-medium">Edit Profile</div>
