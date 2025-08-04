@@ -2,6 +2,28 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Mobile-first viewport and safe area handling */
+@layer base {
+  html {
+    /* Prevent horizontal scroll */
+    overflow-x: hidden;
+    /* Better text rendering on mobile */
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+  }
+  
+  body {
+    /* Prevent pull-to-refresh */
+    overscroll-behavior-y: none;
+    /* Prevent horizontal scroll */
+    overflow-x: hidden;
+    /* Touch optimization */
+    -webkit-tap-highlight-color: transparent;
+    /* Better scrolling on iOS */
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
 /* Definition of the design system. All colors, gradients, fonts, etc should be defined here. */
 
 @layer base {
@@ -99,5 +121,30 @@
 
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+/* Mobile utilities */
+@layer utilities {
+  .pb-safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  
+  .pt-safe-top {
+    padding-top: env(safe-area-inset-top);
+  }
+  
+  .pl-safe-left {
+    padding-left: env(safe-area-inset-left);
+  }
+  
+  .pr-safe-right {
+    padding-right: env(safe-area-inset-right);
+  }
+  
+  /* Touch-friendly tap targets */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
   }
 }

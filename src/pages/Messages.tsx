@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Plus, MessageSquare } from 'lucide-react';
 import { useContacts } from '@/hooks/useContacts';
 import { useToast } from '@/hooks/use-toast';
+import { MobileLayout, PageHeader } from '@/components/MobileLayout';
 
 interface Conversation {
   id: string;
@@ -430,63 +431,55 @@ const Messages = ({ targetConversationId }: MessagesProps) => {
   }
 
   return (
-    <div className="min-h-screen bg-background pb-20 md:pb-0">
-      {/* Messages header */}
-      <header className="sticky top-0 z-40 bg-white border-b">
-        <div className="px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="min-w-0">
-              <h1 className="text-2xl font-bold tracking-tight">Messages</h1>
-              <p className="text-muted-foreground text-sm md:text-base">
-                Connect and communicate with your network
-              </p>
-            </div>
+    <MobileLayout
+      header={
+        <PageHeader
+          title="Messages"
+          subtitle="Connect and communicate with your network"
+          action={
             <Button
               onClick={() => setIsNewMessageOpen(true)}
-              className="flex items-center gap-2"
               size="sm"
+              className="touch-target"
             >
               <Plus className="h-4 w-4" />
-              <span className="hidden sm:inline">New Message</span>
-              <span className="sm:hidden">New</span>
+              <span className="ml-2 hidden sm:inline">New</span>
             </Button>
-          </div>
-        </div>
-      </header>
-
-      {/* Messages content area */}
-      <main className="px-4 py-6">
-        <div className="rounded-lg border bg-card h-[calc(100vh-180px)] flex flex-col">
-          <div className="flex flex-1 min-h-0">
-            {selectedConversationId ? (
-              <ChatWindow
-                conversationId={selectedConversationId}
-                currentUserId={user.id}
-                onBack={handleBackToConversations}
-                onMessageSent={updateConversationWithNewMessage}
-              />
-            ) : (
-              <div className="flex w-full flex-col min-h-0">
-                <div className="p-3 md:p-4 border-b flex-shrink-0">
-                  <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">
-                    Conversations
-                  </h3>
-                </div>
-
-                <div className="flex-1 overflow-y-auto min-h-0">
-                  <ConversationList
-                    conversations={conversations}
-                    selectedConversationId={selectedConversationId}
-                    onSelectConversation={setSelectedConversationId}
-                    onDeleteConversation={handleDeleteConversation}
-                    loading={loading}
-                  />
-                </div>
+          }
+        />
+      }
+      noPadding
+    >
+      <div className="h-[calc(100vh-140px)] flex flex-col">
+        <div className="flex flex-1 min-h-0">
+          {selectedConversationId ? (
+            <ChatWindow
+              conversationId={selectedConversationId}
+              currentUserId={user.id}
+              onBack={handleBackToConversations}
+              onMessageSent={updateConversationWithNewMessage}
+            />
+          ) : (
+            <div className="flex w-full flex-col min-h-0">
+              <div className="p-4 border-b flex-shrink-0">
+                <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">
+                  Conversations
+                </h3>
               </div>
-            )}
-          </div>
+
+              <div className="flex-1 overflow-y-auto min-h-0">
+                <ConversationList
+                  conversations={conversations}
+                  selectedConversationId={selectedConversationId}
+                  onSelectConversation={setSelectedConversationId}
+                  onDeleteConversation={handleDeleteConversation}
+                  loading={loading}
+                />
+              </div>
+            </div>
+          )}
         </div>
-      </main>
+      </div>
 
       <NewMessageDialog
         open={isNewMessageOpen}
@@ -495,7 +488,7 @@ const Messages = ({ targetConversationId }: MessagesProps) => {
         onSelectContact={handleSelectContact}
         onCreateGroupChat={handleCreateGroupChat}
       />
-    </div>
+    </MobileLayout>
   );
 };
 

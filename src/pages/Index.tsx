@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Plus } from "lucide-react";
 import { useContacts } from "@/hooks/useContacts";
 import { useUserContactCard } from "@/hooks/useUserContactCard";
 import { Button } from "@/components/ui/button";
@@ -7,6 +8,7 @@ import ContactForm from "@/components/ContactForm";
 import ContactStats from "@/components/ContactStats";
 import ContactFilters from "@/components/ContactFilters";
 import EmptyState from "@/components/EmptyState";
+import { MobileLayout, PageHeader } from "@/components/MobileLayout";
 import { useToast } from "@/hooks/use-toast";
 import type { Database } from '@/integrations/supabase/types';
 
@@ -92,28 +94,29 @@ const Index = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center pb-20 md:pb-0">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-      </div>
+      <MobileLayout>
+        <div className="flex items-center justify-center min-h-[50vh]">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        </div>
+      </MobileLayout>
     );
   }
   return (
-    <div className="min-h-screen bg-background pb-20 md:pb-0">
-      {/* Header */}
-      <header className="sticky top-0 z-40 bg-white border-b">
-        <div className="px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold">Connections</h1>
-              <p className="text-muted-foreground">Manage your network</p>
-            </div>
-            <ContactForm isOpen={isAddingContact} onOpenChange={setIsAddingContact} onAddContact={addContact} />
-          </div>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="px-4 py-6 space-y-6">
+    <MobileLayout
+      header={
+        <PageHeader
+          title="Connections"
+          subtitle="Manage your network"
+          action={
+            <Button size="sm" className="touch-target" onClick={() => setIsAddingContact(true)}>
+              <Plus className="h-4 w-4" />
+              <span className="ml-2 hidden sm:inline">Add</span>
+            </Button>
+          }
+        />
+      }
+    >
+      <div className="space-y-4">
         <ContactFilters 
           searchTerm={searchTerm} 
           onSearchChange={setSearchTerm} 
@@ -128,7 +131,7 @@ const Index = () => {
           onIndustryFilterChange={setFilterIndustry}
         />
 
-        <div className="space-y-4">
+        <div className="space-y-3">
           {filteredContacts.map(contact => (
             <ContactCard 
               key={contact.id} 
@@ -145,8 +148,14 @@ const Index = () => {
             onAddContact={() => setIsAddingContact(true)} 
           />
         )}
-      </main>
-    </div>
+      </div>
+
+      <ContactForm 
+        isOpen={isAddingContact} 
+        onOpenChange={setIsAddingContact} 
+        onAddContact={addContact}
+      />
+    </MobileLayout>
   );
 };
 

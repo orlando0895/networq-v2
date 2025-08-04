@@ -3,28 +3,25 @@ import { Radar, Users, Star, MapPin, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { MobileLayout, PageHeader } from '@/components/MobileLayout';
 
 const Discovery = () => {
   return (
-    <div className="min-h-screen bg-background pb-20 md:pb-0">
-      {/* Header */}
-      <header className="sticky top-0 z-40 bg-white border-b">
-        <div className="px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold">Discovery</h1>
-              <p className="text-muted-foreground">Find people in your area</p>
-            </div>
-            <Button size="sm" variant="outline" className="flex items-center gap-2">
+    <MobileLayout
+      header={
+        <PageHeader
+          title="Discovery"
+          subtitle="Find people in your area"
+          action={
+            <Button size="sm" variant="outline" className="touch-target">
               <Zap className="h-4 w-4" />
-              Boost Profile
+              <span className="ml-2 hidden sm:inline">Boost</span>
             </Button>
-          </div>
-        </div>
-      </header>
-
-      {/* Content */}
-      <main className="px-4 py-6 space-y-6">
+          }
+        />
+      }
+    >
+      <div className="space-y-6">
         {/* Discovery Stats */}
         <section className="grid grid-cols-2 gap-4">
           <Card>
@@ -68,8 +65,8 @@ const Discovery = () => {
                       0.5 miles away
                     </div>
                     <div className="flex gap-2">
-                      <Button size="sm" variant="outline">View Profile</Button>
-                      <Button size="sm">Connect</Button>
+                      <Button size="sm" variant="outline" className="touch-target">View Profile</Button>
+                      <Button size="sm" className="touch-target">Connect</Button>
                     </div>
                   </div>
                 </div>
@@ -93,8 +90,8 @@ const Discovery = () => {
                       1.2 miles away
                     </div>
                     <div className="flex gap-2">
-                      <Button size="sm" variant="outline">View Profile</Button>
-                      <Button size="sm">Connect</Button>
+                      <Button size="sm" variant="outline" className="touch-target">View Profile</Button>
+                      <Button size="sm" className="touch-target">Connect</Button>
                     </div>
                   </div>
                 </div>
@@ -117,8 +114,8 @@ const Discovery = () => {
                       2.1 miles away
                     </div>
                     <div className="flex gap-2">
-                      <Button size="sm" variant="outline">View Profile</Button>
-                      <Button size="sm">Connect</Button>
+                      <Button size="sm" variant="outline" className="touch-target">View Profile</Button>
+                      <Button size="sm" className="touch-target">Connect</Button>
                     </div>
                   </div>
                 </div>
@@ -140,18 +137,18 @@ const Discovery = () => {
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between">
                 <span className="text-sm">Visible in Discovery</span>
-                <Button size="sm" variant="outline">Enabled</Button>
+                <Button size="sm" variant="outline" className="touch-target">Enabled</Button>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-sm">Discovery Radius</span>
-                <Button size="sm" variant="outline">25 miles</Button>
+                <Button size="sm" variant="outline" className="touch-target">25 miles</Button>
               </div>
-              <Button className="w-full">Update Settings</Button>
+              <Button className="w-full touch-target">Update Settings</Button>
             </CardContent>
           </Card>
         </section>
-      </main>
-    </div>
+      </div>
+    </MobileLayout>
   );
 };
 

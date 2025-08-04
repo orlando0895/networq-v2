@@ -6,6 +6,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
+import { MobileLayout, PageHeader } from '@/components/MobileLayout';
 
 const Profile = () => {
   const { user } = useAuth();
@@ -38,25 +39,21 @@ const Profile = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background pb-20 md:pb-0">
-      {/* Header */}
-      <header className="sticky top-0 z-40 bg-white border-b">
-        <div className="px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold">Profile</h1>
-              <p className="text-muted-foreground">Manage your account</p>
-            </div>
-            <Button size="sm" variant="outline" className="flex items-center gap-2" onClick={() => navigate('/profile/manage')}>
+    <MobileLayout
+      header={
+        <PageHeader
+          title="Profile"
+          subtitle="Manage your account"
+          action={
+            <Button size="sm" variant="outline" className="touch-target" onClick={() => navigate('/profile/manage')}>
               <Edit className="h-4 w-4" />
-              Edit Profile
+              <span className="ml-2 hidden sm:inline">Edit</span>
             </Button>
-          </div>
-        </div>
-      </header>
-
-      {/* Content */}
-      <main className="px-4 py-6 space-y-6">
+          }
+        />
+      }
+    >
+      <div className="space-y-6">
         {/* Profile Overview */}
         <section>
           <Card>
@@ -69,13 +66,13 @@ const Profile = () => {
                   <h2 className="text-xl font-semibold">{user?.email || 'User'}</h2>
                   <p className="text-muted-foreground">Premium Member</p>
                   <div className="flex gap-2 mt-3">
-                    <Button size="sm" variant="outline" className="flex items-center gap-2">
+                    <Button size="sm" variant="outline" className="touch-target">
                       <Share2 className="h-4 w-4" />
-                      Share Profile
+                      <span className="ml-2 hidden sm:inline">Share</span>
                     </Button>
-                    <Button size="sm" variant="outline" className="flex items-center gap-2">
+                    <Button size="sm" variant="outline" className="touch-target">
                       <QrCode className="h-4 w-4" />
-                      QR Code
+                      <span className="ml-2 hidden sm:inline">QR</span>
                     </Button>
                   </div>
                 </div>
@@ -163,17 +160,17 @@ const Profile = () => {
             <CardContent className="p-4">
               <Button 
                 variant="destructive" 
-                className="w-full flex items-center gap-2"
+                className="w-full touch-target"
                 onClick={handleLogout}
               >
-                <LogOut className="h-4 w-4" />
+                <LogOut className="h-4 w-4 mr-2" />
                 Sign Out
               </Button>
             </CardContent>
           </Card>
         </section>
-      </main>
-    </div>
+      </div>
+    </MobileLayout>
   );
 };
 

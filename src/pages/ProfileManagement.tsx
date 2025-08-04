@@ -1,30 +1,30 @@
 import React from 'react';
-import { User, Edit, QrCode, Share2 } from 'lucide-react';
+import { User, Edit, QrCode, Share2, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { MobileLayout, PageHeader } from '@/components/MobileLayout';
+import { useNavigate } from 'react-router-dom';
 import MyContactCardForm from '@/components/MyContactCardForm';
 
 const ProfileManagement = () => {
-  return (
-    <div className="min-h-screen bg-background pb-20 md:pb-0">
-      {/* Header */}
-      <header className="sticky top-0 z-40 bg-white border-b">
-        <div className="px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold">My Profile</h1>
-              <p className="text-muted-foreground">Manage your digital business card</p>
-            </div>
-            <Button size="sm" variant="outline" className="flex items-center gap-2">
-              <Share2 className="h-4 w-4" />
-              Share Card
-            </Button>
-          </div>
-        </div>
-      </header>
+  const navigate = useNavigate();
 
-      {/* Content */}
-      <main className="px-4 py-6 space-y-6">
+  return (
+    <MobileLayout
+      header={
+        <PageHeader
+          title="My Profile"
+          subtitle="Manage your digital business card"
+          action={
+            <Button size="sm" variant="outline" className="touch-target" onClick={() => navigate('/profile')}>
+              <ArrowLeft className="h-4 w-4" />
+              <span className="ml-2 hidden sm:inline">Back</span>
+            </Button>
+          }
+        />
+      }
+    >
+      <div className="space-y-6">
         {/* Quick Actions */}
         <section>
           <div className="grid grid-cols-3 gap-4">
@@ -66,8 +66,8 @@ const ProfileManagement = () => {
             </CardContent>
           </Card>
         </section>
-      </main>
-    </div>
+      </div>
+    </MobileLayout>
   );
 };
 

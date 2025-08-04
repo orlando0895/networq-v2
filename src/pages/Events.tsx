@@ -2,28 +2,25 @@ import React from 'react';
 import { Calendar, Plus, MapPin, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { MobileLayout, PageHeader } from '@/components/MobileLayout';
 
 const Events = () => {
   return (
-    <div className="min-h-screen bg-background pb-20 md:pb-0">
-      {/* Header */}
-      <header className="sticky top-0 z-40 bg-white border-b">
-        <div className="px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold">Events</h1>
-              <p className="text-muted-foreground">Discover networking opportunities</p>
-            </div>
-            <Button size="sm" className="flex items-center gap-2">
+    <MobileLayout
+      header={
+        <PageHeader
+          title="Events"
+          subtitle="Discover networking opportunities"
+          action={
+            <Button size="sm" className="touch-target">
               <Plus className="h-4 w-4" />
-              Create Event
+              <span className="ml-2 hidden sm:inline">Create</span>
             </Button>
-          </div>
-        </div>
-      </header>
-
-      {/* Content */}
-      <main className="px-4 py-6 space-y-6">
+          }
+        />
+      }
+    >
+      <div className="space-y-6">
         {/* Upcoming Events */}
         <section>
           <h2 className="text-lg font-semibold mb-4">Upcoming Events</h2>
@@ -48,7 +45,7 @@ const Events = () => {
                     Downtown Conference Center
                   </div>
                   <div className="pt-2">
-                    <Button size="sm" variant="outline">View Details</Button>
+                    <Button size="sm" variant="outline" className="touch-target">View Details</Button>
                   </div>
                 </div>
               </CardContent>
@@ -73,7 +70,7 @@ const Events = () => {
                     Central Coffee House
                   </div>
                   <div className="pt-2">
-                    <Button size="sm" variant="outline">View Details</Button>
+                    <Button size="sm" variant="outline" className="touch-target">View Details</Button>
                   </div>
                 </div>
               </CardContent>
@@ -88,11 +85,11 @@ const Events = () => {
             <Calendar className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
             <h3 className="text-lg font-medium mb-2">Find Events Near You</h3>
             <p className="text-muted-foreground mb-4">Discover networking events in your area</p>
-            <Button>Browse Events</Button>
+            <Button className="touch-target">Browse Events</Button>
           </div>
         </section>
-      </main>
-    </div>
+      </div>
+    </MobileLayout>
   );
 };
 
