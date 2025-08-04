@@ -37,7 +37,7 @@ const ContactStats = ({ contacts, filterIndustry, onIndustryFilterChange }: Cont
               <ChevronDown className="ml-2 h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-56 bg-white">
+          <DropdownMenuContent className="w-56 bg-white max-h-72 overflow-y-auto">
             <DropdownMenuItem onClick={() => onIndustryFilterChange("all")}>
               All Industries
             </DropdownMenuItem>
