@@ -17,8 +17,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
 import { useUserContactCard } from '@/hooks/useUserContactCard';
 import { MobileLayout, PageHeader } from '@/components/MobileLayout';
-import { QRCodeShare } from '@/components/QRCodeShare';
-import DeleteAccountDialog from '@/components/DeleteAccountDialog';
+import { QRCodeShare, DeleteAccountDialog } from '@/components/LazyComponents';
 
 const Profile = () => {
   const { user } = useAuth();
