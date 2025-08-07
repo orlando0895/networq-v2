@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, Plus, MapPin, Clock, Users, Filter, Search } from 'lucide-react';
+import { Calendar, Plus, MapPin, Clock, Users, Filter, Search, Crown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -11,6 +11,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import CreateEventForm from '@/components/CreateEventForm';
+import PremiumUpgradeDialog from '@/components/PremiumUpgradeDialog';
 
 interface Event {
   id: string;
@@ -42,6 +43,25 @@ const Events = () => {
   const [userLocation, setUserLocation] = useState<{lat: number, lng: number} | null>(null);
   const [isCreateEventOpen, setIsCreateEventOpen] = useState(false);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [isPremiumUpgradeOpen, setIsPremiumUpgradeOpen] = useState(false);
+  const [isPremium, setIsPremium] = useState(false);
+
+  // Check premium status
+  useEffect(() => {
+    const checkPremiumStatus = async () => {
+      if (!user) return;
+      
+      try {
+        const { data, error } = await supabase.rpc('current_user_is_premium');
+        if (error) throw error;
+        setIsPremium(data || false);
+      } catch (error) {
+        console.error('Error checking premium status:', error);
+      }
+    };
+    
+    checkPremiumStatus();
+  }, [user]);
 
   // Get user location
   useEffect(() => {
@@ -209,15 +229,20 @@ const Events = () => {
           </Select>
         </div>
 
-        {/* Create Event Button - Only for premium users */}
+        {/* Create Event Button */}
         {user && (
           <div className="fixed bottom-24 right-4 z-30 md:absolute md:top-4 md:right-4 md:bottom-auto">
             <Button
-              onClick={() => setIsCreateEventOpen(true)}
-              className="rounded-full h-14 w-14 shadow-lg md:h-auto md:w-auto md:rounded-md md:px-4 md:py-2"
+              onClick={() => isPremium ? setIsCreateEventOpen(true) : setIsPremiumUpgradeOpen(true)}
+              className={`rounded-full h-14 w-14 shadow-lg md:h-auto md:w-auto md:rounded-md md:px-4 md:py-2 ${
+                !isPremium ? 'bg-gradient-to-r from-primary to-primary/80' : ''
+              }`}
             >
+              {!isPremium && <Crown className="h-3 w-3 absolute -top-1 -right-1 text-white" />}
               <Plus className="h-6 w-6 md:h-4 md:w-4 md:mr-2" />
-              <span className="hidden md:inline">Create Event</span>
+              <span className="hidden md:inline">
+                {isPremium ? 'Create Event' : 'Create Event'}
+              </span>
             </Button>
           </div>
         )}
@@ -239,21 +264,36 @@ const Events = () => {
             <h3 className="text-lg font-medium mb-2">No Events Found</h3>
             <p className="text-muted-foreground mb-4">
               {searchTerm || tagFilter !== 'all' 
-                ? "Try adjusting your filters" 
-                : "No events in your area yet"}
+                ? "Try adjusting your filters to find events" 
+                : "No events found in your area. Be the first to create one!"}
             </p>
-            <Button onClick={() => setIsCreateEventOpen(true)}>
-              Create First Event
-            </Button>
+            {user && (
+              <Button 
+                onClick={() => isPremium ? setIsCreateEventOpen(true) : setIsPremiumUpgradeOpen(true)}
+                className={!isPremium ? 'bg-gradient-to-r from-primary to-primary/80' : ''}
+              >
+                {!isPremium && <Crown className="h-4 w-4 mr-2" />}
+                Create First Event
+              </Button>
+            )}
           </div>
         )}
 
-        {/* Create Event Form */}
-        <CreateEventForm
-          open={isCreateEventOpen}
-          onOpenChange={setIsCreateEventOpen}
-          onEventCreated={fetchEvents}
-          userLocation={userLocation}
+        {/* Create Event Form - Only show if premium */}
+        {isPremium && (
+          <CreateEventForm
+            open={isCreateEventOpen}
+            onOpenChange={setIsCreateEventOpen}
+            onEventCreated={fetchEvents}
+            userLocation={userLocation}
+          />
+        )}
+
+        {/* Premium Upgrade Dialog */}
+        <PremiumUpgradeDialog
+          open={isPremiumUpgradeOpen}
+          onOpenChange={setIsPremiumUpgradeOpen}
+          feature="event creation"
         />
 
         {/* Event Details Modal */}

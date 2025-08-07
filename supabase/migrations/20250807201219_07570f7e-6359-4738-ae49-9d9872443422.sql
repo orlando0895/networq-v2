@@ -1,0 +1,93 @@
+-- Create sample events for demonstration
+-- First, let's create some demo events to show the events feature works
+
+INSERT INTO public.events (
+  title,
+  description,
+  event_date,
+  end_date,
+  location_name,
+  address,
+  latitude,
+  longitude,
+  max_attendees,
+  current_attendees,
+  tags,
+  created_by,
+  is_public
+) VALUES 
+(
+  'Tech Networking Mixer',
+  'Join fellow entrepreneurs and tech professionals for an evening of networking, sharing ideas, and building meaningful connections in the startup ecosystem.',
+  NOW() + INTERVAL '7 days',
+  NOW() + INTERVAL '7 days' + INTERVAL '3 hours',
+  'Innovation Hub',
+  '123 Tech Street, San Francisco, CA',
+  37.7749,
+  -122.4194,
+  50,
+  23,
+  ARRAY['networking', 'tech', 'startup', 'business'],
+  (SELECT id FROM auth.users LIMIT 1),
+  true
+),
+(
+  'Digital Marketing Workshop',
+  'Learn the latest digital marketing strategies from industry experts. Perfect for small business owners and marketing professionals.',
+  NOW() + INTERVAL '5 days',
+  NOW() + INTERVAL '5 days' + INTERVAL '4 hours',
+  'Business Center Downtown',
+  '456 Commerce Ave, San Francisco, CA',
+  37.7849,
+  -122.4094,
+  30,
+  15,
+  ARRAY['marketing', 'workshop', 'business', 'education'],
+  (SELECT id FROM auth.users LIMIT 1),
+  true
+),
+(
+  'Coffee & Connections',
+  'A casual morning meetup for professionals to network over great coffee. Come as you are and leave with new connections.',
+  NOW() + INTERVAL '3 days',
+  NOW() + INTERVAL '3 days' + INTERVAL '2 hours',
+  'Brew & Network Cafe',
+  '789 Startup Lane, San Francisco, CA',
+  37.7649,
+  -122.4294,
+  20,
+  12,
+  ARRAY['coffee', 'casual', 'networking', 'morning'],
+  (SELECT id FROM auth.users LIMIT 1),
+  true
+),
+(
+  'Women in Business Summit',
+  'Empowering women entrepreneurs with workshops, panel discussions, and networking opportunities. Join us for inspiration and connections.',
+  NOW() + INTERVAL '10 days',
+  NOW() + INTERVAL '10 days' + INTERVAL '6 hours',
+  'Conference Center',
+  '321 Success Blvd, San Francisco, CA',
+  37.7549,
+  -122.4394,
+  100,
+  67,
+  ARRAY['women', 'business', 'summit', 'inspiration', 'networking'],
+  (SELECT id FROM auth.users LIMIT 1),
+  true
+),
+(
+  'Investor Pitch Night',
+  'Present your startup idea to a panel of investors and get valuable feedback. Network with other entrepreneurs and potential investors.',
+  NOW() + INTERVAL '12 days',
+  NOW() + INTERVAL '12 days' + INTERVAL '4 hours',
+  'Venture Capital Lounge',
+  '555 Investment Way, San Francisco, CA',
+  37.7449,
+  -122.4494,
+  40,
+  28,
+  ARRAY['startup', 'investment', 'pitch', 'networking', 'funding'],
+  (SELECT id FROM auth.users LIMIT 1),
+  true
+);
