@@ -153,35 +153,42 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
 
   return (
     <>
-      <Card className="bg-white border border-slate-200 hover:shadow-md transition-all duration-200">
+      <Card className="relative overflow-hidden border transition-all duration-300 hover:shadow-md bg-card group">
         <Accordion type="single" collapsible>
           <AccordionItem value={contact.id} className="border-none">
-            <CardHeader className="pb-2 px-4 sm:px-6 py-4">
+            <CardHeader className="pb-2 px-5 sm:px-6 py-5 group-hover:bg-muted/20 transition-colors">
               <div className="flex items-start justify-between gap-3">
-                <div className="flex items-start gap-3 flex-1 min-w-0">
-                  <Avatar className="h-12 w-12 flex-shrink-0">
-                    <AvatarImage src={contact.profile_picture_url || undefined} />
-                    <AvatarFallback className="text-sm font-medium">
-                      {contact.name.split(' ').map(n => n[0]).join('').toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
+                <div className="flex items-start gap-4 flex-1 min-w-0">
+                  <div className="relative">
+                    <Avatar className="h-14 w-14 flex-shrink-0 ring-2 ring-border shadow-sm">
+                      <AvatarImage src={contact.profile_picture_url || undefined} />
+                      <AvatarFallback className="text-sm font-semibold bg-gradient-to-br from-primary/90 to-accent/90 text-primary-foreground">
+                        {contact.name.split(' ').map(n => n[0]).join('').toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                    {contact.tier === "A-player" && (
+                      <div className="absolute -top-1 -right-1 bg-tier-a-player rounded-full p-1">
+                        <Star className="w-3 h-3 text-white fill-current" />
+                      </div>
+                    )}
+                  </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start flex-col sm:flex-row sm:items-center gap-2 mb-3">
-                    <CardTitle className="text-lg sm:text-xl font-semibold text-slate-900 leading-tight">{contact.name}</CardTitle>
+                    <CardTitle className="text-xl sm:text-2xl font-bold text-foreground leading-tight">{contact.name}</CardTitle>
                     <Badge 
                       className={`${
                         contact.tier === "A-player" 
-                          ? "bg-amber-50 text-amber-700 border-amber-200" 
-                          : "bg-slate-50 text-slate-600 border-slate-200"
-                      } flex items-center gap-1 text-xs self-start`}
+                          ? "bg-tier-a-player text-white border-0" 
+                          : "bg-tier-acquaintance/10 text-tier-acquaintance border-tier-acquaintance/20"
+                      } flex items-center gap-1 text-xs font-medium px-3 py-1 self-start`}
                     >
                       {contact.tier === "A-player" ? <Star className="w-3 h-3 fill-current" /> : <Users className="w-3 h-3" />}
                       <span>{contact.tier}</span>
                     </Badge>
                   </div>
-                  <div className="space-y-1 mb-3">
-                    <p className="text-base font-medium text-slate-700">{contact.company}</p>
-                    <p className="text-sm text-slate-500">{contact.industry}</p>
+                  <div className="space-y-2 mb-3">
+                    <p className="text-lg font-semibold text-foreground">{contact.company}</p>
+                    <p className="text-sm text-muted-foreground font-medium">{contact.industry}</p>
                   </div>
                   
                    {/* Contact info - show on mobile */}

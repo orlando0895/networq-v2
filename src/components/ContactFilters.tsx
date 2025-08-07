@@ -1,7 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, Star } from "lucide-react";
+import { Search, Star, X } from "lucide-react";
 import type { Database } from '@/integrations/supabase/types';
 
 type Contact = Database['public']['Tables']['contacts']['Row'];
@@ -22,43 +22,68 @@ const ContactFilters = ({
   contacts 
 }: ContactFiltersProps) => {
   return (
-    <div className="mb-6 sm:mb-8 space-y-4">
-      <div className="relative">
-        <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
+    <div className="space-y-6">
+      {/* Enhanced Search Bar */}
+      <div className="relative group">
+        <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5 group-focus-within:text-primary transition-colors" />
         <Input
           type="text"
-          placeholder="Search contacts..."
+          placeholder="Search by name, company, or industry..."
           value={searchTerm}
           onChange={(e) => onSearchChange(e.target.value)}
-          className="pl-12 py-4 text-base border-slate-200 focus:border-indigo-500 focus:ring-indigo-500 transition-colors h-14 text-lg"
+          className="pl-12 pr-4 py-4 text-base border focus:ring-2 focus:ring-primary/20 transition-all h-12 bg-background/50 backdrop-blur-sm"
         />
+        {searchTerm && (
+          <button
+            onClick={() => onSearchChange("")}
+            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        )}
       </div>
       
-      <div className="flex flex-col sm:flex-row gap-3">
+      {/* Improved Filter Buttons */}
+      <div className="grid grid-cols-3 gap-3">
         <Button
           variant={filterTier === "all" ? "default" : "outline"}
           size="lg"
           onClick={() => onFilterChange("all")}
-          className="flex-1 sm:flex-none transition-all duration-200 h-12 text-base"
+          className="h-16 flex-col gap-1 transition-all duration-200 hover:scale-105"
         >
-          All ({contacts.length})
+          <span className="font-semibold text-lg">{contacts.length}</span>
+          <span className="text-xs opacity-90">All Contacts</span>
         </Button>
+        
         <Button
           variant={filterTier === "A-player" ? "default" : "outline"}
           size="lg"
           onClick={() => onFilterChange("A-player")}
-          className="flex-1 sm:flex-none transition-all duration-200 h-12 text-base"
+          className={`h-16 flex-col gap-1 transition-all duration-200 hover:scale-105 ${
+            filterTier === "A-player" 
+              ? "bg-tier-a-player text-white hover:bg-tier-a-player/90" 
+              : "border-tier-a-player/30 hover:border-tier-a-player hover:bg-tier-a-player/5"
+          }`}
         >
-          <Star className="w-4 h-4 mr-2 fill-current" />
-          A-Players ({contacts.filter(c => c.tier === "A-player").length})
+          <div className="flex items-center gap-1">
+            <Star className="w-4 h-4 fill-current" />
+            <span className="font-semibold text-lg">{contacts.filter(c => c.tier === "A-player").length}</span>
+          </div>
+          <span className="text-xs opacity-90">A-Players</span>
         </Button>
+        
         <Button
           variant={filterTier === "Acquaintance" ? "default" : "outline"}
           size="lg"
           onClick={() => onFilterChange("Acquaintance")}
-          className="flex-1 sm:flex-none transition-all duration-200 h-12 text-base"
+          className={`h-16 flex-col gap-1 transition-all duration-200 hover:scale-105 ${
+            filterTier === "Acquaintance"
+              ? "bg-tier-acquaintance text-white hover:bg-tier-acquaintance/90"
+              : "border-tier-acquaintance/30 hover:border-tier-acquaintance hover:bg-tier-acquaintance/5"
+          }`}
         >
-          Acquaintances ({contacts.filter(c => c.tier === "Acquaintance").length})
+          <span className="font-semibold text-lg">{contacts.filter(c => c.tier === "Acquaintance").length}</span>
+          <span className="text-xs opacity-90">Acquaintances</span>
         </Button>
       </div>
     </div>

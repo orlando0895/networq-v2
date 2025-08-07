@@ -241,15 +241,20 @@ const Index = () => {
           contacts={contacts} 
         />
 
-        {/* Contact Cards */}
-        <div className="space-y-3">
-          {filteredContacts.map(contact => (
-            <ContactCard 
-              key={contact.id} 
-              contact={contact} 
-              onUpdateContact={updateContact} 
-              onDeleteContact={deleteContact}
-            />
+        {/* Contact Cards with Enhanced Layout */}
+        <div className="space-y-4">
+          {filteredContacts.map((contact, index) => (
+            <div 
+              key={contact.id}
+              className="animate-fade-in"
+              style={{ animationDelay: `${index * 50}ms` }}
+            >
+              <ContactCard 
+                contact={contact} 
+                onUpdateContact={updateContact} 
+                onDeleteContact={deleteContact}
+              />
+            </div>
           ))}
         </div>
 
