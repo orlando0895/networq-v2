@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Star, Users, Mail, Phone, UserPlus, Edit, Plus, ChevronDown, Trash2, MoreVertical, Linkedin, Facebook, MessageCircle, Globe, MessageSquare } from "lucide-react";
+import { Star, Users, Mail, Phone, UserPlus, Edit, Plus, ChevronDown, Trash2, MoreVertical, Linkedin, Facebook, MessageCircle, Globe, MessageSquare, Download } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import EditContactForm from "./EditContactForm";
 import AddNoteForm from "./AddNoteForm";
@@ -14,6 +14,7 @@ import { ShareContactDialog } from "./ShareContactDialog";
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
+import { downloadVCF } from '@/lib/vcf';
 import type { Database } from '@/integrations/supabase/types';
 
 type Contact = Database['public']['Tables']['contacts']['Row'];
@@ -33,6 +34,27 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
 
   const handleDelete = async () => {
     await onDeleteContact(contact.id);
+  };
+
+  const handleExportVCF = () => {
+    const contactData = {
+      name: contact.name,
+      email: contact.email,
+      phone: contact.phone || undefined,
+      company: contact.company || undefined,
+      industry: contact.industry || undefined,
+      linkedin: contact.linkedin || undefined,
+      facebook: contact.facebook || undefined,
+      whatsapp: contact.whatsapp || undefined,
+      websites: contact.websites || undefined,
+      notes: contact.notes || undefined
+    };
+    
+    downloadVCF(contactData);
+    toast({
+      title: "Contact exported",
+      description: `${contact.name}'s contact info saved to your device.`
+    });
   };
 
   const handleStartConversation = async () => {
@@ -202,6 +224,10 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
                         <Plus className="w-4 h-4 mr-2" />
                         Add Note
                       </DropdownMenuItem>
+                      <DropdownMenuItem onClick={handleExportVCF} className="cursor-pointer">
+                        <Download className="w-4 h-4 mr-2" />
+                        Save to Phone
+                      </DropdownMenuItem>
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
                           <DropdownMenuItem onSelect={(e) => e.preventDefault()} className="cursor-pointer text-red-600 focus:text-red-700">
@@ -340,7 +366,7 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
                   )}
                   
                   {/* Desktop action buttons */}
-                  <div className="hidden sm:grid grid-cols-2 lg:grid-cols-5 gap-2">
+                  <div className="hidden sm:grid grid-cols-2 lg:grid-cols-6 gap-2">
                     <Button size="sm" className="justify-center h-10" onClick={() => setIsShareDialogOpen(true)}>
                       <UserPlus className="w-4 h-4 mr-2" />
                       Refer
@@ -371,6 +397,15 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
                     >
                       <Plus className="w-4 h-4 mr-2" />
                       Add Note
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="justify-center h-10"
+                      onClick={handleExportVCF}
+                    >
+                      <Download className="w-4 h-4 mr-2" />
+                      Save to Phone
                     </Button>
                     <AlertDialog>
                       <AlertDialogTrigger asChild>

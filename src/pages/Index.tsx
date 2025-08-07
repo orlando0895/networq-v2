@@ -208,9 +208,6 @@ const Index = () => {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={handleExportContacts}>
-                    Export as VCF
-                  </DropdownMenuItem>
                   <DropdownMenuItem onClick={exportFilteredAsCSV}>
                     Export as CSV
                   </DropdownMenuItem>
