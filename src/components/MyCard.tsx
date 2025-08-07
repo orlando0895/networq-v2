@@ -8,13 +8,11 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Copy, RefreshCw, Share2, Trash2, Plus, Camera, QrCode, Edit, Eye, Download, Check } from 'lucide-react';
 import { useUserContactCard } from '@/hooks/useUserContactCard';
 import { useToast } from '@/hooks/use-toast';
 import { DeleteAccountDialog, BusinessCardScanner } from '@/components/LazyComponents';
 import { ProfilePictureUpload } from './ProfilePictureUpload';
-import { useNavigate } from 'react-router-dom';
 
 interface ContactCardFormData {
   name: string;
@@ -34,12 +32,9 @@ interface ContactCardFormData {
 export const MyCard = () => {
   const { contactCard, loading, createContactCard, updateContactCard, regenerateShareCode } = useUserContactCard();
   const { toast } = useToast();
-  const navigate = useNavigate();
   const [websites, setWebsites] = useState<string[]>(contactCard?.websites || []);
   const [newWebsite, setNewWebsite] = useState('');
   const [showScanner, setShowScanner] = useState(false);
-  const [showQRModal, setShowQRModal] = useState(false);
-  const [showPreview, setShowPreview] = useState(false);
   const [qrCodeUrl, setQrCodeUrl] = useState<string>('');
   const [copied, setCopied] = useState(false);
   const [isEditing, setIsEditing] = useState(!contactCard);
@@ -141,7 +136,7 @@ export const MyCard = () => {
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
         toast({
-          title: "Share Code Copied! 📋",
+          title: "Share Code Copied!",
           description: "Your contact share code has been copied to clipboard."
         });
       } catch (err) {
@@ -159,7 +154,7 @@ export const MyCard = () => {
       try {
         await navigator.clipboard.writeText(publicUrl);
         toast({
-          title: "Link Copied! 🔗",
+          title: "Link Copied!",
           description: "Your public profile link has been copied to clipboard."
         });
       } catch (err) {
@@ -175,7 +170,7 @@ export const MyCard = () => {
       link.href = qrCodeUrl;
       link.click();
       toast({
-        title: "QR Code Downloaded! 📱",
+        title: "QR Code Downloaded!",
         description: "Your QR code has been saved to your downloads."
       });
     }
@@ -238,47 +233,30 @@ export const MyCard = () => {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Quick Actions Header */}
-      <div className="flex flex-col sm:flex-row gap-3">
-        <Button 
-          variant="outline" 
-          className="flex-1 h-12"
-          onClick={() => setShowQRModal(true)}
-          disabled={!contactCard}
-        >
-          <QrCode className="h-4 w-4 mr-2" />
-          QR Code
-        </Button>
-        <Button 
-          variant="outline" 
-          className="flex-1 h-12"
-          onClick={handleShare}
-          disabled={!contactCard}
-        >
-          <Share2 className="h-4 w-4 mr-2" />
-          Share
-        </Button>
-        <Button 
-          variant="outline" 
-          className="flex-1 h-12"
-          onClick={() => setIsEditing(!isEditing)}
-        >
-          <Edit className="h-4 w-4 mr-2" />
-          {isEditing ? 'Cancel' : 'Edit'}
-        </Button>
-        <Button 
-          variant="outline" 
-          className="flex-1 h-12"
-          onClick={handlePreview}
-          disabled={!contactCard}
-        >
-          <Eye className="h-4 w-4 mr-2" />
-          Preview
-        </Button>
-      </div>
+    <div className="space-y-4">
+      {/* Quick Actions - Only show if contact card exists */}
+      {contactCard && (
+        <div className="grid grid-cols-2 gap-3">
+          <Button variant="outline" className="h-12 justify-start" disabled>
+            <QrCode className="h-4 w-4 mr-2" />
+            QR Code
+          </Button>
+          <Button variant="outline" className="h-12 justify-start" onClick={handleShare}>
+            <Share2 className="h-4 w-4 mr-2" />
+            Share
+          </Button>
+          <Button variant="outline" className="h-12 justify-start" onClick={() => setIsEditing(!isEditing)}>
+            <Edit className="h-4 w-4 mr-2" />
+            Edit
+          </Button>
+          <Button variant="outline" className="h-12 justify-start" onClick={handlePreview}>
+            <Eye className="h-4 w-4 mr-2" />
+            Preview
+          </Button>
+        </div>
+      )}
 
-      {/* QR Code and Sharing Section */}
+      {/* Share Your Contact Card Section - Only show when not editing */}
       {contactCard && !isEditing && (
         <Card>
           <CardHeader>
@@ -290,38 +268,41 @@ export const MyCard = () => {
               Share your contact information with others using these options
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-6">
+            {/* QR Code */}
             {qrCodeUrl && (
               <div className="flex justify-center">
-                <div className="p-3 bg-white rounded-lg shadow-sm border">
+                <div className="p-4 bg-white rounded-lg border shadow-sm">
                   <img 
                     src={qrCodeUrl} 
                     alt="Contact QR Code" 
-                    className="w-32 h-32"
+                    className="w-40 h-40"
                   />
                 </div>
               </div>
             )}
             
-            <div className="text-center space-y-2">
+            {/* Share Code */}
+            <div className="text-center space-y-3">
               <div>
-                <div className="text-sm text-muted-foreground">Share Code</div>
+                <div className="text-sm text-muted-foreground mb-1">Share Code</div>
                 <div className="flex items-center justify-center gap-2">
-                  <Badge variant="secondary" className="font-mono text-sm">
+                  <Badge variant="secondary" className="font-mono text-lg px-4 py-2">
                     {contactCard.share_code}
                   </Badge>
                   <Button size="sm" variant="ghost" onClick={handleCopyShareCode}>
-                    {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
+                    {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
                   </Button>
                   <Button size="sm" variant="ghost" onClick={regenerateShareCode}>
-                    <RefreshCw className="w-3 h-3" />
+                    <RefreshCw className="w-4 h-4" />
                   </Button>
                 </div>
               </div>
               
+              {/* Public URL */}
               <div>
-                <div className="text-sm text-muted-foreground">Public URL</div>
-                <div className="text-xs font-mono bg-muted p-2 rounded">
+                <div className="text-sm text-muted-foreground mb-1">Public URL</div>
+                <div className="text-xs font-mono bg-muted p-3 rounded-md break-all">
                   {contactCard.username 
                     ? `${window.location.host}/public/${contactCard.username}`
                     : `${window.location.host}/public/${contactCard.share_code}`
@@ -330,12 +311,13 @@ export const MyCard = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              <Button onClick={handleCopyLink} className="w-full">
+            {/* Action Buttons */}
+            <div className="space-y-2">
+              <Button onClick={handleCopyLink} className="w-full h-12" size="lg">
                 <Copy className="w-4 h-4 mr-2" />
                 Copy Link
               </Button>
-              <Button onClick={handleDownloadQR} variant="outline" className="w-full">
+              <Button onClick={handleDownloadQR} variant="outline" className="w-full h-12" size="lg">
                 <Download className="w-4 h-4 mr-2" />
                 Download QR
               </Button>
@@ -344,7 +326,7 @@ export const MyCard = () => {
         </Card>
       )}
 
-      {/* Contact Card Form */}
+      {/* Contact Card Section */}
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
@@ -516,7 +498,7 @@ export const MyCard = () => {
               </div>
               
               {(contactCard.phone || contactCard.services?.length) && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <div className="space-y-2 text-sm">
                   {contactCard.phone && (
                     <div>
                       <span className="font-medium">Phone:</span> {contactCard.phone}
@@ -553,7 +535,7 @@ export const MyCard = () => {
       </Card>
 
       {/* Danger Zone */}
-      {contactCard && (
+      {contactCard && !isEditing && (
         <Card className="border-destructive/20 bg-destructive/5">
           <CardHeader>
             <CardTitle className="text-destructive">Danger Zone</CardTitle>
@@ -566,45 +548,6 @@ export const MyCard = () => {
           </CardContent>
         </Card>
       )}
-
-      {/* QR Code Modal */}
-      <Dialog open={showQRModal} onOpenChange={setShowQRModal}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <QrCode className="w-5 h-5" />
-              Quick Share
-            </DialogTitle>
-            <DialogDescription>
-              Scan to view your public digital business card - no app required!
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4">
-            {qrCodeUrl && (
-              <div className="flex justify-center">
-                <div className="p-4 bg-white rounded-lg shadow-sm border">
-                  <img 
-                    src={qrCodeUrl} 
-                    alt="Contact QR Code" 
-                    className="w-48 h-48"
-                  />
-                </div>
-              </div>
-            )}
-            
-            <div className="grid grid-cols-2 gap-2">
-              <Button onClick={handleDownloadQR} variant="outline" size="sm">
-                <Download className="w-4 h-4 mr-2" />
-                Download
-              </Button>
-              <Button onClick={handleShare} variant="outline" size="sm">
-                <Share2 className="w-4 h-4 mr-2" />
-                Share
-              </Button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
 
       {/* Business Card Scanner */}
       <BusinessCardScanner
