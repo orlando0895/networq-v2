@@ -353,18 +353,6 @@ const MyContactCardForm = () => {
         </CardContent>
       </Card>
 
-      <Card className="border-red-200 bg-red-50">
-        <CardHeader>
-          <CardTitle className="text-red-600">Danger Zone</CardTitle>
-          <CardDescription>
-            Permanently delete your account and all associated data. This action cannot be undone.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <DeleteAccountDialog />
-        </CardContent>
-      </Card>
-
       <BusinessCardScanner
         isOpen={showScanner}
         onOpenChange={setShowScanner}
