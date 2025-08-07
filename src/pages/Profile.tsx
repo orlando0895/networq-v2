@@ -18,6 +18,7 @@ import { useNavigate } from 'react-router-dom';
 import { useUserContactCard } from '@/hooks/useUserContactCard';
 import { MobileLayout, PageHeader } from '@/components/MobileLayout';
 import { QRCodeShare, DeleteAccountDialog } from '@/components/LazyComponents';
+import { MyCard } from '@/components/MyCard';
 
 const Profile = () => {
   const { user } = useAuth();
@@ -300,87 +301,7 @@ const Profile = () => {
         </TabsContent>
 
         <TabsContent value="card" className="space-y-6 mt-6">
-          {/* Contact Card Overview */}
-          {contactCard && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Share2 className="h-5 w-5" />
-                  Your Digital Business Card
-                </CardTitle>
-                <CardDescription>
-                  Share your professional information with others
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <Avatar className="h-10 w-10">
-                      <AvatarImage src={contactCard.avatar_url} />
-                      <AvatarFallback>
-                        {contactCard.name?.charAt(0)?.toUpperCase() || 'U'}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <div className="font-medium">{contactCard.name}</div>
-                      <div className="text-sm text-muted-foreground">{contactCard.company || contactCard.email}</div>
-                    </div>
-                  </div>
-                  <Button 
-                    size="sm" 
-                    variant="outline"
-                    onClick={() => navigate('/profile/manage')}
-                  >
-                    <Edit className="h-4 w-4 mr-1" />
-                    Edit
-                  </Button>
-                </div>
-
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium">Share Code:</span>
-                    <div className="flex items-center gap-2">
-                      <Badge variant="secondary" className="font-mono">
-                        {contactCard.share_code}
-                      </Badge>
-                      <Button size="sm" variant="ghost" onClick={copyShareCode}>
-                        <Copy className="h-3 w-3" />
-                      </Button>
-                      <Button size="sm" variant="ghost" onClick={regenerateShareCode}>
-                        <RefreshCw className="h-3 w-3" />
-                      </Button>
-                    </div>
-                  </div>
-                  <Button onClick={copyShareLink} className="w-full">
-                    <Share2 className="h-4 w-4 mr-2" />
-                    Copy Share Link
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    onClick={() => setShowQRCode(true)}
-                    className="w-full"
-                  >
-                    <QrCode className="h-4 w-4 mr-2" />
-                    View QR Code
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          )}
-
-          {!contactCard && (
-            <Card>
-              <CardContent className="p-6 text-center">
-                <User className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                <h3 className="font-semibold mb-2">No Contact Card Yet</h3>
-                <p className="text-muted-foreground mb-4">Create your digital business card to start sharing your professional information.</p>
-                <Button onClick={() => navigate('/profile/manage')}>
-                  <Edit className="h-4 w-4 mr-2" />
-                  Create Contact Card
-                </Button>
-              </CardContent>
-            </Card>
-          )}
+          <MyCard />
         </TabsContent>
 
         <TabsContent value="settings" className="space-y-6 mt-6">
