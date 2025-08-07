@@ -15,6 +15,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
 import { downloadVCF } from '@/lib/vcf';
+import { formatEmailLink, formatPhoneLink } from '@/lib/utils';
 import type { Database } from '@/integrations/supabase/types';
 
 type Contact = Database['public']['Tables']['contacts']['Row'];
@@ -183,19 +184,31 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
                     <p className="text-sm text-slate-500">{contact.industry}</p>
                   </div>
                   
-                  {/* Contact info - show on mobile */}
-                  <div className="block sm:hidden space-y-2 mb-3">
-                    <div className="flex items-center space-x-2">
-                      <Mail className="w-4 h-4 text-slate-400 flex-shrink-0" />
-                      <span className="text-sm text-slate-700 break-all">{contact.email}</span>
-                    </div>
-                    {contact.phone && (
-                      <div className="flex items-center space-x-2">
-                        <Phone className="w-4 h-4 text-slate-400 flex-shrink-0" />
-                        <span className="text-sm text-slate-700">{contact.phone}</span>
-                      </div>
-                    )}
-                    </div>
+                   {/* Contact info - show on mobile */}
+                   <div className="block sm:hidden space-y-2 mb-3">
+                     <div className="flex items-center space-x-2">
+                       <Mail className="w-4 h-4 text-slate-400 flex-shrink-0" />
+                       <a 
+                         href={formatEmailLink(contact.email)}
+                         className="text-sm text-primary hover:underline break-all"
+                         aria-label={`Email ${contact.name}`}
+                       >
+                         {contact.email}
+                       </a>
+                     </div>
+                     {contact.phone && (
+                       <div className="flex items-center space-x-2">
+                         <Phone className="w-4 h-4 text-slate-400 flex-shrink-0" />
+                         <a 
+                           href={formatPhoneLink(contact.phone)}
+                           className="text-sm text-primary hover:underline"
+                           aria-label={`Call ${contact.name}`}
+                         >
+                           {contact.phone}
+                         </a>
+                       </div>
+                     )}
+                     </div>
                   </div>
                 </div>
 
@@ -290,19 +303,31 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
             <AccordionContent>
               <CardContent className="pt-0 px-4 sm:px-6 pb-4">
                 <div className="space-y-4">
-                  {/* Desktop contact info */}
-                  <div className="hidden sm:block space-y-3">
-                    <div className="flex items-center space-x-2">
-                      <Mail className="w-4 h-4 text-slate-400 flex-shrink-0" />
-                      <span className="text-sm text-slate-700 break-all">{contact.email}</span>
-                    </div>
-                    {contact.phone && (
-                      <div className="flex items-center space-x-2">
-                        <Phone className="w-4 h-4 text-slate-400 flex-shrink-0" />
-                        <span className="text-sm text-slate-700">{contact.phone}</span>
-                      </div>
-                    )}
-                  </div>
+                   {/* Desktop contact info */}
+                   <div className="hidden sm:block space-y-3">
+                     <div className="flex items-center space-x-2">
+                       <Mail className="w-4 h-4 text-slate-400 flex-shrink-0" />
+                       <a 
+                         href={formatEmailLink(contact.email)}
+                         className="text-sm text-primary hover:underline break-all"
+                         aria-label={`Email ${contact.name}`}
+                       >
+                         {contact.email}
+                       </a>
+                     </div>
+                     {contact.phone && (
+                       <div className="flex items-center space-x-2">
+                         <Phone className="w-4 h-4 text-slate-400 flex-shrink-0" />
+                         <a 
+                           href={formatPhoneLink(contact.phone)}
+                           className="text-sm text-primary hover:underline"
+                           aria-label={`Call ${contact.name}`}
+                         >
+                           {contact.phone}
+                         </a>
+                       </div>
+                     )}
+                   </div>
 
                   {/* Social Media & Websites */}
                   {(contact.linkedin || contact.facebook || contact.whatsapp || (contact.websites && contact.websites.length > 0)) && (

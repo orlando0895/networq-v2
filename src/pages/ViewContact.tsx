@@ -7,6 +7,7 @@ import { useUserContactCard } from '@/hooks/useUserContactCard';
 import { useContacts } from '@/hooks/useContacts';
 import { ArrowLeft, UserPlus, Mail, Phone, Building, Globe, Linkedin, Facebook, MessageCircle, Check } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { formatEmailLink, formatPhoneLink } from '@/lib/utils';
 
 export default function ViewContact() {
   const { shareCode } = useParams<{ shareCode: string }>();
@@ -148,14 +149,26 @@ export default function ViewContact() {
             {contactCard.email && (
               <div className="flex items-center gap-3">
                 <Mail className="w-4 h-4 text-muted-foreground" />
-                <span className="text-sm">{contactCard.email}</span>
+                <a 
+                  href={formatEmailLink(contactCard.email)}
+                  className="text-sm text-primary hover:underline"
+                  aria-label={`Email ${contactCard.name}`}
+                >
+                  {contactCard.email}
+                </a>
               </div>
             )}
             
             {contactCard.phone && (
               <div className="flex items-center gap-3">
                 <Phone className="w-4 h-4 text-muted-foreground" />
-                <span className="text-sm">{contactCard.phone}</span>
+                <a 
+                  href={formatPhoneLink(contactCard.phone)}
+                  className="text-sm text-primary hover:underline"
+                  aria-label={`Call ${contactCard.name}`}
+                >
+                  {contactCard.phone}
+                </a>
               </div>
             )}
             
