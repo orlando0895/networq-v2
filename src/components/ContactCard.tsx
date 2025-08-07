@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Star, Users, Mail, Phone, UserPlus, Edit, Plus, ChevronDown, Trash2, MoreVertical, Linkedin, Facebook, MessageCircle, Globe, MessageSquare, Download } from "lucide-react";
+import { Star, Users, Mail, Phone, UserPlus, Edit, Plus, ChevronDown, Trash2, MoreVertical, Linkedin, Facebook, MessageCircle, Globe, MessageSquare, Download, UserCheck, QrCode, Scan, CreditCard } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import EditContactForm from "./EditContactForm";
 import AddNoteForm from "./AddNoteForm";
@@ -151,6 +151,41 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
     return `https://${url}`;
   };
 
+  const getAddedViaBadge = (addedVia: string | null) => {
+    switch (addedVia) {
+      case 'mutual_contact':
+        return {
+          icon: <UserCheck className="w-3 h-3" />,
+          text: 'Mutual Contact',
+          className: 'bg-emerald-100 text-emerald-800 border-emerald-300'
+        };
+      case 'share_code':
+        return {
+          icon: <Users className="w-3 h-3" />,
+          text: 'Share Code',
+          className: 'bg-blue-100 text-blue-800 border-blue-300'
+        };
+      case 'qr_code':
+        return {
+          icon: <QrCode className="w-3 h-3" />,
+          text: 'QR Code',
+          className: 'bg-purple-100 text-purple-800 border-purple-300'
+        };
+      case 'business_card':
+        return {
+          icon: <CreditCard className="w-3 h-3" />,
+          text: 'Business Card',
+          className: 'bg-orange-100 text-orange-800 border-orange-300'
+        };
+      default:
+        return {
+          icon: <Edit className="w-3 h-3" />,
+          text: 'Manual',
+          className: 'bg-muted text-muted-foreground border-border'
+        };
+    }
+  };
+
   return (
     <>
       <Card className="bg-card border border-border hover:shadow-lg transition-all duration-300 group overflow-hidden">
@@ -172,14 +207,10 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
                       {contact.name}
                     </CardTitle>
                     <Badge 
-                      className={`${
-                        contact.tier === "A-player" 
-                          ? "bg-amber-100 text-amber-800 border-amber-300 shadow-sm" 
-                          : "bg-muted text-muted-foreground border-border"
-                      } flex items-center gap-1 text-xs font-medium`}
+                      className={`${getAddedViaBadge(contact.added_via).className} flex items-center gap-1 text-xs font-medium shadow-sm`}
                     >
-                      {contact.tier === "A-player" ? <Star className="w-3 h-3 fill-current" /> : <Users className="w-3 h-3" />}
-                      <span>{contact.tier}</span>
+                      {getAddedViaBadge(contact.added_via).icon}
+                      <span>{getAddedViaBadge(contact.added_via).text}</span>
                     </Badge>
                   </div>
                 </div>
