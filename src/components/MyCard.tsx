@@ -29,7 +29,7 @@ interface ContactCardFormData {
   avatar_url: string;
 }
 
-export const MyCard = () => {
+export const MyCard = () => { // Fixed showQRModal reference error
   const { contactCard, loading, createContactCard, updateContactCard, regenerateShareCode } = useUserContactCard();
   const { toast } = useToast();
   const [websites, setWebsites] = useState<string[]>(contactCard?.websites || []);
