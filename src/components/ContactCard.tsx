@@ -153,78 +153,54 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
 
   return (
     <>
-      <Card className="bg-white border border-slate-200 hover:shadow-md transition-all duration-200">
+      <Card className="bg-card border border-border hover:shadow-lg transition-all duration-300 group overflow-hidden">
         <Accordion type="single" collapsible>
           <AccordionItem value={contact.id} className="border-none">
-            <CardHeader className="pb-2 px-4 sm:px-6 py-4">
-              <div className="flex items-start justify-between gap-3">
-                <div className="flex items-start gap-3 flex-1 min-w-0">
-                  <Avatar className="h-12 w-12 flex-shrink-0">
+            {/* Business Card Style Layout */}
+            <CardHeader className="p-6 bg-gradient-to-br from-background to-muted/20">
+              {/* Top Section - Name and Actions */}
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex items-center gap-4">
+                  <Avatar className="h-16 w-16 border-2 border-border shadow-md">
                     <AvatarImage src={contact.profile_picture_url || undefined} />
-                    <AvatarFallback className="text-sm font-medium">
+                    <AvatarFallback className="text-lg font-semibold bg-primary/10 text-primary">
                       {contact.name.split(' ').map(n => n[0]).join('').toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-start flex-col sm:flex-row sm:items-center gap-2 mb-3">
-                    <CardTitle className="text-lg sm:text-xl font-semibold text-slate-900 leading-tight">{contact.name}</CardTitle>
+                  <div className="space-y-1">
+                    <CardTitle className="text-xl font-bold text-foreground leading-tight">
+                      {contact.name}
+                    </CardTitle>
                     <Badge 
                       className={`${
                         contact.tier === "A-player" 
-                          ? "bg-amber-50 text-amber-700 border-amber-200" 
-                          : "bg-slate-50 text-slate-600 border-slate-200"
-                      } flex items-center gap-1 text-xs self-start`}
+                          ? "bg-amber-100 text-amber-800 border-amber-300 shadow-sm" 
+                          : "bg-muted text-muted-foreground border-border"
+                      } flex items-center gap-1 text-xs font-medium`}
                     >
                       {contact.tier === "A-player" ? <Star className="w-3 h-3 fill-current" /> : <Users className="w-3 h-3" />}
                       <span>{contact.tier}</span>
                     </Badge>
                   </div>
-                  <div className="space-y-1 mb-3">
-                    <p className="text-base font-medium text-slate-700">{contact.company}</p>
-                    <p className="text-sm text-slate-500">{contact.industry}</p>
-                  </div>
-                  
-                   {/* Contact info - show on mobile */}
-                   <div className="block sm:hidden space-y-2 mb-3">
-                     <div className="flex items-center space-x-2">
-                       <Mail className="w-4 h-4 text-slate-400 flex-shrink-0" />
-                       <a 
-                         href={formatEmailLink(contact.email)}
-                         className="text-sm text-primary hover:underline break-all"
-                         aria-label={`Email ${contact.name}`}
-                       >
-                         {contact.email}
-                       </a>
-                     </div>
-                     {contact.phone && (
-                       <div className="flex items-center space-x-2">
-                         <Phone className="w-4 h-4 text-slate-400 flex-shrink-0" />
-                         <a 
-                           href={formatPhoneLink(contact.phone)}
-                           className="text-sm text-primary hover:underline"
-                           aria-label={`Call ${contact.name}`}
-                         >
-                           {contact.phone}
-                         </a>
-                       </div>
-                     )}
-                     </div>
-                  </div>
                 </div>
 
-                {/* Mobile actions menu */}
-                <div className="flex items-center gap-2 sm:hidden">
-                  <Button size="sm" className="h-9 px-3 bg-indigo-600 hover:bg-indigo-700" onClick={() => setIsShareDialogOpen(true)}>
+                {/* Action Buttons */}
+                <div className="flex items-center gap-2">
+                  <Button 
+                    size="sm" 
+                    className="h-9 px-3 bg-primary hover:bg-primary/90 shadow-sm"
+                    onClick={() => setIsShareDialogOpen(true)}
+                  >
                     <UserPlus className="w-4 h-4 mr-1" />
-                    Refer
+                    <span className="hidden sm:inline">Refer</span>
                   </Button>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button variant="outline" size="sm" className="h-9 w-9 p-0">
+                      <Button variant="outline" size="sm" className="h-9 w-9 p-0 border-border">
                         <MoreVertical className="w-4 h-4" />
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-48 bg-white shadow-lg border z-50">
+                    <DropdownMenuContent align="end" className="w-48 bg-popover shadow-lg border-border z-50">
                       <DropdownMenuItem onClick={handleStartConversation} className="cursor-pointer">
                         <MessageSquare className="w-4 h-4 mr-2" />
                         Message
@@ -243,7 +219,7 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
                       </DropdownMenuItem>
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
-                          <DropdownMenuItem onSelect={(e) => e.preventDefault()} className="cursor-pointer text-red-600 focus:text-red-700">
+                          <DropdownMenuItem onSelect={(e) => e.preventDefault()} className="cursor-pointer text-destructive focus:text-destructive">
                             <Trash2 className="w-4 h-4 mr-2" />
                             Delete Contact
                           </DropdownMenuItem>
@@ -259,7 +235,7 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
                             <AlertDialogCancel>Cancel</AlertDialogCancel>
                             <AlertDialogAction
                               onClick={handleDelete}
-                              className="bg-red-600 hover:bg-red-700 text-white"
+                              className="bg-destructive hover:bg-destructive/90 text-destructive-foreground"
                             >
                               Delete
                             </AlertDialogAction>
@@ -268,81 +244,86 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
                       </AlertDialog>
                     </DropdownMenuContent>
                   </DropdownMenu>
+                  <AccordionTrigger className="hover:no-underline p-2 border-border hover:bg-muted/50 rounded-md transition-colors">
+                    <ChevronDown className="w-4 h-4 text-muted-foreground" />
+                  </AccordionTrigger>
                 </div>
-
-                {/* Desktop accordion trigger */}
-                <AccordionTrigger className="hover:no-underline p-2 ml-2 hidden sm:flex">
-                  <ChevronDown className="w-4 h-4 text-slate-400" />
-                </AccordionTrigger>
               </div>
-              
-              <div className="flex flex-wrap gap-1 mt-2">
-                {contact.services?.slice(0, 3).map((service, index) => (
-                  <Badge key={index} variant="secondary" className="text-xs bg-indigo-50 text-indigo-700 border-indigo-200">
-                    {service}
-                  </Badge>
-                ))}
-                {contact.services && contact.services.length > 3 && (
-                  <Badge variant="secondary" className="text-xs bg-slate-50 text-slate-600">
-                    +{contact.services.length - 3}
-                  </Badge>
+
+              {/* Company & Industry */}
+              <div className="space-y-2 mb-4">
+                <div className="flex items-center gap-2">
+                  <div className="w-1 h-6 bg-primary rounded-full"></div>
+                  <div>
+                    <p className="text-base font-semibold text-foreground">{contact.company}</p>
+                    <p className="text-sm text-muted-foreground">{contact.industry}</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Essential Contact Info */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+                <div className="flex items-center gap-3 p-3 bg-card border border-border rounded-lg">
+                  <Mail className="w-4 h-4 text-primary flex-shrink-0" />
+                  <a 
+                    href={formatEmailLink(contact.email)}
+                    className="text-sm text-primary hover:text-primary/80 hover:underline break-all font-medium"
+                    aria-label={`Email ${contact.name}`}
+                  >
+                    {contact.email}
+                  </a>
+                </div>
+                {contact.phone && (
+                  <div className="flex items-center gap-3 p-3 bg-card border border-border rounded-lg">
+                    <Phone className="w-4 h-4 text-primary flex-shrink-0" />
+                    <a 
+                      href={formatPhoneLink(contact.phone)}
+                      className="text-sm text-primary hover:text-primary/80 hover:underline font-medium"
+                      aria-label={`Call ${contact.name}`}
+                    >
+                      {contact.phone}
+                    </a>
+                  </div>
                 )}
               </div>
 
-              {/* Mobile "View Details" button */}
-              <div className="block sm:hidden mt-3">
-                <AccordionTrigger className="hover:no-underline p-0 w-full text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50 rounded-md transition-colors">
-                  <span className="flex items-center justify-center text-sm font-medium py-2">
-                    View Details
-                    <ChevronDown className="w-4 h-4 ml-2" />
-                  </span>
-                </AccordionTrigger>
-              </div>
+              {/* Services Tags */}
+              {contact.services && contact.services.length > 0 && (
+                <div className="flex flex-wrap gap-2">
+                  {contact.services.slice(0, 4).map((service, index) => (
+                    <Badge key={index} variant="secondary" className="text-xs bg-primary/10 text-primary border-primary/20 font-medium">
+                      {service}
+                    </Badge>
+                  ))}
+                  {contact.services.length > 4 && (
+                    <Badge variant="secondary" className="text-xs bg-muted text-muted-foreground border-border">
+                      +{contact.services.length - 4} more
+                    </Badge>
+                  )}
+                </div>
+              )}
             </CardHeader>
 
             <AccordionContent>
-              <CardContent className="pt-0 px-4 sm:px-6 pb-4">
-                <div className="space-y-4">
-                   {/* Desktop contact info */}
-                   <div className="hidden sm:block space-y-3">
-                     <div className="flex items-center space-x-2">
-                       <Mail className="w-4 h-4 text-slate-400 flex-shrink-0" />
-                       <a 
-                         href={formatEmailLink(contact.email)}
-                         className="text-sm text-primary hover:underline break-all"
-                         aria-label={`Email ${contact.name}`}
-                       >
-                         {contact.email}
-                       </a>
-                     </div>
-                     {contact.phone && (
-                       <div className="flex items-center space-x-2">
-                         <Phone className="w-4 h-4 text-slate-400 flex-shrink-0" />
-                         <a 
-                           href={formatPhoneLink(contact.phone)}
-                           className="text-sm text-primary hover:underline"
-                           aria-label={`Call ${contact.name}`}
-                         >
-                           {contact.phone}
-                         </a>
-                       </div>
-                     )}
-                   </div>
-
+              <CardContent className="pt-4 px-6 pb-6 bg-muted/5 border-t border-border">
+                <div className="space-y-6">
                   {/* Social Media & Websites */}
                   {(contact.linkedin || contact.facebook || contact.whatsapp || (contact.websites && contact.websites.length > 0)) && (
-                    <div className="space-y-3">
-                      <p className="text-sm font-medium text-slate-700">Connect</p>
-                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-2">
+                        <div className="w-1 h-5 bg-primary rounded-full"></div>
+                        <p className="text-sm font-semibold text-foreground">Connect</p>
+                      </div>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
                         {contact.linkedin && (
                           <a
                             href={formatSocialLink('linkedin', contact.linkedin)}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-2 p-2 text-xs bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors"
+                            className="flex items-center gap-3 p-3 bg-card border border-border rounded-lg hover:bg-accent/50 transition-colors group"
                           >
-                            <Linkedin className="w-4 h-4" />
-                            <span className="hidden sm:inline">LinkedIn</span>
+                            <Linkedin className="w-4 h-4 text-blue-600" />
+                            <span className="text-sm font-medium text-foreground group-hover:text-primary">LinkedIn</span>
                           </a>
                         )}
                         {contact.facebook && (
@@ -350,10 +331,10 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
                             href={formatSocialLink('facebook', contact.facebook)}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-2 p-2 text-xs bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-colors"
+                            className="flex items-center gap-3 p-3 bg-card border border-border rounded-lg hover:bg-accent/50 transition-colors group"
                           >
-                            <Facebook className="w-4 h-4" />
-                            <span className="hidden sm:inline">Facebook</span>
+                            <Facebook className="w-4 h-4 text-blue-600" />
+                            <span className="text-sm font-medium text-foreground group-hover:text-primary">Facebook</span>
                           </a>
                         )}
                         {contact.whatsapp && (
@@ -361,10 +342,10 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
                             href={formatSocialLink('whatsapp', contact.whatsapp)}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-2 p-2 text-xs bg-green-50 text-green-700 rounded-lg hover:bg-green-100 transition-colors"
+                            className="flex items-center gap-3 p-3 bg-card border border-border rounded-lg hover:bg-accent/50 transition-colors group"
                           >
-                            <MessageCircle className="w-4 h-4" />
-                            <span className="hidden sm:inline">WhatsApp</span>
+                            <MessageCircle className="w-4 h-4 text-green-600" />
+                            <span className="text-sm font-medium text-foreground group-hover:text-primary">WhatsApp</span>
                           </a>
                         )}
                         {contact.websites && contact.websites.map((website, index) => (
@@ -373,34 +354,55 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
                             href={formatWebsiteLink(website)}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-2 p-2 text-xs bg-slate-50 text-slate-700 rounded-lg hover:bg-slate-100 transition-colors"
+                            className="flex items-center gap-3 p-3 bg-card border border-border rounded-lg hover:bg-accent/50 transition-colors group"
                           >
-                            <Globe className="w-4 h-4" />
-                            <span className="hidden sm:inline truncate">{website.replace(/^https?:\/\//, '')}</span>
+                            <Globe className="w-4 h-4 text-muted-foreground" />
+                            <span className="text-sm font-medium text-foreground group-hover:text-primary truncate">
+                              {website.replace(/^https?:\/\//, '')}
+                            </span>
                           </a>
                         ))}
                       </div>
                     </div>
                   )}
 
+                  {/* All Services */}
+                  {contact.services && contact.services.length > 4 && (
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-2">
+                        <div className="w-1 h-5 bg-primary rounded-full"></div>
+                        <p className="text-sm font-semibold text-foreground">All Services</p>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {contact.services.map((service, index) => (
+                          <Badge key={index} variant="secondary" className="text-xs bg-accent text-accent-foreground border-border">
+                            {service}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Notes */}
                   {contact.notes && (
-                    <div>
-                      <p className="text-sm font-medium text-slate-700 mb-2">Notes</p>
-                      <p className="text-sm text-slate-600 leading-relaxed whitespace-pre-wrap">{contact.notes}</p>
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-2">
+                        <div className="w-1 h-5 bg-primary rounded-full"></div>
+                        <p className="text-sm font-semibold text-foreground">Notes</p>
+                      </div>
+                      <div className="p-4 bg-card border border-border rounded-lg">
+                        <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap">{contact.notes}</p>
+                      </div>
                     </div>
                   )}
                   
-                  {/* Desktop action buttons */}
-                  <div className="hidden sm:grid grid-cols-2 lg:grid-cols-6 gap-2">
-                    <Button size="sm" className="justify-center h-10" onClick={() => setIsShareDialogOpen(true)}>
-                      <UserPlus className="w-4 h-4 mr-2" />
-                      Refer
-                    </Button>
+                  {/* Action Buttons */}
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 pt-4 border-t border-border">
                     <Button 
                       variant="outline" 
                       size="sm" 
-                      className="justify-center h-10"
-                       onClick={handleStartConversation}
+                      className="justify-center h-10 border-border"
+                      onClick={handleStartConversation}
                     >
                       <MessageSquare className="w-4 h-4 mr-2" />
                       Message
@@ -408,7 +410,7 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
                     <Button 
                       variant="outline" 
                       size="sm" 
-                      className="justify-center h-10"
+                      className="justify-center h-10 border-border"
                       onClick={() => setIsEditingContact(true)}
                     >
                       <Edit className="w-4 h-4 mr-2" />
@@ -417,7 +419,7 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
                     <Button 
                       variant="outline" 
                       size="sm" 
-                      className="justify-center h-10"
+                      className="justify-center h-10 border-border"
                       onClick={() => setIsAddingNote(true)}
                     >
                       <Plus className="w-4 h-4 mr-2" />
@@ -426,15 +428,15 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
                     <Button 
                       variant="outline" 
                       size="sm" 
-                      className="justify-center h-10"
+                      className="justify-center h-10 border-border"
                       onClick={handleExportVCF}
                     >
                       <Download className="w-4 h-4 mr-2" />
-                      Save to Phone
+                      Save
                     </Button>
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
-                        <Button variant="outline" size="sm" className="justify-center h-10 text-red-600 hover:text-red-700 hover:bg-red-50">
+                        <Button variant="outline" size="sm" className="justify-center h-10 text-destructive hover:text-destructive border-border hover:bg-destructive/10">
                           <Trash2 className="w-4 h-4 mr-2" />
                           Delete
                         </Button>
@@ -450,7 +452,7 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
                           <AlertDialogCancel>Cancel</AlertDialogCancel>
                           <AlertDialogAction
                             onClick={handleDelete}
-                            className="bg-red-600 hover:bg-red-700 text-white"
+                            className="bg-destructive hover:bg-destructive/90 text-destructive-foreground"
                           >
                             Delete
                           </AlertDialogAction>
