@@ -192,7 +192,7 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
         <Accordion type="single" collapsible>
           <AccordionItem value={contact.id} className="border-none">
             {/* Business Card Layout */}
-            <div className="w-full max-w-4xl mx-auto aspect-[7/4] min-h-[300px] sm:min-h-[340px] rounded-2xl bg-gradient-to-br from-background to-muted/10 relative overflow-hidden p-5 sm:p-6 md:p-8 ring-1 ring-border shadow-sm animate-enter">
+            <div className="w-full max-w-4xl md:max-w-5xl mx-auto aspect-[7/4] min-h-[300px] sm:min-h-[340px] rounded-2xl bg-gradient-to-br from-card to-muted/5 relative overflow-hidden p-6 sm:p-7 md:p-8 ring-1 ring-border/80 shadow-md hover:shadow-lg transition-shadow duration-200 animate-enter">
               
               {/* Top-left brand mark */}
               <div className="absolute top-3 left-3 sm:top-4 sm:left-4" aria-label="Brand Mark">
