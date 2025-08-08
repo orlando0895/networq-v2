@@ -427,7 +427,8 @@ export function ChatWindow({ conversationId, currentUserId, onBack, onMessageSen
       </ScrollArea>
 
       {/* Enhanced mobile-optimized message input */}
-      <div className="p-4 border-t border-border flex-shrink-0 bg-background/95 backdrop-blur-sm">
+      <div className="p-4 pb-safe-bottom border-t border-border flex-shrink-0 bg-background/95 backdrop-blur-sm"
+           style={{ paddingBottom: `calc(1rem + env(safe-area-inset-bottom))` }}>
         <div className="flex items-center space-x-3">
           <Button
             variant="outline"
