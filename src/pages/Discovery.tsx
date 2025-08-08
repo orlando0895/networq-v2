@@ -89,12 +89,13 @@ const Discovery = () => {
 
     try {
       setLoading(true);
-      const radius = parseInt(radiusFilter);
+      const radiusMiles = parseInt(radiusFilter);
+      const radiusKm = Math.round(radiusMiles * 1.60934);
       
       const { data, error } = await supabase.rpc('get_users_for_discovery', {
         current_user_lat: userLocation.lat,
         current_user_lon: userLocation.lng,
-        radius_km: radius,
+        radius_km: radiusKm,
         limit_count: 20,
         exclude_viewed: true
       });
@@ -183,9 +184,10 @@ const Discovery = () => {
     fetchDiscoveryUsers();
   }, [userLocation, radiusFilter]);
 
-  const formatDistance = (distance?: number) => {
-    if (!distance) return '';
-    return distance < 1 ? `${(distance * 1000).toFixed(0)}m away` : `${distance.toFixed(1)}km away`;
+  const formatDistance = (distanceKm?: number) => {
+    if (distanceKm === undefined || distanceKm === null) return '';
+    const miles = distanceKm * 0.621371;
+    return miles < 1 ? `${(miles * 5280).toFixed(0)}ft away` : `${miles.toFixed(1)}mi away`;
   };
 
   const UserCard = ({ user: discoveryUser }: { user: DiscoveryUser }) => (
@@ -300,11 +302,11 @@ const Discovery = () => {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="5">5km</SelectItem>
-                  <SelectItem value="10">10km</SelectItem>
-                  <SelectItem value="25">25km</SelectItem>
-                  <SelectItem value="50">50km</SelectItem>
-                  <SelectItem value="100">100km</SelectItem>
+                  <SelectItem value="5">5mi</SelectItem>
+                  <SelectItem value="10">10mi</SelectItem>
+                  <SelectItem value="25">25mi</SelectItem>
+                  <SelectItem value="50">50mi</SelectItem>
+                  <SelectItem value="100">100mi</SelectItem>
                 </SelectContent>
               </Select>
               <Dialog open={isSettingsOpen} onOpenChange={setIsSettingsOpen}>
