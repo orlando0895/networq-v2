@@ -275,10 +275,10 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
                       clickable
                     />
                   )}
-                  <AccordionTrigger className="flex items-center hover:no-underline p-0 w-full">
+                  <AccordionTrigger className="flex items-center hover:no-underline p-0 w-full [&>svg]:hidden">
                     <ContactRow
                       icon={<ChevronDown className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />}
-                      label="[OPEN MORE DETAILS]"
+                      label="more details"
                       action
                     />
                   </AccordionTrigger>
