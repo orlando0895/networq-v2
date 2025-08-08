@@ -215,11 +215,11 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
               </div>
 
               {/* Right blue section with profile */}
-              <div className="absolute right-0 top-0 w-[45%] h-[60%] bg-primary rounded-bl-[40px] sm:rounded-bl-[80px] z-0" />
+              
 
               {/* Profile picture area */}
-              <div className="absolute right-[2%] top-[5%] w-[38%] h-[50%] flex items-center justify-center">
-                <div className="w-full h-full rounded-full bg-muted flex items-center justify-center relative">
+              <div className="absolute right-[3%] top-[6%] w-[28%] h-[38%] flex items-center justify-center z-10">
+                <div className="w-full h-full rounded-full bg-muted ring-1 ring-border shadow-md flex items-center justify-center relative overflow-hidden">
                   {contact.profile_picture_url ? (
                     <img 
                       src={contact.profile_picture_url} 
