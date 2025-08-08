@@ -192,7 +192,7 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
         <Accordion type="single" collapsible>
           <AccordionItem value={contact.id} className="border-none group">
             {/* Business Card Layout */}
-            <div className="w-full max-w-4xl md:max-w-5xl mx-auto aspect-[7/4] min-h-[300px] sm:min-h-[340px] rounded-2xl bg-gradient-to-br from-card to-muted/5 relative overflow-hidden p-6 sm:p-7 md:p-8 ring-1 ring-border/80 shadow-md hover:shadow-lg transition-shadow duration-200 animate-enter">
+            <div className="w-full max-w-4xl mx-auto aspect-[7/4] min-h-[300px] sm:min-h-[340px] rounded-2xl bg-gradient-to-br from-card to-muted/5 relative overflow-hidden p-6 sm:p-7 md:p-8 ring-1 ring-border/80 shadow-md hover:shadow-lg transition-shadow duration-200 animate-enter">
               
               {/* Header */}
               <div className="flex items-center justify-between">
@@ -225,9 +225,9 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
               </div>
 
               {/* Content */}
-              <div className="mt-4 grid grid-cols-10 gap-4 sm:gap-6 items-start">
+              <div className="mt-4 grid grid-cols-1 md:grid-cols-12 gap-4 sm:gap-6 items-start">
                 {/* Left column (6/10) */}
-                <div className="col-span-6 min-w-0 space-y-3 sm:space-y-4 text-left">
+                <div className="md:col-span-8 min-w-0 space-y-3 sm:space-y-4 text-left">
                   {contact.phone && (
                     <ContactRow
                       icon={<Phone className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />}
@@ -278,7 +278,7 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
                 </div>
 
                 {/* Right column (4/10) */}
-                <div className="col-span-4 flex flex-col items-center text-center gap-2 sm:gap-3">
+                <div className="md:col-span-4 flex flex-col items-center text-center gap-2 sm:gap-3">
                   {/* Profile photo */}
                   <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden">
                     {contact.profile_picture_url ? (
