@@ -192,7 +192,7 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
         <Accordion type="single" collapsible>
           <AccordionItem value={contact.id} className="border-none">
             {/* Business Card Layout */}
-            <div className="w-full max-w-4xl mx-auto aspect-[7/4] bg-gradient-to-br from-background to-primary/5 relative overflow-hidden p-4 sm:p-6">
+            <div className="w-full max-w-4xl mx-auto aspect-[7/4] rounded-2xl bg-gradient-to-br from-background to-muted/10 relative overflow-hidden p-4 sm:p-6 ring-1 ring-border shadow-sm animate-fade-in">
               
               {/* Top-left brand mark */}
               <div className="absolute top-3 left-3 sm:top-4 sm:left-4" aria-label="Brand Mark">
@@ -232,17 +232,12 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
                       alt={`${contact.name} profile`}
                       className="w-full h-full rounded-full object-cover"
                     />
-                  ) : (
-                    <>
-                      <div className="w-[60%] h-[60%] rounded-full bg-background flex items-center justify-center">
-                        <div className="text-foreground text-lg font-bold">
-                          {contact.name.split(' ').map(n => n[0]).join('').toUpperCase()}
-                        </div>
-                      </div>
-                      <div className="absolute bottom-[20%] left-1/2 -translate-x-1/2 text-xs font-bold text-foreground tracking-tight">
-                        (PROFILE PHOTO)
-                      </div>
-                    </>
+) : (
+                    <img 
+                      src="/placeholder.svg" 
+                      alt="Placeholder profile"
+                      className="w-full h-full rounded-full object-cover opacity-90"
+                    />
                   )}
                 </div>
               </div>
