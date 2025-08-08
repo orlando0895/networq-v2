@@ -224,13 +224,13 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
                     <img 
                       src={contact.profile_picture_url} 
                       alt={`${contact.name} profile`}
-                      className="w-full h-full rounded-full object-cover"
+                      className="w-11/12 h-11/12 rounded-full object-cover ring-2 ring-border shadow-sm"
                     />
 ) : (
                     <img 
                       src="/placeholder.svg" 
                       alt="Placeholder profile"
-                      className="w-full h-full rounded-full object-cover opacity-90"
+                      className="w-11/12 h-11/12 rounded-full object-cover opacity-90 ring-2 ring-border shadow-sm"
                     />
                   )}
                 </div>
