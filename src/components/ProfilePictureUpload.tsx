@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Camera, Upload, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
@@ -18,6 +18,8 @@ export const ProfilePictureUpload: React.FC<ProfilePictureUploadProps> = ({
 }) => {
   const [uploading, setUploading] = useState(false);
   const { toast } = useToast();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const openFilePicker = () => fileInputRef.current?.click();
 
   const uploadAvatar = async (file: File) => {
     try {
@@ -106,7 +108,19 @@ export const ProfilePictureUpload: React.FC<ProfilePictureUploadProps> = ({
           </AvatarFallback>
         </Avatar>
         
-        <div className="absolute inset-0 bg-black/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+        <div
+          className="absolute inset-0 bg-black/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer"
+          onClick={openFilePicker}
+          role="button"
+          aria-label="Change image"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              openFilePicker();
+            }
+          }}
+        >
           <Camera className="h-6 w-6 text-white" />
         </div>
       </div>
@@ -116,7 +130,7 @@ export const ProfilePictureUpload: React.FC<ProfilePictureUploadProps> = ({
           variant="outline"
           size="sm"
           disabled={uploading}
-          onClick={() => document.getElementById('avatar-upload')?.click()}
+          onClick={openFilePicker}
         >
           <Upload className="h-4 w-4 mr-2" />
           {uploading ? 'Uploading...' : 'Upload'}
@@ -135,7 +149,7 @@ export const ProfilePictureUpload: React.FC<ProfilePictureUploadProps> = ({
       </div>
 
       <input
-        id="avatar-upload"
+        ref={fileInputRef}
         type="file"
         accept="image/*"
         onChange={handleFileSelect}
