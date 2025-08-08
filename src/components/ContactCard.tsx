@@ -101,8 +101,8 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
         return;
       }
 
-      // Navigate to messages page
-      navigate('/messages');
+      // Navigate to messages page with the new conversation selected
+      navigate(`/messages?conversationId=${conversationId}`, { state: { conversationId } });
       
       toast({
         title: "Conversation started",

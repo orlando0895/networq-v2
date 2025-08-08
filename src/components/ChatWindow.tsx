@@ -47,6 +47,7 @@ export function ChatWindow({ conversationId, currentUserId, onBack, onMessageSen
   const [isGroupChat, setIsGroupChat] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -182,6 +183,11 @@ export function ChatWindow({ conversationId, currentUserId, onBack, onMessageSen
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  // Auto focus the input when opening a conversation
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, [conversationId]);
 
   const sendMessage = async () => {
     if (!newMessage.trim() || sending) return;
@@ -434,6 +440,7 @@ export function ChatWindow({ conversationId, currentUserId, onBack, onMessageSen
           
           <div className="flex-1 relative">
             <Input
+              ref={inputRef}
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
               onKeyPress={handleKeyPress}

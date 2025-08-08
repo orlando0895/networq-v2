@@ -9,6 +9,7 @@ import { Plus, MessageSquare } from 'lucide-react';
 import { useContacts } from '@/hooks/useContacts';
 import { useToast } from '@/hooks/use-toast';
 import { MobileLayout, PageHeader } from '@/components/MobileLayout';
+import { useLocation, useSearchParams } from 'react-router-dom';
 
 interface Conversation {
   id: string;
@@ -42,6 +43,19 @@ const Messages = ({ targetConversationId }: MessagesProps) => {
   const [isNewMessageOpen, setIsNewMessageOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const channelRef = useRef<any>(null);
+
+  const location = useLocation();
+  const [searchParams] = useSearchParams();
+
+  // If navigated with a target conversation (via state or query), open it
+  useEffect(() => {
+    const stateId = (location as any)?.state?.conversationId as string | undefined;
+    const queryId = searchParams.get('conversationId') || undefined;
+    const targetId = stateId || queryId || targetConversationId || null;
+    if (targetId) {
+      setSelectedConversationId(targetId);
+    }
+  }, [location, searchParams, targetConversationId]);
 
   // Fetch conversations function
   const fetchConversations = async () => {
