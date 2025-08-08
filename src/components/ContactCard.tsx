@@ -1,3 +1,4 @@
+import React from 'react';
 import ContactCardPixelPerfect from './ContactCardPixelPerfect';
 import type { Database } from '@/integrations/supabase/types';
 
