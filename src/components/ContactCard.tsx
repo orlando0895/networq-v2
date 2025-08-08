@@ -450,15 +450,6 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
                       <Plus className="w-4 h-4 mr-2" />
                       Add Note
                     </Button>
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      className="justify-center h-10 border-border"
-                      onClick={handleExportVCF}
-                    >
-                      <Download className="w-4 h-4 mr-2" />
-                      Save
-                    </Button>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button variant="outline" size="sm" className="justify-center h-10 border-border">
