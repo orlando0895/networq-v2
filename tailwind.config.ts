@@ -18,7 +18,18 @@ export default {
 			}
 		},
 		extend: {
+			fontFamily: {
+				'montserrat': ['Montserrat', 'sans-serif'],
+			},
 			colors: {
+				// Pixel-perfect color palette from specification
+				'primary-blue': '#0685D9',
+				'navy-ink': '#151E37',
+				'medium-gray': '#B3B3B3',
+				'very-light-gray': '#F2F3F3',
+				'steel-tint': '#D4DBE1',
+				'accent-sky-blue': '#62ABCF',
+				'accent-sky-blue-alt': '#0185DE',
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
 				ring: 'hsl(var(--ring))',
