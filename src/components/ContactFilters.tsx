@@ -43,14 +43,6 @@ const ContactFilters = ({
         >
           All ({contacts.length})
         </Button>
-        <Button
-          variant={filterTier === "Acquaintance" ? "default" : "outline"}
-          size="lg"
-          onClick={() => onFilterChange("Acquaintance")}
-          className="flex-1 sm:flex-none transition-all duration-200 h-12 text-base"
-        >
-          Acquaintances ({contacts.filter(c => c.tier === "Acquaintance").length})
-        </Button>
       </div>
     </div>
   );
