@@ -192,7 +192,7 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
         <Accordion type="single" collapsible>
           <AccordionItem value={contact.id} className="border-none">
             {/* Business Card Layout */}
-            <div className="w-full max-w-4xl mx-auto aspect-[7/4] rounded-2xl bg-gradient-to-br from-background to-muted/10 relative overflow-hidden p-4 sm:p-6 ring-1 ring-border shadow-sm animate-fade-in">
+            <div className="w-full max-w-4xl mx-auto aspect-[7/4] min-h-[300px] sm:min-h-[340px] rounded-2xl bg-gradient-to-br from-background to-muted/10 relative overflow-hidden p-5 sm:p-6 md:p-8 ring-1 ring-border shadow-sm animate-enter">
               
               {/* Top-left brand mark */}
               <div className="absolute top-3 left-3 sm:top-4 sm:left-4" aria-label="Brand Mark">
@@ -215,7 +215,7 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
               </div>
 
               {/* Right blue section with profile */}
-              <div className="absolute right-0 top-0 w-[45%] h-[60%] bg-primary rounded-bl-[40px] sm:rounded-bl-[80px]" />
+              <div className="absolute right-0 top-0 w-[45%] h-[60%] bg-primary rounded-bl-[40px] sm:rounded-bl-[80px] z-0" />
 
               {/* Profile picture area */}
               <div className="absolute right-[2%] top-[5%] w-[38%] h-[50%] flex items-center justify-center">
