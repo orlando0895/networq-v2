@@ -186,108 +186,71 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
 
   return (
     <>
-      {/* Business Card Layout */}
-      <Card className="bg-card border border-border hover:shadow-lg transition-all duration-300 group overflow-hidden">
-        <div className="relative">
-          {/* Logo Placeholder */}
-          <div className="absolute top-4 left-4 w-8 h-8 bg-muted/40 border border-border rounded flex items-center justify-center">
-            <div className="text-xs text-muted-foreground font-mono">LOGO</div>
-          </div>
-
-          {/* Share Button */}
-          <Button
-            size="sm"
-            variant="ghost"
-            className="absolute top-4 right-4 h-8 w-8 p-0 hover:bg-muted/50"
-            onClick={() => setIsShareDialogOpen(true)}
-          >
-            <Share2 className="w-4 h-4" />
-          </Button>
-
-          {/* Main Content */}
-          <div className="pt-16 p-6">
-            {/* Header Section */}
-            <div className="flex items-start gap-4 mb-6">
-              <Avatar className="h-16 w-16 border-2 border-border shadow-sm">
-                <AvatarImage src={contact.profile_picture_url || undefined} />
-                <AvatarFallback className="text-lg font-semibold bg-primary/10 text-primary">
-                  {contact.name.split(' ').map(n => n[0]).join('').toUpperCase()}
-                </AvatarFallback>
-              </Avatar>
-              <div className="flex-1 min-w-0">
-                <h3 className="text-xl font-bold text-foreground truncate">
-                  {contact.name}
-                </h3>
-                {contact.company && (
-                  <div className="flex items-center gap-2 mt-1">
-                    <Building2 className="w-4 h-4 text-muted-foreground" />
-                    <span className="text-sm text-muted-foreground truncate">{contact.company}</span>
-                  </div>
-                )}
-                {contact.industry && (
-                  <div className="flex items-center gap-2 mt-1">
-                    <Briefcase className="w-4 h-4 text-muted-foreground" />
-                    <span className="text-sm text-muted-foreground truncate">{contact.industry}</span>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Contact Information */}
-            <div className="space-y-3 mb-6">
-              <div className="flex items-center gap-3">
-                <Mail className="w-4 h-4 text-primary flex-shrink-0" />
-                <a 
-                  href={formatEmailLink(contact.email)}
-                  className="text-sm text-primary hover:text-primary/80 hover:underline truncate"
-                  aria-label={`Email ${contact.name}`}
-                >
-                  {contact.email}
-                </a>
-              </div>
-              {contact.phone && (
-                <div className="flex items-center gap-3">
-                  <Phone className="w-4 h-4 text-primary flex-shrink-0" />
-                  <a 
-                    href={formatPhoneLink(contact.phone)}
-                    className="text-sm text-primary hover:text-primary/80 hover:underline"
-                    aria-label={`Call ${contact.name}`}
-                  >
-                    {contact.phone}
-                  </a>
-                </div>
-              )}
-            </div>
-
-            {/* Action Buttons */}
-            <div className="flex gap-2">
-              <Button 
-                size="sm" 
-                className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground"
-                onClick={handleStartConversation}
+      {/* Business Card Layout - Exact Match */}
+      <Card className="bg-white overflow-hidden shadow-lg rounded-xl max-w-md mx-auto">
+        <div className="flex h-64">
+          {/* Blue Sidebar */}
+          <div className="w-20 bg-blue-500 flex flex-col items-center py-4 space-y-4">
+            {/* Phone */}
+            {contact.phone && (
+              <a 
+                href={formatPhoneLink(contact.phone)}
+                className="text-white hover:text-white/80 transition-colors"
+                aria-label={`Call ${contact.name}`}
               >
-                <MessageSquare className="w-4 h-4 mr-2" />
-                Message
-              </Button>
-              <Button 
-                size="sm" 
-                variant="outline"
-                className="px-3"
-                onClick={() => setIsEditingContact(true)}
-                disabled={contact.added_via !== 'manual'}
+                <Phone className="w-5 h-5" />
+              </a>
+            )}
+            
+            {/* Email */}
+            <a 
+              href={formatEmailLink(contact.email)}
+              className="text-white hover:text-white/80 transition-colors"
+              aria-label={`Email ${contact.name}`}
+            >
+              <Mail className="w-5 h-5" />
+            </a>
+            
+            {/* Industry */}
+            {contact.industry && (
+              <div className="text-white">
+                <Building2 className="w-5 h-5" />
+              </div>
+            )}
+            
+            {/* Website */}
+            {contact.websites && contact.websites.length > 0 && (
+              <a
+                href={formatWebsiteLink(contact.websites[0])}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-white hover:text-white/80 transition-colors"
               >
-                <Edit className="w-4 h-4" />
-              </Button>
-            </div>
-
-            {/* More Details Trigger */}
-            <Accordion type="single" collapsible className="mt-4">
-              <AccordionItem value={contact.id} className="border-none">
-                <AccordionTrigger className="py-2 hover:no-underline text-sm text-muted-foreground">
-                  More details
+                <Globe className="w-5 h-5" />
+              </a>
+            )}
+            
+            {/* Message */}
+            <button
+              onClick={handleStartConversation}
+              className="text-white hover:text-white/80 transition-colors"
+              aria-label={`Message ${contact.name}`}
+            >
+              <MessageSquare className="w-5 h-5" />
+            </button>
+            
+            {/* More Details */}
+            <Accordion type="single" collapsible className="w-full flex justify-center">
+              <AccordionItem value={contact.id} className="border-none w-full">
+                <AccordionTrigger className="p-0 hover:no-underline text-white justify-center">
+                  <div className="flex flex-col items-center">
+                    <div className="w-4 h-0.5 bg-white mb-1"></div>
+                    <div className="w-4 h-0.5 bg-white mb-1"></div>
+                    <div className="w-4 h-0.5 bg-white"></div>
+                  </div>
                 </AccordionTrigger>
                 <AccordionContent>
-                  <div className="pt-4 space-y-6">
+                  <div className="absolute top-0 left-20 right-0 bg-white p-4 shadow-lg z-10 rounded-r-xl space-y-4">
                     {/* Added Via Badge */}
                     <div className="flex items-center justify-between">
                       <Badge 
@@ -300,11 +263,11 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
 
                     {/* Services */}
                     {contact.services && contact.services.length > 0 && (
-                      <div className="space-y-3">
-                        <p className="text-sm font-semibold text-foreground">Services</p>
+                      <div className="space-y-2">
+                        <p className="text-sm font-semibold text-gray-900">Services</p>
                         <div className="flex flex-wrap gap-2">
                           {contact.services.map((service, index) => (
-                            <Badge key={index} variant="secondary" className="text-xs bg-primary/10 text-primary border-primary/20">
+                            <Badge key={index} variant="secondary" className="text-xs bg-blue-100 text-blue-800">
                               {service}
                             </Badge>
                           ))}
@@ -312,17 +275,17 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
                       </div>
                     )}
 
-                    {/* Social Media & Websites */}
-                    {(contact.linkedin || contact.facebook || contact.whatsapp || (contact.websites && contact.websites.length > 0)) && (
-                      <div className="space-y-3">
-                        <p className="text-sm font-semibold text-foreground">Social & Web</p>
+                    {/* Social Media & Other Websites */}
+                    {(contact.linkedin || contact.facebook || contact.whatsapp || (contact.websites && contact.websites.length > 1)) && (
+                      <div className="space-y-2">
+                        <p className="text-sm font-semibold text-gray-900">Social & Web</p>
                         <div className="grid grid-cols-2 gap-2">
                           {contact.linkedin && (
                             <a
                               href={formatSocialLink('linkedin', contact.linkedin)}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="flex items-center gap-2 p-2 bg-muted/30 border border-border rounded-lg hover:bg-accent/50 transition-colors"
+                              className="flex items-center gap-2 p-2 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
                             >
                               <Linkedin className="w-4 h-4 text-blue-600" />
                               <span className="text-sm">LinkedIn</span>
@@ -333,7 +296,7 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
                               href={formatSocialLink('facebook', contact.facebook)}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="flex items-center gap-2 p-2 bg-muted/30 border border-border rounded-lg hover:bg-accent/50 transition-colors"
+                              className="flex items-center gap-2 p-2 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
                             >
                               <Facebook className="w-4 h-4 text-blue-600" />
                               <span className="text-sm">Facebook</span>
@@ -344,21 +307,21 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
                               href={formatSocialLink('whatsapp', contact.whatsapp)}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="flex items-center gap-2 p-2 bg-muted/30 border border-border rounded-lg hover:bg-accent/50 transition-colors"
+                              className="flex items-center gap-2 p-2 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
                             >
                               <MessageCircle className="w-4 h-4 text-green-600" />
                               <span className="text-sm">WhatsApp</span>
                             </a>
                           )}
-                          {contact.websites && contact.websites.map((website, index) => (
+                          {contact.websites && contact.websites.slice(1).map((website, index) => (
                             <a
                               key={index}
                               href={formatWebsiteLink(website)}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="flex items-center gap-2 p-2 bg-muted/30 border border-border rounded-lg hover:bg-accent/50 transition-colors"
+                              className="flex items-center gap-2 p-2 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
                             >
-                              <Globe className="w-4 h-4 text-muted-foreground" />
+                              <Globe className="w-4 h-4 text-gray-600" />
                               <span className="text-sm truncate">Website</span>
                             </a>
                           ))}
@@ -368,16 +331,16 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
 
                     {/* Notes */}
                     {contact.notes && (
-                      <div className="space-y-3">
-                        <p className="text-sm font-semibold text-foreground">Notes</p>
-                        <div className="p-3 bg-muted/30 border border-border rounded-lg">
-                          <p className="text-sm text-foreground">{contact.notes}</p>
+                      <div className="space-y-2">
+                        <p className="text-sm font-semibold text-gray-900">Notes</p>
+                        <div className="p-3 bg-gray-50 rounded-lg">
+                          <p className="text-sm text-gray-700">{contact.notes}</p>
                         </div>
                       </div>
                     )}
 
                     {/* Additional Actions */}
-                    <div className="flex gap-2 pt-4 border-t border-border">
+                    <div className="flex gap-2 pt-4 border-t">
                       <Button 
                         size="sm" 
                         variant="outline"
@@ -387,18 +350,19 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
                         <Plus className="w-4 h-4 mr-2" />
                         Add Note
                       </Button>
-                      <Button 
-                        size="sm" 
-                        variant="outline"
-                        className="flex-1"
-                        onClick={handleExportVCF}
-                      >
-                        <Download className="w-4 h-4 mr-2" />
-                        Export
-                      </Button>
+                      {contact.added_via === 'manual' && (
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          className="px-3"
+                          onClick={() => setIsEditingContact(true)}
+                        >
+                          <Edit className="w-4 h-4" />
+                        </Button>
+                      )}
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
-                          <Button size="sm" variant="outline" className="px-3 text-destructive hover:text-destructive border-destructive/20 hover:bg-destructive/10">
+                          <Button size="sm" variant="outline" className="px-3 text-red-600 hover:text-red-700">
                             <Trash2 className="w-4 h-4" />
                           </Button>
                         </AlertDialogTrigger>
@@ -413,7 +377,7 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
                             <AlertDialogCancel>Cancel</AlertDialogCancel>
                             <AlertDialogAction
                               onClick={handleDelete}
-                              className="bg-destructive hover:bg-destructive/90 text-destructive-foreground"
+                              className="bg-red-600 hover:bg-red-700 text-white"
                             >
                               Delete
                             </AlertDialogAction>
@@ -425,6 +389,58 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
                 </AccordionContent>
               </AccordionItem>
             </Accordion>
+          </div>
+          
+          {/* White Main Section */}
+          <div className="flex-1 p-4 relative">
+            {/* Top Right Actions */}
+            <div className="absolute top-3 right-3 flex gap-2">
+              <Button
+                size="sm"
+                variant="ghost"
+                className="h-8 w-8 p-0 hover:bg-blue-100 text-blue-600"
+                onClick={() => setIsShareDialogOpen(true)}
+              >
+                <Share2 className="w-4 h-4" />
+              </Button>
+              <Button
+                size="sm"
+                variant="ghost"
+                className="h-8 w-8 p-0 hover:bg-blue-100 text-blue-600"
+                onClick={handleExportVCF}
+              >
+                <Download className="w-4 h-4" />
+              </Button>
+            </div>
+
+            {/* Profile Photo */}
+            <div className="absolute top-4 right-4 mt-8">
+              <Avatar className="h-20 w-20 border-4 border-blue-500">
+                <AvatarImage src={contact.profile_picture_url || undefined} />
+                <AvatarFallback className="text-lg font-semibold bg-gray-100 text-gray-800">
+                  {contact.name.split(' ').map(n => n[0]).join('').toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+            </div>
+
+            {/* Contact Name and Company */}
+            <div className="mt-16 pr-24">
+              <h2 className="text-2xl font-bold text-gray-900 mb-1">
+                {contact.name}
+              </h2>
+              {contact.company && (
+                <p className="text-lg text-gray-600">
+                  {contact.company}
+                </p>
+              )}
+            </div>
+
+            {/* Logo Placeholder */}
+            <div className="absolute bottom-4 right-4">
+              <div className="w-12 h-12 bg-gray-100 border border-gray-300 rounded flex items-center justify-center">
+                <span className="text-xs text-gray-500 font-mono">LOGO</span>
+              </div>
+            </div>
           </div>
         </div>
       </Card>
