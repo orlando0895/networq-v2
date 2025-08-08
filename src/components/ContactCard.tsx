@@ -262,7 +262,7 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
                   )}
                   <ContactRow
                     icon={<MessageSquare className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />}
-                    label="[MESSAGE]"
+                    label="SEND MESSAGE"
                     onClick={handleStartConversation}
                     action
                   />
