@@ -287,7 +287,7 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
                 {/* Right column (4/10) */}
                 <div className="col-span-4 flex flex-col items-center text-center gap-2 sm:gap-3">
                   {/* Profile photo */}
-                  <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden">
+                  <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden">
                     {contact.profile_picture_url ? (
                       <img
                         src={contact.profile_picture_url}
