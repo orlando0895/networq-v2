@@ -1,7 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, Star } from "lucide-react";
+import { Search } from "lucide-react";
 import type { Database } from '@/integrations/supabase/types';
 
 type Contact = Database['public']['Tables']['contacts']['Row'];
@@ -42,15 +42,6 @@ const ContactFilters = ({
           className="flex-1 sm:flex-none transition-all duration-200 h-12 text-base"
         >
           All ({contacts.length})
-        </Button>
-        <Button
-          variant={filterTier === "A-player" ? "default" : "outline"}
-          size="lg"
-          onClick={() => onFilterChange("A-player")}
-          className="flex-1 sm:flex-none transition-all duration-200 h-12 text-base"
-        >
-          <Star className="w-4 h-4 mr-2 fill-current" />
-          A-Players ({contacts.filter(c => c.tier === "A-player").length})
         </Button>
         <Button
           variant={filterTier === "Acquaintance" ? "default" : "outline"}
