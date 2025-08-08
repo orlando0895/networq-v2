@@ -243,14 +243,17 @@ const Index = () => {
 
         {/* Contact Cards */}
         <div className="space-y-3">
-          {filteredContacts.map(contact => (
-            <ContactCard 
-              key={contact.id} 
-              contact={contact} 
-              onUpdateContact={updateContact} 
-              onDeleteContact={deleteContact}
-            />
-          ))}
+          {filteredContacts.map((contact, index) => {
+            console.log('🚀 Rendering ContactCard for:', contact.name, 'at index:', index);
+            return (
+              <ContactCard 
+                key={`${contact.id}-${Date.now()}-${index}`} 
+                contact={contact} 
+                onUpdateContact={updateContact} 
+                onDeleteContact={deleteContact}
+              />
+            );
+          })}
         </div>
 
         {/* Empty State */}

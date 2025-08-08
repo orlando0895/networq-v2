@@ -210,10 +210,19 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
     </svg>
   );
 
+  // Debug: Log component rendering
+  console.log('🎯 ContactCard rendering with business card layout for:', contact.name);
+  console.log('🔧 Contact data:', { 
+    id: contact.id, 
+    name: contact.name, 
+    company: contact.company,
+    added_via: contact.added_via 
+  });
+
   return (
     <>
       {/* Business Card Layout - Exact Match */}
-      <Card className="bg-white overflow-hidden shadow-lg rounded-xl max-w-md mx-auto relative">
+      <Card className="bg-white overflow-hidden shadow-lg rounded-xl max-w-md mx-auto relative" data-testid="business-card-layout">
         {/* Networq Logo - Top Left */}
         <div className="absolute top-3 left-3 z-10">
           <NetworkqLogo className="w-6 h-6 text-blue-600" />
