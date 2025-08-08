@@ -184,10 +184,41 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
     }
   };
 
+  // Generate company logo initials or placeholder
+  const getCompanyLogo = (company?: string) => {
+    if (!company) return 'LOGO';
+    const words = company.split(' ').filter(word => word.length > 0);
+    const initials = words.slice(0, 2).map(word => word[0].toUpperCase()).join('');
+    return initials || 'LOGO';
+  };
+
+  // Networq logo as SVG (simple connected dots design)
+  const NetworkqLogo = ({ className }: { className?: string }) => (
+    <svg 
+      viewBox="0 0 24 24" 
+      className={className}
+      fill="currentColor"
+    >
+      <circle cx="6" cy="6" r="2"/>
+      <circle cx="18" cy="6" r="2"/>
+      <circle cx="6" cy="18" r="2"/>
+      <circle cx="18" cy="18" r="2"/>
+      <line x1="8" y1="6" x2="16" y2="6" stroke="currentColor" strokeWidth="1"/>
+      <line x1="6" y1="8" x2="6" y2="16" stroke="currentColor" strokeWidth="1"/>
+      <line x1="18" y1="8" x2="18" y2="16" stroke="currentColor" strokeWidth="1"/>
+      <line x1="8" y1="18" x2="16" y2="18" stroke="currentColor" strokeWidth="1"/>
+    </svg>
+  );
+
   return (
     <>
       {/* Business Card Layout - Exact Match */}
-      <Card className="bg-white overflow-hidden shadow-lg rounded-xl max-w-md mx-auto">
+      <Card className="bg-white overflow-hidden shadow-lg rounded-xl max-w-md mx-auto relative">
+        {/* Networq Logo - Top Left */}
+        <div className="absolute top-3 left-3 z-10">
+          <NetworkqLogo className="w-6 h-6 text-blue-600" />
+        </div>
+
         <div className="flex h-64">
           {/* Blue Sidebar */}
           <div className="w-20 bg-blue-500 flex flex-col items-center py-4 space-y-4">
@@ -435,11 +466,18 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
               )}
             </div>
 
-            {/* Logo Placeholder */}
+            {/* Company Logo */}
             <div className="absolute bottom-4 right-4">
               <div className="w-12 h-12 bg-gray-100 border border-gray-300 rounded flex items-center justify-center">
-                <span className="text-xs text-gray-500 font-mono">LOGO</span>
+                <span className="text-xs text-gray-600 font-semibold">
+                  {getCompanyLogo(contact.company)}
+                </span>
               </div>
+            </div>
+
+            {/* Networq Logo - Bottom Right */}
+            <div className="absolute bottom-2 right-16">
+              <NetworkqLogo className="w-4 h-4 text-gray-400 opacity-60" />
             </div>
           </div>
         </div>
