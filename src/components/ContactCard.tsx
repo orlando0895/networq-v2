@@ -226,8 +226,47 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
 
               {/* Content */}
               <div className="mt-4 grid grid-cols-1 md:grid-cols-12 gap-4 sm:gap-6 items-start">
+                {/* Right column (4/10) */}
+                <div className="md:order-2 md:col-span-4 flex flex-col items-center text-center gap-2 sm:gap-3">
+                  {/* Profile photo */}
+                  <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden">
+                    {contact.profile_picture_url ? (
+                      <img
+                        src={contact.profile_picture_url}
+                        alt={`${contact.name} profile`}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <img
+                        src="/placeholder.svg"
+                        alt="Placeholder profile"
+                        className="w-full h-full object-cover opacity-90"
+                      />
+                    )}
+                  </div>
+
+                  {/* Name */}
+                  <div className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground leading-tight break-words">
+                    {contact.name}
+                  </div>
+
+                  {/* Company */}
+                  {contact.company && (
+                    <div className="text-sm sm:text-base text-muted-foreground">
+                      {contact.company}
+                    </div>
+                  )}
+
+                  {/* Company logo placeholder (if needed) */}
+                  {contact.company && (
+                    <div className="mt-2 h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-muted grid place-items-center text-[10px] sm:text-xs text-muted-foreground">
+                      LOGO
+                    </div>
+                  )}
+                </div>
+
                 {/* Left column (6/10) */}
-                <div className="order-2 md:order-1 md:col-span-8 min-w-0 space-y-3 sm:space-y-4 text-left">
+                <div className="md:order-1 md:col-span-8 min-w-0 space-y-3 sm:space-y-4 text-left">
                   {contact.phone && (
                     <ContactRow
                       icon={<Phone className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />}
@@ -268,45 +307,6 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
                       action
                     />
                   </AccordionTrigger>
-                </div>
-
-                {/* Right column (4/10) */}
-                <div className="order-1 md:order-2 md:col-span-4 flex flex-col items-center text-center gap-2 sm:gap-3">
-                  {/* Profile photo */}
-                  <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden">
-                    {contact.profile_picture_url ? (
-                      <img
-                        src={contact.profile_picture_url}
-                        alt={`${contact.name} profile`}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <img
-                        src="/placeholder.svg"
-                        alt="Placeholder profile"
-                        className="w-full h-full object-cover opacity-90"
-                      />
-                    )}
-                  </div>
-
-                  {/* Name */}
-                  <div className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground leading-tight break-words">
-                    {contact.name}
-                  </div>
-
-                  {/* Company */}
-                  {contact.company && (
-                    <div className="text-sm sm:text-base text-muted-foreground">
-                      {contact.company}
-                    </div>
-                  )}
-
-                  {/* Company logo placeholder (if needed) */}
-                  {contact.company && (
-                    <div className="mt-2 h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-muted grid place-items-center text-[10px] sm:text-xs text-muted-foreground">
-                      LOGO
-                    </div>
-                  )}
                 </div>
               </div>
 
