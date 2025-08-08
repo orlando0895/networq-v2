@@ -191,155 +191,168 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
       <Card className="bg-card border border-border hover:shadow-lg transition-all duration-300 group overflow-hidden">
         <Accordion type="single" collapsible>
           <AccordionItem value={contact.id} className="border-none">
-            {/* Business Card Style Layout */}
-            <CardHeader className="p-6 bg-gradient-to-br from-background to-muted/20">
-              {/* Top Section - Name and Actions */}
-              <div className="flex items-start justify-between mb-4">
-                <div className="flex items-center gap-4">
-                  <Avatar className="h-16 w-16 border-2 border-border shadow-md">
-                    <AvatarImage src={contact.profile_picture_url || undefined} />
-                    <AvatarFallback className="text-lg font-semibold bg-primary/10 text-primary">
-                      {contact.name.split(' ').map(n => n[0]).join('').toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="space-y-1">
-                    <CardTitle className="text-xl font-bold text-foreground leading-tight">
-                      {contact.name}
-                    </CardTitle>
-                    <Badge 
-                      className={`${getAddedViaBadge(contact.added_via).className} flex items-center gap-1 text-xs font-medium shadow-sm`}
-                    >
-                      {getAddedViaBadge(contact.added_via).icon}
-                      <span>{getAddedViaBadge(contact.added_via).text}</span>
-                    </Badge>
-                  </div>
-                </div>
-
-                {/* Action Buttons */}
-                <div className="flex items-center gap-2">
-                  <Button 
-                    size="sm" 
-                    className="h-9 px-3 bg-primary hover:bg-primary/90 shadow-sm"
-                    onClick={() => setIsShareDialogOpen(true)}
-                  >
-                    <UserPlus className="w-4 h-4 mr-1" />
-                    <span className="hidden sm:inline">Refer</span>
-                  </Button>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="outline" size="sm" className="h-9 w-9 p-0 border-border">
-                        <MoreVertical className="w-4 h-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-48 bg-popover shadow-lg border-border z-50">
-                      <DropdownMenuItem onClick={handleStartConversation} className="cursor-pointer">
-                        <MessageSquare className="w-4 h-4 mr-2" />
-                        Message
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => setIsEditingContact(true)} className="cursor-pointer">
-                        <Edit className="w-4 h-4 mr-2" />
-                        Edit Contact
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => setIsAddingNote(true)} className="cursor-pointer">
-                        <Plus className="w-4 h-4 mr-2" />
-                        Add Note
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={handleExportVCF} className="cursor-pointer">
-                        <Download className="w-4 h-4 mr-2" />
-                        Save to Phone
-                      </DropdownMenuItem>
-                      <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                          <DropdownMenuItem onSelect={(e) => e.preventDefault()} className="cursor-pointer text-destructive focus:text-destructive">
-                            <Trash2 className="w-4 h-4 mr-2" />
-                            Delete Contact
-                          </DropdownMenuItem>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>Delete Contact</AlertDialogTitle>
-                            <AlertDialogDescription>
-                              Are you sure you want to delete {contact.name}? This action cannot be undone.
-                            </AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction
-                              onClick={handleDelete}
-                              className="bg-destructive hover:bg-destructive/90 text-destructive-foreground"
-                            >
-                              Delete
-                            </AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                  <AccordionTrigger className="hover:no-underline p-2 border-border hover:bg-muted/50 rounded-md transition-colors">
-                    <ChevronDown className="w-4 h-4 text-muted-foreground" />
-                  </AccordionTrigger>
-                </div>
+            {/* Business Card Layout */}
+            <div className="w-full max-w-4xl mx-auto aspect-[7/4] bg-gradient-to-br from-background to-primary/5 relative overflow-hidden p-4 sm:p-6">
+              
+              {/* Top-left brand mark */}
+              <div className="absolute top-3 left-3 sm:top-4 sm:left-4" aria-label="Brand Mark">
+                <svg width="32" height="32" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" className="sm:w-10 sm:h-10">
+                  <defs>
+                    <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0%" stopColor="hsl(var(--primary))" />
+                      <stop offset="100%" stopColor="hsl(var(--primary))" />
+                    </linearGradient>
+                  </defs>
+                  <path d="M12 12c0-3.314 2.686-6 6-6s6 2.686 6 6v16l16-16c2.343-2.343 6.142-2.343 8.485 0s2.343 6.142 0 8.485L32.485 36.485 44 48c2.343 2.343 2.343 6.142 0 8.485S37.858 58.828 35.515 56.485L20 41v11c0 3.314-2.686 6-6 6s-6-2.686-6-6V12z" fill="url(#g1)"/>
+                </svg>
               </div>
 
-              {/* Company & Industry */}
-              <div className="space-y-2 mb-4">
-                <div className="flex items-center gap-2">
-                  <div className="w-1 h-6 bg-primary rounded-full"></div>
-                  <div>
-                    <p className="text-base font-semibold text-foreground">{contact.company}</p>
-                    <p className="text-sm text-muted-foreground">{contact.industry}</p>
-                  </div>
-                </div>
+              {/* Bottom-right brand mark */}
+              <div className="absolute bottom-3 right-3 sm:bottom-4 sm:right-4" aria-label="Brand Mark">
+                <svg width="32" height="32" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" className="sm:w-10 sm:h-10">
+                  <defs>
+                    <linearGradient id="g2" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0%" stopColor="hsl(var(--primary))" />
+                      <stop offset="100%" stopColor="hsl(var(--primary))" />
+                    </linearGradient>
+                  </defs>
+                  <path d="M12 12c0-3.314 2.686-6 6-6s6 2.686 6 6v16l16-16c2.343-2.343 6.142-2.343 8.485 0s2.343 6.142 0 8.485L32.485 36.485 44 48c2.343 2.343 2.343 6.142 0 8.485S37.858 58.828 35.515 56.485L20 41v11c0 3.314-2.686 6-6 6s-6-2.686-6-6V12z" fill="url(#g2)"/>
+                </svg>
               </div>
 
-              {/* Essential Contact Info */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
-                <div className="flex items-center gap-3 p-3 bg-card border border-border rounded-lg">
-                  <Mail className="w-4 h-4 text-primary flex-shrink-0" />
-                  <a 
-                    href={formatEmailLink(contact.email)}
-                    className="text-sm text-primary hover:text-primary/80 hover:underline break-all font-medium"
-                    aria-label={`Email ${contact.name}`}
-                  >
-                    {contact.email}
-                  </a>
-                </div>
-                {contact.phone && (
-                  <div className="flex items-center gap-3 p-3 bg-card border border-border rounded-lg">
-                    <Phone className="w-4 h-4 text-primary flex-shrink-0" />
-                    <a 
-                      href={formatPhoneLink(contact.phone)}
-                      className="text-sm text-primary hover:text-primary/80 hover:underline font-medium"
-                      aria-label={`Call ${contact.name}`}
-                    >
-                      {contact.phone}
-                    </a>
-                  </div>
-                )}
-              </div>
+              {/* Right blue section with profile */}
+              <div className="absolute right-0 top-0 w-[45%] h-[60%] bg-primary rounded-bl-[40px] sm:rounded-bl-[80px]" />
 
-              {/* Services Tags */}
-              {contact.services && contact.services.length > 0 && (
-                <div className="flex flex-wrap gap-2">
-                  {contact.services.slice(0, 4).map((service, index) => (
-                    <Badge key={index} variant="secondary" className="text-xs bg-primary/10 text-primary border-primary/20 font-medium">
-                      {service}
-                    </Badge>
-                  ))}
-                  {contact.services.length > 4 && (
-                    <Badge variant="secondary" className="text-xs bg-muted text-muted-foreground border-border">
-                      +{contact.services.length - 4} more
-                    </Badge>
+              {/* Profile picture area */}
+              <div className="absolute right-[2%] top-[5%] w-[38%] h-[50%] flex items-center justify-center">
+                <div className="w-full h-full rounded-full bg-muted flex items-center justify-center relative">
+                  {contact.profile_picture_url ? (
+                    <img 
+                      src={contact.profile_picture_url} 
+                      alt={`${contact.name} profile`}
+                      className="w-full h-full rounded-full object-cover"
+                    />
+                  ) : (
+                    <>
+                      <div className="w-[60%] h-[60%] rounded-full bg-background flex items-center justify-center">
+                        <div className="text-foreground text-lg font-bold">
+                          {contact.name.split(' ').map(n => n[0]).join('').toUpperCase()}
+                        </div>
+                      </div>
+                      <div className="absolute bottom-[20%] left-1/2 -translate-x-1/2 text-xs font-bold text-foreground tracking-tight">
+                        (PROFILE PHOTO)
+                      </div>
+                    </>
                   )}
                 </div>
-              )}
-            </CardHeader>
+              </div>
+
+              {/* Top-right action icons */}
+              <div className="absolute top-3 right-12 sm:top-4 sm:right-16 flex gap-2">
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="h-6 w-6 p-0 sm:h-8 sm:w-8 hover:bg-background/20"
+                  onClick={() => setIsShareDialogOpen(true)}
+                >
+                  <UserPlus className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
+                </Button>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="h-6 w-6 p-0 sm:h-8 sm:w-8 hover:bg-background/20"
+                  onClick={handleExportVCF}
+                >
+                  <Download className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
+                </Button>
+              </div>
+
+              {/* Contact name, company, and logo section */}
+              <div className="absolute left-[52%] right-0 top-[55%] text-center px-2">
+                <div className="text-xl sm:text-3xl lg:text-4xl font-extrabold text-foreground leading-none">
+                  {contact.name}
+                </div>
+                {contact.company && (
+                  <div className="mt-2 sm:mt-4 text-sm sm:text-lg lg:text-xl font-normal text-muted-foreground tracking-wide">
+                    {contact.company}
+                  </div>
+                )}
+                <div className="mt-4 sm:mt-8 text-lg sm:text-2xl lg:text-3xl font-extrabold text-foreground">
+                  <Badge 
+                    className={`${getAddedViaBadge(contact.added_via).className} flex items-center gap-1 text-xs font-medium`}
+                  >
+                    {getAddedViaBadge(contact.added_via).icon}
+                    <span>{getAddedViaBadge(contact.added_via).text}</span>
+                  </Badge>
+                </div>
+              </div>
+
+              {/* Left column with contact info */}
+              <div className="absolute left-4 top-12 sm:top-16 w-[45%] space-y-3 sm:space-y-4">
+                {/* Phone */}
+                {contact.phone && (
+                  <ContactRow
+                    icon={<Phone className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />}
+                    label={contact.phone}
+                    onClick={() => window.open(formatPhoneLink(contact.phone))}
+                    clickable
+                  />
+                )}
+                
+                {/* Email */}
+                <ContactRow
+                  icon={<Mail className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />}
+                  label={contact.email}
+                  onClick={() => window.open(formatEmailLink(contact.email))}
+                  clickable
+                />
+                
+                {/* Industry */}
+                {contact.industry && (
+                  <ContactRow
+                    icon={
+                      <svg className="w-4 h-4 sm:w-5 sm:h-5 text-primary" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 3L2 9l10 6 10-6-10-6zM2 17l10 6 10-6M2 13l10 6 10-6"/>
+                      </svg>
+                    }
+                    label={contact.industry}
+                  />
+                )}
+                
+                {/* Website */}
+                {contact.websites && contact.websites.length > 0 && (
+                  <ContactRow
+                    icon={<Globe className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />}
+                    label={contact.websites[0].replace(/^https?:\/\//, '')}
+                    onClick={() => window.open(formatWebsiteLink(contact.websites[0]))}
+                    clickable
+                  />
+                )}
+                
+                {/* Message action */}
+                <ContactRow
+                  icon={<MessageSquare className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />}
+                  label="[MESSAGE]"
+                  onClick={handleStartConversation}
+                  action
+                />
+                
+                {/* Expand details action */}
+                <AccordionTrigger className="flex items-center hover:no-underline p-0 w-full">
+                  <ContactRow
+                    icon={<ChevronDown className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />}
+                    label="[OPEN MORE DETAILS]"
+                    action
+                  />
+                </AccordionTrigger>
+              </div>
+            </div>
 
             <AccordionContent>
               <CardContent className="pt-4 px-6 pb-6 bg-muted/5 border-t border-border">
                 <div className="space-y-6">
                   {/* Social Media & Websites */}
-                  {(contact.linkedin || contact.facebook || contact.whatsapp || (contact.websites && contact.websites.length > 0)) && (
+                  {(contact.linkedin || contact.facebook || contact.whatsapp || (contact.websites && contact.websites.length > 1)) && (
                     <div className="space-y-4">
                       <div className="flex items-center gap-2">
                         <div className="w-1 h-5 bg-primary rounded-full"></div>
@@ -379,7 +392,7 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
                             <span className="text-sm font-medium text-foreground group-hover:text-primary">WhatsApp</span>
                           </a>
                         )}
-                        {contact.websites && contact.websites.map((website, index) => (
+                        {contact.websites && contact.websites.slice(1).map((website, index) => (
                           <a
                             key={index}
                             href={formatWebsiteLink(website)}
@@ -397,12 +410,12 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
                     </div>
                   )}
 
-                  {/* All Services */}
-                  {contact.services && contact.services.length > 4 && (
+                  {/* Services */}
+                  {contact.services && contact.services.length > 0 && (
                     <div className="space-y-4">
                       <div className="flex items-center gap-2">
                         <div className="w-1 h-5 bg-primary rounded-full"></div>
-                        <p className="text-sm font-semibold text-foreground">All Services</p>
+                        <p className="text-sm font-semibold text-foreground">Services</p>
                       </div>
                       <div className="flex flex-wrap gap-2">
                         {contact.services.map((service, index) => (
@@ -465,31 +478,44 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
                       <Download className="w-4 h-4 mr-2" />
                       Save
                     </Button>
-                    <AlertDialog>
-                      <AlertDialogTrigger asChild>
-                        <Button variant="outline" size="sm" className="justify-center h-10 text-destructive hover:text-destructive border-border hover:bg-destructive/10">
-                          <Trash2 className="w-4 h-4 mr-2" />
-                          Delete
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="outline" size="sm" className="justify-center h-10 border-border">
+                          <MoreVertical className="w-4 h-4" />
                         </Button>
-                      </AlertDialogTrigger>
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>Delete Contact</AlertDialogTitle>
-                          <AlertDialogDescription>
-                            Are you sure you want to delete {contact.name}? This action cannot be undone.
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel>Cancel</AlertDialogCancel>
-                          <AlertDialogAction
-                            onClick={handleDelete}
-                            className="bg-destructive hover:bg-destructive/90 text-destructive-foreground"
-                          >
-                            Delete
-                          </AlertDialogAction>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-48 bg-popover shadow-lg border-border z-50">
+                        <DropdownMenuItem onClick={() => setIsShareDialogOpen(true)} className="cursor-pointer">
+                          <UserPlus className="w-4 h-4 mr-2" />
+                          Share Contact
+                        </DropdownMenuItem>
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <DropdownMenuItem onSelect={(e) => e.preventDefault()} className="cursor-pointer text-destructive focus:text-destructive">
+                              <Trash2 className="w-4 h-4 mr-2" />
+                              Delete Contact
+                            </DropdownMenuItem>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Delete Contact</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                Are you sure you want to delete {contact.name}? This action cannot be undone.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                              <AlertDialogAction
+                                onClick={handleDelete}
+                                className="bg-destructive hover:bg-destructive/90 text-destructive-foreground"
+                              >
+                                Delete
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </div>
                 </div>
               </CardContent>
@@ -518,6 +544,34 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
         onClose={() => setIsShareDialogOpen(false)}
       />
     </>
+  );
+};
+
+// Contact Row Component
+interface ContactRowProps {
+  icon: React.ReactNode;
+  label: string;
+  onClick?: () => void;
+  clickable?: boolean;
+  action?: boolean;
+}
+
+const ContactRow = ({ icon, label, onClick, clickable, action }: ContactRowProps) => {
+  const baseClasses = "flex items-center w-full";
+  const interactiveClasses = clickable || action ? "cursor-pointer hover:bg-accent/20 rounded-md transition-colors" : "";
+  
+  return (
+    <div 
+      className={`${baseClasses} ${interactiveClasses}`}
+      onClick={onClick}
+    >
+      <div className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center">
+        {icon}
+      </div>
+      <div className={`ml-3 sm:ml-4 text-sm sm:text-base lg:text-lg tracking-wide text-foreground ${action ? 'font-medium' : ''}`}>
+        {label}
+      </div>
+    </div>
   );
 };
 
