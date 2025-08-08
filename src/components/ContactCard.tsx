@@ -252,14 +252,7 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
                       label={contact.industry}
                     />
                   )}
-                  {contact.websites && contact.websites.length > 0 && (
-                    <ContactRow
-                      icon={<Globe className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />}
-                      label={contact.websites[0].replace(/^https?:\/\//, '')}
-                      onClick={() => window.open(formatWebsiteLink(contact.websites[0]))}
-                      clickable
-                    />
-                  )}
+                    {/* Website moved to details */}
                   <ContactRow
                     icon={<MessageSquare className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />}
                     label="SEND MESSAGE"
@@ -347,7 +340,7 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
                     </Badge>
                   </div>
                   {/* Social Media & Websites */}
-                  {(contact.linkedin || contact.facebook || contact.whatsapp || (contact.websites && contact.websites.length > 1)) && (
+                  {(contact.linkedin || contact.facebook || contact.whatsapp || (contact.websites && contact.websites.length > 0)) && (
                     <div className="space-y-4">
                       <div className="flex items-center gap-2">
                         <div className="w-1 h-5 bg-primary rounded-full"></div>
@@ -387,7 +380,7 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
                             <span className="text-sm font-medium text-foreground group-hover:text-primary">WhatsApp</span>
                           </a>
                         )}
-                        {contact.websites && contact.websites.slice(1).map((website, index) => (
+                        {contact.websites && contact.websites.map((website, index) => (
                           <a
                             key={index}
                             href={formatWebsiteLink(website)}
