@@ -54,6 +54,21 @@ const ContactFilters = ({
             <DropdownMenuItem onClick={() => onFilterChange("Acquaintance")} inset>
               Mutual add
             </DropdownMenuItem>
+            <DropdownMenuItem inset>
+              QR code scan
+            </DropdownMenuItem>
+            <DropdownMenuItem inset>
+              Business card scan
+            </DropdownMenuItem>
+            <DropdownMenuItem inset>
+              Manual entry
+            </DropdownMenuItem>
+            <DropdownMenuItem inset>
+              Import vCard (VCF)
+            </DropdownMenuItem>
+            <DropdownMenuItem inset>
+              Discovery
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
