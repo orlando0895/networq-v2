@@ -563,7 +563,7 @@ const ContactRow = ({ icon, label, onClick, clickable, action }: ContactRowProps
       <div className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center flex-none">
         {icon}
       </div>
-      <div className={`ml-3 sm:ml-4 text-sm sm:text-base lg:text-lg tracking-wide text-foreground ${action ? 'font-medium' : ''} flex-1 min-w-0 truncate`}> 
+      <div className={`ml-3 sm:ml-4 text-left uppercase text-sm sm:text-base lg:text-lg tracking-wide text-foreground ${action ? 'font-medium' : ''} flex-1 min-w-0 truncate`}> 
         {label}
       </div>
     </div>
