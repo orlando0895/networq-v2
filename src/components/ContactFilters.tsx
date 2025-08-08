@@ -1,7 +1,8 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Search, Filter } from "lucide-react";
 import type { Database } from '@/integrations/supabase/types';
 
 type Contact = Database['public']['Tables']['contacts']['Row'];
@@ -30,8 +31,31 @@ const ContactFilters = ({
           placeholder="Search contacts..."
           value={searchTerm}
           onChange={(e) => onSearchChange(e.target.value)}
-          className="pl-12 py-4 text-base border-slate-200 focus:border-indigo-500 focus:ring-indigo-500 transition-colors h-14 text-lg"
+          className="pl-12 pr-14 py-4 text-base border-slate-200 focus:border-indigo-500 focus:ring-indigo-500 transition-colors h-14 text-lg"
         />
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="outline"
+              size="icon"
+              className="absolute right-2 top-1/2 -translate-y-1/2 h-9 w-9"
+              aria-label="Open filters"
+            >
+              <Filter className="w-4 h-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="z-50">
+            <DropdownMenuItem onClick={() => onFilterChange("all")} inset>
+              All tiers
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => onFilterChange("A-player")} inset>
+              A-Players
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => onFilterChange("Acquaintance")} inset>
+              Acquaintances
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
       
       <div className="flex flex-col sm:flex-row gap-3">
