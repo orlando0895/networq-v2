@@ -194,14 +194,134 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
             {/* Business Card Layout */}
             <div className="w-full max-w-4xl md:max-w-5xl mx-auto aspect-[7/4] min-h-[300px] sm:min-h-[340px] rounded-2xl bg-gradient-to-br from-card to-muted/5 relative overflow-hidden p-6 sm:p-7 md:p-8 ring-1 ring-border/80 shadow-md hover:shadow-lg transition-shadow duration-200 animate-enter">
               
-              {/* Top-left brand mark */}
-              <div className="absolute top-3 left-3 sm:top-4 sm:left-4" aria-label="Brand Mark">
+              {/* Header */}
+              <div className="flex items-center justify-between">
                 <img
                   src="/lovable-uploads/35f0bcd5-8832-4a5a-9f44-4111a705f5e6.png"
                   alt="Networq logo"
-                  className="h-8 w-8 sm:h-10 sm:w-10 object-contain drop-shadow"
+                  className="h-8 w-8 sm:h-10 sm:w-10 object-contain"
                   loading="lazy"
                 />
+                <div className="flex gap-2">
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="h-8 w-8 p-0 hover:bg-background/20"
+                    onClick={() => setIsShareDialogOpen(true)}
+                    aria-label="Share contact"
+                  >
+                    <UserPlus className="h-4 w-4 text-primary" />
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="h-8 w-8 p-0 hover:bg-background/20"
+                    onClick={handleExportVCF}
+                    aria-label="Download contact"
+                  >
+                    <Download className="h-4 w-4 text-primary" />
+                  </Button>
+                </div>
+              </div>
+
+              {/* Content */}
+              <div className="mt-4 grid grid-cols-10 gap-4 sm:gap-6 items-start">
+                {/* Left column (6/10) */}
+                <div className="col-span-10 md:col-span-6 space-y-3 sm:space-y-4">
+                  {contact.phone && (
+                    <ContactRow
+                      icon={<Phone className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />}
+                      label={contact.phone}
+                      onClick={() => window.open(formatPhoneLink(contact.phone))}
+                      clickable
+                    />
+                  )}
+                  <ContactRow
+                    icon={<Mail className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />}
+                    label={contact.email}
+                    onClick={() => window.open(formatEmailLink(contact.email))}
+                    clickable
+                  />
+                  {contact.industry && (
+                    <ContactRow
+                      icon={
+                        <svg className="w-4 h-4 sm:w-5 sm:h-5 text-primary" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M12 3L2 9l10 6 10-6-10-6zM2 17l10 6 10-6M2 13l10 6 10-6" />
+                        </svg>
+                      }
+                      label={contact.industry}
+                    />
+                  )}
+                  {contact.websites && contact.websites.length > 0 && (
+                    <ContactRow
+                      icon={<Globe className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />}
+                      label={contact.websites[0].replace(/^https?:\/\//, '')}
+                      onClick={() => window.open(formatWebsiteLink(contact.websites[0]))}
+                      clickable
+                    />
+                  )}
+                  <ContactRow
+                    icon={<MessageSquare className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />}
+                    label="[MESSAGE]"
+                    onClick={handleStartConversation}
+                    action
+                  />
+                  {(!contact.added_via || contact.added_via === 'manual') && (
+                    <ContactRow
+                      icon={<Edit className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />}
+                      label="[EDIT CONTACT]"
+                      onClick={() => setIsEditingContact(true)}
+                      action
+                      clickable
+                    />
+                  )}
+                  <AccordionTrigger className="flex items-center hover:no-underline p-0 w-full">
+                    <ContactRow
+                      icon={<ChevronDown className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />}
+                      label="[OPEN MORE DETAILS]"
+                      action
+                    />
+                  </AccordionTrigger>
+                </div>
+
+                {/* Right column (4/10) */}
+                <div className="col-span-10 md:col-span-4 flex flex-col items-center text-center gap-2 sm:gap-3">
+                  {/* Profile photo */}
+                  <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-full overflow-hidden">
+                    {contact.profile_picture_url ? (
+                      <img
+                        src={contact.profile_picture_url}
+                        alt={`${contact.name} profile`}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <img
+                        src="/placeholder.svg"
+                        alt="Placeholder profile"
+                        className="w-full h-full object-cover opacity-90"
+                      />
+                    )}
+                  </div>
+
+                  {/* Name */}
+                  <div className="text-lg sm:text-xl lg:text-2xl font-bold text-foreground leading-tight break-words">
+                    {contact.name}
+                  </div>
+
+                  {/* Company */}
+                  {contact.company && (
+                    <div className="text-sm sm:text-base text-muted-foreground">
+                      {contact.company}
+                    </div>
+                  )}
+
+                  {/* Company logo placeholder (if needed) */}
+                  {contact.company && (
+                    <div className="mt-2 h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-muted grid place-items-center text-[10px] sm:text-xs text-muted-foreground">
+                      LOGO
+                    </div>
+                  )}
+                </div>
               </div>
 
               {/* Bottom-right brand mark */}
@@ -212,131 +332,6 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
                   className="h-8 w-8 sm:h-10 sm:w-10 object-contain drop-shadow"
                   loading="lazy"
                 />
-              </div>
-
-              {/* Right blue section with profile */}
-              
-
-              {/* Profile picture area */}
-              <div className="absolute right-[3%] top-[6%] w-[28%] h-[38%] flex items-center justify-center z-10">
-                <div className="w-full h-full flex items-center justify-center relative">
-                  {contact.profile_picture_url ? (
-                    <img 
-                      src={contact.profile_picture_url} 
-                      alt={`${contact.name} profile`}
-                      className="w-11/12 h-11/12 rounded-full object-cover ring-2 ring-border shadow-sm"
-                    />
-) : (
-                    <img 
-                      src="/placeholder.svg" 
-                      alt="Placeholder profile"
-                      className="w-11/12 h-11/12 rounded-full object-cover opacity-90 ring-2 ring-border shadow-sm"
-                    />
-                  )}
-                </div>
-              </div>
-
-              {/* Top-right action icons */}
-              <div className="absolute top-3 right-12 sm:top-4 sm:right-16 flex gap-2">
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  className="h-6 w-6 p-0 sm:h-8 sm:w-8 hover:bg-background/20"
-                  onClick={() => setIsShareDialogOpen(true)}
-                >
-                  <UserPlus className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
-                </Button>
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  className="h-6 w-6 p-0 sm:h-8 sm:w-8 hover:bg-background/20"
-                  onClick={handleExportVCF}
-                >
-                  <Download className="h-3 w-3 sm:h-4 sm:w-4 text-primary" />
-                </Button>
-              </div>
-
-              {/* Contact name, company, and logo section */}
-              <div className="absolute left-[52%] right-0 top-[55%] text-center px-2">
-                <div className="text-xl sm:text-3xl lg:text-4xl font-extrabold text-foreground leading-none">
-                  {contact.name}
-                </div>
-                {contact.company && (
-                  <div className="mt-2 sm:mt-4 text-sm sm:text-lg lg:text-xl font-normal text-muted-foreground tracking-wide">
-                    {contact.company}
-                  </div>
-                )}
-              </div>
-
-              {/* Left column with contact info */}
-              <div className="absolute left-4 top-12 sm:top-16 w-[45%] space-y-3 sm:space-y-4">
-                {/* Phone */}
-                {contact.phone && (
-                  <ContactRow
-                    icon={<Phone className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />}
-                    label={contact.phone}
-                    onClick={() => window.open(formatPhoneLink(contact.phone))}
-                    clickable
-                  />
-                )}
-                
-                {/* Email */}
-                <ContactRow
-                  icon={<Mail className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />}
-                  label={contact.email}
-                  onClick={() => window.open(formatEmailLink(contact.email))}
-                  clickable
-                />
-                
-                {/* Industry */}
-                {contact.industry && (
-                  <ContactRow
-                    icon={
-                      <svg className="w-4 h-4 sm:w-5 sm:h-5 text-primary" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 3L2 9l10 6 10-6-10-6zM2 17l10 6 10-6M2 13l10 6 10-6"/>
-                      </svg>
-                    }
-                    label={contact.industry}
-                  />
-                )}
-                
-                {/* Website */}
-                {contact.websites && contact.websites.length > 0 && (
-                  <ContactRow
-                    icon={<Globe className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />}
-                    label={contact.websites[0].replace(/^https?:\/\//, '')}
-                    onClick={() => window.open(formatWebsiteLink(contact.websites[0]))}
-                    clickable
-                  />
-                )}
-                
-                {/* Message action */}
-                <ContactRow
-                  icon={<MessageSquare className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />}
-                  label="[MESSAGE]"
-                  onClick={handleStartConversation}
-                  action
-                />
-
-                {/* Edit action - manual contacts only */}
-                {(!contact.added_via || contact.added_via === 'manual') && (
-                  <ContactRow
-                    icon={<Edit className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />}
-                    label="[EDIT CONTACT]"
-                    onClick={() => setIsEditingContact(true)}
-                    action
-                    clickable
-                  />
-                )}
-                
-                {/* Expand details action */}
-                <AccordionTrigger className="flex items-center hover:no-underline p-0 w-full">
-                  <ContactRow
-                    icon={<ChevronDown className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />}
-                    label="[OPEN MORE DETAILS]"
-                    action
-                  />
-                </AccordionTrigger>
               </div>
             </div>
 
@@ -565,10 +560,10 @@ const ContactRow = ({ icon, label, onClick, clickable, action }: ContactRowProps
       className={`${baseClasses} ${interactiveClasses}`}
       onClick={onClick}
     >
-      <div className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center">
+      <div className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center flex-none">
         {icon}
       </div>
-      <div className={`ml-3 sm:ml-4 text-sm sm:text-base lg:text-lg tracking-wide text-foreground ${action ? 'font-medium' : ''}`}>
+      <div className={`ml-3 sm:ml-4 text-sm sm:text-base lg:text-lg tracking-wide text-foreground ${action ? 'font-medium' : ''} flex-1 min-w-0 truncate`}> 
         {label}
       </div>
     </div>
