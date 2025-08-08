@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { Users, Mail, Phone, Edit, Plus, Trash2, Linkedin, Facebook, MessageCircle, Globe, MessageSquare, Download, UserCheck, QrCode, CreditCard, Share2, Building2, Briefcase } from "lucide-react";
+import { Users, Mail, Phone, Edit, Plus, Trash2, Linkedin, Facebook, MessageCircle, Globe, MessageSquare, Download, UserCheck, QrCode, CreditCard, Share2, Building2, Briefcase, ChevronDown } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import EditContactForm from "./EditContactForm";
 import AddNoteForm from "./AddNoteForm";
@@ -221,93 +221,100 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
 
   return (
     <>
-      {/* Business Card Layout - Exact Match */}
-      <Card className="bg-white overflow-hidden shadow-lg rounded-xl max-w-md mx-auto relative" data-testid="business-card-layout">
+      {/* Business Card Layout - Exact Match from Images */}
+      <Card className="bg-white overflow-hidden shadow-lg rounded-xl max-w-md mx-auto relative h-64" data-testid="business-card-layout">
         {/* Networq Logo - Top Left */}
         <div className="absolute top-3 left-3 z-10">
           <NetworkqLogo className="w-6 h-6 text-blue-600" />
         </div>
 
-        <div className="flex h-64">
-          {/* Blue Sidebar */}
-          <div className="w-20 bg-blue-500 flex flex-col items-center py-4 space-y-4">
+        {/* Top Right Action Icons */}
+        <div className="absolute top-3 right-3 z-10 flex gap-2">
+          <Button
+            size="sm"
+            variant="ghost"
+            className="h-8 w-8 p-0 text-blue-600 hover:bg-blue-50"
+            onClick={() => setIsShareDialogOpen(true)}
+          >
+            <Share2 className="h-4 w-4" />
+          </Button>
+          <Button
+            size="sm"
+            variant="ghost"
+            className="h-8 w-8 p-0 text-blue-600 hover:bg-blue-50"
+            onClick={handleExportVCF}
+          >
+            <Download className="h-4 w-4" />
+          </Button>
+        </div>
+
+        <div className="flex h-full">
+          {/* Blue Sidebar with Contact Info */}
+          <div className="w-20 bg-blue-500 flex flex-col items-center py-6 space-y-6">
             {/* Phone */}
             {contact.phone && (
-              <a 
-                href={formatPhoneLink(contact.phone)}
-                className="text-white hover:text-white/80 transition-colors"
-                aria-label={`Call ${contact.name}`}
+              <button
+                onClick={() => window.open(`tel:${contact.phone}`, '_self')}
+                className="text-white hover:text-blue-100 transition-colors p-1 rounded"
+                title={`Call ${contact.phone}`}
               >
-                <Phone className="w-5 h-5" />
-              </a>
+                <Phone className="h-5 w-5" />
+              </button>
             )}
-            
+
             {/* Email */}
-            <a 
-              href={formatEmailLink(contact.email)}
-              className="text-white hover:text-white/80 transition-colors"
-              aria-label={`Email ${contact.name}`}
-            >
-              <Mail className="w-5 h-5" />
-            </a>
-            
+            {contact.email && (
+              <button
+                onClick={() => window.open(`mailto:${contact.email}`, '_self')}
+                className="text-white hover:text-blue-100 transition-colors p-1 rounded"
+                title={`Email ${contact.email}`}
+              >
+                <Mail className="h-5 w-5" />
+              </button>
+            )}
+
             {/* Industry */}
             {contact.industry && (
-              <div className="text-white">
-                <Building2 className="w-5 h-5" />
+              <div className="text-white p-1 rounded" title={contact.industry}>
+                <Building2 className="h-5 w-5" />
               </div>
             )}
-            
+
             {/* Website */}
             {contact.websites && contact.websites.length > 0 && (
-              <a
-                href={formatWebsiteLink(contact.websites[0])}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-white hover:text-white/80 transition-colors"
+              <button
+                onClick={() => window.open(formatWebsiteLink(contact.websites[0]), '_blank')}
+                className="text-white hover:text-blue-100 transition-colors p-1 rounded"
+                title={`Visit ${contact.websites[0]}`}
               >
-                <Globe className="w-5 h-5" />
-              </a>
+                <Globe className="h-5 w-5" />
+              </button>
             )}
-            
+
             {/* Message */}
             <button
               onClick={handleStartConversation}
-              className="text-white hover:text-white/80 transition-colors"
-              aria-label={`Message ${contact.name}`}
+              className="text-white hover:text-blue-100 transition-colors p-1 rounded"
+              title="Send message"
             >
-              <MessageSquare className="w-5 h-5" />
+              <MessageCircle className="h-5 w-5" />
             </button>
-            
-            {/* More Details */}
-            <Accordion type="single" collapsible className="w-full flex justify-center">
-              <AccordionItem value={contact.id} className="border-none w-full">
-                <AccordionTrigger className="p-0 hover:no-underline text-white justify-center">
-                  <div className="flex flex-col items-center">
-                    <div className="w-4 h-0.5 bg-white mb-1"></div>
-                    <div className="w-4 h-0.5 bg-white mb-1"></div>
-                    <div className="w-4 h-0.5 bg-white"></div>
-                  </div>
-                </AccordionTrigger>
-                <AccordionContent>
-                  <div className="absolute top-0 left-20 right-0 bg-white p-4 shadow-lg z-10 rounded-r-xl space-y-4">
-                    {/* Added Via Badge */}
-                    <div className="flex items-center justify-between">
-                      <Badge 
-                        className={`${getAddedViaBadge(contact.added_via).className} flex items-center gap-1 text-xs font-medium shadow-sm`}
-                      >
-                        {getAddedViaBadge(contact.added_via).icon}
-                        <span>{getAddedViaBadge(contact.added_via).text}</span>
-                      </Badge>
-                    </div>
 
+            {/* More Details Accordion Trigger */}
+            <Accordion type="single" collapsible className="w-full">
+              <AccordionItem value="details" className="border-none">
+                <AccordionTrigger className="text-white hover:text-blue-100 p-1 [&>svg]:text-white">
+                  <ChevronDown className="h-5 w-5" />
+                </AccordionTrigger>
+                <AccordionContent className="absolute left-20 top-0 w-80 bg-white border border-gray-200 rounded-lg shadow-lg p-4 z-20">
+                  <div className="space-y-4">
                     {/* Services */}
                     {contact.services && contact.services.length > 0 && (
-                      <div className="space-y-2">
-                        <p className="text-sm font-semibold text-gray-900">Services</p>
-                        <div className="flex flex-wrap gap-2">
+                      <div>
+                        <h4 className="font-medium text-gray-900 mb-2">Services</h4>
+                        <div className="flex flex-wrap gap-1">
                           {contact.services.map((service, index) => (
-                            <Badge key={index} variant="secondary" className="text-xs bg-blue-100 text-blue-800">
+                            <Badge key={index} variant="secondary" className="text-xs">
                               {service}
                             </Badge>
                           ))}
@@ -315,167 +322,141 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
                       </div>
                     )}
 
-                    {/* Social Media & Other Websites */}
-                    {(contact.linkedin || contact.facebook || contact.whatsapp || (contact.websites && contact.websites.length > 1)) && (
-                      <div className="space-y-2">
-                        <p className="text-sm font-semibold text-gray-900">Social & Web</p>
-                        <div className="grid grid-cols-2 gap-2">
+                    {/* Social Links */}
+                    {(contact.linkedin || contact.facebook || contact.whatsapp) && (
+                      <div>
+                        <h4 className="font-medium text-gray-900 mb-2">Social Media</h4>
+                        <div className="flex gap-2">
                           {contact.linkedin && (
-                            <a
-                              href={formatSocialLink('linkedin', contact.linkedin)}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="flex items-center gap-2 p-2 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => window.open(formatSocialLink(contact.linkedin!, 'linkedin'), '_blank')}
                             >
-                              <Linkedin className="w-4 h-4 text-blue-600" />
-                              <span className="text-sm">LinkedIn</span>
-                            </a>
+                              LinkedIn
+                            </Button>
                           )}
                           {contact.facebook && (
-                            <a
-                              href={formatSocialLink('facebook', contact.facebook)}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="flex items-center gap-2 p-2 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => window.open(formatSocialLink(contact.facebook!, 'facebook'), '_blank')}
                             >
-                              <Facebook className="w-4 h-4 text-blue-600" />
-                              <span className="text-sm">Facebook</span>
-                            </a>
+                              Facebook
+                            </Button>
                           )}
                           {contact.whatsapp && (
-                            <a
-                              href={formatSocialLink('whatsapp', contact.whatsapp)}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="flex items-center gap-2 p-2 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => window.open(formatSocialLink(contact.whatsapp!, 'whatsapp'), '_blank')}
                             >
-                              <MessageCircle className="w-4 h-4 text-green-600" />
-                              <span className="text-sm">WhatsApp</span>
-                            </a>
+                              WhatsApp
+                            </Button>
                           )}
-                          {contact.websites && contact.websites.slice(1).map((website, index) => (
-                            <a
-                              key={index}
-                              href={formatWebsiteLink(website)}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="flex items-center gap-2 p-2 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
-                            >
-                              <Globe className="w-4 h-4 text-gray-600" />
-                              <span className="text-sm truncate">Website</span>
-                            </a>
-                          ))}
                         </div>
                       </div>
                     )}
 
                     {/* Notes */}
                     {contact.notes && (
-                      <div className="space-y-2">
-                        <p className="text-sm font-semibold text-gray-900">Notes</p>
-                        <div className="p-3 bg-gray-50 rounded-lg">
-                          <p className="text-sm text-gray-700">{contact.notes}</p>
-                        </div>
+                      <div>
+                        <h4 className="font-medium text-gray-900 mb-2">Notes</h4>
+                        <p className="text-sm text-gray-600">{contact.notes}</p>
                       </div>
                     )}
 
-                    {/* Additional Actions */}
-                    <div className="flex gap-2 pt-4 border-t">
-                      <Button 
-                        size="sm" 
+                    {/* Actions */}
+                    <div className="flex gap-2 pt-2 border-t">
+                      <Button
                         variant="outline"
-                        className="flex-1"
+                        size="sm"
                         onClick={() => setIsAddingNote(true)}
                       >
-                        <Plus className="w-4 h-4 mr-2" />
+                        <Plus className="h-3 w-3 mr-1" />
                         Add Note
                       </Button>
-                      {contact.added_via === 'manual' && (
-                        <Button 
-                          size="sm" 
-                          variant="outline"
-                          className="px-3"
-                          onClick={() => setIsEditingContact(true)}
-                        >
-                          <Edit className="w-4 h-4" />
-                        </Button>
-                      )}
-                      <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                          <Button size="sm" variant="outline" className="px-3 text-red-600 hover:text-red-700">
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>Delete Contact</AlertDialogTitle>
-                            <AlertDialogDescription>
-                              Are you sure you want to delete {contact.name}? This action cannot be undone.
-                            </AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction
-                              onClick={handleDelete}
-                              className="bg-red-600 hover:bg-red-700 text-white"
-                            >
-                              Delete
-                            </AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setIsEditingContact(true)}
+                      >
+                        <Edit className="h-3 w-3 mr-1" />
+                        Edit
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handleDelete}
+                        className="text-red-600 hover:text-red-700"
+                      >
+                        <Trash2 className="h-3 w-3 mr-1" />
+                        Delete
+                      </Button>
                     </div>
                   </div>
                 </AccordionContent>
               </AccordionItem>
             </Accordion>
           </div>
-          
-          {/* White Main Section */}
-          <div className="flex-1 p-4 relative">
-            {/* Top Right Actions */}
-            <div className="absolute top-3 right-3 flex gap-2">
-              <Button
-                size="sm"
-                variant="ghost"
-                className="h-8 w-8 p-0 hover:bg-blue-100 text-blue-600"
-                onClick={() => setIsShareDialogOpen(true)}
-              >
-                <Share2 className="w-4 h-4" />
-              </Button>
-              <Button
-                size="sm"
-                variant="ghost"
-                className="h-8 w-8 p-0 hover:bg-blue-100 text-blue-600"
-                onClick={handleExportVCF}
-              >
-                <Download className="w-4 h-4" />
-              </Button>
-            </div>
 
+          {/* Main Content Area */}
+          <div className="flex-1 p-6 relative">
             {/* Profile Photo */}
-            <div className="absolute top-4 right-4 mt-8">
+            <div className="absolute top-4 right-4">
               <Avatar className="h-20 w-20 border-4 border-blue-500">
-                <AvatarImage src={contact.profile_picture_url || undefined} />
-                <AvatarFallback className="text-lg font-semibold bg-gray-100 text-gray-800">
+                <AvatarImage src={undefined} alt={contact.name} />
+                <AvatarFallback className="bg-blue-100 text-blue-600 text-lg font-semibold">
                   {contact.name.split(' ').map(n => n[0]).join('').toUpperCase()}
                 </AvatarFallback>
               </Avatar>
             </div>
 
-            {/* Contact Name and Company */}
-            <div className="mt-16 pr-24">
-              <h2 className="text-2xl font-bold text-gray-900 mb-1">
+            {/* Contact Details */}
+            <div className="space-y-2 max-w-48">
+              {/* Contact Name */}
+              <h3 className="text-xl font-bold text-gray-900 leading-tight">
                 {contact.name}
-              </h2>
+              </h3>
+
+              {/* Company Name */}
               {contact.company && (
-                <p className="text-lg text-gray-600">
+                <p className="text-lg text-gray-700 font-medium">
                   {contact.company}
                 </p>
               )}
+
+              {/* Contact Information Display */}
+              <div className="space-y-1 text-sm text-gray-600 mt-4">
+                {contact.phone && (
+                  <p>({contact.phone})</p>
+                )}
+                {contact.email && (
+                  <p>({contact.email})</p>
+                )}
+                {contact.industry && (
+                  <p>({contact.industry})</p>
+                )}
+                {contact.websites && contact.websites.length > 0 && (
+                  <p>({contact.websites[0]})</p>
+                )}
+              </div>
+
+              {/* Added Via Badge */}
+              {contact.added_via && (
+                <div className="mt-3">
+                  <Badge 
+                    className={`inline-flex items-center gap-1 border ${getAddedViaBadge(contact.added_via).className}`}
+                    variant="outline"
+                  >
+                    {getAddedViaBadge(contact.added_via).icon}
+                    {getAddedViaBadge(contact.added_via).text}
+                  </Badge>
+                </div>
+              )}
             </div>
 
-            {/* Company Logo */}
+            {/* Company Logo - Bottom Right */}
             <div className="absolute bottom-4 right-4">
               <div className="w-12 h-12 bg-gray-100 border border-gray-300 rounded flex items-center justify-center">
                 <span className="text-xs text-gray-600 font-semibold">
@@ -484,7 +465,7 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
               </div>
             </div>
 
-            {/* Networq Logo - Bottom Right */}
+            {/* Networq Logo - Bottom Right Corner */}
             <div className="absolute bottom-2 right-16">
               <NetworkqLogo className="w-4 h-4 text-gray-400 opacity-60" />
             </div>
