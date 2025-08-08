@@ -277,14 +277,6 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
                     {contact.company}
                   </div>
                 )}
-                <div className="mt-4 sm:mt-8 text-lg sm:text-2xl lg:text-3xl font-extrabold text-foreground">
-                  <Badge 
-                    className={`${getAddedViaBadge(contact.added_via).className} flex items-center gap-1 text-xs font-medium`}
-                  >
-                    {getAddedViaBadge(contact.added_via).icon}
-                    <span>{getAddedViaBadge(contact.added_via).text}</span>
-                  </Badge>
-                </div>
               </div>
 
               {/* Left column with contact info */}
@@ -336,6 +328,17 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
                   onClick={handleStartConversation}
                   action
                 />
+
+                {/* Edit action - manual contacts only */}
+                {(!contact.added_via || contact.added_via === 'manual') && (
+                  <ContactRow
+                    icon={<Edit className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />}
+                    label="[EDIT CONTACT]"
+                    onClick={() => setIsEditingContact(true)}
+                    action
+                    clickable
+                  />
+                )}
                 
                 {/* Expand details action */}
                 <AccordionTrigger className="flex items-center hover:no-underline p-0 w-full">
@@ -351,6 +354,14 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
             <AccordionContent>
               <CardContent className="pt-4 px-6 pb-6 bg-muted/5 border-t border-border">
                 <div className="space-y-6">
+                  <div className="flex items-center gap-2">
+                    <Badge 
+                      className={`${getAddedViaBadge(contact.added_via).className} flex items-center gap-1 text-xs font-medium`}
+                    >
+                      {getAddedViaBadge(contact.added_via).icon}
+                      <span>{getAddedViaBadge(contact.added_via).text}</span>
+                    </Badge>
+                  </div>
                   {/* Social Media & Websites */}
                   {(contact.linkedin || contact.facebook || contact.whatsapp || (contact.websites && contact.websites.length > 1)) && (
                     <div className="space-y-4">
