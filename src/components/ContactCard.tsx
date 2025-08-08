@@ -253,12 +253,14 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
                     />
                   )}
                     {/* Website moved to details */}
-                  <ContactRow
-                    icon={<MessageSquare className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />}
-                    label="SEND MESSAGE"
-                    onClick={handleStartConversation}
-                    action
-                  />
+                  {['share_code', 'qr_code', 'mutual_contact'].includes(contact.added_via || '') && (
+                    <ContactRow
+                      icon={<MessageSquare className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />}
+                      label="SEND MESSAGE"
+                      onClick={handleStartConversation}
+                      action
+                    />
+                  )}
                   <AccordionTrigger className="flex items-center hover:no-underline p-0 w-full [&>svg]:hidden focus:outline-none focus:ring-0">
                     <ContactRow
                       icon={<ChevronDown className="w-4 h-4 sm:w-5 sm:h-5 text-primary transition-transform duration-200 group-data-[state=open]:rotate-180" />}
