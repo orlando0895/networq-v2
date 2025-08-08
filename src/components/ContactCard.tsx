@@ -227,7 +227,7 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
               {/* Content */}
               <div className="mt-4 grid grid-cols-10 gap-4 sm:gap-6 items-start">
                 {/* Left column (6/10) */}
-                <div className="col-span-10 md:col-span-6 space-y-3 sm:space-y-4">
+                <div className="col-span-6 min-w-0 space-y-3 sm:space-y-4 text-left">
                   {contact.phone && (
                     <ContactRow
                       icon={<Phone className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />}
@@ -285,7 +285,7 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
                 </div>
 
                 {/* Right column (4/10) */}
-                <div className="col-span-10 md:col-span-4 flex flex-col items-center text-center gap-2 sm:gap-3">
+                <div className="col-span-4 flex flex-col items-center text-center gap-2 sm:gap-3">
                   {/* Profile photo */}
                   <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-full overflow-hidden">
                     {contact.profile_picture_url ? (
