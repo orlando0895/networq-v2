@@ -444,7 +444,7 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
                       onClick={handleStartConversation}
                     >
                       <MessageSquare className="w-4 h-4 mr-2" />
-                      Message
+                      SEND MESSAGE
                     </Button>
                     <Button 
                       variant="outline" 
