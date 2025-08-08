@@ -430,15 +430,17 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
                   
                   {/* Action Buttons */}
                   <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 pt-4 border-t border-border">
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      className="justify-center h-10 border-border"
-                      onClick={() => setIsEditingContact(true)}
-                    >
-                      <Edit className="w-4 h-4 mr-2" />
-                      Edit
-                    </Button>
+                    {(!contact.added_via || contact.added_via === 'manual') && (
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="justify-center h-10 border-border"
+                        onClick={() => setIsEditingContact(true)}
+                      >
+                        <Edit className="w-4 h-4 mr-2" />
+                        Edit
+                      </Button>
+                    )}
                     <Button 
                       variant="outline" 
                       size="sm" 
