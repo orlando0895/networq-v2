@@ -34,7 +34,7 @@ const Index = () => {
   const [isAddingContact, setIsAddingContact] = useState(false);
   const [filterTier, setFilterTier] = useState<"all" | "A-player" | "Acquaintance">("all");
   const [filterIndustry, setFilterIndustry] = useState("all");
-
+  const [selectedMethods, setSelectedMethods] = useState<string[]>([]);
   // Check URL for share code on page load
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -177,11 +177,17 @@ const Index = () => {
     
     const matchesTier = filterTier === "all" || contact.tier === filterTier;
     const matchesIndustry = filterIndustry === "all" || contact.industry === filterIndustry;
+
+    const matchesMethod = selectedMethods.length === 0 || selectedMethods.some(m => {
+      if (m === 'qr') return contact.added_via?.startsWith('qr');
+      if (m === 'vcf') return contact.added_via === 'vcf_import' || contact.added_via === 'vcard_import';
+      return contact.added_via === m;
+    });
     
-    return matchesSearch && matchesTier && matchesIndustry;
+    return matchesSearch && matchesTier && matchesIndustry && matchesMethod;
   });
 
-  const hasFilters = searchTerm !== "" || filterTier !== "all" || filterIndustry !== "all";
+  const hasFilters = searchTerm !== "" || filterTier !== "all" || filterIndustry !== "all" || selectedMethods.length > 0;
 
   if (loading) {
     return (
@@ -229,7 +235,9 @@ const Index = () => {
           onSearchChange={setSearchTerm} 
           filterTier={filterTier} 
           onFilterChange={setFilterTier} 
-          contacts={contacts} 
+          contacts={contacts}
+          selectedMethods={selectedMethods}
+          onMethodsChange={setSelectedMethods}
         />
 
         {/* Quick Stats */}
@@ -275,6 +283,7 @@ const Index = () => {
                     setSearchTerm('');
                     setFilterTier('all');
                     setFilterIndustry('all');
+                    setSelectedMethods([]);
                   }}
                 >
                   Clear filters

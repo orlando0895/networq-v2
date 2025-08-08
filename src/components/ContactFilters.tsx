@@ -1,7 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuCheckboxItem } from "@/components/ui/dropdown-menu";
 import { Search, Filter } from "lucide-react";
 import type { Database } from '@/integrations/supabase/types';
 
@@ -13,6 +13,8 @@ interface ContactFiltersProps {
   filterTier: "all" | "A-player" | "Acquaintance";
   onFilterChange: (tier: "all" | "A-player" | "Acquaintance") => void;
   contacts: Contact[];
+  selectedMethods: string[];
+  onMethodsChange: (methods: string[]) => void;
 }
 
 const ContactFilters = ({ 
@@ -20,7 +22,9 @@ const ContactFilters = ({
   onSearchChange, 
   filterTier, 
   onFilterChange, 
-  contacts 
+  contacts,
+  selectedMethods,
+  onMethodsChange
 }: ContactFiltersProps) => {
   return (
     <div className="mb-6 sm:mb-8 space-y-4">
@@ -45,30 +49,86 @@ const ContactFilters = ({
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="z-50 bg-popover border border-border shadow-md">
-            <DropdownMenuItem onClick={() => onFilterChange("all")} inset>
+            <DropdownMenuItem onClick={() => onMethodsChange([])} inset>
               All connections
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => onFilterChange("A-player")} inset>
+            <DropdownMenuCheckboxItem
+              checked={selectedMethods.includes('share_code')}
+              onCheckedChange={(checked) => {
+                const next = checked 
+                  ? [...selectedMethods, 'share_code'] 
+                  : selectedMethods.filter(v => v !== 'share_code');
+                onMethodsChange(next);
+              }}
+            >
               Share code
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => onFilterChange("Acquaintance")} inset>
+            </DropdownMenuCheckboxItem>
+            <DropdownMenuCheckboxItem
+              checked={selectedMethods.includes('mutual_contact')}
+              onCheckedChange={(checked) => {
+                const next = checked 
+                  ? [...selectedMethods, 'mutual_contact'] 
+                  : selectedMethods.filter(v => v !== 'mutual_contact');
+                onMethodsChange(next);
+              }}
+            >
               Mutual add
-            </DropdownMenuItem>
-            <DropdownMenuItem inset>
+            </DropdownMenuCheckboxItem>
+            <DropdownMenuCheckboxItem
+              checked={selectedMethods.includes('qr')}
+              onCheckedChange={(checked) => {
+                const next = checked 
+                  ? [...selectedMethods, 'qr'] 
+                  : selectedMethods.filter(v => v !== 'qr');
+                onMethodsChange(next);
+              }}
+            >
               QR code scan
-            </DropdownMenuItem>
-            <DropdownMenuItem inset>
+            </DropdownMenuCheckboxItem>
+            <DropdownMenuCheckboxItem
+              checked={selectedMethods.includes('business_card')}
+              onCheckedChange={(checked) => {
+                const next = checked 
+                  ? [...selectedMethods, 'business_card'] 
+                  : selectedMethods.filter(v => v !== 'business_card');
+                onMethodsChange(next);
+              }}
+            >
               Business card scan
-            </DropdownMenuItem>
-            <DropdownMenuItem inset>
+            </DropdownMenuCheckboxItem>
+            <DropdownMenuCheckboxItem
+              checked={selectedMethods.includes('manual')}
+              onCheckedChange={(checked) => {
+                const next = checked 
+                  ? [...selectedMethods, 'manual'] 
+                  : selectedMethods.filter(v => v !== 'manual');
+                onMethodsChange(next);
+              }}
+            >
               Manual entry
-            </DropdownMenuItem>
-            <DropdownMenuItem inset>
+            </DropdownMenuCheckboxItem>
+            <DropdownMenuCheckboxItem
+              checked={selectedMethods.includes('vcf')}
+              onCheckedChange={(checked) => {
+                const next = checked 
+                  ? [...selectedMethods, 'vcf'] 
+                  : selectedMethods.filter(v => v !== 'vcf');
+                onMethodsChange(next);
+              }}
+            >
               Import vCard (VCF)
-            </DropdownMenuItem>
-            <DropdownMenuItem inset>
+            </DropdownMenuCheckboxItem>
+            <DropdownMenuCheckboxItem
+              checked={selectedMethods.includes('discovery')}
+              onCheckedChange={(checked) => {
+                const next = checked 
+                  ? [...selectedMethods, 'discovery'] 
+                  : selectedMethods.filter(v => v !== 'discovery');
+                onMethodsChange(next);
+              }}
+            >
               Discovery
-            </DropdownMenuItem>
+            </DropdownMenuCheckboxItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
