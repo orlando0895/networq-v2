@@ -37,6 +37,7 @@ const MyContactCardForm = () => {
   const [newWebsite, setNewWebsite] = useState('');
   const [showScanner, setShowScanner] = useState(false);
   const [qrCodeUrl, setQrCodeUrl] = useState<string>('');
+  const [companyLogoUrl, setCompanyLogoUrl] = useState<string>('');
 
   const { register, handleSubmit, formState: { errors, isSubmitting }, reset, watch, setValue } = useForm<ContactCardFormData>({
     defaultValues: {
@@ -245,6 +246,14 @@ const MyContactCardForm = () => {
               currentAvatarUrl={watch('avatar_url')}
               onAvatarUpdate={(url) => setValue('avatar_url', url || '')}
               userInitials={watch('name')?.split(' ').map(n => n[0]).join('').toUpperCase() || 'U'}
+            />
+          </div>
+          <div className="mb-6">
+            <Label className="block text-sm font-medium mb-2">Company Logo</Label>
+            <ProfilePictureUpload
+              currentAvatarUrl={companyLogoUrl}
+              onAvatarUpdate={(url) => setCompanyLogoUrl(url || '')}
+              userInitials={watch('company')?.split(' ').map(n => n[0]).join('').toUpperCase() || 'CO'}
             />
           </div>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
