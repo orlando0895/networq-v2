@@ -428,14 +428,17 @@ const Discovery = () => {
         {/* Boost Promotion */}
         {!discoveryStats?.active_boost_expires_at && (
           <Card className="bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200">
-            <CardContent className="p-4 text-center">
-              <Zap className="h-8 w-8 mx-auto text-blue-600 mb-3" />
-              <h3 className="font-semibold text-blue-800 mb-2">Boost Your Profile</h3>
-              <p className="text-sm text-blue-600 mb-4">
-                Get featured at the top of discovery and increase your connections
+            <CardContent className="p-5 text-center">
+              <div className="mx-auto w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-3">
+                <Zap className="h-6 w-6 text-primary" />
+              </div>
+              <h3 className="text-base font-semibold">Boost your Discovery</h3>
+              <p className="text-sm text-muted-foreground mb-4">
+                Be featured to nearby professionals and grow your connections faster.
               </p>
-              <Button className="touch-target" variant="outline" onClick={() => setIsPremiumUpgradeOpen(true)}>
-                Learn More
+              <Button className="w-full touch-target" onClick={() => setIsPremiumUpgradeOpen(true)}>
+                <Zap className="h-4 w-4 mr-2" />
+                Activate Boost
               </Button>
               <PremiumUpgradeDialog
                 open={isPremiumUpgradeOpen}
