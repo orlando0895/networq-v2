@@ -190,7 +190,7 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
     <>
       <Card className="bg-card border border-border hover:shadow-lg transition-all duration-300 group overflow-hidden">
         <Accordion type="single" collapsible>
-          <AccordionItem value={contact.id} className="border-none">
+          <AccordionItem value={contact.id} className="border-none group">
             {/* Business Card Layout */}
             <div className="w-full max-w-4xl md:max-w-5xl mx-auto aspect-[7/4] min-h-[300px] sm:min-h-[340px] rounded-2xl bg-gradient-to-br from-card to-muted/5 relative overflow-hidden p-6 sm:p-7 md:p-8 ring-1 ring-border/80 shadow-md hover:shadow-lg transition-shadow duration-200 animate-enter">
               
@@ -268,9 +268,9 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
                       clickable
                     />
                   )}
-                  <AccordionTrigger className="flex items-center hover:no-underline p-0 w-full [&>svg]:hidden">
+                  <AccordionTrigger className="flex items-center hover:no-underline p-0 w-full [&>svg]:hidden focus:outline-none focus:ring-0">
                     <ContactRow
-                      icon={<ChevronDown className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />}
+                      icon={<ChevronDown className="w-4 h-4 sm:w-5 sm:h-5 text-primary transition-transform duration-200 group-data-[state=open]:rotate-180" />}
                       label="more details"
                       action
                     />
