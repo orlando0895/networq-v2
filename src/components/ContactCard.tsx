@@ -259,15 +259,6 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
                     onClick={handleStartConversation}
                     action
                   />
-                  {(!contact.added_via || contact.added_via === 'manual') && (
-                    <ContactRow
-                      icon={<Edit className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />}
-                      label="[EDIT CONTACT]"
-                      onClick={() => setIsEditingContact(true)}
-                      action
-                      clickable
-                    />
-                  )}
                   <AccordionTrigger className="flex items-center hover:no-underline p-0 w-full [&>svg]:hidden focus:outline-none focus:ring-0">
                     <ContactRow
                       icon={<ChevronDown className="w-4 h-4 sm:w-5 sm:h-5 text-primary transition-transform duration-200 group-data-[state=open]:rotate-180" />}
