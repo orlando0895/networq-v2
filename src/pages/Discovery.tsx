@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import PremiumUpgradeDialog from '@/components/PremiumUpgradeDialog';
 import { Radar, Users, Star, MapPin, Zap, Filter, Settings, Heart, Eye, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -46,6 +47,7 @@ const Discovery = () => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [discoveryVisible, setDiscoveryVisible] = useState(true);
   const [industryFilter, setIndustryFilter] = useState('all');
+  const [isPremiumUpgradeOpen, setIsPremiumUpgradeOpen] = useState(false);
 
   // Get user location
   useEffect(() => {
@@ -432,9 +434,14 @@ const Discovery = () => {
               <p className="text-sm text-blue-600 mb-4">
                 Get featured at the top of discovery and increase your connections
               </p>
-              <Button className="touch-target" variant="outline">
+              <Button className="touch-target" variant="outline" onClick={() => setIsPremiumUpgradeOpen(true)}>
                 Learn More
               </Button>
+              <PremiumUpgradeDialog
+                open={isPremiumUpgradeOpen}
+                onOpenChange={setIsPremiumUpgradeOpen}
+                feature="profile boost"
+              />
             </CardContent>
           </Card>
         )}
