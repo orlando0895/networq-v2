@@ -401,19 +401,19 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
           </div>
 
           {/* Main Content Area */}
-          <div className="flex-1 p-6 relative">
-            {/* Profile Photo */}
-            <div className="absolute top-4 right-4">
-              <Avatar className="h-20 w-20 border-4 border-blue-500">
+          <div className="flex-1 p-6 relative flex flex-col justify-center items-center">
+            {/* Profile Photo - Centered */}
+            <div className="mb-4">
+              <Avatar className="h-24 w-24 border-4 border-white shadow-lg">
                 <AvatarImage src={undefined} alt={contact.name} />
-                <AvatarFallback className="bg-blue-100 text-blue-600 text-lg font-semibold">
+                <AvatarFallback className="bg-gray-100 text-gray-600 text-xl font-semibold">
                   {contact.name.split(' ').map(n => n[0]).join('').toUpperCase()}
                 </AvatarFallback>
               </Avatar>
             </div>
 
-            {/* Contact Details */}
-            <div className="space-y-2 max-w-48">
+            {/* Contact Details - Centered */}
+            <div className="text-center space-y-1">
               {/* Contact Name */}
               <h3 className="text-xl font-bold text-gray-900 leading-tight">
                 {contact.name}
@@ -421,32 +421,16 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
 
               {/* Company Name */}
               {contact.company && (
-                <p className="text-lg text-gray-700 font-medium">
+                <p className="text-base text-gray-600 font-medium">
                   {contact.company}
                 </p>
               )}
-
-              {/* Contact Information Display */}
-              <div className="space-y-1 text-sm text-gray-600 mt-4">
-                {contact.phone && (
-                  <p>({contact.phone})</p>
-                )}
-                {contact.email && (
-                  <p>({contact.email})</p>
-                )}
-                {contact.industry && (
-                  <p>({contact.industry})</p>
-                )}
-                {contact.websites && contact.websites.length > 0 && (
-                  <p>({contact.websites[0]})</p>
-                )}
-              </div>
 
               {/* Added Via Badge */}
               {contact.added_via && (
                 <div className="mt-3">
                   <Badge 
-                    className={`inline-flex items-center gap-1 border ${getAddedViaBadge(contact.added_via).className}`}
+                    className={`inline-flex items-center gap-1 border text-xs ${getAddedViaBadge(contact.added_via).className}`}
                     variant="outline"
                   >
                     {getAddedViaBadge(contact.added_via).icon}
