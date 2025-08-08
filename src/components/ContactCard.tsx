@@ -196,28 +196,22 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
               
               {/* Top-left brand mark */}
               <div className="absolute top-3 left-3 sm:top-4 sm:left-4" aria-label="Brand Mark">
-                <svg width="32" height="32" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" className="sm:w-10 sm:h-10">
-                  <defs>
-                    <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
-                      <stop offset="0%" stopColor="hsl(var(--primary))" />
-                      <stop offset="100%" stopColor="hsl(var(--primary))" />
-                    </linearGradient>
-                  </defs>
-                  <path d="M12 12c0-3.314 2.686-6 6-6s6 2.686 6 6v16l16-16c2.343-2.343 6.142-2.343 8.485 0s2.343 6.142 0 8.485L32.485 36.485 44 48c2.343 2.343 2.343 6.142 0 8.485S37.858 58.828 35.515 56.485L20 41v11c0 3.314-2.686 6-6 6s-6-2.686-6-6V12z" fill="url(#g1)"/>
-                </svg>
+                <img
+                  src="/lovable-uploads/35f0bcd5-8832-4a5a-9f44-4111a705f5e6.png"
+                  alt="Networq logo"
+                  className="h-8 w-8 sm:h-10 sm:w-10 object-contain drop-shadow"
+                  loading="lazy"
+                />
               </div>
 
               {/* Bottom-right brand mark */}
               <div className="absolute bottom-3 right-3 sm:bottom-4 sm:right-4" aria-label="Brand Mark">
-                <svg width="32" height="32" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" className="sm:w-10 sm:h-10">
-                  <defs>
-                    <linearGradient id="g2" x1="0" y1="0" x2="1" y2="1">
-                      <stop offset="0%" stopColor="hsl(var(--primary))" />
-                      <stop offset="100%" stopColor="hsl(var(--primary))" />
-                    </linearGradient>
-                  </defs>
-                  <path d="M12 12c0-3.314 2.686-6 6-6s6 2.686 6 6v16l16-16c2.343-2.343 6.142-2.343 8.485 0s2.343 6.142 0 8.485L32.485 36.485 44 48c2.343 2.343 2.343 6.142 0 8.485S37.858 58.828 35.515 56.485L20 41v11c0 3.314-2.686 6-6 6s-6-2.686-6-6V12z" fill="url(#g2)"/>
-                </svg>
+                <img
+                  src="/lovable-uploads/35f0bcd5-8832-4a5a-9f44-4111a705f5e6.png"
+                  alt="Networq logo"
+                  className="h-8 w-8 sm:h-10 sm:w-10 object-contain drop-shadow"
+                  loading="lazy"
+                />
               </div>
 
               {/* Right blue section with profile */}
