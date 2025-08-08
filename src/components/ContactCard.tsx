@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Star, Users, Mail, Phone, UserPlus, Send, Edit, Plus, ChevronDown, Trash2, MoreVertical, Linkedin, Facebook, MessageCircle, Globe, MessageSquare, Download, UserCheck, QrCode, Scan, CreditCard } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import EditContactForm from "./EditContactForm";
@@ -450,31 +450,44 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
                       <Plus className="w-4 h-4 mr-2" />
                       Add Note
                     </Button>
-                    <AlertDialog>
-                      <AlertDialogTrigger asChild>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
                         <Button variant="outline" size="sm" className="justify-center h-10 border-border">
-                          <Trash2 className="w-4 h-4 mr-2" />
-                          Delete
+                          <MoreVertical className="w-4 h-4" />
                         </Button>
-                      </AlertDialogTrigger>
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>Delete Contact</AlertDialogTitle>
-                          <AlertDialogDescription>
-                            Are you sure you want to delete {contact.name}? This action cannot be undone.
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel>Cancel</AlertDialogCancel>
-                          <AlertDialogAction
-                            onClick={handleDelete}
-                            className="bg-destructive hover:bg-destructive/90 text-destructive-foreground"
-                          >
-                            Delete
-                          </AlertDialogAction>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-48 bg-popover shadow-lg border-border z-50">
+                        <DropdownMenuItem onClick={() => setIsShareDialogOpen(true)} className="cursor-pointer">
+                          <UserPlus className="w-4 h-4 mr-2" />
+                          Share Contact
+                        </DropdownMenuItem>
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <DropdownMenuItem onSelect={(e) => e.preventDefault()} className="cursor-pointer text-destructive focus:text-destructive">
+                              <Trash2 className="w-4 h-4 mr-2" />
+                              Delete Contact
+                            </DropdownMenuItem>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Delete Contact</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                Are you sure you want to delete {contact.name}? This action cannot be undone.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                              <AlertDialogAction
+                                onClick={handleDelete}
+                                className="bg-destructive hover:bg-destructive/90 text-destructive-foreground"
+                              >
+                                Delete
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </div>
                 </div>
               </CardContent>
