@@ -434,15 +434,6 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
                       variant="outline" 
                       size="sm" 
                       className="justify-center h-10 border-border"
-                      onClick={handleStartConversation}
-                    >
-                      <MessageSquare className="w-4 h-4 mr-2" />
-                      SEND MESSAGE
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      className="justify-center h-10 border-border"
                       onClick={() => setIsEditingContact(true)}
                     >
                       <Edit className="w-4 h-4 mr-2" />
