@@ -223,15 +223,6 @@ const Index = () => {
       }
     >
       <div className="space-y-4">
-        {/* Quick Stats */}
-        {contacts.length > 0 && (
-          <ContactStats 
-            contacts={contacts} 
-            filterIndustry={filterIndustry}
-            onIndustryFilterChange={setFilterIndustry}
-          />
-        )}
-
         {/* Search and Filters */}
         <ContactFilters 
           searchTerm={searchTerm} 
@@ -240,6 +231,15 @@ const Index = () => {
           onFilterChange={setFilterTier} 
           contacts={contacts} 
         />
+
+        {/* Quick Stats */}
+        {contacts.length > 0 && (
+          <ContactStats 
+            contacts={contacts} 
+            filterIndustry={filterIndustry}
+            onIndustryFilterChange={setFilterIndustry}
+          />
+        )}
 
         {/* Contact Cards */}
         <div className="space-y-3">
