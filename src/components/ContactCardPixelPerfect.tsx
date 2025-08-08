@@ -175,231 +175,208 @@ const ContactCardPixelPerfect = ({ contact, onUpdateContact, onDeleteContact }: 
     </svg>
   );
 
+  // Row component for consistent layout
+  const Row = ({ icon, label, className = "", onClick }: { 
+    icon: React.ReactNode; 
+    label: string; 
+    className?: string;
+    onClick?: () => void;
+  }) => (
+    <div className={`flex items-center ${className}`}>
+      <div className="w-[44px] h-[44px] flex items-center justify-center text-primary-blue">
+        {onClick ? (
+          <button onClick={onClick} className="w-full h-full flex items-center justify-center hover:scale-110 transition-transform">
+            {icon}
+          </button>
+        ) : (
+          icon
+        )}
+      </div>
+      <div className="ml-[28px] text-[32px] tracking-[0.02em] text-navy-ink">{label}</div>
+    </div>
+  );
+
+  // Icon components with blue fill using design system colors
+  const PhoneIcon = () => (
+    <svg width="44" height="44" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path fill="currentColor" d="M6.62 10.79a15.053 15.053 0 006.59 6.59l2.2-2.2a1 1 0 011.01-.24c1.11.37 2.31.57 3.56.57a1 1 0 011 1V21a1 1 0 01-1 1C10.3 22 2 13.7 2 3a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.2 2.45.57 3.56a1 1 0 01-.24 1.01l-2.2 2.22z"/>
+    </svg>
+  );
+
+  const MailIcon = () => (
+    <svg width="44" height="44" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path fill="currentColor" d="M2 5h20v14H2z" />
+      <path fill="#fff" d="M3 7l9 6 9-6v2l-9 6-9-6V7z" opacity="0.2" />
+    </svg>
+  );
+
+  const HomeIcon = () => (
+    <svg width="44" height="44" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path fill="currentColor" d="M12 3l9 8h-3v10H6V11H3l9-8zM10 13h4v6h-4v-6z"/>
+    </svg>
+  );
+
+  const LaptopIcon = () => (
+    <svg width="44" height="44" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path fill="currentColor" d="M4 5h16v10H4z"/>
+      <path fill="currentColor" d="M2 17h20v2H2z" />
+    </svg>
+  );
+
+  const ChatIcon = () => (
+    <svg width="44" height="44" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path fill="currentColor" d="M4 5h16v10H7l-3 3V5z"/>
+      <rect x="7" y="8" width="7" height="1.8" fill="#fff" opacity="0.5" />
+      <rect x="7" y="11" width="9" height="1.8" fill="#fff" opacity="0.5" />
+    </svg>
+  );
+
+  const ChevronDoubleDown = () => (
+    <svg width="44" height="44" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path fill="currentColor" d="M12 13l-6-6 2-2 4 4 4-4 2 2-6 6z"/>
+      <path fill="currentColor" d="M12 21l-6-6 2-2 4 4 4-4 2 2-6 6z"/>
+    </svg>
+  );
+
   return (
     <>
-      {/* Pixel-Perfect Business Card - 1050x600 scaled for mobile */}
-      <Card className="relative bg-white overflow-hidden" 
-            style={{ 
-              width: '100%', 
-              maxWidth: '525px', // Half of 1050px for mobile
-              height: '300px',   // Half of 600px for mobile
-              aspectRatio: '1050/600'
-            }}>
+      {/* Business Card Layout - 1050x600 scaled for mobile */}
+      <div className="w-full max-w-[525px] h-[300px] bg-white relative overflow-hidden mx-auto">
         
-        {/* Top-left Networq logo */}
-        <div className="absolute top-3 left-3">
-          <NetworkqLogo className="text-primary-blue w-6 h-6" />
+        {/* Top-left brand mark */}
+        <div className="absolute top-[9px] left-[9px]">
+          <svg width="25" height="25" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stopColor="#16B3C6" />
+                <stop offset="100%" stopColor="#0685D9" />
+              </linearGradient>
+            </defs>
+            <path d="M12 12c0-3.314 2.686-6 6-6s6 2.686 6 6v16l16-16c2.343-2.343 6.142-2.343 8.485 0s2.343 6.142 0 8.485L32.485 36.485 44 48c2.343 2.343 2.343 6.142 0 8.485S37.858 58.828 35.515 56.485L20 41v11c0 3.314-2.686 6-6 6s-6-2.686-6-6V12z" fill="url(#g1)"/>
+          </svg>
         </div>
 
-        {/* Top-right UI icons */}
-        <div className="absolute flex gap-4" style={{ top: '11px', right: '11px' }}>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="p-0 h-auto w-auto text-primary-blue hover:text-accent-sky-blue w-[18px] h-[18px]"
+        {/* Bottom-right brand mark */}
+        <div className="absolute bottom-[9px] right-[9px]">
+          <svg width="25" height="25" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="g2" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stopColor="#16B3C6" />
+                <stop offset="100%" stopColor="#0685D9" />
+              </linearGradient>
+            </defs>
+            <path d="M12 12c0-3.314 2.686-6 6-6s6 2.686 6 6v16l16-16c2.343-2.343 6.142-2.343 8.485 0s2.343 6.142 0 8.485L32.485 36.485 44 48c2.343 2.343 2.343 6.142 0 8.485S37.858 58.828 35.515 56.485L20 41v11c0 3.314-2.686 6-6 6s-6-2.686-6-6V12z" fill="url(#g2)"/>
+          </svg>
+        </div>
+
+        {/* Right blue ribbon */}
+        <div className="absolute right-0 top-0 w-[165px] h-[185px] bg-primary-blue rounded-b-[80px]" />
+
+        {/* Avatar circle inside ribbon */}
+        <div className="absolute right-[12.5px] top-[17.5px] w-[140px] h-[140px] rounded-full flex items-center justify-center">
+          <Avatar className="w-[140px] h-[140px] border-2 border-medium-gray">
+            <AvatarImage src={contact.profile_picture_url || undefined} alt={contact.name} />
+            <AvatarFallback className="bg-medium-gray text-very-light-gray text-4xl font-bold">
+              {contact.name.split(' ').map(n => n[0]).join('').toUpperCase()}
+            </AvatarFallback>
+          </Avatar>
+          {/* Overlay label */}
+          <div className="absolute bottom-[26%] left-1/2 -translate-x-1/2 text-[14px] font-extrabold text-navy-ink tracking-tight">
+            (PROFILE PHOTO)
+          </div>
+        </div>
+
+        {/* Top-right action icons */}
+        <div className="absolute top-[11px] right-[39px]">
+          <button 
             onClick={() => setIsShareDialogOpen(true)}
+            className="hover:scale-110 transition-transform"
           >
-            <Send className="w-full h-full" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="p-0 h-auto w-auto text-primary-blue hover:text-accent-sky-blue w-[18px] h-[18px]"
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-primary-blue">
+              <path d="M3 11l17-7-7 17-2.5-6.5L3 11z" fill="currentColor"/>
+            </svg>
+          </button>
+        </div>
+        <div className="absolute top-[11px] right-[11px]">
+          <button 
             onClick={handleExportVCF}
+            className="hover:scale-110 transition-transform"
           >
-            <Download className="w-full h-full" />
-          </Button>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-primary-blue">
+              <path d="M12 3v10m0 0l4-4m-4 4l-4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M5 19h14v2H5z" fill="currentColor"/>
+            </svg>
+          </button>
         </div>
 
-        {/* Left column - Icons + Labels */}
-        <div className="absolute" style={{ left: '12px', top: '20px', width: '215px' }}>
+        {/* Right text block */}
+        <div className="absolute left-[260px] right-0 top-[170px] text-center">
+          <div className="text-[28px] font-extrabold text-navy-ink leading-none">
+            {contact.name}
+          </div>
+          <div className="mt-[10px] text-[16px] font-normal text-navy-ink tracking-wide">
+            {contact.company || ""}
+          </div>
+          <div className="mt-[32px] text-[20px] font-extrabold text-navy-ink">
+            (LOGO)
+          </div>
+        </div>
+
+        {/* Left column */}
+        <div className="absolute left-[12px] top-[44px] w-[215px]">
           {/* Phone Row */}
           {contact.phone && (
-            <div className="flex items-center mb-9">
-              <button
-                onClick={() => window.open(`tel:${contact.phone}`, '_self')}
-                className="text-primary-blue hover:text-accent-sky-blue transition-colors w-[22px] h-[22px]"
-              >
-                <Phone className="w-full h-full" />
-              </button>
-              <span 
-                className="font-montserrat text-navy-ink font-normal tracking-wider"
-                style={{ fontSize: '16px', marginLeft: '14px' }}
-              >
-                (PHONE NUMBER)
-              </span>
-            </div>
+            <Row
+              icon={<PhoneIcon />}
+              label={contact.phone}
+              onClick={() => window.open(`tel:${contact.phone}`, '_self')}
+            />
           )}
-
+          
           {/* Email Row */}
           {contact.email && (
-            <div className="flex items-center mb-9">
-              <button
-                onClick={() => window.open(`mailto:${contact.email}`, '_self')}
-                className="text-primary-blue hover:text-accent-sky-blue transition-colors w-[22px] h-[22px]"
-              >
-                <Mail className="w-full h-full" />
-              </button>
-              <span 
-                className="font-montserrat text-navy-ink font-normal tracking-wider"
-                style={{ fontSize: '16px', marginLeft: '14px' }}
-              >
-                (EMAIL)
-              </span>
-            </div>
+            <Row
+              className={contact.phone ? "mt-[16px]" : ""}
+              icon={<MailIcon />}
+              label={contact.email}
+              onClick={() => window.open(`mailto:${contact.email}`, '_self')}
+            />
           )}
-
+          
           {/* Industry Row */}
           {contact.industry && (
-            <div className="flex items-center mb-9">
-              <div className="text-primary-blue w-[22px] h-[22px]">
-                <Home className="w-full h-full" />
-              </div>
-              <span 
-                className="font-montserrat text-navy-ink font-normal tracking-wider"
-                style={{ fontSize: '16px', marginLeft: '14px' }}
-              >
-                (INDUSTRY)
-              </span>
-            </div>
+            <Row
+              className="mt-[16px]"
+              icon={<HomeIcon />}
+              label={contact.industry}
+            />
           )}
-
+          
           {/* Website Row */}
           {contact.websites && contact.websites.length > 0 && (
-            <div className="flex items-center mb-9">
-              <button
-                onClick={() => window.open(contact.websites![0].startsWith('http') ? contact.websites![0] : `https://${contact.websites![0]}`, '_blank')}
-                className="text-primary-blue hover:text-accent-sky-blue transition-colors w-[22px] h-[22px]"
-              >
-                <Laptop className="w-full h-full" />
-              </button>
-              <span 
-                className="font-montserrat text-navy-ink font-normal tracking-wider"
-                style={{ fontSize: '16px', marginLeft: '14px' }}
-              >
-                (WEBSITE)
-              </span>
-            </div>
+            <Row
+              className="mt-[16px]"
+              icon={<LaptopIcon />}
+              label={contact.websites[0]}
+              onClick={() => window.open(contact.websites![0].startsWith('http') ? contact.websites![0] : `https://${contact.websites![0]}`, '_blank')}
+            />
           )}
-
-          {/* Message Row */}
-          <div className="flex items-center mb-9">
-            <button
-              onClick={handleStartConversation}
-              className="text-primary-blue hover:text-accent-sky-blue transition-colors w-[22px] h-[22px]"
-            >
-              <MessageCircle className="w-full h-full" />
-            </button>
-            <span 
-              className="font-montserrat text-navy-ink font-normal tracking-wider"
-              style={{ fontSize: '16px', marginLeft: '14px' }}
-            >
-              [MESSAGE]
-            </span>
-          </div>
-
-          {/* More Details Row */}
-          <div className="flex items-center">
-            <button
-              onClick={() => setIsMoreDetailsOpen(!isMoreDetailsOpen)}
-              className="text-primary-blue hover:text-accent-sky-blue transition-colors w-[22px] h-[22px]"
-            >
-              <ChevronDown className="w-full h-full" />
-            </button>
-            <span 
-              className="font-montserrat text-navy-ink font-normal tracking-wider"
-              style={{ fontSize: '16px', marginLeft: '14px' }}
-            >
-              [OPEN MORE DETAILS]
-            </span>
-          </div>
-        </div>
-
-        {/* Blue ribbon shape with avatar */}
-        <div 
-          className="absolute bg-primary-blue"
-          style={{ 
-            right: '0',
-            top: '0',
-            width: '165px', // Half of 330px
-            height: '300px', // Full height
-            borderBottomLeftRadius: '80px'
-          }}
-        >
-          {/* Avatar circle inside ribbon */}
-          <div 
-            className="absolute"
-            style={{ 
-              left: '50%',
-              top: '92px', // Half of 185px 
-              transform: 'translateX(-50%)',
-              width: '140px', // Half of 280px
-              height: '140px'
-            }}
-          >
-            <Avatar className="w-full h-full border-4 border-medium-gray">
-              <AvatarImage src={undefined} alt={contact.name} />
-              <AvatarFallback className="bg-very-light-gray text-navy-ink text-2xl font-bold">
-                {contact.name.split(' ').map(n => n[0]).join('').toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
-            
-            {/* Profile photo overlay text */}
-            <div 
-              className="absolute bottom-8 left-1/2 transform -translate-x-1/2 font-montserrat font-extrabold text-navy-ink text-center"
-              style={{ fontSize: '14px' }}
-            >
-              (PROFILE PHOTO)
-            </div>
-          </div>
-        </div>
-
-        {/* Contact name & company (right half center) */}
-        <div 
-          className="absolute text-center"
-          style={{ 
-            left: '50%',
-            top: '240px', // Below avatar
-            transform: 'translateX(-50%)',
-            width: '200px'
-          }}
-        >
-          {/* Contact Name */}
-          <h1 
-            className="font-montserrat font-extrabold text-navy-ink mb-2"
-            style={{ fontSize: '28px', lineHeight: '1' }}
-          >
-            (CONTACT NAME)
-          </h1>
           
-          {/* Company Name */}
-          <p 
-            className="font-montserrat font-normal text-navy-ink tracking-wider"
-            style={{ fontSize: '16px' }}
-          >
-            (COMPANY NAME)
-          </p>
-        </div>
-
-        {/* Logo placeholder */}
-        <div 
-          className="absolute text-center"
-          style={{ 
-            right: '82px', // 50px from right + 32px space
-            bottom: '45px', // 60-70px below company name area
-          }}
-        >
-          <span 
-            className="font-montserrat font-extrabold text-navy-ink"
-            style={{ fontSize: '20px' }}
-          >
-            (LOGO)
-          </span>
-        </div>
-
-        {/* Bottom-right Networq logo */}
-        <div className="absolute bottom-3 right-3">
-          <NetworkqLogo className="text-primary-blue w-6 h-6" />
+          {/* Message Row */}
+          <Row
+            className="mt-[16px]"
+            icon={<ChatIcon />}
+            label="[MESSAGE]"
+            onClick={handleStartConversation}
+          />
+          
+          {/* More Details Row */}
+          <Row
+            className="mt-[16px]"
+            icon={<ChevronDoubleDown />}
+            label="[OPEN MORE DETAILS]"
+            onClick={() => setIsMoreDetailsOpen(!isMoreDetailsOpen)}
+          />
         </div>
 
         {/* More Details Overlay */}
@@ -492,7 +469,7 @@ const ContactCardPixelPerfect = ({ contact, onUpdateContact, onDeleteContact }: 
             </div>
           </div>
         )}
-      </Card>
+      </div>
 
       <EditContactForm
         contact={contact}
