@@ -329,7 +329,18 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
             </div>
 
             <AccordionContent>
-              <CardContent className="pt-4 px-6 pb-6 bg-muted/5 border-t border-border">
+              <CardContent className="relative pt-4 px-6 pb-6 bg-muted/5 border-t border-border">
+                {(contact.added_via === 'business_card' || !contact.added_via || contact.added_via === 'manual') && (
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    className="absolute top-3 right-3 h-8 w-8 p-0 hover:bg-accent/50"
+                    onClick={() => setIsEditingContact(true)}
+                    aria-label="Edit contact"
+                  >
+                    <Edit className="h-4 w-4 text-primary" />
+                  </Button>
+                )}
                 <div className="space-y-6">
                   <div className="flex items-center gap-2">
                     <Badge 
