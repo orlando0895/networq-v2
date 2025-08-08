@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Star, Users, Mail, Phone, UserPlus, Edit, Plus, ChevronDown, Trash2, MoreVertical, Linkedin, Facebook, MessageCircle, Globe, MessageSquare, Download, UserCheck, QrCode, Scan, CreditCard } from "lucide-react";
+import { Star, Users, Mail, Phone, UserPlus, Edit, Plus, ChevronDown, Trash2, MoreVertical, Linkedin, Facebook, MessageCircle, Globe, MessageSquare, Download, UserCheck, QrCode, Scan, CreditCard, Share2 } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import EditContactForm from "./EditContactForm";
 import AddNoteForm from "./AddNoteForm";
@@ -216,10 +216,10 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
                     size="sm"
                     variant="ghost"
                     className="h-8 w-8 p-0 hover:bg-background/20"
-                    onClick={handleExportVCF}
-                    aria-label="Download contact"
+                    onClick={() => setIsShareDialogOpen(true)}
+                    aria-label="Share contact"
                   >
-                    <Download className="h-4 w-4 text-primary" />
+                    <Share2 className="h-4 w-4 text-primary" />
                   </Button>
                 </div>
               </div>
