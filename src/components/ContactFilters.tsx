@@ -44,15 +44,15 @@ const ContactFilters = ({
               <Filter className="w-4 h-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="z-50">
+          <DropdownMenuContent align="end" className="z-50 bg-popover border border-border shadow-md">
             <DropdownMenuItem onClick={() => onFilterChange("all")} inset>
-              All tiers
+              All connections
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => onFilterChange("A-player")} inset>
-              A-Players
+              Share code
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => onFilterChange("Acquaintance")} inset>
-              Acquaintances
+              Mutual add
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
