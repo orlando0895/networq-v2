@@ -87,13 +87,12 @@ const Events = () => {
     if (!userLocation) return;
 
     try {
-      setLoading(true);
-      const radius = parseInt(radiusFilter);
+      const radiusMi = parseInt(radiusFilter);
       
       const { data, error } = await supabase.rpc('get_events_within_radius', {
         user_lat: userLocation.lat,
         user_lon: userLocation.lng,
-        radius_km: radius,
+        radius_km: Math.round(radiusMi * 1.60934),
         limit_count: 50
       });
 
@@ -138,9 +137,10 @@ const Events = () => {
     });
   };
 
-  const formatDistance = (distance?: number) => {
-    if (!distance) return '';
-    return distance < 1 ? `${(distance * 1000).toFixed(0)}m` : `${distance.toFixed(1)}km`;
+  const formatDistance = (distanceKm?: number) => {
+    if (distanceKm == null) return '';
+    const miles = distanceKm * 0.621371;
+    return `${miles.toFixed(1)} mi`;
   };
 
   const EventCard = ({ event }: { event: Event }) => (
@@ -220,11 +220,11 @@ const Events = () => {
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="5">5km</SelectItem>
-              <SelectItem value="10">10km</SelectItem>
-              <SelectItem value="25">25km</SelectItem>
-              <SelectItem value="50">50km</SelectItem>
-              <SelectItem value="100">100km</SelectItem>
+              <SelectItem value="5">5mi</SelectItem>
+              <SelectItem value="10">10mi</SelectItem>
+              <SelectItem value="25">25mi</SelectItem>
+              <SelectItem value="50">50mi</SelectItem>
+              <SelectItem value="100">100mi</SelectItem>
             </SelectContent>
           </Select>
         </div>
