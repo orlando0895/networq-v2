@@ -45,6 +45,7 @@ const Discovery = () => {
   const [radiusFilter, setRadiusFilter] = useState('50');
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [discoveryVisible, setDiscoveryVisible] = useState(true);
+  const [industryFilter, setIndustryFilter] = useState('all');
 
   // Get user location
   useEffect(() => {
@@ -188,6 +189,15 @@ const Discovery = () => {
     if (distanceKm === undefined || distanceKm === null) return '';
     const miles = distanceKm * 0.621371;
     return miles < 1 ? `${(miles * 5280).toFixed(0)}ft away` : `${miles.toFixed(1)}mi away`;
+  };
+
+  const matchesIndustry = (u: DiscoveryUser) => {
+    if (industryFilter === 'all') return true;
+    const kw = industryFilter.toLowerCase();
+    const hay = [u.job_title || '', u.company || '', u.bio || '', ...(u.interests || [])]
+      .join(' ')
+      .toLowerCase();
+    return hay.includes(kw);
   };
 
   const UserCard = ({ user: discoveryUser }: { user: DiscoveryUser }) => (
@@ -366,7 +376,27 @@ const Discovery = () => {
               {discoveryUsers.length} profiles
             </span>
           </div>
-
+          <div className="mb-4">
+            <Label htmlFor="industryFilter" className="sr-only">Industry</Label>
+            <Select value={industryFilter} onValueChange={setIndustryFilter}>
+              <SelectTrigger id="industryFilter" className="w-full">
+                <SelectValue placeholder="All industries" />
+              </SelectTrigger>
+              <SelectContent className="z-50">
+                <SelectItem value="all">All industries</SelectItem>
+                <SelectItem value="technology">Technology</SelectItem>
+                <SelectItem value="finance">Finance</SelectItem>
+                <SelectItem value="healthcare">Healthcare</SelectItem>
+                <SelectItem value="education">Education</SelectItem>
+                <SelectItem value="marketing">Marketing</SelectItem>
+                <SelectItem value="sales">Sales</SelectItem>
+                <SelectItem value="operations">Operations</SelectItem>
+                <SelectItem value="design">Design</SelectItem>
+                <SelectItem value="engineering">Engineering</SelectItem>
+                <SelectItem value="other">Other</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
           {loading ? (
             <div className="flex justify-center py-8">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
@@ -374,7 +404,9 @@ const Discovery = () => {
           ) : discoveryUsers.length > 0 ? (
             <div className="space-y-4">
               {discoveryUsers.map(discoveryUser => (
-                <UserCard key={discoveryUser.id} user={discoveryUser} />
+                matchesIndustry(discoveryUser) ? (
+                  <UserCard key={discoveryUser.id} user={discoveryUser} />
+                ) : null
               ))}
             </div>
           ) : (
