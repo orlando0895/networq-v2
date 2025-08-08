@@ -338,25 +338,6 @@ const Discovery = () => {
       }
     >
       <div className="space-y-6">
-        {/* Discovery Stats */}
-        {discoveryStats && (
-          <section className="grid grid-cols-2 gap-4">
-            <Card>
-              <CardContent className="p-4 text-center">
-                <Eye className="h-6 w-6 mx-auto text-primary mb-2" />
-                <div className="text-2xl font-bold">{discoveryStats.profile_views}</div>
-                <div className="text-sm text-muted-foreground">Profile Views</div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardContent className="p-4 text-center">
-                <Heart className="h-6 w-6 mx-auto text-primary mb-2" />
-                <div className="text-2xl font-bold">{discoveryStats.profile_likes}</div>
-                <div className="text-sm text-muted-foreground">Profile Likes</div>
-              </CardContent>
-            </Card>
-          </section>
-        )}
 
         {/* Active Boost Status */}
         {discoveryStats?.active_boost_expires_at && (
