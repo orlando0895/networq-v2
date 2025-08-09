@@ -54,8 +54,12 @@ const BottomNavigation = () => {
     return location.pathname.startsWith(path);
   };
 
-  // Hide bottom navigation on all Messages routes (list and threads)
-  const isInMessageThread = location.pathname.startsWith('/messages');
+  // Hide bottom navigation while inside a specific message thread
+  const searchParams = new URLSearchParams(location.search);
+  const state = (location.state as any) || {};
+  const isInMessageThread =
+    location.pathname.startsWith('/messages') &&
+    (searchParams.has('conversationId') || Boolean(state.conversationId));
 
   if (isInMessageThread) {
     return null;

@@ -9,7 +9,7 @@ import { Plus, MessageSquare } from 'lucide-react';
 import { useContacts } from '@/hooks/useContacts';
 import { useToast } from '@/hooks/use-toast';
 import { MobileLayout, PageHeader } from '@/components/MobileLayout';
-import { useLocation, useSearchParams } from 'react-router-dom';
+import { useLocation, useSearchParams, useNavigate } from 'react-router-dom';
 
 interface Conversation {
   id: string;
@@ -46,6 +46,7 @@ const Messages = ({ targetConversationId }: MessagesProps) => {
 
   const location = useLocation();
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
 
   // If navigated with a target conversation (via state or query), open it
   useEffect(() => {
@@ -195,6 +196,7 @@ const Messages = ({ targetConversationId }: MessagesProps) => {
 
       setSelectedConversationId(conversationData);
       setIsNewMessageOpen(false);
+      navigate(`/messages?conversationId=${conversationData}`);
       
       // Refresh conversations to show the new one
       await fetchConversations();
@@ -255,6 +257,7 @@ const Messages = ({ targetConversationId }: MessagesProps) => {
 
       setSelectedConversationId(conversation.id);
       setIsNewMessageOpen(false);
+      navigate(`/messages?conversationId=${conversation.id}`);
       
       // Refresh conversations to show the new group chat
       await fetchConversations();
@@ -430,6 +433,7 @@ const Messages = ({ targetConversationId }: MessagesProps) => {
 
   const handleBackToConversations = () => {
     setSelectedConversationId(null);
+    navigate('/messages', { replace: true });
   };
 
   if (!user) {
@@ -485,7 +489,7 @@ const Messages = ({ targetConversationId }: MessagesProps) => {
                 <ConversationList
                   conversations={conversations}
                   selectedConversationId={selectedConversationId}
-                  onSelectConversation={setSelectedConversationId}
+                  onSelectConversation={(id) => { setSelectedConversationId(id); navigate(`/messages?conversationId=${id}`); }}
                   onDeleteConversation={handleDeleteConversation}
                   loading={loading}
                 />
