@@ -129,7 +129,7 @@ export const PublicProfile = () => {
         whatsapp: visibility.whatsapp ? contactCard.whatsapp || undefined : undefined,
         websites: visibility.websites ? (contactCard.websites || []) : [],
         notes: visibility.notes ? contactCard.notes || undefined : undefined,
-        added_via: 'qr_code',
+        added_via: 'qr_scan',
         shareCode: contactCard.share_code
       };
 

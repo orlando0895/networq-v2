@@ -17,10 +17,10 @@ const Auth = () => {
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
   const [loading, setLoading] = useState(false);
-  const [inIframe, setInIframe] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
   const { user } = useAuth();
+
   // Redirect if already logged in
   useEffect(() => {
     if (user) {
@@ -28,14 +28,6 @@ const Auth = () => {
     }
   }, [user, navigate]);
 
-  // Detect if running inside an iframe (Google blocks in-iframe auth)
-  useEffect(() => {
-    try {
-      setInIframe(window.self !== window.top);
-    } catch {
-      setInIframe(true);
-    }
-  }, []);
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -88,24 +80,14 @@ const Auth = () => {
   const handleGoogleAuth = async () => {
     setLoading(true);
     try {
-      const redirectUrl = `${window.location.origin}/`;
-      const { data, error } = await supabase.auth.signInWithOAuth({
+      const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: redirectUrl,
-          skipBrowserRedirect: true,
+          redirectTo: `${window.location.origin}/`,
         }
       });
+
       if (error) throw error;
-      if (data?.url) {
-        if (window.top) {
-          (window.top as any).location.href = data.url;
-        } else {
-          window.location.href = data.url;
-        }
-      } else {
-        throw new Error('Failed to get Google sign-in URL.');
-      }
     } catch (error: any) {
       toast({
         title: "Error",
@@ -279,11 +261,6 @@ const Auth = () => {
                 </svg>
                 {loading ? 'Please wait...' : 'Continue with Google'}
               </Button>
-              {inIframe && (
-                <p className="mt-2 text-xs text-muted-foreground text-center">
-                  If sign-in doesn't open, open this app in a new tab and try again.
-                </p>
-              )}
             </>
           )}
           

@@ -11,8 +11,7 @@ import BusinessCardScanner from '@/components/BusinessCardScanner';
 import { useUserContactCard } from '@/hooks/useUserContactCard';
 import { useToast } from '@/hooks/use-toast';
 import QrScanner from 'qr-scanner';
-import { supabase } from '@/integrations/supabase/client';
-import { parseAndAddFromScan } from '@/lib/scan';
+
 interface NewContact {
   name: string;
   email: string;
@@ -27,7 +26,6 @@ interface NewContact {
   whatsapp: string;
   websites: string[];
   added_via?: string;
-  shareCode?: string;
 }
 
 interface ContactFormProps {
@@ -143,51 +141,6 @@ const ContactForm = ({ isOpen, onOpenChange, onAddContact }: ContactFormProps) =
     setIsSearching(false);
   };
 
-  const addByShareCodeAuto = async (code: string) => {
-    const codeLower = (code || '').trim().toLowerCase();
-    if (!codeLower) return;
-    setIsSearching(true);
-    try {
-      const result = await fetchContactCardByShareCode(codeLower);
-      if (result.success && result.data) {
-        const card = result.data;
-        const addResult = await onAddContact({
-          name: card.name,
-          email: card.email,
-          phone: card.phone || '',
-          company: card.company || '',
-          industry: card.industry || '',
-          services: card.services || [],
-          tier: 'Acquaintance',
-          notes: 'Added via QR code',
-          linkedin: card.linkedin || '',
-          facebook: card.facebook || '',
-          whatsapp: card.whatsapp || '',
-          websites: card.websites || [],
-          added_via: 'qr_code',
-          shareCode: codeLower,
-        });
-        if (addResult?.success) {
-          setShareCode('');
-          setFoundCard(null);
-          setActiveView('form');
-          onOpenChange(false);
-        }
-      } else {
-        toast({
-          title: 'Contact Not Found',
-          description: 'No contact found for this share code.',
-          variant: 'destructive',
-        });
-      }
-    } catch (e) {
-      console.error('Error auto-adding by share code:', e);
-      toast({ title: 'Error', description: 'Failed to add contact. Please try again.', variant: 'destructive' });
-    } finally {
-      setIsSearching(false);
-    }
-  };
-
   const addFoundContact = async () => {
     if (!foundCard) return;
     
@@ -204,8 +157,7 @@ const ContactForm = ({ isOpen, onOpenChange, onAddContact }: ContactFormProps) =
       facebook: foundCard.facebook || "",
       whatsapp: foundCard.whatsapp || "",
       websites: foundCard.websites || [],
-      added_via: 'share_code',
-      shareCode: (shareCode || '').trim().toLowerCase(),
+      added_via: 'share_code'
     };
 
     const result = await onAddContact(contactData);
@@ -214,63 +166,6 @@ const ContactForm = ({ isOpen, onOpenChange, onAddContact }: ContactFormProps) =
       setFoundCard(null);
       setActiveView('form');
       onOpenChange(false);
-    }
-  };
-
-  const addContactByUsername = async (username: string) => {
-    const clean = (username || '').trim().toLowerCase();
-    if (!clean) return;
-    setIsSearching(true);
-    try {
-      const { data: cardData, error } = await supabase
-        .from('user_contact_cards')
-        .select('*')
-        .eq('username', clean)
-        .eq('is_active', true)
-        .maybeSingle();
-
-      if (error) throw error;
-
-      if (cardData) {
-        const addResult = await onAddContact({
-          name: cardData.name,
-          email: cardData.email,
-          phone: cardData.phone || "",
-          company: cardData.company || "",
-          industry: cardData.industry || "",
-          services: cardData.services || [],
-          tier: "Acquaintance",
-          notes: "Added via QR code",
-          linkedin: cardData.linkedin || "",
-          facebook: cardData.facebook || "",
-          whatsapp: cardData.whatsapp || "",
-          websites: cardData.websites || [],
-          added_via: 'qr_code',
-          shareCode: (cardData as any).share_code,
-        });
-
-        if (addResult?.success) {
-          setShareCode('');
-          setFoundCard(null);
-          setActiveView('form');
-          onOpenChange(false);
-        }
-      } else {
-        toast({
-          title: "Contact Not Found",
-          description: `No contact found for username "${clean}".`,
-          variant: "destructive"
-        });
-      }
-    } catch (error) {
-      console.error('Error adding contact for username:', username, error);
-      toast({
-        title: "Error",
-        description: `Failed to add contact for username "${clean}". Please try again.`,
-        variant: "destructive"
-      });
-    } finally {
-      setIsSearching(false);
     }
   };
 
@@ -296,36 +191,16 @@ const ContactForm = ({ isOpen, onOpenChange, onAddContact }: ContactFormProps) =
       qrScannerRef.current = new QrScanner(
         videoRef.current,
         (result) => {
-          try {
-            const text = (result.data || '').trim();
-            // Stop scanning to prevent duplicate handling
-            stopScanning();
-
-            parseAndAddFromScan(text, {
-              addByCode: (code) => addByShareCodeAuto(code),
-              addByUsername: (username) => addContactByUsername(username),
-              onInvalid: (scanned) => {
-                toast({
-                  title: 'QR Code Not Recognized',
-                  description: `Scanned: "${(scanned || '').substring(0, 40)}${(scanned || '').length > 40 ? '...' : ''}". Please scan a Networq contact QR code.`,
-                  variant: 'destructive',
-                });
-                setTimeout(() => {
-                  if (!isScanning) startScanning();
-                }, 1500);
-              }
-            });
-          } catch (e) {
-            console.error('[QR Scanner] Error processing scan result:', e);
-            toast({
-              title: 'Scanner Error',
-              description: 'Failed to process QR code. Please try again.',
-              variant: 'destructive',
-            });
-            setTimeout(() => {
-              if (!isScanning) startScanning();
-            }, 1500);
+          let shareCode = result.data;
+          
+          if (shareCode.includes('/contact/')) {
+            const match = shareCode.match(/\/contact\/([a-f0-9]{8})/);
+            if (match) {
+              shareCode = match[1];
+            }
           }
+          
+          searchByCode(shareCode);
         },
         {
           highlightScanRegion: true,

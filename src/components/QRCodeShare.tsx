@@ -14,52 +14,21 @@ export const QRCodeShare = () => {
 
   useEffect(() => {
     if (contactCard?.share_code) {
-      // Generate clean, consistent URL for QR code
+      // Generate QR code pointing to public profile
       const publicUrl = contactCard.username 
         ? `${window.location.origin}/public/${contactCard.username}`
         : `${window.location.origin}/public/${contactCard.share_code}`;
         
-      console.log('🔄 QR Code generation started');
-      console.log('📊 Share code:', contactCard.share_code);
-      console.log('🔗 Public URL:', publicUrl);
-        
-      const generateQR = async () => {
-        try {
-          // Validate URL before QR generation
-          if (!contactCard.share_code || contactCard.share_code.length !== 8) {
-            console.error('❌ Invalid share code for QR generation:', contactCard.share_code);
-            return;
-          }
-
-          // Generate QR code with optimized settings for mobile scanning
-          const url = await QRCode.toDataURL(publicUrl, {
-            width: 320,           // Larger size for better scanning
-            margin: 3,            // Increased margin for scanner detection
-            errorCorrectionLevel: 'H' as const,  // High error correction for damaged codes
-            color: {
-              dark: '#000000',    // Pure black for maximum contrast
-              light: '#FFFFFF'    // Pure white background
-            }
-          });
-          
-          // Validate generated QR code
-          if (url && typeof url === 'string' && url.startsWith('data:image/png;base64,')) {
-            setQrCodeUrl(url);
-            console.log('✅ QR code generated successfully');
-            console.log('📏 QR URL length:', url.length);
-          } else {
-            console.error('❌ Invalid QR code generated');
-          }
-        } catch (err) {
-          console.error('❌ QR code generation failed:', err);
-          setQrCodeUrl('');
+      QRCode.toDataURL(publicUrl, {
+        width: 256,
+        margin: 2,
+        color: {
+          dark: '#000000',
+          light: '#FFFFFF'
         }
-      };
-      
-      generateQR();
-    } else {
-      setQrCodeUrl('');
-      console.log('ℹ️ No share code available for QR generation');
+      })
+        .then((url) => setQrCodeUrl(url))
+        .catch((err) => console.error('Error generating QR code:', err));
     }
   }, [contactCard?.share_code, contactCard?.username]);
 
@@ -159,27 +128,17 @@ export const QRCodeShare = () => {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        {qrCodeUrl ? (
+        {qrCodeUrl && (
           <div className="flex justify-center">
             <div className="p-4 bg-white rounded-lg shadow-sm border">
               <img 
                 src={qrCodeUrl} 
                 alt="Contact QR Code" 
-                className="w-60 h-60"
-                style={{ imageRendering: 'pixelated' }}
+                className="w-48 h-48"
               />
             </div>
           </div>
-        ) : contactCard?.share_code ? (
-          <div className="flex justify-center">
-            <div className="p-4 bg-gray-100 rounded-lg shadow-sm border w-60 h-60 flex items-center justify-center">
-              <div className="text-center text-gray-500">
-                <QrCode className="w-12 h-12 mx-auto mb-2" />
-                <p>Generating QR Code...</p>
-              </div>
-            </div>
-          </div>
-        ) : null}
+        )}
         
         <div className="text-center space-y-3">
           <div>
@@ -249,11 +208,8 @@ export const QRCodeShare = () => {
           </div>
         </div>
 
-        <div className="text-xs text-muted-foreground text-center space-y-2">
-          <p><strong>How to use this QR code:</strong></p>
-          <p>• <strong>External scanners</strong>: Opens your public profile in any browser</p>
-          <p>• <strong>Networq app</strong>: Automatically adds you to their contacts</p>
-          <p>• No app installation required for viewing</p>
+        <div className="text-xs text-muted-foreground text-center">
+          Anyone can scan this QR code to view your digital business card and download your contact info - no app required!
         </div>
       </CardContent>
     </Card>
