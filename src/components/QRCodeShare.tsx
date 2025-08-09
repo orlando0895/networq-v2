@@ -14,49 +14,54 @@ export const QRCodeShare = () => {
 
   useEffect(() => {
     if (contactCard?.share_code) {
-      // Generate QR code pointing to public profile
+      // Generate clean, consistent URL for QR code
       const publicUrl = contactCard.username 
         ? `${window.location.origin}/public/${contactCard.username}`
         : `${window.location.origin}/public/${contactCard.share_code}`;
         
-      console.log('🔄 QR Code regeneration triggered');
-      console.log('📊 Current share code:', contactCard.share_code);
-      console.log('🔗 QR code URL:', publicUrl);
-      console.log('⏰ Contact card updated_at:', contactCard.updated_at);
-      console.log('⏰ Timestamp:', new Date().toISOString());
+      console.log('🔄 QR Code generation started');
+      console.log('📊 Share code:', contactCard.share_code);
+      console.log('🔗 Public URL:', publicUrl);
         
-      // Clear any existing QR code first and force a clean slate
-      setQrCodeUrl('');
-      
-      // Add a small delay to ensure state clears, then generate new QR
       const generateQR = async () => {
         try {
-          // Add cache-busting parameter to ensure fresh generation
-          const urlWithCacheBust = `${publicUrl}?t=${Date.now()}`;
-          console.log('🔄 Generating QR with cache-bust URL:', urlWithCacheBust);
-          
+          // Validate URL before QR generation
+          if (!contactCard.share_code || contactCard.share_code.length !== 8) {
+            console.error('❌ Invalid share code for QR generation:', contactCard.share_code);
+            return;
+          }
+
+          // Generate QR code with optimized settings for mobile scanning
           const url = await QRCode.toDataURL(publicUrl, {
-            width: 256,
-            margin: 2,
+            width: 320,           // Larger size for better scanning
+            margin: 3,            // Increased margin for scanner detection
+            errorCorrectionLevel: 'H' as const,  // High error correction for damaged codes
             color: {
-              dark: '#000000',
-              light: '#FFFFFF'
+              dark: '#000000',    // Pure black for maximum contrast
+              light: '#FFFFFF'    // Pure white background
             }
           });
           
-          setQrCodeUrl(url);
-          console.log('✅ New QR code generated successfully for share code:', contactCard.share_code);
+          // Validate generated QR code
+          if (url && typeof url === 'string' && url.startsWith('data:image/png;base64,')) {
+            setQrCodeUrl(url);
+            console.log('✅ QR code generated successfully');
+            console.log('📏 QR URL length:', url.length);
+          } else {
+            console.error('❌ Invalid QR code generated');
+          }
         } catch (err) {
-          console.error('❌ Error generating QR code:', err);
+          console.error('❌ QR code generation failed:', err);
+          setQrCodeUrl('');
         }
       };
       
-      // Small delay to ensure clean state
-      setTimeout(generateQR, 100);
+      generateQR();
     } else {
       setQrCodeUrl('');
+      console.log('ℹ️ No share code available for QR generation');
     }
-  }, [contactCard?.share_code, contactCard?.username, contactCard?.updated_at]);
+  }, [contactCard?.share_code, contactCard?.username]);
 
   const handleCopyShareCode = async () => {
     if (contactCard?.share_code) {
@@ -154,18 +159,27 @@ export const QRCodeShare = () => {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        {qrCodeUrl && (
+        {qrCodeUrl ? (
           <div className="flex justify-center">
             <div className="p-4 bg-white rounded-lg shadow-sm border">
               <img 
                 src={qrCodeUrl} 
                 alt="Contact QR Code" 
-                className="w-48 h-48"
-                key={`qr-${contactCard?.share_code}-${contactCard?.updated_at}`}
+                className="w-60 h-60"
+                style={{ imageRendering: 'pixelated' }}
               />
             </div>
           </div>
-        )}
+        ) : contactCard?.share_code ? (
+          <div className="flex justify-center">
+            <div className="p-4 bg-gray-100 rounded-lg shadow-sm border w-60 h-60 flex items-center justify-center">
+              <div className="text-center text-gray-500">
+                <QrCode className="w-12 h-12 mx-auto mb-2" />
+                <p>Generating QR Code...</p>
+              </div>
+            </div>
+          </div>
+        ) : null}
         
         <div className="text-center space-y-3">
           <div>
@@ -235,8 +249,11 @@ export const QRCodeShare = () => {
           </div>
         </div>
 
-        <div className="text-xs text-muted-foreground text-center">
-          Anyone can scan this QR code to view your digital business card and download your contact info - no app required!
+        <div className="text-xs text-muted-foreground text-center space-y-2">
+          <p><strong>How to use this QR code:</strong></p>
+          <p>• <strong>External scanners</strong>: Opens your public profile in any browser</p>
+          <p>• <strong>Networq app</strong>: Automatically adds you to their contacts</p>
+          <p>• No app installation required for viewing</p>
         </div>
       </CardContent>
     </Card>

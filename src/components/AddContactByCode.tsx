@@ -127,82 +127,136 @@ const AddContactByCode = () => {
         return;
       }
 
-      // Create new QR scanner
+      // Create new QR scanner with optimized settings
       qrScannerRef.current = new QrScanner(
         videoRef.current,
         (result) => {
           try {
             const text = (result.data || '').trim();
-            console.info('[QR] Scanned text:', text);
+            console.info('[QR Scanner] Raw scanned text:', text);
+            console.info('[QR Scanner] Text length:', text.length);
+            console.info('[QR Scanner] First 50 chars:', text.substring(0, 50));
 
             // Stop scanning to prevent duplicate handling
             stopScanning();
 
+            // Enhanced URL pattern matching with more detailed logging
+            console.info('[QR Scanner] Starting pattern matching...');
+
             // 1) Handle /contact/:shareCode pattern
             if (text.includes('/contact/')) {
+              console.info('[QR Scanner] Found /contact/ pattern');
               const match = text.match(/\/contact\/([a-f0-9]{8})/i);
               if (match) {
                 const code = match[1].toLowerCase();
-                console.debug('[QR] Detected /contact/ code:', code);
+                console.info('[QR Scanner] Extracted /contact/ code:', code);
                 addContactByCode(code);
                 return;
               }
+              console.warn('[QR Scanner] /contact/ pattern found but no valid code extracted');
             }
 
-            // 2) Handle /public/:identifier (username or share_code)
+            // 2) Handle /public/:identifier (username or share_code) 
             if (text.includes('/public/')) {
-              const match = text.match(/\/public\/([^\/?#]+)/i);
+              console.info('[QR Scanner] Found /public/ pattern');
+              const match = text.match(/\/public\/([^\/?#\s]+)/i);
               if (match) {
-                const identifier = match[1];
+                const identifier = match[1].trim();
+                console.info('[QR Scanner] Extracted /public/ identifier:', identifier);
+                
                 if (/^[a-f0-9]{8}$/i.test(identifier)) {
                   const code = identifier.toLowerCase();
-                  console.debug('[QR] Detected /public/ share code:', code);
+                  console.info('[QR Scanner] Identified as share code:', code);
                   addContactByCode(code);
                 } else {
-                  console.debug('[QR] Detected /public/ username:', identifier);
+                  console.info('[QR Scanner] Identified as username:', identifier);
                   navigate(`/public/${identifier}`);
                 }
                 return;
               }
+              console.warn('[QR Scanner] /public/ pattern found but no identifier extracted');
             }
 
             // 3) Handle raw 8-char share code
             if (/^[a-f0-9]{8}$/i.test(text)) {
               const code = text.toLowerCase();
-              console.debug('[QR] Detected raw share code:', code);
+              console.info('[QR Scanner] Detected raw share code:', code);
               addContactByCode(code);
               return;
             }
 
-            // 4) Unrecognized format
-            console.warn('[QR] Unrecognized QR format');
+            // 4) Handle URLs that might contain share codes or usernames
+            if (text.includes('http')) {
+              console.info('[QR Scanner] Found HTTP URL, attempting to extract identifier');
+              const urlMatch = text.match(/https?:\/\/[^\/]+\/(?:public|contact)\/([^\/?#\s]+)/i);
+              if (urlMatch) {
+                const identifier = urlMatch[1].trim();
+                if (/^[a-f0-9]{8}$/i.test(identifier)) {
+                  const code = identifier.toLowerCase();
+                  console.info('[QR Scanner] Extracted share code from URL:', code);
+                  addContactByCode(code);
+                  return;
+                } else {
+                  console.info('[QR Scanner] Extracted username from URL:', identifier);
+                  navigate(`/public/${identifier}`);
+                  return;
+                }
+              }
+            }
+
+            // 5) Last resort: look for any 8-character hex pattern in the text
+            const hexPattern = text.match(/[a-f0-9]{8}/i);
+            if (hexPattern) {
+              const code = hexPattern[0].toLowerCase();
+              console.info('[QR Scanner] Found potential share code pattern:', code);
+              addContactByCode(code);
+              return;
+            }
+
+            // 6) Unrecognized format - provide detailed feedback
+            console.error('[QR Scanner] No recognizable pattern found in:', text);
             dismiss();
             toast({
-              title: 'Unrecognized QR Code',
-              description: 'Scan a Networq link (/public/... or /contact/...) or an 8-character share code.',
+              title: 'QR Code Not Recognized',
+              description: `Scanned: "${text.substring(0, 40)}${text.length > 40 ? '...' : ''}". Please scan a Networq contact QR code.`,
               variant: 'destructive',
             });
-            // Auto-retry scanning after short delay
+            
+            // Auto-retry scanning after delay
             setTimeout(() => {
               if (!isScanning) startScanning();
-            }, 800);
+            }, 2000);
+            
           } catch (e) {
-            console.error('[QR] Error handling scan result:', e);
+            console.error('[QR Scanner] Error processing scan result:', e);
             dismiss();
             toast({
-              title: 'Scan Error',
-              description: 'Something went wrong reading this QR code. Try again.',
+              title: 'Scanner Error',
+              description: 'Failed to process QR code. Please try scanning again.',
               variant: 'destructive',
             });
             setTimeout(() => {
               if (!isScanning) startScanning();
-            }, 800);
+            }, 1500);
           }
         },
         {
           highlightScanRegion: true,
           highlightCodeOutline: true,
-          preferredCamera: 'environment', // Use back camera on mobile
+          preferredCamera: 'environment',
+          maxScansPerSecond: 5,        // Limit scan frequency for stability
+          returnDetailedScanResult: true,
+          calculateScanRegion: (video) => {
+            // Calculate optimal scan region (center 70% of video)
+            const smallerDimension = Math.min(video.videoWidth, video.videoHeight);
+            const regionSize = Math.round(0.7 * smallerDimension);
+            return {
+              x: Math.round((video.videoWidth - regionSize) / 2),
+              y: Math.round((video.videoHeight - regionSize) / 2),
+              width: regionSize,
+              height: regionSize,
+            };
+          }
         }
       );
 
@@ -343,8 +397,12 @@ const AddContactByCode = () => {
                   </div>
                 )}
                 
-                <div className="text-xs text-center text-gray-500">
-                  Point your camera at a QR code to scan it automatically
+                <div className="text-xs text-center text-gray-500 space-y-1">
+                  <p><strong>Scanning Tips:</strong></p>
+                  <p>• Hold steady and keep QR code centered</p>
+                  <p>• Ensure good lighting</p>
+                  <p>• Keep 6-12 inches from screen</p>
+                  <p>• Try different angles if not working</p>
                 </div>
               </div>
             </TabsContent>
