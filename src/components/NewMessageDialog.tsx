@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Search, MessageSquare } from 'lucide-react';
+import { Search, MessageSquare, Filter } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface Contact {
