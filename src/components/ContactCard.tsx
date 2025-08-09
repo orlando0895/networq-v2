@@ -257,11 +257,22 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
                     </div>
                   )}
 
-                  {/* Company logo placeholder (if needed) */}
+                  {/* Company logo */}
                   {contact.company && (
-                    <div className="mt-2 h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-muted grid place-items-center text-[10px] sm:text-xs text-muted-foreground">
-                      LOGO
-                    </div>
+                    contact.company_logo_url ? (
+                      <div className="mt-2 h-10 w-10 sm:h-12 sm:w-12 rounded-full overflow-hidden bg-muted/40 ring-1 ring-border/60">
+                        <img
+                          src={contact.company_logo_url}
+                          alt={`${contact.company} company logo`}
+                          className="w-full h-full object-contain"
+                          loading="lazy"
+                        />
+                      </div>
+                    ) : (
+                      <div className="mt-2 h-10 w-10 sm:h-12 sm:w-12 rounded-full bg-muted grid place-items-center text-[10px] sm:text-xs text-muted-foreground">
+                        LOGO
+                      </div>
+                    )
                   )}
                 </div>
 

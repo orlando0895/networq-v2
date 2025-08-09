@@ -46,22 +46,24 @@ const AddContactByCode = () => {
         const cardData = result.data;
         
         // Add the contact with the share code for mutual connection
-        const addResult = await addContact({
-          name: cardData.name,
-          email: cardData.email,
-          phone: cardData.phone || undefined,
-          company: cardData.company || undefined,
-          industry: cardData.industry || undefined,
-          services: cardData.services || [],
-          tier: 'A-player',
-          notes: 'Added via share code',
-          linkedin: cardData.linkedin || undefined,
-          facebook: cardData.facebook || undefined,
-          whatsapp: cardData.whatsapp || undefined,
-          websites: cardData.websites || [],
-          added_via: 'share_code',
-          shareCode: codeToAdd // Pass the share code for mutual connection
-        });
+          const addResult = await addContact({
+            name: cardData.name,
+            email: cardData.email,
+            phone: cardData.phone || undefined,
+            company: cardData.company || undefined,
+            industry: cardData.industry || undefined,
+            services: cardData.services || [],
+            tier: 'A-player',
+            notes: 'Added via share code',
+            linkedin: cardData.linkedin || undefined,
+            facebook: cardData.facebook || undefined,
+            whatsapp: cardData.whatsapp || undefined,
+            websites: cardData.websites || [],
+            profile_picture_url: cardData.avatar_url || undefined,
+            company_logo_url: cardData.company_logo_url || undefined,
+            added_via: 'share_code',
+            shareCode: codeToAdd // Pass the share code for mutual connection
+          });
         
         if (addResult?.success) {
           setShareCode('');

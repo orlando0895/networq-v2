@@ -54,6 +54,8 @@ export const useContacts = () => {
     facebook?: string;
     whatsapp?: string;
     websites: string[];
+    profile_picture_url?: string;
+    company_logo_url?: string;
     added_via?: string;
     shareCode?: string; // Add optional share code parameter
   }) => {
