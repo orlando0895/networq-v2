@@ -335,10 +335,6 @@ export function ChatWindow({ conversationId, currentUserId, onBack, onMessageSen
                   <h2 className="font-bold text-base truncate">
                     {getDisplayName(participants[0] || { id: '', full_name: '', email: '' })}
                   </h2>
-                  <div className="flex items-center space-x-1">
-                    <div className="h-2 w-2 bg-green-500 rounded-full"></div>
-                    <p className="text-xs text-muted-foreground">Online now</p>
-                  </div>
                 </div>
               </div>
             )}
