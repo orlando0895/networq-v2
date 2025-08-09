@@ -22,24 +22,39 @@ export const QRCodeShare = () => {
       console.log('🔄 QR Code regeneration triggered');
       console.log('📊 Current share code:', contactCard.share_code);
       console.log('🔗 QR code URL:', publicUrl);
+      console.log('⏰ Contact card updated_at:', contactCard.updated_at);
       console.log('⏰ Timestamp:', new Date().toISOString());
         
-      // Clear any existing QR code first
+      // Clear any existing QR code first and force a clean slate
       setQrCodeUrl('');
-        
-      QRCode.toDataURL(publicUrl, {
-        width: 256,
-        margin: 2,
-        color: {
-          dark: '#000000',
-          light: '#FFFFFF'
-        }
-      })
-        .then((url) => {
+      
+      // Add a small delay to ensure state clears, then generate new QR
+      const generateQR = async () => {
+        try {
+          // Add cache-busting parameter to ensure fresh generation
+          const urlWithCacheBust = `${publicUrl}?t=${Date.now()}`;
+          console.log('🔄 Generating QR with cache-bust URL:', urlWithCacheBust);
+          
+          const url = await QRCode.toDataURL(publicUrl, {
+            width: 256,
+            margin: 2,
+            color: {
+              dark: '#000000',
+              light: '#FFFFFF'
+            }
+          });
+          
           setQrCodeUrl(url);
-          console.log('✅ New QR code generated successfully');
-        })
-        .catch((err) => console.error('❌ Error generating QR code:', err));
+          console.log('✅ New QR code generated successfully for share code:', contactCard.share_code);
+        } catch (err) {
+          console.error('❌ Error generating QR code:', err);
+        }
+      };
+      
+      // Small delay to ensure clean state
+      setTimeout(generateQR, 100);
+    } else {
+      setQrCodeUrl('');
     }
   }, [contactCard?.share_code, contactCard?.username, contactCard?.updated_at]);
 
@@ -146,6 +161,7 @@ export const QRCodeShare = () => {
                 src={qrCodeUrl} 
                 alt="Contact QR Code" 
                 className="w-48 h-48"
+                key={`qr-${contactCard?.share_code}-${contactCard?.updated_at}`}
               />
             </div>
           </div>
