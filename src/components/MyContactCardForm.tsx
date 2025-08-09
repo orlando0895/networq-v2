@@ -241,17 +241,17 @@ const MyContactCardForm = () => {
         </CardHeader>
         <CardContent>
           <div className="mb-6">
-            <div className="grid grid-cols-2 gap-4">
-              <section className="rounded-lg border bg-muted/30 p-4">
-                <Label className="block text-sm font-medium mb-3">Profile Picture</Label>
+            <div className="grid grid-cols-2 gap-5 items-stretch">
+              <section className="rounded-xl border bg-muted/40 p-4 sm:p-5 shadow-sm hover:shadow-md transition-shadow duration-200 h-full flex flex-col items-center text-center">
+                <Label className="block text-base font-semibold mb-3">Profile Picture</Label>
                 <ProfilePictureUpload
                   currentAvatarUrl={watch('avatar_url')}
                   onAvatarUpdate={(url) => setValue('avatar_url', url || '')}
                   userInitials={watch('name')?.split(' ').map(n => n[0]).join('').toUpperCase() || 'U'}
                 />
               </section>
-              <section className="rounded-lg border bg-muted/30 p-4">
-                <Label className="block text-sm font-medium mb-3">Company Logo</Label>
+              <section className="rounded-xl border bg-muted/40 p-4 sm:p-5 shadow-sm hover:shadow-md transition-shadow duration-200 h-full flex flex-col items-center text-center">
+                <Label className="block text-base font-semibold mb-3">Company Logo</Label>
                 <ProfilePictureUpload
                   currentAvatarUrl={companyLogoUrl}
                   onAvatarUpdate={(url) => setCompanyLogoUrl(url || '')}
