@@ -16,6 +16,7 @@ import { useToast } from '@/hooks/use-toast';
 import QrScanner from 'qr-scanner';
 import type { Database } from '@/integrations/supabase/types';
 import { supabase } from '@/integrations/supabase/client';
+import { parseAndAddFromScan } from '@/lib/scan';
 
 type UserContactCard = Database['public']['Tables']['user_contact_cards']['Row'];
 
@@ -193,100 +194,24 @@ const AddContactByCode = () => {
         (result) => {
           try {
             const text = (result.data || '').trim();
-            console.info('[QR Scanner] Raw scanned text:', text);
-            console.info('[QR Scanner] Text length:', text.length);
-            console.info('[QR Scanner] First 50 chars:', text.substring(0, 50));
-
             // Stop scanning to prevent duplicate handling
             stopScanning();
 
-            // Enhanced URL pattern matching with more detailed logging
-            console.info('[QR Scanner] Starting pattern matching...');
-
-            // 1) Handle /contact/:shareCode pattern
-            if (text.includes('/contact/')) {
-              console.info('[QR Scanner] Found /contact/ pattern');
-              const match = text.match(/\/contact\/([a-f0-9]{8})/i);
-              if (match) {
-                const code = match[1].toLowerCase();
-                console.info('[QR Scanner] Extracted /contact/ code:', code);
-                addContactByCode(code, 'qr_code');
-                return;
+            parseAndAddFromScan(text, {
+              addByCode: (code) => addContactByCode(code, 'qr_code'),
+              addByUsername: (username) => addContactByUsername(username, 'qr_code'),
+              onInvalid: (scanned) => {
+                dismiss();
+                toast({
+                  title: 'QR Code Not Recognized',
+                  description: `Scanned: "${(scanned || '').substring(0, 40)}${(scanned || '').length > 40 ? '...' : ''}". Please scan a Networq contact QR code.`,
+                  variant: 'destructive',
+                });
+                setTimeout(() => {
+                  if (!isScanning) startScanning();
+                }, 2000);
               }
-              console.warn('[QR Scanner] /contact/ pattern found but no valid code extracted');
-            }
-
-            // 2) Handle /public/:identifier (username or share_code) 
-            if (text.includes('/public/')) {
-              console.info('[QR Scanner] Found /public/ pattern');
-              const match = text.match(/\/public\/([^\/?#\s]+)/i);
-              if (match) {
-                const identifier = match[1].trim();
-                console.info('[QR Scanner] Extracted /public/ identifier:', identifier);
-                
-                if (/^[a-f0-9]{8}$/i.test(identifier)) {
-                  const code = identifier.toLowerCase();
-                  console.info('[QR Scanner] Identified as share code:', code);
-                  addContactByCode(code, 'qr_code');
-                } else {
-                  console.info('[QR Scanner] Identified as username:', identifier);
-                  addContactByUsername(identifier, 'qr_code');
-                }
-                return;
-              }
-              console.warn('[QR Scanner] /public/ pattern found but no identifier extracted');
-            }
-
-            // 3) Handle raw 8-char share code
-            if (/^[a-f0-9]{8}$/i.test(text)) {
-              const code = text.toLowerCase();
-              console.info('[QR Scanner] Detected raw share code:', code);
-              addContactByCode(code, 'qr_code');
-              return;
-            }
-
-            // 4) Handle URLs that might contain share codes or usernames
-            if (text.includes('http')) {
-              console.info('[QR Scanner] Found HTTP URL, attempting to extract identifier');
-              const urlMatch = text.match(/https?:\/\/[^\/]+\/(?:public|contact)\/([^\/?#\s]+)/i);
-              if (urlMatch) {
-                const identifier = urlMatch[1].trim();
-                if (/^[a-f0-9]{8}$/i.test(identifier)) {
-                  const code = identifier.toLowerCase();
-                  console.info('[QR Scanner] Extracted share code from URL:', code);
-                  addContactByCode(code, 'qr_code');
-                  return;
-                } else {
-                  console.info('[QR Scanner] Extracted username from URL:', identifier);
-                  addContactByUsername(identifier, 'qr_code');
-                  return;
-                }
-              }
-            }
-
-            // 5) Last resort: look for any 8-character hex pattern in the text
-            const hexPattern = text.match(/[a-f0-9]{8}/i);
-            if (hexPattern) {
-              const code = hexPattern[0].toLowerCase();
-              console.info('[QR Scanner] Found potential share code pattern:', code);
-              addContactByCode(code, 'qr_code');
-              return;
-            }
-
-            // 6) Unrecognized format - provide detailed feedback
-            console.error('[QR Scanner] No recognizable pattern found in:', text);
-            dismiss();
-            toast({
-              title: 'QR Code Not Recognized',
-              description: `Scanned: "${text.substring(0, 40)}${text.length > 40 ? '...' : ''}". Please scan a Networq contact QR code.`,
-              variant: 'destructive',
             });
-            
-            // Auto-retry scanning after delay
-            setTimeout(() => {
-              if (!isScanning) startScanning();
-            }, 2000);
-            
           } catch (e) {
             console.error('[QR Scanner] Error processing scan result:', e);
             dismiss();

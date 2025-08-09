@@ -12,6 +12,7 @@ import { useUserContactCard } from '@/hooks/useUserContactCard';
 import { useToast } from '@/hooks/use-toast';
 import QrScanner from 'qr-scanner';
 import { supabase } from '@/integrations/supabase/client';
+import { parseAndAddFromScan } from '@/lib/scan';
 interface NewContact {
   name: string;
   email: string;
@@ -169,6 +170,62 @@ const ContactForm = ({ isOpen, onOpenChange, onAddContact }: ContactFormProps) =
     }
   };
 
+  const addContactByUsername = async (username: string) => {
+    const clean = (username || '').trim();
+    if (!clean) return;
+    setIsSearching(true);
+    try {
+      const { data: cardData, error } = await supabase
+        .from('user_contact_cards')
+        .select('*')
+        .eq('username', clean)
+        .eq('is_active', true)
+        .maybeSingle();
+
+      if (error) throw error;
+
+      if (cardData) {
+        const addResult = await onAddContact({
+          name: cardData.name,
+          email: cardData.email,
+          phone: cardData.phone || "",
+          company: cardData.company || "",
+          industry: cardData.industry || "",
+          services: cardData.services || [],
+          tier: "Acquaintance",
+          notes: "Added via QR code",
+          linkedin: cardData.linkedin || "",
+          facebook: cardData.facebook || "",
+          whatsapp: cardData.whatsapp || "",
+          websites: cardData.websites || [],
+          added_via: "qr_code"
+        });
+
+        if (addResult?.success) {
+          setShareCode('');
+          setFoundCard(null);
+          setActiveView('form');
+          onOpenChange(false);
+        }
+      } else {
+        toast({
+          title: "Contact Not Found",
+          description: `No contact found for username "${clean}".`,
+          variant: "destructive"
+        });
+      }
+    } catch (error) {
+      console.error('Error adding contact for username:', username, error);
+      toast({
+        title: "Error",
+        description: `Failed to add contact for username "${clean}". Please try again.`,
+        variant: "destructive"
+      });
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
   const startScanning = async () => {
     try {
       setCameraError('');
@@ -191,16 +248,36 @@ const ContactForm = ({ isOpen, onOpenChange, onAddContact }: ContactFormProps) =
       qrScannerRef.current = new QrScanner(
         videoRef.current,
         (result) => {
-          let shareCode = result.data;
-          
-          if (shareCode.includes('/contact/')) {
-            const match = shareCode.match(/\/contact\/([a-f0-9]{8})/);
-            if (match) {
-              shareCode = match[1];
-            }
+          try {
+            const text = (result.data || '').trim();
+            // Stop scanning to prevent duplicate handling
+            stopScanning();
+
+            parseAndAddFromScan(text, {
+              addByCode: (code) => searchByCode(code.toLowerCase()),
+              addByUsername: (username) => addContactByUsername(username),
+              onInvalid: (scanned) => {
+                toast({
+                  title: 'QR Code Not Recognized',
+                  description: `Scanned: "${(scanned || '').substring(0, 40)}${(scanned || '').length > 40 ? '...' : ''}". Please scan a Networq contact QR code.`,
+                  variant: 'destructive',
+                });
+                setTimeout(() => {
+                  if (!isScanning) startScanning();
+                }, 1500);
+              }
+            });
+          } catch (e) {
+            console.error('[QR Scanner] Error processing scan result:', e);
+            toast({
+              title: 'Scanner Error',
+              description: 'Failed to process QR code. Please try again.',
+              variant: 'destructive',
+            });
+            setTimeout(() => {
+              if (!isScanning) startScanning();
+            }, 1500);
           }
-          
-          searchByCode(shareCode);
         },
         {
           highlightScanRegion: true,
