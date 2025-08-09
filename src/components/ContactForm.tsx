@@ -11,7 +11,7 @@ import BusinessCardScanner from '@/components/BusinessCardScanner';
 import { useUserContactCard } from '@/hooks/useUserContactCard';
 import { useToast } from '@/hooks/use-toast';
 import QrScanner from 'qr-scanner';
-
+import { supabase } from '@/integrations/supabase/client';
 interface NewContact {
   name: string;
   email: string;
@@ -157,7 +157,7 @@ const ContactForm = ({ isOpen, onOpenChange, onAddContact }: ContactFormProps) =
       facebook: foundCard.facebook || "",
       whatsapp: foundCard.whatsapp || "",
       websites: foundCard.websites || [],
-      added_via: 'share_code'
+      added_via: 'qr_code'
     };
 
     const result = await onAddContact(contactData);

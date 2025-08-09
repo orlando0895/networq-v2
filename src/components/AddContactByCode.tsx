@@ -15,6 +15,7 @@ import { useContacts } from '@/hooks/useContacts';
 import { useToast } from '@/hooks/use-toast';
 import QrScanner from 'qr-scanner';
 import type { Database } from '@/integrations/supabase/types';
+import { supabase } from '@/integrations/supabase/client';
 
 type UserContactCard = Database['public']['Tables']['user_contact_cards']['Row'];
 
@@ -33,7 +34,7 @@ const AddContactByCode = () => {
   const { fetchContactCardByShareCode } = useUserContactCard();
   const { toast, dismiss } = useToast();
   const navigate = useNavigate();
-  const addContactByCode = async (code?: string) => {
+  const addContactByCode = async (code?: string, addedVia: 'qr_code' | 'share_code' = 'share_code') => {
     const raw = (code || shareCode.trim());
     const codeToAdd = raw.toLowerCase();
     if (!codeToAdd) return;
@@ -78,7 +79,7 @@ const AddContactByCode = () => {
           websites: cardData.websites || [],
           profile_picture_url: cardData.avatar_url || undefined,
           company_logo_url: cardData.company_logo_url || undefined,
-          added_via: 'share_code',
+          added_via: addedVia,
           shareCode: codeToAdd // Pass the share code for mutual connection
         });
         
@@ -107,6 +108,65 @@ const AddContactByCode = () => {
       toast({
         title: 'Error',
         description: `Failed to add contact for code "${codeToAdd}". Please try again.`,
+        variant: 'destructive',
+      });
+    } finally {
+      setIsAdding(false);
+    }
+  };
+
+  const addContactByUsername = async (username: string, addedVia: 'qr_code' = 'qr_code') => {
+    const clean = (username || '').trim();
+    if (!clean) return;
+    setIsAdding(true);
+    try {
+      console.debug('[AddContactByCode] Looking up username:', clean);
+      const { data: cardData, error } = await supabase
+        .from('user_contact_cards')
+        .select('*')
+        .eq('username', clean)
+        .eq('is_active', true)
+        .maybeSingle();
+
+      if (error) throw error;
+
+      if (cardData) {
+        const addResult = await addContact({
+          name: cardData.name,
+          email: cardData.email,
+          phone: cardData.phone || undefined,
+          company: cardData.company || undefined,
+          industry: cardData.industry || undefined,
+          services: cardData.services || [],
+          tier: 'A-player',
+          notes: 'Added via QR code',
+          linkedin: cardData.linkedin || undefined,
+          facebook: cardData.facebook || undefined,
+          whatsapp: cardData.whatsapp || undefined,
+          websites: cardData.websites || [],
+          profile_picture_url: cardData.avatar_url || undefined,
+          company_logo_url: cardData.company_logo_url || undefined,
+          added_via: addedVia,
+          shareCode: cardData.share_code
+        });
+        if (addResult?.success) {
+          setShareCode('');
+          setFoundCard(null);
+        }
+      } else {
+        dismiss();
+        toast({
+          title: 'Contact Not Found',
+          description: `No contact found for username "${clean}".`,
+          variant: 'destructive',
+        });
+      }
+    } catch (error) {
+      console.error('[AddContactByCode] Error adding contact for username:', username, error);
+      dismiss();
+      toast({
+        title: 'Error',
+        description: `Failed to add contact for username "${clean}". Please try again.`,
         variant: 'destructive',
       });
     } finally {
@@ -150,7 +210,7 @@ const AddContactByCode = () => {
               if (match) {
                 const code = match[1].toLowerCase();
                 console.info('[QR Scanner] Extracted /contact/ code:', code);
-                addContactByCode(code);
+                addContactByCode(code, 'qr_code');
                 return;
               }
               console.warn('[QR Scanner] /contact/ pattern found but no valid code extracted');
@@ -167,10 +227,10 @@ const AddContactByCode = () => {
                 if (/^[a-f0-9]{8}$/i.test(identifier)) {
                   const code = identifier.toLowerCase();
                   console.info('[QR Scanner] Identified as share code:', code);
-                  addContactByCode(code);
+                  addContactByCode(code, 'qr_code');
                 } else {
                   console.info('[QR Scanner] Identified as username:', identifier);
-                  navigate(`/public/${identifier}`);
+                  addContactByUsername(identifier, 'qr_code');
                 }
                 return;
               }
@@ -181,7 +241,7 @@ const AddContactByCode = () => {
             if (/^[a-f0-9]{8}$/i.test(text)) {
               const code = text.toLowerCase();
               console.info('[QR Scanner] Detected raw share code:', code);
-              addContactByCode(code);
+              addContactByCode(code, 'qr_code');
               return;
             }
 
@@ -194,11 +254,11 @@ const AddContactByCode = () => {
                 if (/^[a-f0-9]{8}$/i.test(identifier)) {
                   const code = identifier.toLowerCase();
                   console.info('[QR Scanner] Extracted share code from URL:', code);
-                  addContactByCode(code);
+                  addContactByCode(code, 'qr_code');
                   return;
                 } else {
                   console.info('[QR Scanner] Extracted username from URL:', identifier);
-                  navigate(`/public/${identifier}`);
+                  addContactByUsername(identifier, 'qr_code');
                   return;
                 }
               }
@@ -209,7 +269,7 @@ const AddContactByCode = () => {
             if (hexPattern) {
               const code = hexPattern[0].toLowerCase();
               console.info('[QR Scanner] Found potential share code pattern:', code);
-              addContactByCode(code);
+              addContactByCode(code, 'qr_code');
               return;
             }
 
