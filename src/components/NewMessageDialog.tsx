@@ -46,7 +46,7 @@ export function NewMessageDialog({
   // Get unique industries from contacts
   const industries = useMemo(() => {
     const allowedContacts = contacts.filter(contact => 
-      contact.added_via && ['share_code', 'qr_code', 'mutual_contact', 'business_card'].includes(contact.added_via)
+      contact.added_via && ['share_code', 'qr_code', 'mutual_contact'].includes(contact.added_via)
     );
     const uniqueIndustries = [...new Set(allowedContacts
       .map(contact => contact.industry)
@@ -58,7 +58,7 @@ export function NewMessageDialog({
   const filteredContacts = useMemo(() => {
     // First filter by allowed contact types (messageable contacts)
     const allowedContacts = contacts.filter(contact => 
-      contact.added_via && ['share_code', 'qr_code', 'mutual_contact', 'business_card'].includes(contact.added_via)
+      contact.added_via && ['share_code', 'qr_code', 'mutual_contact'].includes(contact.added_via)
     );
 
     const availableContacts = allowedContacts;
