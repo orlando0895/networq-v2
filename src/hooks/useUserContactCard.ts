@@ -133,23 +133,27 @@ export const useUserContactCard = () => {
     if (!user || !contactCard) return { success: false };
 
     try {
+      console.log('🔄 Regenerating share code for card:', contactCard.id);
+      
       const { data, error } = await supabase.rpc('regenerate_share_code', {
         card_id: contactCard.id
       });
 
       if (error) throw error;
 
+      console.log('✅ New share code generated:', data);
+
       // Refresh the contact card to get the new share code
       await fetchContactCard();
 
       toast({
         title: "Share Code Updated",
-        description: "Your new share code has been generated."
+        description: `Your new share code: ${data}`
       });
 
       return { success: true, shareCode: data };
     } catch (error: any) {
-      console.error('Error regenerating share code:', error);
+      console.error('❌ Error regenerating share code:', error);
       toast({
         title: "Error",
         description: "Failed to regenerate share code.",

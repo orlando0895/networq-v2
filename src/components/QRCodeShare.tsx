@@ -19,6 +19,9 @@ export const QRCodeShare = () => {
         ? `${window.location.origin}/public/${contactCard.username}`
         : `${window.location.origin}/public/${contactCard.share_code}`;
         
+      console.log('🔄 Generating QR code with share code:', contactCard.share_code);
+      console.log('🔗 QR code URL:', publicUrl);
+        
       QRCode.toDataURL(publicUrl, {
         width: 256,
         margin: 2,
@@ -27,8 +30,11 @@ export const QRCodeShare = () => {
           light: '#FFFFFF'
         }
       })
-        .then((url) => setQrCodeUrl(url))
-        .catch((err) => console.error('Error generating QR code:', err));
+        .then((url) => {
+          setQrCodeUrl(url);
+          console.log('✅ QR code generated successfully');
+        })
+        .catch((err) => console.error('❌ Error generating QR code:', err));
     }
   }, [contactCard?.share_code, contactCard?.username]);
 
