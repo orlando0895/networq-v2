@@ -8,17 +8,9 @@ import {
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Search, MessageSquare, Filter, X, Users, UserPlus } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Search, MessageSquare } from 'lucide-react';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { cn } from '@/lib/utils';
 
 interface Contact {
   id: string;
@@ -49,7 +41,7 @@ export function NewMessageDialog({
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedIndustry, setSelectedIndustry] = useState<string>('all');
   const [selectedContacts, setSelectedContacts] = useState<Contact[]>([]);
-  const [isGroupMode, setIsGroupMode] = useState(false);
+  const [isGroupMode, setIsGroupMode] = useState(true);
 
   // Get unique industries from contacts
   const industries = useMemo(() => {
@@ -69,10 +61,7 @@ export function NewMessageDialog({
       contact.added_via && ['share_code', 'qr_code', 'mutual_contact', 'business_card'].includes(contact.added_via)
     );
 
-    // Filter out already selected contacts in group mode
-    const availableContacts = isGroupMode 
-      ? allowedContacts.filter(contact => !selectedContacts.find(sc => sc.id === contact.id))
-      : allowedContacts;
+    const availableContacts = allowedContacts;
 
     // If there's a search term, search through ALL available messageable contacts
     if (searchTerm.trim()) {
@@ -107,26 +96,23 @@ export function NewMessageDialog({
       }
       return true;
     });
-  }, [contacts, selectedIndustry, searchTerm, isGroupMode, selectedContacts]);
+  }, [contacts, selectedIndustry, searchTerm]);
 
-  const handleSelectContact = (contact: Contact) => {
-    if (isGroupMode) {
-      setSelectedContacts(prev => [...prev, contact]);
-    } else {
-      onSelectContact(contact.id);
-      handleClose();
-    }
+  const handleToggleContact = (contact: Contact) => {
+    setSelectedContacts(prev => {
+      const exists = prev.some(c => c.id === contact.id);
+      return exists ? prev.filter(c => c.id !== contact.id) : [...prev, contact];
+    });
   };
 
-  const handleRemoveFromSelection = (contactId: string) => {
-    setSelectedContacts(prev => prev.filter(c => c.id !== contactId));
-  };
 
-  const handleCreateGroupChat = () => {
-    if (selectedContacts.length >= 1) {
+  const handleDone = () => {
+    if (selectedContacts.length === 1) {
+      onSelectContact(selectedContacts[0].id);
+    } else if (selectedContacts.length > 1) {
       onCreateGroupChat(selectedContacts.map(c => c.id));
-      handleClose();
     }
+    handleClose();
   };
 
   const handleClose = () => {
@@ -134,123 +120,46 @@ export function NewMessageDialog({
     setSearchTerm('');
     setSelectedIndustry('all');
     setSelectedContacts([]);
-    setIsGroupMode(false);
+    setIsGroupMode(true);
   };
 
-  const toggleGroupMode = () => {
-    setIsGroupMode(!isGroupMode);
-    setSelectedContacts([]);
-  };
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="w-[95vw] max-w-md h-[85vh] flex flex-col">
         <DialogHeader className="flex-shrink-0 pb-3">
           <div className="flex items-center justify-between">
-            <DialogTitle className="text-lg">
-              {isGroupMode ? 'Create Group Chat' : 'Start New Conversation'}
-            </DialogTitle>
+            <DialogTitle className="text-lg">New Message</DialogTitle>
             <Button
-              variant={isGroupMode ? "default" : "outline"}
+              variant="default"
               size="sm"
-              onClick={toggleGroupMode}
-              className="h-9 px-3 text-xs touch-target"
+              onClick={handleDone}
+              disabled={selectedContacts.length === 0}
+              className="h-9 px-3 text-sm"
             >
-              {isGroupMode ? <MessageSquare className="h-4 w-4 mr-1.5" /> : <Users className="h-4 w-4 mr-1.5" />}
-              {isGroupMode ? 'Direct' : 'Group'}
+              Done
             </Button>
           </div>
-          {isGroupMode && (
-            <p className="text-sm text-muted-foreground mt-1">
-              Select multiple contacts to create a group chat
-            </p>
-          )}
         </DialogHeader>
         
         <div className="flex flex-col space-y-4 min-h-0 flex-1">
-          {/* Selected contacts in group mode with improved mobile UI */}
-          {isGroupMode && selectedContacts.length > 0 && (
-            <div className="flex-shrink-0 bg-muted/50 p-3 rounded-lg border">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center space-x-2">
-                  <Users className="h-4 w-4 text-primary" />
-                  <span className="text-sm font-medium">
-                    Selected ({selectedContacts.length})
-                  </span>
-                </div>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setSelectedContacts([])}
-                  className="h-8 px-2 text-xs text-muted-foreground hover:text-foreground"
-                >
-                  Clear all
-                </Button>
-              </div>
-              <div className="flex flex-wrap gap-2 max-h-24 overflow-y-auto">
-                {selectedContacts.map((contact) => (
-                  <Badge
-                    key={contact.id}
-                    variant="default"
-                    className="flex items-center space-x-2 pr-1 py-1.5 touch-target"
-                  >
-                    <Avatar className="h-5 w-5">
-                      <AvatarFallback className="text-xs bg-primary-foreground text-primary">
-                        {contact.name
-                          .split(' ')
-                          .map(n => n[0])
-                          .join('')
-                          .toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
-                    <span className="text-xs max-w-20 truncate font-medium">{contact.name}</span>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        handleRemoveFromSelection(contact.id);
-                      }}
-                      className="h-5 w-5 p-0 hover:bg-primary-foreground/20 rounded-full touch-target"
-                    >
-                      <X className="h-3 w-3" />
-                    </Button>
-                  </Badge>
-                ))}
-              </div>
-            </div>
-          )}
           
           <div className="flex flex-col space-y-3 flex-shrink-0">
             <div className="relative">
               <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Search contacts..."
+                placeholder="Search names, notes, and info"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-8"
               />
             </div>
             
-            {industries.length > 0 && (
-              <div className="flex items-center space-x-2">
-                <Filter className="h-4 w-4 text-muted-foreground" />
-                <Select value={selectedIndustry} onValueChange={setSelectedIndustry}>
-                  <SelectTrigger className="flex-1">
-                    <SelectValue placeholder="Filter by industry" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Industries</SelectItem>
-                    {industries.map((industry) => (
-                      <SelectItem key={industry} value={industry}>
-                        {industry}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+              <div className="pt-1">
+                <span className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+                  Participants ({selectedContacts.length}/100)
+                </span>
               </div>
-            )}
           </div>
 
           <div className="flex-1 min-h-0 overflow-hidden">
@@ -258,7 +167,7 @@ export function NewMessageDialog({
               <div className="flex flex-col items-center justify-center h-32 text-center">
                 <MessageSquare className="h-8 w-8 text-muted-foreground mb-2" />
                 <p className="text-sm text-muted-foreground">
-                  {searchTerm ? 'No contacts found' : (isGroupMode && selectedContacts.length > 0 ? 'No more contacts available' : 'No contacts available')}
+                  {searchTerm ? 'No contacts found' : 'No contacts available'}
                 </p>
               </div>
             ) : (
@@ -269,7 +178,7 @@ export function NewMessageDialog({
                       key={contact.id}
                       variant="ghost"
                       className="w-full justify-start h-auto p-4 bg-background hover:bg-accent hover:text-accent-foreground border border-border/50 rounded-lg touch-target transition-all"
-                      onClick={() => handleSelectContact(contact)}
+                      onClick={() => handleToggleContact(contact)}
                     >
                       <div className="flex items-center space-x-3 w-full">
                         <div className="relative">
@@ -282,11 +191,6 @@ export function NewMessageDialog({
                                 .toUpperCase()}
                             </AvatarFallback>
                           </Avatar>
-                          {isGroupMode && (
-                            <div className="absolute -top-1 -right-1 h-6 w-6 bg-primary rounded-full flex items-center justify-center shadow-sm">
-                              <UserPlus className="h-3.5 w-3.5 text-primary-foreground" />
-                            </div>
-                          )}
                         </div>
                         
                         <div className="flex-1 text-left min-w-0">
@@ -307,6 +211,13 @@ export function NewMessageDialog({
                             )}
                           </div>
                         </div>
+                        <div className="ml-3">
+                          <Checkbox
+                            checked={selectedContacts.some(sc => sc.id === contact.id)}
+                            onCheckedChange={() => handleToggleContact(contact)}
+                            className="h-5 w-5 rounded-full pointer-events-none"
+                          />
+                        </div>
                       </div>
                     </Button>
                   ))}
@@ -315,20 +226,6 @@ export function NewMessageDialog({
             )}
           </div>
 
-          {/* Create group chat button with enhanced mobile styling */}
-          {isGroupMode && selectedContacts.length > 0 && (
-            <div className="flex-shrink-0 pt-4 border-t border-border">
-              <Button
-                onClick={handleCreateGroupChat}
-                className="w-full h-12 text-base font-semibold touch-target"
-                disabled={selectedContacts.length === 0}
-                size="lg"
-              >
-                <Users className="h-5 w-5 mr-2" />
-                Create Group Chat ({selectedContacts.length})
-              </Button>
-            </div>
-          )}
         </div>
       </DialogContent>
     </Dialog>
