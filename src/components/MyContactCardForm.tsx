@@ -241,20 +241,24 @@ const MyContactCardForm = () => {
         </CardHeader>
         <CardContent>
           <div className="mb-6">
-            <Label className="block text-sm font-medium mb-2">Profile Picture</Label>
-            <ProfilePictureUpload
-              currentAvatarUrl={watch('avatar_url')}
-              onAvatarUpdate={(url) => setValue('avatar_url', url || '')}
-              userInitials={watch('name')?.split(' ').map(n => n[0]).join('').toUpperCase() || 'U'}
-            />
-          </div>
-          <div className="mb-6">
-            <Label className="block text-sm font-medium mb-2">Company Logo</Label>
-            <ProfilePictureUpload
-              currentAvatarUrl={companyLogoUrl}
-              onAvatarUpdate={(url) => setCompanyLogoUrl(url || '')}
-              userInitials={watch('company')?.split(' ').map(n => n[0]).join('').toUpperCase() || 'CO'}
-            />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <section className="rounded-lg border bg-muted/30 p-4">
+                <Label className="block text-sm font-medium mb-3">Profile Picture</Label>
+                <ProfilePictureUpload
+                  currentAvatarUrl={watch('avatar_url')}
+                  onAvatarUpdate={(url) => setValue('avatar_url', url || '')}
+                  userInitials={watch('name')?.split(' ').map(n => n[0]).join('').toUpperCase() || 'U'}
+                />
+              </section>
+              <section className="rounded-lg border bg-muted/30 p-4">
+                <Label className="block text-sm font-medium mb-3">Company Logo</Label>
+                <ProfilePictureUpload
+                  currentAvatarUrl={companyLogoUrl}
+                  onAvatarUpdate={(url) => setCompanyLogoUrl(url || '')}
+                  userInitials={watch('company')?.split(' ').map(n => n[0]).join('').toUpperCase() || 'CO'}
+                />
+              </section>
+            </div>
           </div>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
