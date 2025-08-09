@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 import { Star, Users, Mail, Phone, Send, Edit, Plus, ChevronDown, Trash2, Linkedin, Facebook, MessageCircle, Globe, MessageSquare, Download, UserCheck, QrCode, Scan, CreditCard } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -30,6 +31,7 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
   const [isEditingContact, setIsEditingContact] = useState(false);
   const [isAddingNote, setIsAddingNote] = useState(false);
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
+  const [isLogoOpen, setIsLogoOpen] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -260,7 +262,19 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
                   {/* Company logo */}
                   {contact.company && (
                     contact.company_logo_url ? (
-                      <div className="mt-2 h-10 w-10 sm:h-12 sm:w-12 rounded-full overflow-hidden bg-muted/40 ring-1 ring-border/60">
+                      <div
+                        className="mt-2 h-10 w-10 sm:h-12 sm:w-12 rounded-full overflow-hidden bg-muted/40 ring-1 ring-border/60 cursor-pointer"
+                        onClick={() => setIsLogoOpen(true)}
+                        role="button"
+                        aria-label="View company logo"
+                        tabIndex={0}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            setIsLogoOpen(true);
+                          }
+                        }}
+                      >
                         <img
                           src={contact.company_logo_url}
                           alt={`${contact.company} company logo`}
@@ -506,6 +520,18 @@ const ContactCard = ({ contact, onUpdateContact, onDeleteContact }: ContactCardP
         isOpen={isShareDialogOpen}
         onClose={() => setIsShareDialogOpen(false)}
       />
+
+      {contact.company_logo_url && (
+        <Dialog open={isLogoOpen} onOpenChange={setIsLogoOpen}>
+          <DialogContent className="max-w-[90vw] sm:max-w-xl bg-card p-0">
+            <img
+              src={contact.company_logo_url}
+              alt={`${contact.company || 'Company'} logo large view`}
+              className="w-full h-auto object-contain"
+            />
+          </DialogContent>
+        </Dialog>
+      )}
     </>
   );
 };
