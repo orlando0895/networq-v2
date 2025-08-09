@@ -74,6 +74,8 @@ export const useMutualContacts = () => {
           facebook: otherUserContactCard.facebook,
           whatsapp: otherUserContactCard.whatsapp,
           websites: otherUserContactCard.websites,
+          profile_picture_url: otherUserContactCard.avatar_url,
+          company_logo_url: otherUserContactCard.company_logo_url,
           added_date: new Date().toISOString().split('T')[0],
           added_via: 'share_code'
         });

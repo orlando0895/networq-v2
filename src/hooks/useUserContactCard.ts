@@ -52,6 +52,8 @@ export const useUserContactCard = () => {
     facebook?: string;
     whatsapp?: string;
     websites: string[];
+    company_logo_url?: string;
+    avatar_url?: string;
   }) => {
     if (!user) return { success: false };
 

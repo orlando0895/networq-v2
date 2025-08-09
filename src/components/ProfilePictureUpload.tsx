@@ -9,17 +9,20 @@ interface ProfilePictureUploadProps {
   currentAvatarUrl?: string | null;
   onAvatarUpdate: (avatarUrl: string | null) => void;
   userInitials: string;
+  variant?: 'avatar' | 'companyLogo';
 }
 
 export const ProfilePictureUpload: React.FC<ProfilePictureUploadProps> = ({
   currentAvatarUrl,
   onAvatarUpdate,
-  userInitials
+  userInitials,
+  variant = 'avatar'
 }) => {
   const [uploading, setUploading] = useState(false);
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const openFilePicker = () => fileInputRef.current?.click();
+  const label = variant === 'companyLogo' ? 'Company logo' : 'Profile picture';
 
   const uploadAvatar = async (file: File) => {
     try {
@@ -31,8 +34,8 @@ export const ProfilePictureUpload: React.FC<ProfilePictureUploadProps> = ({
 
       // Create file path
       const fileExt = file.name.split('.').pop();
-      const fileName = `${user.id}/avatar.${fileExt}`;
-
+      const baseName = variant === 'companyLogo' ? 'company-logo' : 'avatar';
+      const fileName = `${user.id}/${baseName}.${fileExt}`;
       // Upload file
       const { error: uploadError } = await supabase.storage
         .from('profile-pictures')
@@ -48,14 +51,14 @@ export const ProfilePictureUpload: React.FC<ProfilePictureUploadProps> = ({
       onAvatarUpdate(data.publicUrl);
       
       toast({
-        title: "Profile picture updated",
-        description: "Your profile picture has been uploaded successfully."
+        title: `${label} updated`,
+        description: `Your ${label.toLowerCase()} has been uploaded successfully.`
       });
     } catch (error) {
       console.error('Error uploading avatar:', error);
       toast({
         title: "Upload failed",
-        description: "Failed to upload profile picture. Please try again.",
+        description: `Failed to upload ${label.toLowerCase()}. Please try again.`,
         variant: "destructive"
       });
     } finally {
@@ -93,8 +96,8 @@ export const ProfilePictureUpload: React.FC<ProfilePictureUploadProps> = ({
   const removeAvatar = () => {
     onAvatarUpdate(null);
     toast({
-      title: "Profile picture removed",
-      description: "Your profile picture has been removed."
+      title: `${label} removed`,
+      description: `Your ${label.toLowerCase()} has been removed.`
     });
   };
 

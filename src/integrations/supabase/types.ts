@@ -19,6 +19,7 @@ export type Database = {
           added_date: string
           added_via: string | null
           company: string | null
+          company_logo_url: string | null
           created_at: string
           email: string
           facebook: string | null
@@ -40,6 +41,7 @@ export type Database = {
           added_date?: string
           added_via?: string | null
           company?: string | null
+          company_logo_url?: string | null
           created_at?: string
           email: string
           facebook?: string | null
@@ -61,6 +63,7 @@ export type Database = {
           added_date?: string
           added_via?: string | null
           company?: string | null
+          company_logo_url?: string | null
           created_at?: string
           email?: string
           facebook?: string | null
@@ -426,6 +429,7 @@ export type Database = {
         Row: {
           avatar_url: string | null
           company: string | null
+          company_logo_url: string | null
           created_at: string
           email: string
           facebook: string | null
@@ -448,6 +452,7 @@ export type Database = {
         Insert: {
           avatar_url?: string | null
           company?: string | null
+          company_logo_url?: string | null
           created_at?: string
           email: string
           facebook?: string | null
@@ -470,6 +475,7 @@ export type Database = {
         Update: {
           avatar_url?: string | null
           company?: string | null
+          company_logo_url?: string | null
           created_at?: string
           email?: string
           facebook?: string | null

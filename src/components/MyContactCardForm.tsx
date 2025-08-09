@@ -71,6 +71,8 @@ const MyContactCardForm = () => {
         avatar_url: contactCard.avatar_url || ''
       });
       setWebsites(contactCard.websites || []);
+      setCompanyLogoUrl((contactCard as any).company_logo_url || '');
+      setCompanyLogoUrl(contactCard.company_logo_url || '');
     }
   }, [contactCard, reset]);
 
@@ -113,7 +115,8 @@ const MyContactCardForm = () => {
       notes: data.notes || undefined,
       linkedin: data.linkedin || undefined,
       facebook: data.facebook || undefined,
-      whatsapp: data.whatsapp || undefined
+      whatsapp: data.whatsapp || undefined,
+      company_logo_url: companyLogoUrl || undefined
     };
 
     if (contactCard) {
@@ -256,6 +259,7 @@ const MyContactCardForm = () => {
                   currentAvatarUrl={companyLogoUrl}
                   onAvatarUpdate={(url) => setCompanyLogoUrl(url || '')}
                   userInitials={watch('company')?.split(' ').map(n => n[0]).join('').toUpperCase() || 'CO'}
+                  variant="companyLogo"
                 />
               </section>
             </div>
