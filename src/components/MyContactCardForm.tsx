@@ -359,7 +359,7 @@ const MyContactCardForm = () => {
             </div>
 
             <div>
-              <Label htmlFor="notes">Notes</Label>
+              <Label htmlFor="notes">About</Label>
               <Textarea id="notes" {...register('notes')} placeholder="Additional information about yourself" />
             </div>
 
