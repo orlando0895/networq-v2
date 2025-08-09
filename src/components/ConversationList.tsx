@@ -168,7 +168,6 @@ export function ConversationList({
               .toUpperCase() || '?'}
           </AvatarFallback>
         </Avatar>
-        <div className="absolute bottom-0 right-0 h-3 w-3 bg-green-500 border-2 border-background rounded-full"></div>
       </div>
     );
   };
