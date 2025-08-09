@@ -20,6 +20,8 @@ export const useUserContactCard = () => {
     
     try {
       setLoading(true);
+      console.log('🔄 Fetching contact card for user:', user.id);
+      
       const { data, error } = await supabase
         .from('user_contact_cards')
         .select('*')
@@ -27,9 +29,11 @@ export const useUserContactCard = () => {
         .maybeSingle();
 
       if (error) throw error;
+      
+      console.log('📋 Contact card fetched:', data);
       setContactCard(data);
     } catch (error: any) {
-      console.error('Error fetching contact card:', error);
+      console.error('❌ Error fetching contact card:', error);
       toast({
         title: "Error",
         description: "Failed to load your contact card.",
@@ -134,6 +138,7 @@ export const useUserContactCard = () => {
 
     try {
       console.log('🔄 Regenerating share code for card:', contactCard.id);
+      console.log('📊 Current share code before regeneration:', contactCard.share_code);
       
       const { data, error } = await supabase.rpc('regenerate_share_code', {
         card_id: contactCard.id
@@ -143,8 +148,12 @@ export const useUserContactCard = () => {
 
       console.log('✅ New share code generated:', data);
 
-      // Refresh the contact card to get the new share code
+      // Force refresh the contact card to get the new share code
+      console.log('🔄 Refreshing contact card data...');
       await fetchContactCard();
+
+      // Also update the local state immediately with the new share code
+      setContactCard(prev => prev ? { ...prev, share_code: data } : null);
 
       toast({
         title: "Share Code Updated",
