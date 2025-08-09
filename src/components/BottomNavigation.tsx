@@ -54,14 +54,16 @@ const BottomNavigation = () => {
     return location.pathname.startsWith(path);
   };
 
-  // Hide bottom navigation while inside a specific message thread
+  // Hide bottom navigation on authentication page and while inside a specific message thread
   const searchParams = new URLSearchParams(location.search);
   const state = (location.state as any) || {};
   const isInMessageThread =
     location.pathname.startsWith('/messages') &&
     (searchParams.has('conversationId') || Boolean(state.conversationId));
+  
+  const isAuthPage = location.pathname === '/auth';
 
-  if (isInMessageThread) {
+  if (isInMessageThread || isAuthPage) {
     return null;
   }
 
