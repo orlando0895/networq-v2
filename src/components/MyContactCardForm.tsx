@@ -241,7 +241,7 @@ const MyContactCardForm = () => {
         </CardHeader>
         <CardContent>
           <div className="mb-6">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-4">
               <section className="rounded-lg border bg-muted/30 p-4">
                 <Label className="block text-sm font-medium mb-3">Profile Picture</Label>
                 <ProfilePictureUpload
