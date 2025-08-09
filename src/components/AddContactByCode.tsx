@@ -1,5 +1,6 @@
 
 import React, { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -31,9 +32,9 @@ const AddContactByCode = () => {
   const { addContact } = useContacts();
   const { fetchContactCardByShareCode } = useUserContactCard();
   const { toast } = useToast();
-
+  const navigate = useNavigate();
   const addContactByCode = async (code?: string) => {
-    const codeToAdd = code || shareCode.trim();
+    const codeToAdd = (code || shareCode.trim()).toLowerCase();
     if (!codeToAdd) return;
     
     setIsAdding(true);
@@ -105,19 +106,64 @@ const AddContactByCode = () => {
       qrScannerRef.current = new QrScanner(
         videoRef.current,
         (result) => {
-          // Extract share code from URL or use the result directly
-          let shareCode = result.data;
-          
-          // If it's a URL containing our contact path, extract the share code
-          if (shareCode.includes('/contact/')) {
-            const match = shareCode.match(/\/contact\/([a-f0-9]{8})/);
-            if (match) {
-              shareCode = match[1];
+          try {
+            const text = (result.data || '').trim();
+            console.info('[QR] Scanned text:', text);
+
+            // Stop scanning to prevent duplicate handling
+            stopScanning();
+
+            // 1) Handle /contact/:shareCode pattern
+            if (text.includes('/contact/')) {
+              const match = text.match(/\/contact\/([a-f0-9]{8})/i);
+              if (match) {
+                const code = match[1].toLowerCase();
+                console.debug('[QR] Detected /contact/ code:', code);
+                addContactByCode(code);
+                return;
+              }
             }
+
+            // 2) Handle /public/:identifier (username or share_code)
+            if (text.includes('/public/')) {
+              const match = text.match(/\/public\/([^\/?#]+)/i);
+              if (match) {
+                const identifier = match[1];
+                if (/^[a-f0-9]{8}$/i.test(identifier)) {
+                  const code = identifier.toLowerCase();
+                  console.debug('[QR] Detected /public/ share code:', code);
+                  addContactByCode(code);
+                } else {
+                  console.debug('[QR] Detected /public/ username:', identifier);
+                  navigate(`/public/${identifier}`);
+                }
+                return;
+              }
+            }
+
+            // 3) Handle raw 8-char share code
+            if (/^[a-f0-9]{8}$/i.test(text)) {
+              const code = text.toLowerCase();
+              console.debug('[QR] Detected raw share code:', code);
+              addContactByCode(code);
+              return;
+            }
+
+            // 4) Unrecognized format
+            console.warn('[QR] Unrecognized QR format');
+            toast({
+              title: 'Unrecognized QR Code',
+              description: 'Scan a Networq link (/public/... or /contact/...) or an 8-character share code.',
+              variant: 'destructive',
+            });
+          } catch (e) {
+            console.error('[QR] Error handling scan result:', e);
+            toast({
+              title: 'Scan Error',
+              description: 'Something went wrong reading this QR code. Try again.',
+              variant: 'destructive',
+            });
           }
-          
-          // Search for the contact
-          addContactByCode(shareCode);
         },
         {
           highlightScanRegion: true,
