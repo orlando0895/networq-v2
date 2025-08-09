@@ -31,15 +31,31 @@ const AddContactByCode = () => {
   
   const { addContact } = useContacts();
   const { fetchContactCardByShareCode } = useUserContactCard();
-  const { toast } = useToast();
+  const { toast, dismiss } = useToast();
   const navigate = useNavigate();
   const addContactByCode = async (code?: string) => {
-    const codeToAdd = (code || shareCode.trim()).toLowerCase();
+    const raw = (code || shareCode.trim());
+    const codeToAdd = raw.toLowerCase();
     if (!codeToAdd) return;
+
+    // Validate format early
+    const isValidCode = /^[a-f0-9]{8}$/i.test(codeToAdd);
+    if (!isValidCode) {
+      console.warn('[AddContactByCode] Invalid share code format:', raw);
+      // Clear any existing toasts and show a clearer message
+      dismiss();
+      toast({
+        title: 'Invalid Share Code Format',
+        description: `Scanned/entered: "${raw}". Expected an 8-character hexadecimal code.`,
+        variant: 'destructive',
+      });
+      return;
+    }
     
     setIsAdding(true);
     
     try {
+      console.debug('[AddContactByCode] Looking up share code:', codeToAdd);
       // First, fetch the contact card data using the share code
       const result = await fetchContactCardByShareCode(codeToAdd);
       
@@ -47,42 +63,51 @@ const AddContactByCode = () => {
         const cardData = result.data;
         
         // Add the contact with the share code for mutual connection
-          const addResult = await addContact({
-            name: cardData.name,
-            email: cardData.email,
-            phone: cardData.phone || undefined,
-            company: cardData.company || undefined,
-            industry: cardData.industry || undefined,
-            services: cardData.services || [],
-            tier: 'A-player',
-            notes: 'Added via share code',
-            linkedin: cardData.linkedin || undefined,
-            facebook: cardData.facebook || undefined,
-            whatsapp: cardData.whatsapp || undefined,
-            websites: cardData.websites || [],
-            profile_picture_url: cardData.avatar_url || undefined,
-            company_logo_url: cardData.company_logo_url || undefined,
-            added_via: 'share_code',
-            shareCode: codeToAdd // Pass the share code for mutual connection
-          });
+        const addResult = await addContact({
+          name: cardData.name,
+          email: cardData.email,
+          phone: cardData.phone || undefined,
+          company: cardData.company || undefined,
+          industry: cardData.industry || undefined,
+          services: cardData.services || [],
+          tier: 'A-player',
+          notes: 'Added via share code',
+          linkedin: cardData.linkedin || undefined,
+          facebook: cardData.facebook || undefined,
+          whatsapp: cardData.whatsapp || undefined,
+          websites: cardData.websites || [],
+          profile_picture_url: cardData.avatar_url || undefined,
+          company_logo_url: cardData.company_logo_url || undefined,
+          added_via: 'share_code',
+          shareCode: codeToAdd // Pass the share code for mutual connection
+        });
         
         if (addResult?.success) {
           setShareCode('');
           setFoundCard(null);
         }
       } else {
+        // Suppress any previous toast and show a clearer one with the scanned code
+        dismiss();
         toast({
-          title: "Contact Not Found",
-          description: "No contact found with that share code.",
-          variant: "destructive"
+          title: 'Contact Not Found',
+          description: `No contact found for share code "${codeToAdd}". Ask them to open the app and regenerate a new code.`,
+          variant: 'destructive',
         });
+        // If the scanner was used previously, allow quick retry
+        if (qrScannerRef.current) {
+          setTimeout(() => {
+            if (!isScanning) startScanning();
+          }, 800);
+        }
       }
     } catch (error) {
-      console.error('Error adding contact:', error);
+      console.error('[AddContactByCode] Error adding contact for code:', codeToAdd, error);
+      dismiss();
       toast({
-        title: "Error",
-        description: "Failed to add contact. Please try again.",
-        variant: "destructive"
+        title: 'Error',
+        description: `Failed to add contact for code "${codeToAdd}". Please try again.`,
+        variant: 'destructive',
       });
     } finally {
       setIsAdding(false);
@@ -151,18 +176,27 @@ const AddContactByCode = () => {
 
             // 4) Unrecognized format
             console.warn('[QR] Unrecognized QR format');
+            dismiss();
             toast({
               title: 'Unrecognized QR Code',
               description: 'Scan a Networq link (/public/... or /contact/...) or an 8-character share code.',
               variant: 'destructive',
             });
+            // Auto-retry scanning after short delay
+            setTimeout(() => {
+              if (!isScanning) startScanning();
+            }, 800);
           } catch (e) {
             console.error('[QR] Error handling scan result:', e);
+            dismiss();
             toast({
               title: 'Scan Error',
               description: 'Something went wrong reading this QR code. Try again.',
               variant: 'destructive',
             });
+            setTimeout(() => {
+              if (!isScanning) startScanning();
+            }, 800);
           }
         },
         {
