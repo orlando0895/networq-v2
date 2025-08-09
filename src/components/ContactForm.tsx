@@ -27,6 +27,7 @@ interface NewContact {
   whatsapp: string;
   websites: string[];
   added_via?: string;
+  shareCode?: string;
 }
 
 interface ContactFormProps {
@@ -142,6 +143,51 @@ const ContactForm = ({ isOpen, onOpenChange, onAddContact }: ContactFormProps) =
     setIsSearching(false);
   };
 
+  const addByShareCodeAuto = async (code: string) => {
+    const codeLower = (code || '').trim().toLowerCase();
+    if (!codeLower) return;
+    setIsSearching(true);
+    try {
+      const result = await fetchContactCardByShareCode(codeLower);
+      if (result.success && result.data) {
+        const card = result.data;
+        const addResult = await onAddContact({
+          name: card.name,
+          email: card.email,
+          phone: card.phone || '',
+          company: card.company || '',
+          industry: card.industry || '',
+          services: card.services || [],
+          tier: 'Acquaintance',
+          notes: 'Added via QR code',
+          linkedin: card.linkedin || '',
+          facebook: card.facebook || '',
+          whatsapp: card.whatsapp || '',
+          websites: card.websites || [],
+          added_via: 'qr_code',
+          shareCode: codeLower,
+        });
+        if (addResult?.success) {
+          setShareCode('');
+          setFoundCard(null);
+          setActiveView('form');
+          onOpenChange(false);
+        }
+      } else {
+        toast({
+          title: 'Contact Not Found',
+          description: 'No contact found for this share code.',
+          variant: 'destructive',
+        });
+      }
+    } catch (e) {
+      console.error('Error auto-adding by share code:', e);
+      toast({ title: 'Error', description: 'Failed to add contact. Please try again.', variant: 'destructive' });
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
   const addFoundContact = async () => {
     if (!foundCard) return;
     
@@ -158,7 +204,8 @@ const ContactForm = ({ isOpen, onOpenChange, onAddContact }: ContactFormProps) =
       facebook: foundCard.facebook || "",
       whatsapp: foundCard.whatsapp || "",
       websites: foundCard.websites || [],
-      added_via: 'qr_code'
+      added_via: 'share_code',
+      shareCode: (shareCode || '').trim().toLowerCase(),
     };
 
     const result = await onAddContact(contactData);
@@ -171,7 +218,7 @@ const ContactForm = ({ isOpen, onOpenChange, onAddContact }: ContactFormProps) =
   };
 
   const addContactByUsername = async (username: string) => {
-    const clean = (username || '').trim();
+    const clean = (username || '').trim().toLowerCase();
     if (!clean) return;
     setIsSearching(true);
     try {
@@ -198,7 +245,8 @@ const ContactForm = ({ isOpen, onOpenChange, onAddContact }: ContactFormProps) =
           facebook: cardData.facebook || "",
           whatsapp: cardData.whatsapp || "",
           websites: cardData.websites || [],
-          added_via: "qr_code"
+          added_via: 'qr_code',
+          shareCode: (cardData as any).share_code,
         });
 
         if (addResult?.success) {
@@ -254,7 +302,7 @@ const ContactForm = ({ isOpen, onOpenChange, onAddContact }: ContactFormProps) =
             stopScanning();
 
             parseAndAddFromScan(text, {
-              addByCode: (code) => searchByCode(code.toLowerCase()),
+              addByCode: (code) => addByShareCodeAuto(code),
               addByUsername: (username) => addContactByUsername(username),
               onInvalid: (scanned) => {
                 toast({
