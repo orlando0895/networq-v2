@@ -125,12 +125,13 @@ export const ProfilePictureUpload: React.FC<ProfilePictureUploadProps> = ({
         </div>
       </div>
 
-      <div className="flex space-x-2">
+      <div className="w-full flex flex-wrap items-center justify-center gap-2">
         <Button
           variant="outline"
           size="sm"
           disabled={uploading}
           onClick={openFilePicker}
+          className="w-full sm:w-auto"
         >
           <Upload className="h-4 w-4 mr-2" />
           {uploading ? 'Uploading...' : 'Upload'}
@@ -141,6 +142,7 @@ export const ProfilePictureUpload: React.FC<ProfilePictureUploadProps> = ({
             variant="outline"
             size="sm"
             onClick={removeAvatar}
+            className="w-full sm:w-auto"
           >
             <X className="h-4 w-4 mr-2" />
             Remove
