@@ -355,9 +355,11 @@ const MyContactCardForm = () => {
               <Textarea id="notes" {...register('notes')} placeholder="Additional information about yourself" />
             </div>
 
-            <Button type="submit" disabled={isSubmitting} className="w-full">
-              {isSubmitting ? 'Saving...' : contactCard ? 'Update Contact Card' : 'Create Contact Card'}
-            </Button>
+            <div className="sticky bottom-20 md:bottom-4 z-30 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 pt-3 pb-safe-bottom">
+              <Button type="submit" disabled={isSubmitting} className="w-full">
+                {isSubmitting ? 'Saving...' : contactCard ? 'Update Contact Card' : 'Create Contact Card'}
+              </Button>
+            </div>
           </form>
         </CardContent>
       </Card>
