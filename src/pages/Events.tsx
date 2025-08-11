@@ -12,6 +12,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import CreateEventForm from '@/components/CreateEventForm';
 import PremiumUpgradeDialog from '@/components/PremiumUpgradeDialog';
+import { EventRSVPButton } from '@/components/EventRSVPButton';
+import { useUserEventRSVPs } from '@/hooks/useUserEventRSVPs';
 
 interface Event {
   id: string;
@@ -45,6 +47,7 @@ const Events = () => {
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [isPremiumUpgradeOpen, setIsPremiumUpgradeOpen] = useState(false);
   const [isPremium, setIsPremium] = useState(false);
+  const { getRSVPStatus } = useUserEventRSVPs();
 
   // Check premium status
   useEffect(() => {
@@ -114,6 +117,34 @@ const Events = () => {
     fetchEvents();
   }, [userLocation, radiusFilter]);
 
+  // Real-time subscription for event updates
+  useEffect(() => {
+    if (events.length === 0) return;
+
+    const channel = supabase
+      .channel('event-updates')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'event_attendees'
+        },
+        async (payload) => {
+          // Refetch events when attendance changes to get updated counts
+          const eventIds = events.map(e => e.id);
+          if (payload.new && eventIds.includes((payload.new as any).event_id)) {
+            await fetchEvents();
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [events]);
+
   // Filter events based on search and tags
   const filteredEvents = events.filter(event => {
     const matchesSearch = !searchTerm || 
@@ -173,10 +204,19 @@ const Events = () => {
             <MapPin className="h-4 w-4" />
             {event.location_name}
           </div>
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Users className="h-4 w-4" />
-            {event.current_attendees} attending
-            {event.max_attendees && ` / ${event.max_attendees} max`}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <Users className="h-4 w-4" />
+              {event.current_attendees} attending
+              {event.max_attendees && ` / ${event.max_attendees} max`}
+            </div>
+            {user && getRSVPStatus(event.id) && (
+              <EventRSVPButton
+                eventId={event.id}
+                initialAttendees={event.current_attendees}
+                variant="compact"
+              />
+            )}
           </div>
           {event.tags && event.tags.length > 0 && (
             <div className="flex flex-wrap gap-1 mt-2">
@@ -336,9 +376,20 @@ const Events = () => {
                       ))}
                     </div>
                   )}
-                  <Button className="w-full touch-target">
-                    Join Event
-                  </Button>
+                  {user ? (
+                    <EventRSVPButton
+                      eventId={selectedEvent.id}
+                      initialAttendees={selectedEvent.current_attendees}
+                      className="w-full touch-target"
+                    />
+                  ) : (
+                    <Button className="w-full touch-target" onClick={() => {
+                      setIsDetailModalOpen(false);
+                      // Could navigate to auth page here
+                    }}>
+                      Sign In to Join Event
+                    </Button>
+                  )}
                 </div>
               </>
             )}

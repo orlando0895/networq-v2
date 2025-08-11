@@ -658,6 +658,13 @@ export type Database = {
           discovery_visible: boolean
         }[]
       }
+      get_user_event_rsvps: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          event_id: string
+          status: string
+        }[]
+      }
       get_user_location_settings: {
         Args: { user_uuid: string }
         Returns: {
@@ -698,6 +705,10 @@ export type Database = {
           last_active_at: string
           is_premium: boolean
         }[]
+      }
+      handle_event_rsvp: {
+        Args: { event_uuid: string; rsvp_status: string }
+        Returns: Json
       }
       is_user_premium: {
         Args: { user_uuid: string }
