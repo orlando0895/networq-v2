@@ -163,6 +163,44 @@ export type Database = {
         }
         Relationships: []
       }
+      event_attendee_privacy: {
+        Row: {
+          allow_messages: boolean
+          created_at: string
+          event_id: string
+          id: string
+          show_contact_info: boolean
+          show_profile: boolean
+          user_id: string
+        }
+        Insert: {
+          allow_messages?: boolean
+          created_at?: string
+          event_id: string
+          id?: string
+          show_contact_info?: boolean
+          show_profile?: boolean
+          user_id: string
+        }
+        Update: {
+          allow_messages?: boolean
+          created_at?: string
+          event_id?: string
+          id?: string
+          show_contact_info?: boolean
+          show_profile?: boolean
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_attendee_privacy_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       event_attendees: {
         Row: {
           event_id: string
@@ -188,6 +226,124 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "event_attendees_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      event_comments: {
+        Row: {
+          content: string
+          created_at: string
+          event_id: string
+          id: string
+          parent_comment_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          event_id: string
+          id?: string
+          parent_comment_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          event_id?: string
+          id?: string
+          parent_comment_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_comments_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_comments_parent_comment_id_fkey"
+            columns: ["parent_comment_id"]
+            isOneToOne: false
+            referencedRelation: "event_comments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      event_connections: {
+        Row: {
+          created_at: string
+          event_id: string
+          id: string
+          message: string | null
+          recipient_id: string
+          requester_id: string
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          event_id: string
+          id?: string
+          message?: string | null
+          recipient_id: string
+          requester_id: string
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          event_id?: string
+          id?: string
+          message?: string | null
+          recipient_id?: string
+          requester_id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_connections_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      event_updates: {
+        Row: {
+          content: string
+          created_at: string
+          created_by: string
+          event_id: string
+          id: string
+          title: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          created_by: string
+          event_id: string
+          id?: string
+          title: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          created_by?: string
+          event_id?: string
+          id?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_updates_event_id_fkey"
             columns: ["event_id"]
             isOneToOne: false
             referencedRelation: "events"
