@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { useEventRSVP } from '@/hooks/useEventRSVP';
+import { useEventRSVP, RSVPStatus } from '@/hooks/useEventRSVP';
 import { useUserEventRSVPs } from '@/hooks/useUserEventRSVPs';
 import { useEventNotifications } from '@/hooks/useEventNotifications';
 import { useAuth } from '@/contexts/AuthContext';
@@ -24,12 +24,11 @@ export const EventRSVPButton: React.FC<EventRSVPButtonProps> = ({
 }) => {
   const { user } = useAuth();
   const { getRSVPStatus, updateRSVPStatus } = useUserEventRSVPs();
-  const { rsvpToEvent, isLoading } = useEventRSVP();
+  const { status, isLoading, currentAttendees, handleRSVP } = useEventRSVP(eventId, initialAttendees);
   const { sendRSVPConfirmation, generateCalendarFile } = useEventNotifications();
-  const [attendeeCount, setAttendeeCount] = useState(initialAttendees);
   const [eventDetails, setEventDetails] = useState<any>(null);
 
-  const currentStatus = getRSVPStatus(eventId);
+  const currentStatus = getRSVPStatus(eventId) || status;
 
   // Fetch event details for email notifications
   useEffect(() => {
@@ -56,39 +55,38 @@ export const EventRSVPButton: React.FC<EventRSVPButtonProps> = ({
     fetchEventDetails();
   }, [eventId, user]);
 
-  const handleRSVP = async (status: string) => {
+  const handleRSVPClick = async (status: RSVPStatus) => {
     if (!user || !eventDetails) return;
 
     try {
-      const result = await rsvpToEvent(eventId, status);
+      // Use the hook's handleRSVP function
+      await handleRSVP(status);
       
-      if (result.success) {
-        updateRSVPStatus(eventId, status);
-        setAttendeeCount(result.current_attendees || attendeeCount);
+      // Update local RSVP status
+      updateRSVPStatus(eventId, status);
 
-        // Send confirmation email for "going" status
-        if (status === 'going') {
-          const eventDate = new Date(eventDetails.event_date);
-          
-          await sendRSVPConfirmation(user.email!, {
-            attendeeName: user.user_metadata?.full_name || user.email!,
-            eventTitle: eventDetails.title,
-            eventDate: eventDate.toLocaleDateString('en-US', {
-              weekday: 'long',
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric'
-            }),
-            eventTime: eventDate.toLocaleTimeString('en-US', {
-              hour: 'numeric',
-              minute: '2-digit',
-              hour12: true
-            }),
-            locationName: eventDetails.location_name,
-            address: eventDetails.address,
-            organizerName: eventDetails.profiles?.full_name || 'Event Organizer'
-          });
-        }
+      // Send confirmation email for "going" status
+      if (status === 'going') {
+        const eventDate = new Date(eventDetails.event_date);
+        
+        await sendRSVPConfirmation(user.email!, {
+          attendeeName: user.user_metadata?.full_name || user.email!,
+          eventTitle: eventDetails.title,
+          eventDate: eventDate.toLocaleDateString('en-US', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          }),
+          eventTime: eventDate.toLocaleTimeString('en-US', {
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true
+          }),
+          locationName: eventDetails.location_name,
+          address: eventDetails.address,
+          organizerName: eventDetails.profiles?.full_name || 'Event Organizer'
+        });
       }
     } catch (error) {
       console.error('Error updating RSVP:', error);
@@ -166,7 +164,7 @@ export const EventRSVPButton: React.FC<EventRSVPButtonProps> = ({
     <div className={cn('space-y-2', className)}>
       <div className="flex gap-2">
         <Button
-          onClick={() => handleRSVP('going')}
+          onClick={() => handleRSVPClick('going')}
           disabled={isLoading}
           variant={getButtonVariant('going')}
           className="flex-1"
@@ -174,7 +172,7 @@ export const EventRSVPButton: React.FC<EventRSVPButtonProps> = ({
           {getButtonText('going')}
         </Button>
         <Button
-          onClick={() => handleRSVP('interested')}
+          onClick={() => handleRSVPClick('interested')}
           disabled={isLoading}
           variant={getButtonVariant('interested')}
           className="flex-1"
@@ -182,7 +180,7 @@ export const EventRSVPButton: React.FC<EventRSVPButtonProps> = ({
           {getButtonText('interested')}
         </Button>
         <Button
-          onClick={() => handleRSVP('not_going')}
+          onClick={() => handleRSVPClick('not_going')}
           disabled={isLoading}
           variant={getButtonVariant('not_going')}
           className="flex-1"
@@ -203,7 +201,7 @@ export const EventRSVPButton: React.FC<EventRSVPButtonProps> = ({
       )}
       
       <p className="text-sm text-muted-foreground text-center">
-        {attendeeCount} {attendeeCount === 1 ? 'person' : 'people'} attending
+        {currentAttendees} {currentAttendees === 1 ? 'person' : 'people'} attending
       </p>
     </div>
   );
