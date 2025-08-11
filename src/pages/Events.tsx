@@ -14,6 +14,7 @@ import CreateEventForm from '@/components/CreateEventForm';
 import PremiumUpgradeDialog from '@/components/PremiumUpgradeDialog';
 import { EventRSVPButton } from '@/components/EventRSVPButton';
 import { useUserEventRSVPs } from '@/hooks/useUserEventRSVPs';
+import { EventDetailModal } from '@/components/EventDetailModal';
 
 interface Event {
   id: string;
@@ -337,64 +338,13 @@ const Events = () => {
         />
 
         {/* Event Details Modal */}
-        <Dialog open={isDetailModalOpen} onOpenChange={setIsDetailModalOpen}>
-          <DialogContent className="max-w-md">
-            {selectedEvent && (
-              <>
-                <DialogHeader>
-                  <DialogTitle>{selectedEvent.title}</DialogTitle>
-                  <DialogDescription>
-                    Event details and information
-                  </DialogDescription>
-                </DialogHeader>
-                <div className="space-y-4">
-                  <p className="text-sm">{selectedEvent.description}</p>
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2 text-sm">
-                      <Clock className="h-4 w-4 text-muted-foreground" />
-                      {formatDate(selectedEvent.event_date)}
-                    </div>
-                    <div className="flex items-center gap-2 text-sm">
-                      <MapPin className="h-4 w-4 text-muted-foreground" />
-                      {selectedEvent.location_name}
-                      {selectedEvent.address && (
-                        <span className="text-muted-foreground">• {selectedEvent.address}</span>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-2 text-sm">
-                      <Users className="h-4 w-4 text-muted-foreground" />
-                      {selectedEvent.current_attendees} attending
-                      {selectedEvent.max_attendees && ` of ${selectedEvent.max_attendees}`}
-                    </div>
-                  </div>
-                  {selectedEvent.tags && selectedEvent.tags.length > 0 && (
-                    <div className="flex flex-wrap gap-1">
-                      {selectedEvent.tags.map((tag, index) => (
-                        <Badge key={index} variant="secondary">
-                          {tag}
-                        </Badge>
-                      ))}
-                    </div>
-                  )}
-                  {user ? (
-                    <EventRSVPButton
-                      eventId={selectedEvent.id}
-                      initialAttendees={selectedEvent.current_attendees}
-                      className="w-full touch-target"
-                    />
-                  ) : (
-                    <Button className="w-full touch-target" onClick={() => {
-                      setIsDetailModalOpen(false);
-                      // Could navigate to auth page here
-                    }}>
-                      Sign In to Join Event
-                    </Button>
-                  )}
-                </div>
-              </>
-            )}
-          </DialogContent>
-        </Dialog>
+        {selectedEvent && (
+          <EventDetailModal
+            event={selectedEvent}
+            isOpen={isDetailModalOpen}
+            onClose={() => setIsDetailModalOpen(false)}
+          />
+        )}
       </div>
     </MobileLayout>
   );
