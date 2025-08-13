@@ -989,8 +989,8 @@ body {
 }
 
 @keyframes textGlow {
-  from { text-shadow: 0 0 20px rgba(218, 255, 1, 0.5); }
-  to { text-shadow: 0 0 40px rgba(218, 255, 1, 0.8); }
+  from { text-shadow: 0 0 20px rgba(0, 200, 255, 0.5); }
+  to { text-shadow: 0 0 40px rgba(0, 200, 255, 0.8); }
 }
 
 .animate-slide-in {
