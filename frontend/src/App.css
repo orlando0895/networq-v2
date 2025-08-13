@@ -21,16 +21,18 @@
   --border-subtle: rgba(255, 255, 255, 0.08);
   --border-glow: rgba(218, 255, 1, 0.3);
   
-  /* Signature Neon Green */
-  --accent-primary: rgb(218, 255, 1);
-  --accent-hover: rgb(195, 230, 0);
-  --accent-pressed: rgb(166, 195, 0);
-  --accent-bg: rgba(218, 255, 1, 0.08);
-  --accent-glow: rgba(218, 255, 1, 0.4);
+  /* Brand Blues from Logo */
+  --accent-primary: rgb(0, 200, 255);
+  --accent-secondary: rgb(0, 150, 255);
+  --accent-hover: rgb(0, 180, 255);
+  --accent-pressed: rgb(0, 120, 200);
+  --accent-bg: rgba(0, 200, 255, 0.08);
+  --accent-glow: rgba(0, 200, 255, 0.4);
   
-  /* Brand Blue (from logo) */
-  --brand-blue: rgb(0, 150, 255);
-  --brand-cyan: rgb(0, 200, 255);
+  /* Logo Gradient Colors */
+  --brand-cyan: rgb(0, 220, 255);
+  --brand-blue: rgb(0, 140, 255);
+  --brand-deep-blue: rgb(0, 100, 200);
   
   /* Shadows & Depth */
   --shadow-sm: 0 4px 8px rgba(0, 0, 0, 0.12);
