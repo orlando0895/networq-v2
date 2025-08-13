@@ -549,7 +549,7 @@ body {
 .step-number-3d {
   width: 80px;
   height: 80px;
-  background: linear-gradient(135deg, var(--accent-primary) 0%, var(--brand-cyan) 100%);
+  background: linear-gradient(135deg, var(--accent-primary) 0%, var(--brand-blue) 100%);
   color: var(--bg-primary);
   border-radius: 50%;
   display: flex;
@@ -560,8 +560,8 @@ body {
   margin: 0 auto 32px;
   position: relative;
   box-shadow: 
-    0 12px 24px rgba(218, 255, 1, 0.3),
-    0 0 0 4px rgba(218, 255, 1, 0.1);
+    0 12px 24px rgba(0, 200, 255, 0.3),
+    0 0 0 4px rgba(0, 200, 255, 0.1);
   transform: perspective(1000px) rotateX(0deg);
 }
 
