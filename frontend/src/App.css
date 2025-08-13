@@ -646,7 +646,7 @@ body {
   border-color: var(--accent-primary);
   box-shadow: 
     0 30px 60px rgba(0, 0, 0, 0.3),
-    0 0 60px rgba(218, 255, 1, 0.15);
+    0 0 60px rgba(0, 200, 255, 0.15);
 }
 
 .feature-shimmer {
