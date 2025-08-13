@@ -157,31 +157,6 @@ const Profile = () => {
         </TabsContent>
 
         <TabsContent value="settings" className="space-y-6 mt-6">
-          {/* Privacy Settings */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Eye className="h-5 w-5" />
-                Discovery Settings
-                <Badge variant="outline">Coming Soon</Badge>
-              </CardTitle>
-              <CardDescription>
-                Discovery features will be available in a future update
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <div className="font-medium">Visible in Discovery</div>
-                  <div className="text-sm text-muted-foreground">Allow others to find your profile in discovery</div>
-                </div>
-                <Switch
-                  checked={discoveryVisible}
-                  onCheckedChange={updateDiscoveryVisibility}
-                />
-              </div>
-            </CardContent>
-          </Card>
 
           {/* Notification Settings */}
           <Card>
