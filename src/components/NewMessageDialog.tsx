@@ -127,7 +127,7 @@ export function NewMessageDialog({
   return (
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="w-[95vw] max-w-md h-[85vh] flex flex-col">
-        <DialogHeader className="flex-shrink-0 pb-3">
+        <DialogHeader className="flex-shrink-0 pb-6">
           <div className="flex items-center justify-between">
             <DialogTitle className="text-lg">New Message</DialogTitle>
             <Button
