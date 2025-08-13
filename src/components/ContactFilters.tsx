@@ -126,8 +126,9 @@ const ContactFilters = ({
                   : selectedMethods.filter(v => v !== 'discovery');
                 onMethodsChange(next);
               }}
+              disabled
             >
-              Discovery
+              Discovery (Coming Soon)
             </DropdownMenuCheckboxItem>
           </DropdownMenuContent>
         </DropdownMenu>

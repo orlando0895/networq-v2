@@ -169,9 +169,10 @@ const Profile = () => {
               <CardTitle className="flex items-center gap-2">
                 <Eye className="h-5 w-5" />
                 Discovery Settings
+                <Badge variant="outline">Coming Soon</Badge>
               </CardTitle>
               <CardDescription>
-                Control how others can find and interact with your profile
+                Discovery features will be available in a future update
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -207,9 +208,9 @@ const Profile = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <div className="font-medium">Discovery Interactions</div>
-                  <div className="text-sm text-muted-foreground">Get notified when someone views or likes your profile</div>
+                  <div className="text-sm text-muted-foreground">Coming soon - Get notified when someone views or likes your profile</div>
                 </div>
-                <Switch defaultChecked />
+                <Switch disabled />
               </div>
               <div className="flex items-center justify-between">
                 <div>
