@@ -151,7 +151,7 @@ export function ConversationList({
           <Badge className="absolute -top-1 -right-1 h-6 w-6 p-0 text-xs font-semibold bg-accent text-accent-foreground border-2 border-background">
             {conversation.participant_count}
           </Badge>
-          <div className="absolute bottom-0 right-0 h-3 w-3 bg-green-500 border-2 border-background rounded-full"></div>
+          
         </div>
       );
     }
