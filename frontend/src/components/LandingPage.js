@@ -1,12 +1,17 @@
-import React, { useState } from "react";
-import { ArrowRight, QrCode, Users, MessageCircle, Calendar, Star, Zap, Network, MapPin } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { ArrowRight, QrCode, Users, MessageCircle, Calendar, Star, Zap, MapPin, ChevronDown } from "lucide-react";
 import { mockWaitlistSignup } from "../utils/mock";
 import { useToast } from "../hooks/use-toast";
 
 const LandingPage = () => {
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
   const { toast } = useToast();
+
+  useEffect(() => {
+    setIsLoaded(true);
+  }, []);
 
   const handleWaitlistSignup = async (e) => {
     e.preventDefault();
@@ -23,8 +28,8 @@ const LandingPage = () => {
     try {
       await mockWaitlistSignup(email);
       toast({
-        title: "Welcome to the Movement! 🚀",
-        description: "You're now on the Networq waitlist. Get ready to revolutionize your networking!",
+        title: "Welcome to the Revolution! 🚀",
+        description: "You're now on the Networq waitlist. Get ready to transform your networking!",
       });
       setEmail("");
     } catch (error) {
@@ -40,16 +45,28 @@ const LandingPage = () => {
 
   return (
     <div className="landing-page">
+      {/* Animated Background Elements */}
+      <div className="bg-animations">
+        <div className="floating-particles"></div>
+        <div className="grid-overlay"></div>
+      </div>
+
       {/* Header */}
       <header className="header">
         <div className="container">
           <div className="nav">
-            <div className="logo">
-              <Network className="logo-icon" />
-              <span className="logo-text">Networq</span>
+            <div className="logo-container animate-slide-in">
+              <img 
+                src="https://customer-assets.emergentagent.com/job_networq-connect/artifacts/xhb43ai8_2.png" 
+                alt="Networq" 
+                className="brand-logo"
+              />
             </div>
-            <button className="btn-ghost header-cta" onClick={() => document.getElementById('waitlist').scrollIntoView({ behavior: 'smooth' })}>
-              Join Waitlist
+            <button 
+              className="btn-ghost header-cta animate-fade-in" 
+              onClick={() => document.getElementById('waitlist').scrollIntoView({ behavior: 'smooth' })}
+            >
+              Join Revolution
             </button>
           </div>
         </div>
@@ -59,27 +76,41 @@ const LandingPage = () => {
       <section className="hero">
         <div className="container">
           <div className="hero-content">
-            <h1 className="hero-title">
-              Never Lose Another <span className="text-accent">Connection</span> Again
-            </h1>
-            <p className="hero-subtitle">
-              The digital business card with built-in CRM that transforms how you network. 
-              One tap, one scan, unlimited possibilities.
-            </p>
-            <div className="hero-cta">
-              <button className="btn-primary hero-btn" onClick={() => document.getElementById('waitlist').scrollIntoView({ behavior: 'smooth' })}>
-                Get Early Access <ArrowRight className="btn-icon" />
-              </button>
-              <p className="hero-note">Join 1,000+ networking professionals</p>
-            </div>
-          </div>
-          <div className="hero-visual">
-            <div className="phone-mockup">
-              <div className="qr-demo">
-                <QrCode size={120} className="qr-icon" />
-                <p className="qr-text">Instant Contact Exchange</p>
+            <div className="hero-text">
+              <h1 className={`hero-title ${isLoaded ? 'animate-title' : ''}`}>
+                Never Lose Another{" "}
+                <span className="text-accent animate-glow">Connection</span>{" "}
+                Again
+              </h1>
+              <p className="hero-subtitle animate-fade-up">
+                The revolutionary digital business card with built-in CRM that transforms 
+                how professionals network. One tap, one scan, unlimited possibilities.
+              </p>
+              <div className="hero-cta animate-fade-up-delay">
+                <button 
+                  className="btn-primary hero-btn btn-3d" 
+                  onClick={() => document.getElementById('waitlist').scrollIntoView({ behavior: 'smooth' })}
+                >
+                  <span>Join the Revolution</span>
+                  <ArrowRight className="btn-icon" />
+                </button>
+                <p className="hero-note">Join 1,000+ networking revolutionaries</p>
               </div>
             </div>
+            <div className="hero-visual">
+              <div className="phone-3d animate-float">
+                <div className="phone-screen">
+                  <div className="qr-demo animate-pulse-soft">
+                    <QrCode size={120} className="qr-icon animate-rotate-slow" />
+                    <p className="qr-text">Instant Exchange</p>
+                  </div>
+                  <div className="screen-glow"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="hero-scroll animate-bounce">
+            <ChevronDown size={24} />
           </div>
         </div>
       </section>
@@ -88,30 +119,39 @@ const LandingPage = () => {
       <section className="problem-section">
         <div className="container">
           <div className="problem-content">
-            <h2 className="section-title">We've All Been There...</h2>
+            <h2 className="section-title animate-on-scroll">We've All Been There...</h2>
             <div className="problem-grid">
-              <div className="problem-card">
-                <div className="problem-icon">📇</div>
+              <div className="problem-card animate-card-1">
+                <div className="problem-icon-3d">
+                  <div className="icon-inner">📇</div>
+                </div>
                 <h3>Business Cards Get Lost</h3>
-                <p>Those stacks of cards? They disappear into wallet black holes, never to be seen again.</p>
+                <p>Those stacks of cards? They vanish into wallet black holes, never to be seen again.</p>
+                <div className="card-glow"></div>
               </div>
-              <div className="problem-card">
-                <div className="problem-icon">🔗</div>
+              <div className="problem-card animate-card-2">
+                <div className="problem-icon-3d">
+                  <div className="icon-inner">🔗</div>
+                </div>
                 <h3>Connections Fizzle Out</h3>
                 <p>Great conversations at events turn into "I should reach out" thoughts that never happen.</p>
+                <div className="card-glow"></div>
               </div>
-              <div className="problem-card">
-                <div className="problem-icon">📱</div>
+              <div className="problem-card animate-card-3">
+                <div className="problem-icon-3d">
+                  <div className="icon-inner">📱</div>
+                </div>
                 <h3>Contact Info Gets Outdated</h3>
                 <p>Phone numbers change, emails update, but your saved contacts stay frozen in time.</p>
+                <div className="card-glow"></div>
               </div>
             </div>
-            <div className="origin-story">
-              <blockquote>
-                "After years of attending networking events and watching valuable connections slip away, 
-                I knew there had to be a better way. Networq was born from that frustration."
+            <div className="origin-story animate-on-scroll">
+              <blockquote className="animate-quote">
+                "After years of watching valuable connections slip away at networking events, 
+                I knew there had to be a revolutionary solution. Networq was born from that vision."
               </blockquote>
-              <cite>— Orlando Taylor, Founder</cite>
+              <cite>— Orlando Taylor, Visionary Founder</cite>
             </div>
           </div>
         </div>
@@ -120,31 +160,44 @@ const LandingPage = () => {
       {/* 3. How Networq Works */}
       <section className="how-it-works">
         <div className="container">
-          <h2 className="section-title">How It Works</h2>
-          <p className="section-subtitle">Three simple steps to networking success</p>
-          <div className="steps-grid">
-            <div className="step-card">
-              <div className="step-number">1</div>
-              <div className="step-content">
-                <QrCode className="step-icon" />
-                <h3>Share Instantly</h3>
-                <p>Generate your unique QR code or scan someone else's. Your contact info transfers in seconds.</p>
+          <h2 className="section-title animate-on-scroll">The Revolutionary Process</h2>
+          <p className="section-subtitle">Three simple steps to networking transformation</p>
+          <div className="steps-container">
+            <div className="steps-grid">
+              <div className="step-card animate-step-1">
+                <div className="step-number-3d">
+                  <span>1</span>
+                  <div className="number-glow"></div>
+                </div>
+                <div className="step-content">
+                  <QrCode className="step-icon animate-rotate-hover" />
+                  <h3>Share Instantly</h3>
+                  <p>Generate your unique QR code or scan someone else's. Contact info transfers in milliseconds.</p>
+                </div>
+                <div className="step-connector"></div>
               </div>
-            </div>
-            <div className="step-card">
-              <div className="step-number">2</div>
-              <div className="step-content">
-                <Users className="step-icon" />
-                <h3>Organize Automatically</h3>
-                <p>Contacts are sorted by tags, industry, and events. Your built-in CRM keeps everything organized.</p>
+              <div className="step-card animate-step-2">
+                <div className="step-number-3d">
+                  <span>2</span>
+                  <div className="number-glow"></div>
+                </div>
+                <div className="step-content">
+                  <Users className="step-icon animate-scale-hover" />
+                  <h3>Organize Intelligently</h3>
+                  <p>AI-powered sorting by tags, industry, and events. Your built-in CRM thinks ahead.</p>
+                </div>
+                <div className="step-connector"></div>
               </div>
-            </div>
-            <div className="step-card">
-              <div className="step-number">3</div>
-              <div className="step-content">
-                <MessageCircle className="step-icon" />
-                <h3>Follow Up Seamlessly</h3>
-                <p>Send messages, schedule meetings, and nurture relationships—all within the app.</p>
+              <div className="step-card animate-step-3">
+                <div className="step-number-3d">
+                  <span>3</span>
+                  <div className="number-glow"></div>
+                </div>
+                <div className="step-content">
+                  <MessageCircle className="step-icon animate-pulse-hover" />
+                  <h3>Follow Up Seamlessly</h3>
+                  <p>Send messages, schedule meetings, and nurture relationships—all within the revolutionary app.</p>
+                </div>
               </div>
             </div>
           </div>
@@ -154,37 +207,61 @@ const LandingPage = () => {
       {/* 4. Core Features */}
       <section className="features-section">
         <div className="container">
-          <h2 className="section-title">Why Networq is Different</h2>
+          <h2 className="section-title animate-on-scroll">Revolutionary Features</h2>
           <div className="features-grid">
-            <div className="feature-card">
-              <QrCode className="feature-icon" />
+            <div className="feature-card-3d animate-feature-1">
+              <div className="feature-icon-wrapper">
+                <QrCode className="feature-icon" />
+                <div className="icon-glow"></div>
+              </div>
               <h3>QR Code Magic</h3>
-              <p>Instant contact exchange that works offline and online. No more fumbling with business cards.</p>
+              <p>Instant contact exchange that works offline and online. Revolutionary simplicity.</p>
+              <div className="feature-shimmer"></div>
             </div>
-            <div className="feature-card">
-              <Users className="feature-icon" />
-              <h3>Built-in CRM</h3>
-              <p>Every connection becomes a managed relationship. Tag, sort, and follow up like a pro.</p>
+            <div className="feature-card-3d animate-feature-2">
+              <div className="feature-icon-wrapper">
+                <Users className="feature-icon" />
+                <div className="icon-glow"></div>
+              </div>
+              <h3>AI-Powered CRM</h3>
+              <p>Every connection becomes an intelligent relationship. Tag, sort, and follow up like never before.</p>
+              <div className="feature-shimmer"></div>
             </div>
-            <div className="feature-card">
-              <Zap className="feature-icon" />
-              <h3>Dynamic Updates</h3>
-              <p>When contacts update their info, your saved details update automatically. No more outdated data.</p>
+            <div className="feature-card-3d animate-feature-3">
+              <div className="feature-icon-wrapper">
+                <Zap className="feature-icon" />
+                <div className="icon-glow"></div>
+              </div>
+              <h3>Dynamic Sync</h3>
+              <p>Contacts update automatically when info changes. Always current, always connected.</p>
+              <div className="feature-shimmer"></div>
             </div>
-            <div className="feature-card">
-              <MessageCircle className="feature-icon" />
-              <h3>In-App Messaging</h3>
-              <p>Connect, chat, and build relationships without leaving the app. Group chats included.</p>
+            <div className="feature-card-3d animate-feature-4">
+              <div className="feature-icon-wrapper">
+                <MessageCircle className="feature-icon" />
+                <div className="icon-glow"></div>
+              </div>
+              <h3>Revolutionary Messaging</h3>
+              <p>Connect, chat, and collaborate without friction. Group conversations included.</p>
+              <div className="feature-shimmer"></div>
             </div>
-            <div className="feature-card">
-              <Calendar className="feature-icon" />
+            <div className="feature-card-3d animate-feature-5">
+              <div className="feature-icon-wrapper">
+                <Calendar className="feature-icon" />
+                <div className="icon-glow"></div>
+              </div>
               <h3>Event Discovery</h3>
-              <p>Find local networking events, create your own, and see who's attending before you go.</p>
+              <p>Find and create networking events. See who's attending before you arrive.</p>
+              <div className="feature-shimmer"></div>
             </div>
-            <div className="feature-card">
-              <MapPin className="feature-icon" />
-              <h3>Discover Network</h3>
-              <p>Browse other professionals in your area and industry. Expand your network strategically.</p>
+            <div className="feature-card-3d animate-feature-6">
+              <div className="feature-icon-wrapper">
+                <MapPin className="feature-icon" />
+                <div className="icon-glow"></div>
+              </div>
+              <h3>Network Intelligence</h3>
+              <p>Discover professionals strategically. Expand your network with purpose.</p>
+              <div className="feature-shimmer"></div>
             </div>
           </div>
         </div>
@@ -194,64 +271,73 @@ const LandingPage = () => {
       <section className="social-proof">
         <div className="container">
           <div className="vision-content">
-            <h2 className="section-title">Our Vision</h2>
-            <p className="vision-text">
-              To become the biggest and only necessary app for professional networking. 
-              Networq will be the standard way individuals share contact information at networking events worldwide.
+            <h2 className="section-title animate-on-scroll">Our Revolutionary Vision</h2>
+            <p className="vision-text animate-on-scroll">
+              To transform Networq into the universal standard for professional networking worldwide. 
+              The only app you'll ever need to connect, manage, and grow your professional relationships.
             </p>
-            <div className="stats-grid">
-              <div className="stat-card">
+            <div className="stats-3d-grid">
+              <div className="stat-card-3d animate-stat-1">
                 <div className="stat-number">1K+</div>
-                <div className="stat-label">Early Adopters</div>
+                <div className="stat-label">Early Revolutionaries</div>
+                <div className="stat-glow"></div>
               </div>
-              <div className="stat-card">
+              <div className="stat-card-3d animate-stat-2">
                 <div className="stat-number">100%</div>
-                <div className="stat-label">Contact Success Rate</div>
+                <div className="stat-label">Connection Success</div>
+                <div className="stat-glow"></div>
               </div>
-              <div className="stat-card">
+              <div className="stat-card-3d animate-stat-3">
                 <div className="stat-number">3 Sec</div>
-                <div className="stat-label">Average Exchange Time</div>
+                <div className="stat-label">Exchange Time</div>
+                <div className="stat-glow"></div>
               </div>
             </div>
             <div className="testimonials">
-              <div className="testimonial-card">
-                <div className="testimonial-content">
-                  <Star className="testimonial-icon" />
-                  <p>"Finally, a networking solution that actually works. No more lost business cards!"</p>
-                  <cite>— Beta User</cite>
-                </div>
+              <div className="testimonial-3d animate-on-scroll">
+                <Star className="testimonial-icon animate-star" />
+                <p>"This is the networking revolution we've all been waiting for. Absolutely game-changing!"</p>
+                <cite>— Beta Revolutionary</cite>
+                <div className="testimonial-glow"></div>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 6. Join the Movement (Waitlist) */}
+      {/* 6. Join the Revolution (Waitlist) */}
       <section className="waitlist-section" id="waitlist">
         <div className="container">
           <div className="waitlist-content">
-            <h2 className="section-title">Join the Networking Revolution</h2>
-            <p className="section-subtitle">
-              Get early access to Networq and be among the first to experience the future of networking.
+            <h2 className="section-title animate-on-scroll">
+              Join the <span className="text-accent">Networking Revolution</span>
+            </h2>
+            <p className="section-subtitle animate-on-scroll">
+              Be among the first to experience the future of professional networking. 
+              Early access to revolutionary features awaits.
             </p>
-            <form className="waitlist-form" onSubmit={handleWaitlistSignup}>
-              <div className="form-group">
-                <input
-                  type="email"
-                  className="input-field"
-                  placeholder="Enter your email for early access"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-                <button type="submit" className="btn-primary" disabled={isSubmitting}>
-                  {isSubmitting ? "Joining..." : "Get Early Access"}
+            <form className="waitlist-form-3d" onSubmit={handleWaitlistSignup}>
+              <div className="form-group-3d">
+                <div className="input-wrapper">
+                  <input
+                    type="email"
+                    className="input-field-3d"
+                    placeholder="Enter your email to join the revolution"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                  />
+                  <div className="input-glow"></div>
+                </div>
+                <button type="submit" className="btn-primary btn-revolution" disabled={isSubmitting}>
+                  <span>{isSubmitting ? "Joining Revolution..." : "Join Revolution"}</span>
                   <ArrowRight className="btn-icon" />
+                  <div className="btn-particles"></div>
                 </button>
               </div>
             </form>
-            <p className="waitlist-note">
-              Join 1,000+ professionals waiting to revolutionize their networking. 
+            <p className="waitlist-note animate-on-scroll">
+              Join 1,000+ professionals ready to revolutionize networking. 
               Early access members get premium features free for 3 months.
             </p>
           </div>
@@ -259,25 +345,29 @@ const LandingPage = () => {
       </section>
 
       {/* 7. Footer */}
-      <footer className="footer">
+      <footer className="footer-3d">
         <div className="container">
           <div className="footer-content">
             <div className="footer-brand">
-              <div className="logo">
-                <Network className="logo-icon" />
-                <span className="logo-text">Networq</span>
+              <div className="logo-container">
+                <img 
+                  src="https://customer-assets.emergentagent.com/job_networq-connect/artifacts/xhb43ai8_2.png" 
+                  alt="Networq" 
+                  className="footer-logo"
+                />
               </div>
               <p className="footer-description">
-                The digital business card with built-in CRM, revolutionizing professional networking.
+                The revolutionary digital business card with AI-powered CRM, 
+                transforming professional networking forever.
               </p>
             </div>
             <div className="footer-links">
               <div className="footer-section">
-                <h4>Product</h4>
+                <h4>Revolution</h4>
                 <ul>
                   <li><a href="#features">Features</a></li>
                   <li><a href="#how-it-works">How it Works</a></li>
-                  <li><a href="#pricing">Pricing</a></li>
+                  <li><a href="#vision">Vision</a></li>
                 </ul>
               </div>
               <div className="footer-section">
@@ -291,8 +381,8 @@ const LandingPage = () => {
             </div>
           </div>
           <div className="footer-bottom">
-            <p>&copy; 2024 Networq LLC. All rights reserved.</p>
-            <p>Founded by Orlando Taylor</p>
+            <p>&copy; 2024 Networq LLC. Revolutionizing networking worldwide.</p>
+            <p>Founded by Orlando Taylor, Networking Visionary</p>
           </div>
         </div>
       </footer>
