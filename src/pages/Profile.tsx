@@ -176,13 +176,6 @@ const Profile = () => {
               </div>
               <div className="flex items-center justify-between">
                 <div>
-                  <div className="font-medium">Discovery Interactions</div>
-                  <div className="text-sm text-muted-foreground">Coming soon - Get notified when someone views or likes your profile</div>
-                </div>
-                <Switch disabled />
-              </div>
-              <div className="flex items-center justify-between">
-                <div>
                   <div className="font-medium">Event Updates</div>
                   <div className="text-sm text-muted-foreground">Get notified about events you're attending</div>
                 </div>
