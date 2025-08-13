@@ -20,6 +20,13 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
+const ProtectedLayout = ({ children }: { children: React.ReactNode }) => (
+  <>
+    {children}
+    <BottomNavigation />
+  </>
+);
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
@@ -36,7 +43,9 @@ const App = () => (
                 path="/events"
                 element={
                   <ProtectedRoute>
-                    <Events />
+                    <ProtectedLayout>
+                      <Events />
+                    </ProtectedLayout>
                   </ProtectedRoute>
                 }
               />
@@ -44,7 +53,9 @@ const App = () => (
                 path="/discovery"
                 element={
                   <ProtectedRoute>
-                    <Discovery />
+                    <ProtectedLayout>
+                      <Discovery />
+                    </ProtectedLayout>
                   </ProtectedRoute>
                 }
               />
@@ -52,7 +63,9 @@ const App = () => (
                 path="/messages"
                 element={
                   <ProtectedRoute>
-                    <Messages />
+                    <ProtectedLayout>
+                      <Messages />
+                    </ProtectedLayout>
                   </ProtectedRoute>
                 }
               />
@@ -60,7 +73,9 @@ const App = () => (
                 path="/profile"
                 element={
                   <ProtectedRoute>
-                    <Profile />
+                    <ProtectedLayout>
+                      <Profile />
+                    </ProtectedLayout>
                   </ProtectedRoute>
                 }
               />
@@ -68,19 +83,22 @@ const App = () => (
                 path="/profile/manage"
                 element={
                   <ProtectedRoute>
-                    <ProfileManagement />
+                    <ProtectedLayout>
+                      <ProfileManagement />
+                    </ProtectedLayout>
                   </ProtectedRoute>
                 }
               />
               <Route path="/" element={
                 <ProtectedRoute>
-                  <Index />
+                  <ProtectedLayout>
+                    <Index />
+                  </ProtectedLayout>
                 </ProtectedRoute>
               } />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
-            <BottomNavigation />
           </div>
         </BrowserRouter>
       </AuthProvider>
