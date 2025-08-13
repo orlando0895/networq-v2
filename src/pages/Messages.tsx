@@ -215,15 +215,6 @@ const Messages = ({ targetConversationId }: MessagesProps) => {
     try {
       if (!user || contactIds.length === 0) return;
 
-      // Create a new conversation
-      const { data: conversation, error: conversationError } = await supabase
-        .from('conversations')
-        .insert({})
-        .select()
-        .single();
-
-      if (conversationError) throw conversationError;
-
       // Get profile IDs for the selected contacts
       const { data: contacts, error: contactsError } = await supabase
         .from('contacts')
@@ -240,24 +231,17 @@ const Messages = ({ targetConversationId }: MessagesProps) => {
 
       if (profilesError) throw profilesError;
 
-      // Add current user and selected contacts as participants
-      const participantData = [
-        { conversation_id: conversation.id, user_id: user.id },
-        ...profiles.map(profile => ({
-          conversation_id: conversation.id,
-          user_id: profile.id
-        }))
-      ];
+      // Use the new database function to create group conversation
+      const { data: conversationId, error: createError } = await supabase
+        .rpc('create_group_conversation', {
+          participant_ids: profiles.map(p => p.id)
+        });
 
-      const { error: participantsError } = await supabase
-        .from('conversation_participants')
-        .insert(participantData);
+      if (createError) throw createError;
 
-      if (participantsError) throw participantsError;
-
-      setSelectedConversationId(conversation.id);
+      setSelectedConversationId(conversationId);
       setIsNewMessageOpen(false);
-      navigate(`/messages?conversationId=${conversation.id}`);
+      navigate(`/messages?conversationId=${conversationId}`);
       
       // Refresh conversations to show the new group chat
       await fetchConversations();

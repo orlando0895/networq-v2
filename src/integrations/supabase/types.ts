@@ -753,6 +753,10 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: number
       }
+      create_group_conversation: {
+        Args: { participant_ids: string[] }
+        Returns: string
+      }
       current_user_is_premium: {
         Args: Record<PropertyKey, never>
         Returns: boolean
