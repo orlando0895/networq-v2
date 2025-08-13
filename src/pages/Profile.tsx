@@ -142,12 +142,6 @@ const Profile = () => {
         <PageHeader
           title="Profile"
           subtitle="Manage your account and settings"
-          action={
-            <Button size="sm" variant="outline" className="touch-target" onClick={() => navigate('/profile/manage')}>
-              <Edit className="h-4 w-4" />
-              <span className="ml-2 hidden sm:inline">Edit</span>
-            </Button>
-          }
         />
       }
     >
