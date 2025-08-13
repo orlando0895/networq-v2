@@ -312,6 +312,20 @@ const Profile = () => {
             </CardContent>
           </Card>
 
+          {/* Sign Out */}
+          <Card>
+            <CardContent className="p-4">
+              <Button 
+                variant="destructive" 
+                className="w-full touch-target"
+                onClick={handleLogout}
+              >
+                <LogOut className="h-4 w-4 mr-2" />
+                Sign Out
+              </Button>
+            </CardContent>
+          </Card>
+
           {/* Danger Zone */}
           <Card className="border-destructive/50 bg-destructive/5">
             <CardHeader>
@@ -325,20 +339,6 @@ const Profile = () => {
             </CardHeader>
             <CardContent>
               <DeleteAccountDialog />
-            </CardContent>
-          </Card>
-
-          {/* Sign Out */}
-          <Card>
-            <CardContent className="p-4">
-              <Button 
-                variant="destructive" 
-                className="w-full touch-target"
-                onClick={handleLogout}
-              >
-                <LogOut className="h-4 w-4 mr-2" />
-                Sign Out
-              </Button>
             </CardContent>
           </Card>
         </TabsContent>
