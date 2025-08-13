@@ -19,7 +19,7 @@
   /* Border System */
   --border-primary: rgb(55, 65, 81);
   --border-subtle: rgba(255, 255, 255, 0.08);
-  --border-glow: rgba(218, 255, 1, 0.3);
+  --border-glow: rgba(0, 200, 255, 0.3);
   
   /* Brand Blues from Logo */
   --accent-primary: rgb(0, 200, 255);
