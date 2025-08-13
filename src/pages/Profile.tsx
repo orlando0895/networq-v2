@@ -174,13 +174,6 @@ const Profile = () => {
                 </div>
                 <Switch defaultChecked />
               </div>
-              <div className="flex items-center justify-between">
-                <div>
-                  <div className="font-medium">Event Updates</div>
-                  <div className="text-sm text-muted-foreground">Get notified about events you're attending</div>
-                </div>
-                <Switch defaultChecked />
-              </div>
             </CardContent>
           </Card>
 
