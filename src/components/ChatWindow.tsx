@@ -10,6 +10,7 @@ import { Send, Paperclip, ArrowLeft, Users } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { ChatMenuDropdown } from './ChatMenuDropdown';
+import { AddParticipantsDialog } from './AddParticipantsDialog';
 import { useChatMuteStatus } from '@/hooks/useChatMuteStatus';
 
 interface Message {
@@ -47,6 +48,7 @@ export function ChatWindow({ conversationId, currentUserId, onBack, onMessageSen
   const [sending, setSending] = useState(false);
   const [participants, setParticipants] = useState<Participant[]>([]);
   const [isGroupChat, setIsGroupChat] = useState(false);
+  const [showAddParticipants, setShowAddParticipants] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -181,6 +183,36 @@ export function ChatWindow({ conversationId, currentUserId, onBack, onMessageSen
       supabase.removeChannel(messagesChannel);
     };
   }, [conversationId, currentUserId, toast]);
+
+  // Function to refetch participants (for when new participants are added)
+  const fetchParticipants = async () => {
+    try {
+      const { data: participantsData, error: participantsError } = await supabase
+        .from('conversation_participants')
+        .select('user_id')
+        .eq('conversation_id', conversationId)
+        .neq('user_id', currentUserId);
+
+      if (participantsError) throw participantsError;
+
+      const participantIds = participantsData?.map(p => p.user_id) || [];
+      const { data: participantProfiles } = await supabase
+        .from('profiles')
+        .select('id, full_name, email')
+        .in('id', participantIds);
+
+      const transformedParticipants = participantProfiles?.map(p => ({
+        id: p.id,
+        full_name: p.full_name || '',
+        email: p.email || ''
+      })) || [];
+
+      setParticipants(transformedParticipants);
+      setIsGroupChat(transformedParticipants.length > 1);
+    } catch (error) {
+      console.error('Error fetching participants:', error);
+    }
+  };
 
   // Scroll to bottom when messages change
   useEffect(() => {
@@ -355,13 +387,7 @@ export function ChatWindow({ conversationId, currentUserId, onBack, onMessageSen
                 description: "You have left the group conversation."
               });
             }}
-            onAddParticipants={() => {
-              // TODO: Implement add participants functionality
-              toast({
-                title: "Add participants",
-                description: "Feature coming soon!"
-              });
-            }}
+            onAddParticipants={() => setShowAddParticipants(true)}
           />
         </div>
       </div>
@@ -498,6 +524,14 @@ export function ChatWindow({ conversationId, currentUserId, onBack, onMessageSen
           }}
         />
       </div>
+
+      <AddParticipantsDialog
+        open={showAddParticipants}
+        onOpenChange={setShowAddParticipants}
+        conversationId={conversationId}
+        existingParticipants={participants}
+        onParticipantsAdded={fetchParticipants}
+      />
     </div>
   );
 }
