@@ -185,7 +185,7 @@ body {
 .btn-primary:hover {
   transform: perspective(1000px) rotateX(-5deg) translateY(-4px);
   box-shadow: 
-    0 20px 40px rgba(218, 255, 1, 0.3),
+    0 20px 40px rgba(0, 200, 255, 0.3),
     0 0 0 1px rgba(255, 255, 255, 0.2),
     inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
