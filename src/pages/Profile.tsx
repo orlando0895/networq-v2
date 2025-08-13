@@ -18,6 +18,7 @@ import { useNavigate } from 'react-router-dom';
 import { useUserContactCard } from '@/hooks/useUserContactCard';
 import { MobileLayout, PageHeader } from '@/components/MobileLayout';
 import { QRCodeShare, DeleteAccountDialog } from '@/components/LazyComponents';
+import ChangePasswordDialog from '@/components/ChangePasswordDialog';
 import { MyCard } from '@/components/MyCard';
 
 const Profile = () => {
@@ -186,10 +187,7 @@ const Profile = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-              <Button variant="outline" className="w-full justify-between">
-                <span>Change Password</span>
-                <ChevronRight className="h-4 w-4" />
-              </Button>
+              <ChangePasswordDialog />
               <Button variant="outline" className="w-full justify-between">
                 <span>Two-Factor Authentication</span>
                 <ChevronRight className="h-4 w-4" />
