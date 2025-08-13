@@ -189,10 +189,6 @@ const Profile = () => {
             <CardContent className="space-y-3">
               <ChangePasswordDialog />
               <Button variant="outline" className="w-full justify-between">
-                <span>Two-Factor Authentication</span>
-                <ChevronRight className="h-4 w-4" />
-              </Button>
-              <Button variant="outline" className="w-full justify-between">
                 <span>Privacy Settings</span>
                 <ChevronRight className="h-4 w-4" />
               </Button>
