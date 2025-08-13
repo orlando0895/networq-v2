@@ -100,8 +100,8 @@ body {
 
 .grid-overlay {
   background-image: 
-    linear-gradient(rgba(218, 255, 1, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(218, 255, 1, 0.03) 1px, transparent 1px);
+    linear-gradient(rgba(0, 200, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 200, 255, 0.03) 1px, transparent 1px);
   background-size: 50px 50px;
   opacity: 0.3;
   width: 100%;
