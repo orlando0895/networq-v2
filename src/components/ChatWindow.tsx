@@ -6,9 +6,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
-import { Send, Paperclip, ArrowLeft, MoreVertical, Users, UserPlus } from 'lucide-react';
+import { Send, Paperclip, ArrowLeft, Users } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { cn } from '@/lib/utils';
+import { ChatMenuDropdown } from './ChatMenuDropdown';
+import { useChatMuteStatus } from '@/hooks/useChatMuteStatus';
 
 interface Message {
   id: string;
@@ -48,6 +50,7 @@ export function ChatWindow({ conversationId, currentUserId, onBack, onMessageSen
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const { isMuted } = useChatMuteStatus(conversationId);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -339,13 +342,27 @@ export function ChatWindow({ conversationId, currentUserId, onBack, onMessageSen
             )}
           </div>
           
-          <Button 
-            variant="ghost" 
-            size="icon"
-            className="h-10 w-10 flex-shrink-0 touch-target"
-          >
-            <MoreVertical className="h-5 w-5" />
-          </Button>
+          <ChatMenuDropdown
+            conversationId={conversationId}
+            currentUserId={currentUserId}
+            isGroupChat={isGroupChat}
+            participants={participants}
+            isMuted={isMuted}
+            onLeaveGroup={() => {
+              // TODO: Implement leave group functionality
+              toast({
+                title: "Left group",
+                description: "You have left the group conversation."
+              });
+            }}
+            onAddParticipants={() => {
+              // TODO: Implement add participants functionality
+              toast({
+                title: "Add participants",
+                description: "Feature coming soon!"
+              });
+            }}
+          />
         </div>
       </div>
 

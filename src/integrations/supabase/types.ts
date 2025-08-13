@@ -90,6 +90,8 @@ export type Database = {
           id: string
           joined_at: string
           last_read_at: string | null
+          muted_until: string | null
+          notifications_enabled: boolean
           user_id: string
         }
         Insert: {
@@ -98,6 +100,8 @@ export type Database = {
           id?: string
           joined_at?: string
           last_read_at?: string | null
+          muted_until?: string | null
+          notifications_enabled?: boolean
           user_id: string
         }
         Update: {
@@ -106,6 +110,8 @@ export type Database = {
           id?: string
           joined_at?: string
           last_read_at?: string | null
+          muted_until?: string | null
+          notifications_enabled?: boolean
           user_id?: string
         }
         Relationships: [
@@ -539,6 +545,27 @@ export type Database = {
         }
         Relationships: []
       }
+      user_blocks: {
+        Row: {
+          blocked_id: string
+          blocker_id: string
+          created_at: string
+          id: string
+        }
+        Insert: {
+          blocked_id: string
+          blocker_id: string
+          created_at?: string
+          id?: string
+        }
+        Update: {
+          blocked_id?: string
+          blocker_id?: string
+          created_at?: string
+          id?: string
+        }
+        Relationships: []
+      }
       user_boosts: {
         Row: {
           boost_type: string
@@ -688,6 +715,60 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      user_reports: {
+        Row: {
+          conversation_id: string | null
+          created_at: string
+          description: string | null
+          id: string
+          message_id: string | null
+          reason: string
+          reported_id: string
+          reporter_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          conversation_id?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          message_id?: string | null
+          reason: string
+          reported_id: string
+          reporter_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          conversation_id?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          message_id?: string | null
+          reason?: string
+          reported_id?: string
+          reporter_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_reports_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_reports_message_id_fkey"
+            columns: ["message_id"]
+            isOneToOne: false
+            referencedRelation: "messages"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_subscriptions: {
         Row: {
@@ -881,6 +962,26 @@ export type Database = {
       regenerate_share_code: {
         Args: { card_id: string }
         Returns: string
+      }
+      search_messages_in_conversation: {
+        Args: {
+          conversation_id_param: string
+          search_query: string
+          limit_param?: number
+        }
+        Returns: {
+          id: string
+          content: string
+          sender_id: string
+          message_type: string
+          created_at: string
+          sender_name: string
+          rank: number
+        }[]
+      }
+      toggle_conversation_mute: {
+        Args: { conversation_id_param: string; mute_duration_hours?: number }
+        Returns: undefined
       }
       update_user_last_active: {
         Args: Record<PropertyKey, never>
