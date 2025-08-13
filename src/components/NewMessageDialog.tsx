@@ -135,7 +135,7 @@ export function NewMessageDialog({
               size="sm"
               onClick={handleDone}
               disabled={selectedContacts.length === 0}
-              className="h-9 px-3 text-sm"
+              className="h-9 px-3 text-sm mr-12"
             >
               Done
             </Button>
