@@ -357,8 +357,8 @@ const LandingPage = () => {
                 />
               </div>
               <p className="footer-description">
-                The revolutionary digital business card with AI-powered CRM, 
-                transforming professional networking forever.
+                The digital business card with built-in CRM that makes 
+                professional networking effortless and effective.
               </p>
             </div>
             <div className="footer-links">
