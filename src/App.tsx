@@ -8,6 +8,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import BottomNavigation from "@/components/BottomNavigation";
 import Index from "./pages/Index";
+import Landing from "./pages/Landing";
 import Auth from "./pages/Auth";
 import Events from "./pages/Events";
 import Discovery from "./pages/Discovery";
@@ -39,6 +40,16 @@ const App = () => (
               <Route path="/auth" element={<Auth />} />
               <Route path="/public/:identifier" element={<PublicProfile />} />
               <Route path="/contact/:shareCode" element={<ViewContact />} />
+              <Route
+                path="/app"
+                element={
+                  <ProtectedRoute>
+                    <ProtectedLayout>
+                      <Index />
+                    </ProtectedLayout>
+                  </ProtectedRoute>
+                }
+              />
               <Route
                 path="/events"
                 element={
@@ -89,13 +100,7 @@ const App = () => (
                   </ProtectedRoute>
                 }
               />
-              <Route path="/" element={
-                <ProtectedRoute>
-                  <ProtectedLayout>
-                    <Index />
-                  </ProtectedLayout>
-                </ProtectedRoute>
-              } />
+              <Route path="/" element={<Landing />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

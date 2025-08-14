@@ -15,7 +15,7 @@ const navItems: NavItem[] = [
     id: 'connections',
     label: 'Connections',
     icon: Users,
-    path: '/'
+    path: '/app'
   },
   {
     id: 'messages',
@@ -36,8 +36,8 @@ const BottomNavigation = () => {
   const navigate = useNavigate();
 
   const isActive = (path: string) => {
-    if (path === '/') {
-      return location.pathname === '/';
+    if (path === '/app') {
+      return location.pathname === '/app';
     }
     return location.pathname.startsWith(path);
   };

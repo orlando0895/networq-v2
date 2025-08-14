@@ -45,15 +45,15 @@ const Header = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center space-x-6">
-            <Link to="/" className="text-xl font-bold text-gray-900">
+            <Link to={user ? "/app" : "/"} className="text-xl font-bold text-gray-900">
               Networq
             </Link>
             {user && (
               <nav className="flex items-center space-x-4">
                 <Link
-                  to="/"
+                  to="/app"
                   className={`text-sm font-medium transition-colors hover:text-primary ${
-                    location.pathname === '/' ? 'text-primary' : 'text-gray-600'
+                    location.pathname === '/app' ? 'text-primary' : 'text-gray-600'
                   }`}
                 >
                   Contacts
