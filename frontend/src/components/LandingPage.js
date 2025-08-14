@@ -310,11 +310,11 @@ const LandingPage = () => {
         <div className="container">
           <div className="waitlist-content">
             <h2 className="section-title animate-on-scroll">
-              Join the <span className="text-accent">Networking Revolution</span>
+              Get <span className="text-accent">Early Access</span>
             </h2>
             <p className="section-subtitle animate-on-scroll">
-              Be among the first to experience the future of professional networking. 
-              Early access to revolutionary features awaits.
+              Be among the first professionals to experience effortless networking. 
+              Skip the business card hassle and never lose a valuable connection again.
             </p>
             <form className="waitlist-form-3d" onSubmit={handleWaitlistSignup}>
               <div className="form-group-3d">
@@ -322,7 +322,7 @@ const LandingPage = () => {
                   <input
                     type="email"
                     className="input-field-3d"
-                    placeholder="Enter your email to join the revolution"
+                    placeholder="Enter your email for early access"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
@@ -330,15 +330,15 @@ const LandingPage = () => {
                   <div className="input-glow"></div>
                 </div>
                 <button type="submit" className="btn-primary btn-revolution" disabled={isSubmitting}>
-                  <span>{isSubmitting ? "Joining Revolution..." : "Join Revolution"}</span>
+                  <span>{isSubmitting ? "Joining..." : "Get Early Access"}</span>
                   <ArrowRight className="btn-icon" />
                   <div className="btn-particles"></div>
                 </button>
               </div>
             </form>
             <p className="waitlist-note animate-on-scroll">
-              Join 1,000+ professionals ready to revolutionize networking. 
-              Early access members get premium features free for 3 months.
+              Join 1,000+ professionals who are ready to improve their networking. 
+              Early access includes premium features free for 3 months.
             </p>
           </div>
         </div>
