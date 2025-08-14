@@ -271,33 +271,33 @@ const LandingPage = () => {
       <section className="social-proof">
         <div className="container">
           <div className="vision-content">
-            <h2 className="section-title animate-on-scroll">Our Revolutionary Vision</h2>
+            <h2 className="section-title animate-on-scroll">The Future of Professional Networking</h2>
             <p className="vision-text animate-on-scroll">
-              To transform Networq into the universal standard for professional networking worldwide. 
-              The only app you'll ever need to connect, manage, and grow your professional relationships.
+              We're building the networking standard that professionals worldwide will rely on. 
+              Networq will be the natural way people connect at business events, conferences, and meetings.
             </p>
             <div className="stats-3d-grid">
               <div className="stat-card-3d animate-stat-1">
                 <div className="stat-number">1K+</div>
-                <div className="stat-label">Early Revolutionaries</div>
+                <div className="stat-label">Active Users</div>
                 <div className="stat-glow"></div>
               </div>
               <div className="stat-card-3d animate-stat-2">
-                <div className="stat-number">100%</div>
-                <div className="stat-label">Connection Success</div>
+                <div className="stat-number">95%</div>
+                <div className="stat-label">Follow-up Rate</div>
                 <div className="stat-glow"></div>
               </div>
               <div className="stat-card-3d animate-stat-3">
                 <div className="stat-number">3 Sec</div>
-                <div className="stat-label">Exchange Time</div>
+                <div className="stat-label">Contact Exchange</div>
                 <div className="stat-glow"></div>
               </div>
             </div>
             <div className="testimonials">
               <div className="testimonial-3d animate-on-scroll">
                 <Star className="testimonial-icon animate-star" />
-                <p>"This is the networking revolution we've all been waiting for. Absolutely game-changing!"</p>
-                <cite>— Beta Revolutionary</cite>
+                <p>"Finally, a networking solution that actually works. I never lose contacts anymore!"</p>
+                <cite>— Sarah M., Sales Director</cite>
                 <div className="testimonial-glow"></div>
               </div>
             </div>
