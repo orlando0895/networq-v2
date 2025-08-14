@@ -2,12 +2,13 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ArrowRight, Users, Calendar, QrCode, Share2, MessageSquare, Shield, Smartphone, Globe } from 'lucide-react';
+import { ArrowRight, Users, Calendar, QrCode, Share2, MessageSquare, Shield, Smartphone, Globe, Check, X, Zap, Clock, TrendingUp } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import PhoneMockup from '@/components/PhoneMockup';
 
 const Landing = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
+    <div className="min-h-screen bg-background dark">
       {/* Navigation */}
       <nav className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -16,14 +17,14 @@ const Landing = () => {
               <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
                 <Users className="h-5 w-5 text-primary-foreground" />
               </div>
-              <span className="text-xl font-bold">Networq</span>
+              <span className="text-xl font-bold text-foreground">Networq</span>
             </div>
             <div className="flex items-center space-x-4">
               <Link to="/auth">
-                <Button variant="ghost">Sign In</Button>
+                <Button variant="ghost" className="text-foreground hover:text-accent-foreground">Sign In</Button>
               </Link>
               <Link to="/auth">
-                <Button>Get Started</Button>
+                <Button>Get Early Access</Button>
               </Link>
             </div>
           </div>
@@ -31,164 +32,232 @@ const Landing = () => {
       </nav>
 
       {/* Hero Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto text-center">
-          <Badge variant="secondary" className="mb-4">
-            Professional Networking Reimagined
-          </Badge>
-          <h1 className="text-4xl sm:text-6xl font-bold tracking-tight mb-6">
-            Build Your 
-            <span className="text-primary"> Professional Network</span>
-          </h1>
-          <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
-            Enter your credentials to access your network. Organize contacts, attend events, and grow your professional connections with powerful tools designed for modern networking.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/auth">
-              <Button size="lg" className="text-lg px-8">
-                Start Networking
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-            </Link>
-            <Button variant="outline" size="lg" className="text-lg px-8">
-              Watch Demo
-            </Button>
-          </div>
-        </div>
-      </section>
-
-      {/* Features Grid */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-muted/20">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold mb-4">Everything You Need to Network Effectively</h2>
-            <p className="text-xl text-muted-foreground">
-              Powerful features to help you manage, grow, and leverage your professional network
-            </p>
-          </div>
-          
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <Card className="border-border/50 hover:border-primary/30 transition-colors">
-              <CardHeader>
-                <Users className="h-12 w-12 text-primary mb-4" />
-                <CardTitle>Contact Management</CardTitle>
-                <CardDescription>
-                  Organize and categorize your professional contacts with detailed profiles, notes, and interaction history.
-                </CardDescription>
-              </CardHeader>
-            </Card>
-
-            <Card className="border-border/50 hover:border-primary/30 transition-colors">
-              <CardHeader>
-                <QrCode className="h-12 w-12 text-primary mb-4" />
-                <CardTitle>QR Code Sharing</CardTitle>
-                <CardDescription>
-                  Share your contact information instantly with QR codes. Perfect for events, meetings, and conferences.
-                </CardDescription>
-              </CardHeader>
-            </Card>
-
-            <Card className="border-border/50 hover:border-primary/30 transition-colors">
-              <CardHeader>
-                <Calendar className="h-12 w-12 text-primary mb-4" />
-                <CardTitle>Event Networking</CardTitle>
-                <CardDescription>
-                  Discover networking events, track RSVPs, and connect with other attendees to maximize your networking opportunities.
-                </CardDescription>
-              </CardHeader>
-            </Card>
-
-            <Card className="border-border/50 hover:border-primary/30 transition-colors">
-              <CardHeader>
-                <MessageSquare className="h-12 w-12 text-primary mb-4" />
-                <CardTitle>Direct Messaging</CardTitle>
-                <CardDescription>
-                  Stay connected with your network through built-in messaging and communication tools.
-                </CardDescription>
-              </CardHeader>
-            </Card>
-
-            <Card className="border-border/50 hover:border-primary/30 transition-colors">
-              <CardHeader>
-                <Share2 className="h-12 w-12 text-primary mb-4" />
-                <CardTitle>Smart Discovery</CardTitle>
-                <CardDescription>
-                  Find and connect with professionals in your industry through intelligent discovery and recommendation features.
-                </CardDescription>
-              </CardHeader>
-            </Card>
-
-            <Card className="border-border/50 hover:border-primary/30 transition-colors">
-              <CardHeader>
-                <Shield className="h-12 w-12 text-primary mb-4" />
-                <CardTitle>Privacy Controls</CardTitle>
-                <CardDescription>
-                  Control your privacy settings and choose what information to share with different levels of your network.
-                </CardDescription>
-              </CardHeader>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* Benefits Section */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8">
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-background to-muted/20">
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="text-3xl font-bold mb-6">Why Choose Networq?</h2>
-              <div className="space-y-6">
-                <div className="flex items-start space-x-4">
-                  <Smartphone className="h-6 w-6 text-primary mt-1" />
-                  <div>
-                    <h3 className="font-semibold mb-2">Mobile-First Design</h3>
-                    <p className="text-muted-foreground">
-                      Access your network anywhere with our responsive, mobile-optimized platform designed for professionals on the go.
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-start space-x-4">
-                  <Globe className="h-6 w-6 text-primary mt-1" />
-                  <div>
-                    <h3 className="font-semibold mb-2">Professional Focus</h3>
-                    <p className="text-muted-foreground">
-                      Unlike social networks, Networq is built specifically for professional networking and business relationship management.
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-start space-x-4">
-                  <Shield className="h-6 w-6 text-primary mt-1" />
-                  <div>
-                    <h3 className="font-semibold mb-2">Privacy-First Approach</h3>
-                    <p className="text-muted-foreground">
-                      Your professional network is valuable. We prioritize privacy and give you complete control over your information.
-                    </p>
-                  </div>
-                </div>
+              <h1 className="text-5xl sm:text-6xl font-bold tracking-tight mb-6 text-foreground">
+                Never Lose Another 
+                <span className="text-primary"> Connection</span> Again
+              </h1>
+              <p className="text-xl text-muted-foreground mb-8 max-w-2xl">
+                Stop losing valuable contacts in the chaos of business cards and scattered notes. Networq helps you build, organize, and nurture your professional network effortlessly.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Link to="/auth">
+                  <Button size="lg" className="text-lg px-8">
+                    Get Early Access
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Button>
+                </Link>
+                <Button variant="outline" size="lg" className="text-lg px-8 text-foreground border-border hover:bg-accent">
+                  Watch Demo
+                </Button>
               </div>
             </div>
             <div className="lg:pl-12">
-              <Card className="p-8 bg-gradient-to-br from-primary/10 to-primary/5 border-primary/20">
-                <CardContent className="p-0 text-center">
-                  <div className="mb-6">
-                    <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <Users className="h-10 w-10 text-primary" />
-                    </div>
-                    <h3 className="text-2xl font-bold mb-2">Ready to Network?</h3>
-                    <p className="text-muted-foreground mb-6">
-                      Join thousands of professionals who are already building stronger networks with Networq.
-                    </p>
-                  </div>
-                  <Link to="/auth">
-                    <Button size="lg" className="w-full">
-                      Get Started Free
-                      <ArrowRight className="ml-2 h-5 w-5" />
-                    </Button>
-                  </Link>
-                </CardContent>
-              </Card>
+              <PhoneMockup className="animate-fade-in" />
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* We've All Been There Section */}
+      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-muted/10">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-3xl font-bold mb-12 text-foreground">We've All Been There...</h2>
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="space-y-4">
+              <div className="w-16 h-16 bg-destructive/20 rounded-full flex items-center justify-center mx-auto">
+                <X className="h-8 w-8 text-destructive" />
+              </div>
+              <h3 className="text-lg font-semibold text-foreground">Lost Business Cards</h3>
+              <p className="text-muted-foreground">
+                You meet someone amazing at a conference, exchange cards, then can't find it when you need it most.
+              </p>
+            </div>
+            <div className="space-y-4">
+              <div className="w-16 h-16 bg-destructive/20 rounded-full flex items-center justify-center mx-auto">
+                <X className="h-8 w-8 text-destructive" />
+              </div>
+              <h3 className="text-lg font-semibold text-foreground">Forgotten Follow-ups</h3>
+              <p className="text-muted-foreground">
+                You promise to follow up with a new contact but forget their context and what you discussed.
+              </p>
+            </div>
+            <div className="space-y-4">
+              <div className="w-16 h-16 bg-destructive/20 rounded-full flex items-center justify-center mx-auto">
+                <X className="h-8 w-8 text-destructive" />
+              </div>
+              <h3 className="text-lg font-semibold text-foreground">Missed Opportunities</h3>
+              <p className="text-muted-foreground">
+                Your network could help, but you can't remember who does what or how to reach them.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* How Networq Works */}
+      <section className="py-16 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold mb-4 text-foreground">How Networq Works</h2>
+            <p className="text-xl text-muted-foreground">
+              Simple, powerful tools that transform how you network
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="text-center space-y-4">
+              <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mx-auto">
+                <span className="text-2xl font-bold text-primary">1</span>
+              </div>
+              <h3 className="text-xl font-semibold text-foreground">Instant Contact Exchange</h3>
+              <p className="text-muted-foreground">
+                Share your contact info via QR code or link. No more business cards to lose or manually enter.
+              </p>
+            </div>
+            
+            <div className="text-center space-y-4">
+              <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mx-auto">
+                <span className="text-2xl font-bold text-primary">2</span>
+              </div>
+              <h3 className="text-xl font-semibold text-foreground">Smart Organization</h3>
+              <p className="text-muted-foreground">
+                Add context, notes, and tags to every contact. Never forget where you met or what you discussed.
+              </p>
+            </div>
+            
+            <div className="text-center space-y-4">
+              <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mx-auto">
+                <span className="text-2xl font-bold text-primary">3</span>
+              </div>
+              <h3 className="text-xl font-semibold text-foreground">Stay Connected</h3>
+              <p className="text-muted-foreground">
+                Set follow-up reminders, discover mutual connections, and nurture relationships that matter.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Why Networq Works Better */}
+      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-muted/10">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold mb-4 text-foreground">Why Networq Works Better</h2>
+            <p className="text-xl text-muted-foreground">
+              Compare the old way vs. the Networq way
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-2 gap-8">
+            <Card className="p-6 border-destructive/20 bg-destructive/5">
+              <h3 className="text-xl font-semibold mb-4 text-foreground flex items-center">
+                <X className="h-5 w-5 text-destructive mr-2" />
+                The Old Way
+              </h3>
+              <div className="space-y-3">
+                <div className="flex items-center text-muted-foreground">
+                  <span className="w-2 h-2 bg-destructive rounded-full mr-3"></span>
+                  Lost or damaged business cards
+                </div>
+                <div className="flex items-center text-muted-foreground">
+                  <span className="w-2 h-2 bg-destructive rounded-full mr-3"></span>
+                  Manual data entry and typos
+                </div>
+                <div className="flex items-center text-muted-foreground">
+                  <span className="w-2 h-2 bg-destructive rounded-full mr-3"></span>
+                  Scattered contacts across platforms
+                </div>
+                <div className="flex items-center text-muted-foreground">
+                  <span className="w-2 h-2 bg-destructive rounded-full mr-3"></span>
+                  Forgotten follow-ups and context
+                </div>
+              </div>
+            </Card>
+            
+            <Card className="p-6 border-primary/20 bg-primary/5">
+              <h3 className="text-xl font-semibold mb-4 text-foreground flex items-center">
+                <Check className="h-5 w-5 text-primary mr-2" />
+                The Networq Way
+              </h3>
+              <div className="space-y-3">
+                <div className="flex items-center text-foreground">
+                  <span className="w-2 h-2 bg-primary rounded-full mr-3"></span>
+                  Instant digital contact exchange
+                </div>
+                <div className="flex items-center text-foreground">
+                  <span className="w-2 h-2 bg-primary rounded-full mr-3"></span>
+                  Automatic contact enrichment
+                </div>
+                <div className="flex items-center text-foreground">
+                  <span className="w-2 h-2 bg-primary rounded-full mr-3"></span>
+                  Centralized, organized network
+                </div>
+                <div className="flex items-center text-foreground">
+                  <span className="w-2 h-2 bg-primary rounded-full mr-3"></span>
+                  Smart reminders and context
+                </div>
+              </div>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Statistics Section */}
+      <section className="py-16 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-6xl mx-auto text-center">
+          <h2 className="text-3xl font-bold mb-12 text-foreground">Join Thousands of Smart Networkers</h2>
+          
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="space-y-2">
+              <div className="flex items-center justify-center space-x-2">
+                <TrendingUp className="h-8 w-8 text-primary" />
+                <span className="text-4xl font-bold text-foreground">10,000+</span>
+              </div>
+              <p className="text-lg text-muted-foreground">Active Professionals</p>
+              <p className="text-sm text-muted-foreground">Building stronger networks daily</p>
+            </div>
+            
+            <div className="space-y-2">
+              <div className="flex items-center justify-center space-x-2">
+                <Zap className="h-8 w-8 text-primary" />
+                <span className="text-4xl font-bold text-foreground">3x</span>
+              </div>
+              <p className="text-lg text-muted-foreground">Faster Connections</p>
+              <p className="text-sm text-muted-foreground">Compared to traditional methods</p>
+            </div>
+            
+            <div className="space-y-2">
+              <div className="flex items-center justify-center space-x-2">
+                <Clock className="h-8 w-8 text-primary" />
+                <span className="text-4xl font-bold text-foreground">95%</span>
+              </div>
+              <p className="text-lg text-muted-foreground">Follow-up Success</p>
+              <p className="text-sm text-muted-foreground">With smart reminder system</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Final CTA Section */}
+      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-muted/10 to-background">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-4xl font-bold mb-6 text-foreground">Ready to Transform Your Networking?</h2>
+          <p className="text-xl text-muted-foreground mb-8">
+            Join the waitlist and be among the first to experience the future of professional networking.
+          </p>
+          <Link to="/auth">
+            <Button size="lg" className="text-lg px-12 py-6">
+              Get Early Access Now
+              <ArrowRight className="ml-2 h-6 w-6" />
+            </Button>
+          </Link>
+          <p className="text-sm text-muted-foreground mt-4">
+            No credit card required • Early access benefits • Be part of the beta
+          </p>
         </div>
       </section>
 
@@ -201,14 +270,14 @@ const Landing = () => {
                 <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
                   <Users className="h-5 w-5 text-primary-foreground" />
                 </div>
-                <span className="text-xl font-bold">Networq</span>
+                <span className="text-xl font-bold text-foreground">Networq</span>
               </div>
               <p className="text-muted-foreground">
-                Professional networking platform designed to help you build and maintain meaningful business relationships.
+                The future of professional networking. Build, organize, and nurture your network like never before.
               </p>
             </div>
             <div>
-              <h4 className="font-semibold mb-4">Product</h4>
+              <h4 className="font-semibold mb-4 text-foreground">Product</h4>
               <div className="space-y-2">
                 <p className="text-muted-foreground">Features</p>
                 <p className="text-muted-foreground">Pricing</p>
@@ -216,7 +285,7 @@ const Landing = () => {
               </div>
             </div>
             <div>
-              <h4 className="font-semibold mb-4">Company</h4>
+              <h4 className="font-semibold mb-4 text-foreground">Company</h4>
               <div className="space-y-2">
                 <p className="text-muted-foreground">About</p>
                 <p className="text-muted-foreground">Blog</p>
@@ -224,7 +293,7 @@ const Landing = () => {
               </div>
             </div>
             <div>
-              <h4 className="font-semibold mb-4">Support</h4>
+              <h4 className="font-semibold mb-4 text-foreground">Support</h4>
               <div className="space-y-2">
                 <p className="text-muted-foreground">Help Center</p>
                 <p className="text-muted-foreground">Contact</p>
