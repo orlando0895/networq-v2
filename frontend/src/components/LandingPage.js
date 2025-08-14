@@ -207,15 +207,15 @@ const LandingPage = () => {
       {/* 4. Core Features */}
       <section className="features-section">
         <div className="container">
-          <h2 className="section-title animate-on-scroll">Revolutionary Features</h2>
+          <h2 className="section-title animate-on-scroll">Why Networq Works Better</h2>
           <div className="features-grid">
             <div className="feature-card-3d animate-feature-1">
               <div className="feature-icon-wrapper">
                 <QrCode className="feature-icon" />
                 <div className="icon-glow"></div>
               </div>
-              <h3>QR Code Magic</h3>
-              <p>Instant contact exchange that works offline and online. Revolutionary simplicity.</p>
+              <h3>QR Code Contact Sharing</h3>
+              <p>Skip the business card shuffle. Share your complete contact info instantly, online or offline.</p>
               <div className="feature-shimmer"></div>
             </div>
             <div className="feature-card-3d animate-feature-2">
@@ -223,8 +223,8 @@ const LandingPage = () => {
                 <Users className="feature-icon" />
                 <div className="icon-glow"></div>
               </div>
-              <h3>AI-Powered CRM</h3>
-              <p>Every connection becomes an intelligent relationship. Tag, sort, and follow up like never before.</p>
+              <h3>Built-in CRM</h3>
+              <p>Every contact becomes a managed relationship. Track conversations, set follow-up reminders, and close more deals.</p>
               <div className="feature-shimmer"></div>
             </div>
             <div className="feature-card-3d animate-feature-3">
@@ -232,8 +232,8 @@ const LandingPage = () => {
                 <Zap className="feature-icon" />
                 <div className="icon-glow"></div>
               </div>
-              <h3>Dynamic Sync</h3>
-              <p>Contacts update automatically when info changes. Always current, always connected.</p>
+              <h3>Always Up-to-Date</h3>
+              <p>When someone updates their info, your contacts update automatically. No more outdated phone numbers.</p>
               <div className="feature-shimmer"></div>
             </div>
             <div className="feature-card-3d animate-feature-4">
@@ -241,8 +241,8 @@ const LandingPage = () => {
                 <MessageCircle className="feature-icon" />
                 <div className="icon-glow"></div>
               </div>
-              <h3>Revolutionary Messaging</h3>
-              <p>Connect, chat, and collaborate without friction. Group conversations included.</p>
+              <h3>In-App Messaging</h3>
+              <p>Connect directly with your contacts. Start conversations, share documents, and coordinate meetings.</p>
               <div className="feature-shimmer"></div>
             </div>
             <div className="feature-card-3d animate-feature-5">
@@ -251,7 +251,7 @@ const LandingPage = () => {
                 <div className="icon-glow"></div>
               </div>
               <h3>Event Discovery</h3>
-              <p>Find and create networking events. See who's attending before you arrive.</p>
+              <p>Find relevant networking events in your area. See who's attending before you decide to go.</p>
               <div className="feature-shimmer"></div>
             </div>
             <div className="feature-card-3d animate-feature-6">
@@ -259,8 +259,8 @@ const LandingPage = () => {
                 <MapPin className="feature-icon" />
                 <div className="icon-glow"></div>
               </div>
-              <h3>Network Intelligence</h3>
-              <p>Discover professionals strategically. Expand your network with purpose.</p>
+              <h3>Discover Local Professionals</h3>
+              <p>Browse professionals in your industry and location. Connect with the right people strategically.</p>
               <div className="feature-shimmer"></div>
             </div>
           </div>
