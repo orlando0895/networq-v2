@@ -66,7 +66,7 @@ const LandingPage = () => {
               className="btn-ghost header-cta animate-fade-in" 
               onClick={() => document.getElementById('waitlist').scrollIntoView({ behavior: 'smooth' })}
             >
-              Join Revolution
+              Get Early Access
             </button>
           </div>
         </div>
