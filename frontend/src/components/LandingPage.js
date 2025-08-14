@@ -160,8 +160,8 @@ const LandingPage = () => {
       {/* 3. How Networq Works */}
       <section className="how-it-works">
         <div className="container">
-          <h2 className="section-title animate-on-scroll">The Revolutionary Process</h2>
-          <p className="section-subtitle">Three simple steps to networking transformation</p>
+          <h2 className="section-title animate-on-scroll">How Networq Works</h2>
+          <p className="section-subtitle">Three simple steps to better networking</p>
           <div className="steps-container">
             <div className="steps-grid">
               <div className="step-card animate-step-1">
@@ -171,8 +171,8 @@ const LandingPage = () => {
                 </div>
                 <div className="step-content">
                   <QrCode className="step-icon animate-rotate-hover" />
-                  <h3>Share Instantly</h3>
-                  <p>Generate your unique QR code or scan someone else's. Contact info transfers in milliseconds.</p>
+                  <h3>Share Contacts Instantly</h3>
+                  <p>Generate your QR code or scan theirs. Contact details transfer in seconds, even without internet.</p>
                 </div>
                 <div className="step-connector"></div>
               </div>
@@ -183,8 +183,8 @@ const LandingPage = () => {
                 </div>
                 <div className="step-content">
                   <Users className="step-icon animate-scale-hover" />
-                  <h3>Organize Intelligently</h3>
-                  <p>AI-powered sorting by tags, industry, and events. Your built-in CRM thinks ahead.</p>
+                  <h3>Stay Organized Automatically</h3>
+                  <p>Contacts are sorted by events, industry, and tags. No more scattered business cards.</p>
                 </div>
                 <div className="step-connector"></div>
               </div>
@@ -195,8 +195,8 @@ const LandingPage = () => {
                 </div>
                 <div className="step-content">
                   <MessageCircle className="step-icon animate-pulse-hover" />
-                  <h3>Follow Up Seamlessly</h3>
-                  <p>Send messages, schedule meetings, and nurture relationships—all within the revolutionary app.</p>
+                  <h3>Follow Up Effortlessly</h3>
+                  <p>Send messages, schedule meetings, and nurture relationships—all in one place.</p>
                 </div>
               </div>
             </div>
