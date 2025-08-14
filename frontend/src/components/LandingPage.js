@@ -381,8 +381,8 @@ const LandingPage = () => {
             </div>
           </div>
           <div className="footer-bottom">
-            <p>&copy; 2024 Networq LLC. Revolutionizing networking worldwide.</p>
-            <p>Founded by Orlando Taylor, Networking Visionary</p>
+            <p>&copy; 2024 Networq LLC. Making networking work better for everyone.</p>
+            <p>Founded by Orlando Taylor</p>
           </div>
         </div>
       </footer>
