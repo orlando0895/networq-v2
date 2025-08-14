@@ -83,18 +83,18 @@ const LandingPage = () => {
                 Again
               </h1>
               <p className="hero-subtitle animate-fade-up">
-                The revolutionary digital business card with built-in CRM that transforms 
-                how professionals network. One tap, one scan, unlimited possibilities.
+                Stop losing valuable contacts at networking events. Networq is the digital business 
+                card with built-in CRM that makes contact exchange instant and follow-up effortless.
               </p>
               <div className="hero-cta animate-fade-up-delay">
                 <button 
                   className="btn-primary hero-btn btn-3d" 
                   onClick={() => document.getElementById('waitlist').scrollIntoView({ behavior: 'smooth' })}
                 >
-                  <span>Join the Revolution</span>
+                  <span>Get Early Access</span>
                   <ArrowRight className="btn-icon" />
                 </button>
-                <p className="hero-note">Join 1,000+ networking revolutionaries</p>
+                <p className="hero-note">Join 1,000+ professionals already using Networq</p>
               </div>
             </div>
             <div className="hero-visual">
