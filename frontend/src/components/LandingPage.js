@@ -148,10 +148,10 @@ const LandingPage = () => {
             </div>
             <div className="origin-story animate-on-scroll">
               <blockquote className="animate-quote">
-                "After years of watching valuable connections slip away at networking events, 
-                I knew there had to be a revolutionary solution. Networq was born from that vision."
+                "After years of attending networking events where valuable connections slipped away, 
+                I knew professionals needed a better solution. Networq solves the contact exchange problem once and for all."
               </blockquote>
-              <cite>— Orlando Taylor, Visionary Founder</cite>
+              <cite>— Orlando Taylor, Founder</cite>
             </div>
           </div>
         </div>
