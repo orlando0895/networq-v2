@@ -363,11 +363,11 @@ const LandingPage = () => {
             </div>
             <div className="footer-links">
               <div className="footer-section">
-                <h4>Revolution</h4>
+                <h4>Product</h4>
                 <ul>
                   <li><a href="#features">Features</a></li>
                   <li><a href="#how-it-works">How it Works</a></li>
-                  <li><a href="#vision">Vision</a></li>
+                  <li><a href="#pricing">Pricing</a></li>
                 </ul>
               </div>
               <div className="footer-section">
