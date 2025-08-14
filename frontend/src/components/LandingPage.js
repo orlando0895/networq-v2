@@ -102,7 +102,7 @@ const LandingPage = () => {
                 <div className="phone-screen">
                   <div className="qr-demo animate-pulse-soft">
                     <QrCode size={120} className="qr-icon animate-rotate-slow" />
-                    <p className="qr-text">Instant Exchange</p>
+                    <p className="qr-text">Instant Contact Sharing</p>
                   </div>
                   <div className="screen-glow"></div>
                 </div>
