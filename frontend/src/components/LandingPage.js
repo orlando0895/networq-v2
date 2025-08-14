@@ -28,8 +28,8 @@ const LandingPage = () => {
     try {
       await mockWaitlistSignup(email);
       toast({
-        title: "Welcome to the Revolution! 🚀",
-        description: "You're now on the Networq waitlist. Get ready to transform your networking!",
+        title: "Welcome to Networq! 🎉",
+        description: "You're now on our early access list. We'll notify you when we launch!",
       });
       setEmail("");
     } catch (error) {
