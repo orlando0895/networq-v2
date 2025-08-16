@@ -280,6 +280,19 @@ const MyContactCardForm = () => {
                   </div>
                 </div>
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
+                  {/* Scan Business Card Button */}
+                  <div className="flex justify-center pb-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setShowScanner(true)}
+                      className="flex items-center gap-2"
+                    >
+                      <Scan className="w-4 h-4" />
+                      Scan Your Business Card
+                    </Button>
+                  </div>
+                  
                   {/* Essential Fields */}
                   <div className="space-y-3">
                     <div>
@@ -468,6 +481,19 @@ const MyContactCardForm = () => {
                 </div>
               </div>
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
+                {/* Scan Business Card Button */}
+                <div className="flex justify-center pb-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setShowScanner(true)}
+                    className="flex items-center gap-2"
+                  >
+                    <Scan className="w-4 h-4" />
+                    Scan Your Business Card
+                  </Button>
+                </div>
+                
                 {/* Essential Fields */}
                 <div className="space-y-3">
                   <div>
