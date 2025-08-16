@@ -1,8 +1,7 @@
 import React, { useState, useRef } from 'react';
-import { Camera, Upload, X, MoreVertical } from 'lucide-react';
+import { Camera, Upload, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -140,29 +139,18 @@ export const ProfilePictureUpload: React.FC<ProfilePictureUploadProps> = ({
         <div className="flex-1 min-w-0">
           <p className="text-sm font-medium truncate">{userInitials}</p>
           <p className="text-xs text-muted-foreground">
-            {currentAvatarUrl ? 'Tap to change' : 'No image'}
+            {currentAvatarUrl ? 'Current image' : 'No image'}
           </p>
         </div>
         
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="sm" disabled={uploading}>
-              <MoreVertical className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={openFilePicker} disabled={uploading}>
-              <Upload className="h-4 w-4 mr-2" />
-              {uploading ? 'Uploading...' : 'Upload'}
-            </DropdownMenuItem>
-            {currentAvatarUrl && (
-              <DropdownMenuItem onClick={removeAvatar}>
-                <X className="h-4 w-4 mr-2" />
-                Remove
-              </DropdownMenuItem>
-            )}
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={openFilePicker}
+          disabled={uploading}
+        >
+          {uploading ? 'Uploading...' : 'Edit'}
+        </Button>
 
         <input
           ref={fileInputRef}
