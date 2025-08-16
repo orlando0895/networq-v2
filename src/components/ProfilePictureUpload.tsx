@@ -138,9 +138,6 @@ export const ProfilePictureUpload: React.FC<ProfilePictureUploadProps> = ({
         
         <div className="flex-1 min-w-0">
           <p className="text-sm font-medium truncate">{userInitials}</p>
-          <p className="text-xs text-muted-foreground">
-            {currentAvatarUrl ? 'Current image' : 'No image'}
-          </p>
         </div>
         
         <Button
