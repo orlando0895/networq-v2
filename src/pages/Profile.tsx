@@ -197,55 +197,6 @@ const Profile = () => {
         </TabsContent>
 
         <TabsContent value="account" className="space-y-6 mt-6">
-          {/* Subscription Management */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <CreditCard className="h-5 w-5" />
-                Subscription
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <div className="font-medium">
-                    {isPremium ? 'Premium Plan' : 'Free Plan'}
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    {isPremium 
-                      ? profile?.subscription_expires_at 
-                        ? `Expires ${new Date(profile.subscription_expires_at).toLocaleDateString()}`
-                        : 'Active subscription'
-                      : 'Limited features available'
-                    }
-                  </div>
-                </div>
-                {isPremium && (
-                  <Badge className="bg-gradient-to-r from-yellow-400 to-yellow-600 text-yellow-900">
-                    <Crown className="h-3 w-3 mr-1" />
-                    Premium
-                  </Badge>
-                )}
-              </div>
-              {!isPremium && (
-                <Button className="w-full bg-gradient-to-r from-yellow-400 to-yellow-600 text-yellow-900 hover:from-yellow-500 hover:to-yellow-700">
-                  <Crown className="h-4 w-4 mr-2" />
-                  Upgrade to Premium
-                </Button>
-              )}
-              {isPremium && (
-                <div className="space-y-2">
-                  <Button variant="outline" className="w-full">
-                    Manage Subscription
-                  </Button>
-                  <Button variant="outline" className="w-full">
-                    Billing History
-                  </Button>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
           {/* Account Actions */}
           <Card>
             <CardHeader>
