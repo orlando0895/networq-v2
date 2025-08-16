@@ -20,6 +20,7 @@ import { MobileLayout, PageHeader } from '@/components/MobileLayout';
 import { QRCodeShare, DeleteAccountDialog } from '@/components/LazyComponents';
 import ChangePasswordDialog from '@/components/ChangePasswordDialog';
 import { MyCard } from '@/components/MyCard';
+import { ExportDataDialog } from '@/components/ExportDataDialog';
 
 const Profile = () => {
   const { user } = useAuth();
@@ -30,6 +31,7 @@ const Profile = () => {
   const [discoveryVisible, setDiscoveryVisible] = useState(true);
   const [showQRCode, setShowQRCode] = useState(false);
   const [discoveryStats, setDiscoveryStats] = useState<any>(null);
+  const [exportOpen, setExportOpen] = useState(false);
 
   // Fetch user profile and settings
   useEffect(() => {
@@ -203,7 +205,11 @@ const Profile = () => {
               <CardTitle>Account Actions</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-              <Button variant="outline" className="w-full justify-between">
+              <Button 
+                variant="outline" 
+                className="w-full justify-between"
+                onClick={() => setExportOpen(true)}
+              >
                 <span>Export Data</span>
                 <ChevronRight className="h-4 w-4" />
               </Button>
@@ -264,6 +270,12 @@ const Profile = () => {
           </div>
         </div>
       )}
+
+      {/* Export Data Dialog */}
+      <ExportDataDialog 
+        open={exportOpen} 
+        onOpenChange={setExportOpen} 
+      />
     </MobileLayout>
   );
 };
