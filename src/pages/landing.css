@@ -616,11 +616,17 @@ html {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 1rem;
-  padding: 2rem;
+  padding: 1.75rem 1.5rem;
   position: relative;
   transform-style: preserve-3d;
   transition: all 0.3s ease;
   overflow: hidden;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 140px;
 }
 
 .stat-card-3d::before {
@@ -645,20 +651,24 @@ html {
 }
 
 .stat-number {
-  font-size: 3rem;
-  font-weight: 700;
+  font-size: clamp(2rem, 5vw, 2.5rem);
+  font-weight: 800;
   background: linear-gradient(135deg, #3b82f6, #1d4ed8);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   margin-bottom: 0.5rem;
+  line-height: 1;
 }
 
 .stat-label {
-  font-size: 1rem;
-  font-weight: 600;
-  color: white;
-  margin-bottom: 0.5rem;
+  font-size: clamp(0.8rem, 2vw, 0.9rem);
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 500;
+  line-height: 1.3;
+  max-width: 100%;
+  word-break: break-word;
+  hyphens: auto;
 }
 
 .stat-glow {
