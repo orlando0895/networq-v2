@@ -190,9 +190,6 @@ const LandingPage = () => {
               </div>
             </div>
           </div>
-          <div className="hero-scroll animate-bounce" onClick={() => document.querySelector('.problem-section')?.scrollIntoView({ behavior: 'smooth' })}>
-            <ChevronDown size={24} />
-          </div>
         </div>
       </section>
 
