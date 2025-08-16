@@ -439,23 +439,21 @@ const LandingPage = () => {
                 professional networking effortless and effective.
               </p>
             </div>
-            <div className="footer-links">
-              <div className="footer-section">
-                <h4>Product</h4>
-                <ul>
-                  <li><a href="#features">Features</a></li>
-                  <li><a href="#how-it-works">How it Works</a></li>
-                  <li><a href="#pricing">Pricing</a></li>
-                </ul>
-              </div>
-              <div className="footer-section">
-                <h4>Company</h4>
-                <ul>
-                  <li><a href="#about">About</a></li>
-                  <li><a href="#privacy">Privacy</a></li>
-                  <li><a href="#terms">Terms</a></li>
-                </ul>
-              </div>
+            <div className="footer-section">
+              <h4>Product</h4>
+              <ul>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#how-it-works">How it Works</a></li>
+                <li><a href="#pricing">Pricing</a></li>
+              </ul>
+            </div>
+            <div className="footer-section">
+              <h4>Company</h4>
+              <ul>
+                <li><a href="#about">About</a></li>
+                <li><a href="#privacy">Privacy</a></li>
+                <li><a href="#terms">Terms</a></li>
+              </ul>
             </div>
           </div>
           <div className="footer-bottom">
