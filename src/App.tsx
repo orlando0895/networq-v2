@@ -16,6 +16,7 @@ import Profile from "./pages/Profile";
 import ProfileManagement from "./pages/ProfileManagement";
 import ViewContact from "./pages/ViewContact";
 import { PublicProfile } from "./pages/PublicProfile";
+import { PrivacyPolicy } from "./pages/PrivacyPolicy";
 import Messages from "./pages/Messages";
 import NotFound from "./pages/NotFound";
 
@@ -40,6 +41,7 @@ const App = () => (
               <Route path="/auth" element={<Auth />} />
               <Route path="/public/:identifier" element={<PublicProfile />} />
               <Route path="/contact/:shareCode" element={<ViewContact />} />
+              <Route path="/privacy" element={<PrivacyPolicy />} />
               <Route
                 path="/app"
                 element={
