@@ -332,7 +332,7 @@ html {
 }
 
 .problem-card:hover {
-  transform: translateY(-8px) perspective(1000px) rotateX(8deg) rotateY(-2deg) scale(1.03);
+  transform: translateY(-8px) perspective(1000px) rotateX(-8deg) rotateY(-2deg) scale(1.03);
   box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4), 0 0 40px rgba(59, 130, 246, 0.3);
 }
 
@@ -426,7 +426,7 @@ html {
 }
 
 .step-card:hover {
-  transform: translateY(-6px) perspective(1000px) rotateX(6deg) rotateY(-2deg) scale(1.02);
+  transform: translateY(-6px) perspective(1000px) rotateX(-6deg) rotateY(-2deg) scale(1.02);
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 0 35px rgba(59, 130, 246, 0.25);
 }
 
@@ -532,7 +532,7 @@ html {
 }
 
 .feature-card-3d:hover {
-  transform: translateY(-10px) perspective(1000px) rotateX(10deg) rotateY(-3deg) scale(1.05);
+  transform: translateY(-10px) perspective(1000px) rotateX(-10deg) rotateY(-3deg) scale(1.05);
   box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4), 0 0 50px rgba(59, 130, 246, 0.4);
 }
 
@@ -636,7 +636,7 @@ html {
 }
 
 .stat-card-3d:hover {
-  transform: translateY(-8px) perspective(1000px) rotateX(7deg) rotateY(-2deg) scale(1.08);
+  transform: translateY(-8px) perspective(1000px) rotateX(-7deg) rotateY(-2deg) scale(1.08);
   box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3), 0 0 40px rgba(59, 130, 246, 0.4);
 }
 
@@ -708,7 +708,7 @@ html {
 }
 
 .testimonial-3d:hover {
-  transform: translateY(-6px) perspective(1000px) rotateX(5deg) rotateY(-1deg) scale(1.02);
+  transform: translateY(-6px) perspective(1000px) rotateX(-5deg) rotateY(-1deg) scale(1.02);
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2), 0 0 30px rgba(59, 130, 246, 0.2);
 }
 
