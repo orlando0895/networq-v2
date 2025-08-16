@@ -7,7 +7,7 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instanciate createClient with right options
+  // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "12.2.3 (519615d)"
@@ -809,6 +809,30 @@ export type Database = {
         }
         Relationships: []
       }
+      waitlist_signups: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          source: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          source?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          source?: string | null
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -816,14 +840,14 @@ export type Database = {
     Functions: {
       activate_user_boost: {
         Args: {
-          user_uuid: string
           boost_type_param: string
           stripe_payment_intent_id_param?: string
+          user_uuid: string
         }
         Returns: string
       }
       calculate_distance: {
-        Args: { lat1: number; lon1: number; lat2: number; lon2: number }
+        Args: { lat1: number; lat2: number; lon1: number; lon2: number }
         Returns: number
       }
       check_subscription_expiry: {
@@ -854,36 +878,36 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: {
           boost_type: string
+          currency: string
+          description: string
+          display_name: string
           duration_hours: number
           price_cents: number
-          currency: string
-          display_name: string
-          description: string
         }[]
       }
       get_events_within_radius: {
         Args: {
+          limit_count?: number
+          radius_km?: number
           user_lat: number
           user_lon: number
-          radius_km?: number
-          limit_count?: number
         }
         Returns: {
-          id: string
-          title: string
-          description: string
-          event_date: string
-          end_date: string
-          location_name: string
-          latitude: number
-          longitude: number
           address: string
-          max_attendees: number
-          current_attendees: number
-          tags: string[]
-          image_url: string
           created_by: string
+          current_attendees: number
+          description: string
           distance_km: number
+          end_date: string
+          event_date: string
+          id: string
+          image_url: string
+          latitude: number
+          location_name: string
+          longitude: number
+          max_attendees: number
+          tags: string[]
+          title: string
         }[]
       }
       get_or_create_direct_conversation: {
@@ -893,10 +917,10 @@ export type Database = {
       get_user_discovery_stats: {
         Args: { user_uuid: string }
         Returns: {
-          profile_views: number
-          profile_likes: number
           active_boost_expires_at: string
           discovery_visible: boolean
+          profile_likes: number
+          profile_views: number
         }[]
       }
       get_user_event_rsvps: {
@@ -928,23 +952,23 @@ export type Database = {
         Args: {
           current_user_lat: number
           current_user_lon: number
-          radius_km?: number
-          limit_count?: number
           exclude_viewed?: boolean
+          limit_count?: number
+          radius_km?: number
         }
         Returns: {
-          id: string
-          full_name: string
-          bio: string
-          job_title: string
-          company: string
           avatar_url: string
-          interests: string[]
-          location_name: string
+          bio: string
+          company: string
           distance_km: number
+          full_name: string
           has_boost: boolean
-          last_active_at: string
+          id: string
+          interests: string[]
           is_premium: boolean
+          job_title: string
+          last_active_at: string
+          location_name: string
         }[]
       }
       handle_event_rsvp: {
@@ -956,7 +980,7 @@ export type Database = {
         Returns: boolean
       }
       record_discovery_interaction: {
-        Args: { viewed_user_uuid: string; interaction_type_param: string }
+        Args: { interaction_type_param: string; viewed_user_uuid: string }
         Returns: string
       }
       regenerate_share_code: {
@@ -966,17 +990,17 @@ export type Database = {
       search_messages_in_conversation: {
         Args: {
           conversation_id_param: string
-          search_query: string
           limit_param?: number
+          search_query: string
         }
         Returns: {
-          id: string
           content: string
-          sender_id: string
-          message_type: string
           created_at: string
-          sender_name: string
+          id: string
+          message_type: string
           rank: number
+          sender_id: string
+          sender_name: string
         }[]
       }
       toggle_conversation_mute: {
