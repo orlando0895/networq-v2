@@ -632,16 +632,6 @@ const MyContactCardForm = () => {
         )}
       </Card>
 
-      {/* Mobile FAB for Scanner */}
-      {isMobile && (
-        <Button
-          onClick={() => setShowScanner(true)}
-          className="fixed bottom-24 right-4 rounded-full h-14 w-14 shadow-lg z-40"
-          size="lg"
-        >
-          <Scan className="h-6 w-6" />
-        </Button>
-      )}
 
       <BusinessCardScanner
         isOpen={showScanner}
