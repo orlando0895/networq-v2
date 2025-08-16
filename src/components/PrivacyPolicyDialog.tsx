@@ -145,8 +145,8 @@ export const PrivacyPolicyDialog = ({ open, onOpenChange }: PrivacyPolicyDialogP
               <Mail className="h-4 w-4" />
               <span className="font-medium">Questions?</span>
               <span className="text-muted-foreground">Contact us at</span>
-              <a href="mailto:privacy@networq.app" className="text-primary hover:underline">
-                privacy@networq.app
+              <a href="mailto:support@networq.app" className="text-primary hover:underline">
+                support@networq.app
               </a>
             </div>
           </CardContent>
