@@ -251,7 +251,7 @@ const MyContactCardForm = () => {
         <CardContent>
           {/* Photos & Logos Section */}
           <div className="mb-4">
-            <div className="rounded-lg border bg-muted/30 p-3">
+            <div className="w-full rounded-lg border bg-muted/30 p-3 sm:p-4">
               <Label className="block text-sm font-medium mb-3">Photos & Logos</Label>
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
