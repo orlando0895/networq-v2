@@ -10,7 +10,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { Copy, RefreshCw, Share2, Trash2, Plus, Camera, Scan } from 'lucide-react';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { Copy, RefreshCw, Share2, Trash2, Plus, Camera, Scan, ChevronDown } from 'lucide-react';
 import { useUserContactCard } from '@/hooks/useUserContactCard';
 import { useToast } from '@/hooks/use-toast';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -178,64 +179,77 @@ const MyContactCardForm = () => {
 
   return (
     <div className="space-y-4">
-      {/* Share Card - Collapsed on mobile */}
+      {/* Share Card */}
       {contactCard && (
-        <Accordion type="single" collapsible defaultValue={!isMobile ? "share-card" : undefined}>
-          <AccordionItem value="share-card" className="border rounded-lg">
-            <AccordionTrigger className="px-4 py-3 hover:no-underline">
-              <div className="flex items-center gap-2">
-                <Share2 className="w-4 h-4" />
-                <span className="text-sm font-medium">Share Your Contact Card</span>
-              </div>
-            </AccordionTrigger>
-            <AccordionContent className="px-4 pb-4">
-              <div className="space-y-3">
-                {qrCodeUrl && (
-                  <div className="flex justify-center">
-                    <div className="p-2 bg-white rounded-lg shadow-sm border">
-                      <img 
-                        src={qrCodeUrl} 
-                        alt="Contact QR Code" 
-                        className="w-24 h-24"
-                      />
-                    </div>
+        <Card>
+          <CardHeader className="pb-3">
+            <div className="flex items-center gap-2 mb-2">
+              <Share2 className="w-4 h-4" />
+              <span className="text-sm font-medium">Share Your Contact Card</span>
+            </div>
+          </CardHeader>
+          <CardContent className="pt-0">
+            <div className="space-y-3">
+              {qrCodeUrl && (
+                <div className="flex justify-center">
+                  <div className="p-2 bg-white rounded-lg shadow-sm border">
+                    <img 
+                      src={qrCodeUrl} 
+                      alt="Contact QR Code" 
+                      className="w-24 h-24"
+                    />
                   </div>
-                )}
-                <div className="flex items-center gap-2 text-xs">
-                  <Label className="text-xs">Share Code:</Label>
-                  <Badge variant="secondary" className="font-mono text-xs">
-                    {contactCard.share_code}
-                  </Badge>
-                  <Button size="sm" variant="outline" onClick={copyShareCode}>
-                    <Copy className="w-3 h-3" />
-                  </Button>
-                  <Button size="sm" variant="outline" onClick={regenerateShareCode}>
-                    <RefreshCw className="w-3 h-3" />
-                  </Button>
                 </div>
-                <Button onClick={copyShareLink} className="w-full" size="sm">
-                  <Share2 className="w-4 h-4 mr-2" />
-                  Copy Share Link
+              )}
+              <div className="flex items-center gap-2 text-xs">
+                <Label className="text-xs">Share Code:</Label>
+                <Badge variant="secondary" className="font-mono text-xs">
+                  {contactCard.share_code}
+                </Badge>
+                <Button size="sm" variant="outline" onClick={copyShareCode}>
+                  <Copy className="w-3 h-3" />
+                </Button>
+                <Button size="sm" variant="outline" onClick={regenerateShareCode}>
+                  <RefreshCw className="w-3 h-3" />
                 </Button>
               </div>
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
+              <Button onClick={copyShareLink} className="w-full" size="sm">
+                <Share2 className="w-4 h-4 mr-2" />
+                Copy Share Link
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       )}
 
       {/* Main Form */}
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
-            <div>
-              <CardTitle className="text-lg">
-                {contactCard ? 'Edit Contact Card' : 'Create Contact Card'}
-              </CardTitle>
+            <div className="flex items-center gap-3">
+              {contactCard ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size="sm" className="flex items-center gap-2">
+                      <span className="text-lg font-semibold">Edit Contact Card</span>
+                      <ChevronDown className="w-4 h-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start" className="w-48">
+                    <DropdownMenuItem onClick={() => setShowScanner(true)}>
+                      <Camera className="w-4 h-4 mr-2" />
+                      Scan Business Card
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <CardTitle className="text-lg">Create Contact Card</CardTitle>
+              )}
               <CardDescription className="text-sm">
                 {contactCard ? 'Update your information' : 'Create your digital business card'}
               </CardDescription>
             </div>
-            {!isMobile && (
+            {!isMobile && !contactCard && (
               <Button
                 variant="outline"
                 size="sm"
