@@ -36,19 +36,10 @@ const BottomNavigation = () => {
   const navigate = useNavigate();
 
   const isActive = (path: string) => {
-    // Ensure we have a valid pathname before checking
-    const currentPath = location.pathname || '';
-    
     if (path === '/app') {
-      return currentPath === '/app' || currentPath === '/';
+      return location.pathname === '/app';
     }
-    if (path === '/messages') {
-      return currentPath.startsWith('/messages');
-    }
-    if (path === '/profile') {
-      return currentPath.startsWith('/profile');
-    }
-    return currentPath === path;
+    return location.pathname.startsWith(path);
   };
 
   // Hide bottom navigation while inside a specific message thread
