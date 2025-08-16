@@ -24,7 +24,7 @@ const MobileLayout = ({ children, className, header, noPadding = false }: Mobile
         // Mobile-first padding
         noPadding ? "" : "px-4 py-4",
         // Add bottom padding for mobile navigation
-        "pb-40 md:pb-6",
+        "pb-bottom-nav md:pb-bottom-nav-md",
         className
       )}>
         {children}
