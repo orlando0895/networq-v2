@@ -3,15 +3,17 @@ import { useForm } from 'react-hook-form';
 import QRCode from 'qrcode';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { MobileInput } from '@/components/ui/mobile-input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { Copy, RefreshCw, Share2, Trash2, Plus, Camera } from 'lucide-react';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { Copy, RefreshCw, Share2, Trash2, Plus, Camera, Scan } from 'lucide-react';
 import { useUserContactCard } from '@/hooks/useUserContactCard';
 import { useToast } from '@/hooks/use-toast';
-import DeleteAccountDialog from '@/components/DeleteAccountDialog';
+import { useIsMobile } from '@/hooks/use-mobile';
 import BusinessCardScanner from '@/components/BusinessCardScanner';
 import { ProfilePictureUpload } from './ProfilePictureUpload';
 
@@ -33,6 +35,7 @@ interface ContactCardFormData {
 const MyContactCardForm = () => {
   const { contactCard, loading, createContactCard, updateContactCard, regenerateShareCode } = useUserContactCard();
   const { toast } = useToast();
+  const isMobile = useIsMobile();
   const [websites, setWebsites] = useState<string[]>(contactCard?.websites || []);
   const [newWebsite, setNewWebsite] = useState('');
   const [showScanner, setShowScanner] = useState(false);
@@ -174,203 +177,252 @@ const MyContactCardForm = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
+      {/* Share Card - Collapsed on mobile */}
       {contactCard && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Share2 className="w-5 h-5" />
-              Share Your Contact Card
-            </CardTitle>
-            <CardDescription>
-              Share your contact information with others using these options
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {qrCodeUrl && (
-              <div className="flex justify-center">
-                <div className="p-3 bg-white rounded-lg shadow-sm border">
-                  <img 
-                    src={qrCodeUrl} 
-                    alt="Contact QR Code" 
-                    className="w-32 h-32"
-                  />
-                </div>
+        <Accordion type="single" collapsible defaultValue={!isMobile ? "share-card" : undefined}>
+          <AccordionItem value="share-card" className="border rounded-lg">
+            <AccordionTrigger className="px-4 py-3 hover:no-underline">
+              <div className="flex items-center gap-2">
+                <Share2 className="w-4 h-4" />
+                <span className="text-sm font-medium">Share Your Contact Card</span>
               </div>
-            )}
-            <div className="flex items-center gap-2">
-              <Label>Share Code:</Label>
-              <Badge variant="secondary" className="font-mono text-sm">
-                {contactCard.share_code}
-              </Badge>
-              <Button size="sm" variant="outline" onClick={copyShareCode}>
-                <Copy className="w-4 h-4" />
-              </Button>
-              <Button size="sm" variant="outline" onClick={regenerateShareCode}>
-                <RefreshCw className="w-4 h-4" />
-              </Button>
-            </div>
-            <div className="flex gap-2">
-              <Button onClick={copyShareLink} className="flex-1">
-                <Share2 className="w-4 h-4 mr-2" />
-                Copy Share Link
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+            </AccordionTrigger>
+            <AccordionContent className="px-4 pb-4">
+              <div className="space-y-3">
+                {qrCodeUrl && (
+                  <div className="flex justify-center">
+                    <div className="p-2 bg-white rounded-lg shadow-sm border">
+                      <img 
+                        src={qrCodeUrl} 
+                        alt="Contact QR Code" 
+                        className="w-24 h-24"
+                      />
+                    </div>
+                  </div>
+                )}
+                <div className="flex items-center gap-2 text-xs">
+                  <Label className="text-xs">Share Code:</Label>
+                  <Badge variant="secondary" className="font-mono text-xs">
+                    {contactCard.share_code}
+                  </Badge>
+                  <Button size="sm" variant="outline" onClick={copyShareCode}>
+                    <Copy className="w-3 h-3" />
+                  </Button>
+                  <Button size="sm" variant="outline" onClick={regenerateShareCode}>
+                    <RefreshCw className="w-3 h-3" />
+                  </Button>
+                </div>
+                <Button onClick={copyShareLink} className="w-full" size="sm">
+                  <Share2 className="w-4 h-4 mr-2" />
+                  Copy Share Link
+                </Button>
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
       )}
 
+      {/* Main Form */}
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle>
-                {contactCard ? 'Edit Your Contact Card' : 'Create Your Contact Card'}
+              <CardTitle className="text-lg">
+                {contactCard ? 'Edit Contact Card' : 'Create Contact Card'}
               </CardTitle>
-              <CardDescription>
-                {contactCard ? 'Update your contact information' : 'Create a contact card that you can share with others'}
+              <CardDescription className="text-sm">
+                {contactCard ? 'Update your information' : 'Create your digital business card'}
               </CardDescription>
             </div>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setShowScanner(true)}
-              className="flex items-center gap-2"
-            >
-              <Camera className="w-4 h-4" />
-              Scan Card
-            </Button>
+            {!isMobile && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowScanner(true)}
+                className="flex items-center gap-2"
+              >
+                <Camera className="w-4 h-4" />
+                Scan Card
+              </Button>
+            )}
           </div>
         </CardHeader>
         <CardContent>
-          <div className="mb-6">
-            <div className="grid grid-cols-2 gap-4">
-              <section className="rounded-lg border bg-muted/30 p-4">
-                <Label className="block text-sm font-medium mb-3">Profile Picture</Label>
-                <ProfilePictureUpload
-                  currentAvatarUrl={watch('avatar_url')}
-                  onAvatarUpdate={(url) => setValue('avatar_url', url || '')}
-                  userInitials={watch('name')?.split(' ').map(n => n[0]).join('').toUpperCase() || 'U'}
-                />
-              </section>
-              <section className="rounded-lg border bg-muted/30 p-4">
-                <Label className="block text-sm font-medium mb-3">Company Logo</Label>
-                <ProfilePictureUpload
-                  currentAvatarUrl={companyLogoUrl}
-                  onAvatarUpdate={(url) => setCompanyLogoUrl(url || '')}
-                  userInitials={watch('company')?.split(' ').map(n => n[0]).join('').toUpperCase() || 'CO'}
-                  variant="companyLogo"
-                />
-              </section>
+          {/* Photos & Logos Section */}
+          <div className="mb-4">
+            <div className="rounded-lg border bg-muted/30 p-3">
+              <Label className="block text-sm font-medium mb-3">Photos & Logos</Label>
+              <div className="space-y-3">
+                <div className="flex items-center gap-3">
+                  <span className="text-xs text-muted-foreground min-w-16">Profile:</span>
+                  <ProfilePictureUpload
+                    currentAvatarUrl={watch('avatar_url')}
+                    onAvatarUpdate={(url) => setValue('avatar_url', url || '')}
+                    userInitials={watch('name')?.split(' ').map(n => n[0]).join('').toUpperCase() || 'U'}
+                    compact={true}
+                  />
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="text-xs text-muted-foreground min-w-16">Company:</span>
+                  <ProfilePictureUpload
+                    currentAvatarUrl={companyLogoUrl}
+                    onAvatarUpdate={(url) => setCompanyLogoUrl(url || '')}
+                    userInitials={watch('company')?.split(' ').map(n => n[0]).join('').toUpperCase() || 'CO'}
+                    variant="companyLogo"
+                    compact={true}
+                  />
+                </div>
+              </div>
             </div>
           </div>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
+            {/* Essential Fields */}
+            <div className="space-y-3">
               <div>
-                <Label htmlFor="name">Name *</Label>
-                <Input
+                <Label htmlFor="name" className="text-sm">Name *</Label>
+                <MobileInput
                   id="name"
                   {...register('name', { required: 'Name is required' })}
+                  autoCapitalize="words"
                 />
                 {errors.name && (
-                  <p className="text-sm text-red-600 mt-1">{errors.name.message}</p>
+                  <p className="text-xs text-red-600 mt-1">{errors.name.message}</p>
                 )}
               </div>
 
               <div>
-                <Label htmlFor="email">Email *</Label>
-                <Input
+                <Label htmlFor="email" className="text-sm">Email *</Label>
+                <MobileInput
                   id="email"
                   type="email"
                   {...register('email', { required: 'Email is required' })}
                 />
                 {errors.email && (
-                  <p className="text-sm text-red-600 mt-1">{errors.email.message}</p>
+                  <p className="text-xs text-red-600 mt-1">{errors.email.message}</p>
                 )}
               </div>
 
-              <div>
-                <Label htmlFor="phone">Phone</Label>
-                <Input id="phone" {...register('phone')} />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div>
+                  <Label htmlFor="phone" className="text-sm">Phone</Label>
+                  <MobileInput id="phone" type="tel" {...register('phone')} />
+                </div>
+
+                <div>
+                  <Label htmlFor="company" className="text-sm">Company</Label>
+                  <MobileInput id="company" {...register('company')} autoCapitalize="words" />
+                </div>
               </div>
 
-              <div>
-                <Label htmlFor="company">Company</Label>
-                <Input id="company" {...register('company')} />
-              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div>
+                  <Label htmlFor="industry" className="text-sm">Industry</Label>
+                  <MobileInput id="industry" {...register('industry')} autoCapitalize="words" />
+                </div>
 
-              <div>
-                <Label htmlFor="industry">Industry</Label>
-                <Input id="industry" {...register('industry')} />
-              </div>
-
-              <div>
-                <Label htmlFor="services">Services (comma-separated)</Label>
-                <Input id="services" {...register('services')} />
-              </div>
-            </div>
-
-            <Separator />
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <Label htmlFor="linkedin">LinkedIn</Label>
-                <Input id="linkedin" {...register('linkedin')} placeholder="Profile URL or username" />
-              </div>
-
-              <div>
-                <Label htmlFor="facebook">Facebook</Label>
-                <Input id="facebook" {...register('facebook')} placeholder="Profile URL or username" />
-              </div>
-
-              <div>
-                <Label htmlFor="whatsapp">WhatsApp</Label>
-                <Input id="whatsapp" {...register('whatsapp')} placeholder="Phone number or link" />
+                <div>
+                  <Label htmlFor="services" className="text-sm">Services</Label>
+                  <MobileInput id="services" {...register('services')} placeholder="comma-separated" />
+                </div>
               </div>
             </div>
 
-            <div>
-              <Label>Websites</Label>
-              <div className="flex gap-2 mb-2">
-                <Input
-                  value={newWebsite}
-                  onChange={(e) => setNewWebsite(e.target.value)}
-                  placeholder="Add website URL"
-                  onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addWebsite())}
-                />
-                <Button type="button" onClick={addWebsite} size="sm">
-                  <Plus className="w-4 h-4" />
-                </Button>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {websites.map((website, index) => (
-                  <Badge key={index} variant="secondary" className="gap-1">
-                    {website}
-                    <button
-                      type="button"
-                      onClick={() => removeWebsite(index)}
-                      className="ml-1 hover:text-red-600"
-                    >
-                      <Trash2 className="w-3 h-3" />
-                    </button>
-                  </Badge>
-                ))}
-              </div>
-            </div>
+            {/* Optional Sections - Collapsed on mobile */}
+            <Accordion type="multiple" defaultValue={isMobile ? [] : ["social", "websites", "about"]}>
+              {/* Social Profiles */}
+              <AccordionItem value="social">
+                <AccordionTrigger className="py-2 text-sm">Social Profiles</AccordionTrigger>
+                <AccordionContent className="space-y-3 pt-2">
+                  <div className="grid grid-cols-1 gap-3">
+                    <div>
+                      <Label htmlFor="linkedin" className="text-sm">LinkedIn</Label>
+                      <MobileInput id="linkedin" {...register('linkedin')} placeholder="Profile URL" inputMode="url" />
+                    </div>
 
-            <div>
-              <Label htmlFor="notes">About</Label>
-              <Textarea id="notes" {...register('notes')} placeholder="Additional information about yourself" />
-            </div>
+                    <div>
+                      <Label htmlFor="facebook" className="text-sm">Facebook</Label>
+                      <MobileInput id="facebook" {...register('facebook')} placeholder="Profile URL" inputMode="url" />
+                    </div>
 
-            <div className="sticky bottom-20 md:bottom-4 z-30 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 pt-3 pb-safe-bottom">
-              <Button type="submit" disabled={isSubmitting} className="w-full">
+                    <div>
+                      <Label htmlFor="whatsapp" className="text-sm">WhatsApp</Label>
+                      <MobileInput id="whatsapp" {...register('whatsapp')} placeholder="Phone or link" inputMode="tel" />
+                    </div>
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+
+              {/* Websites */}
+              <AccordionItem value="websites">
+                <AccordionTrigger className="py-2 text-sm">Websites</AccordionTrigger>
+                <AccordionContent className="space-y-3 pt-2">
+                  <div className="flex gap-2">
+                    <MobileInput
+                      value={newWebsite}
+                      onChange={(e) => setNewWebsite(e.target.value)}
+                      placeholder="Add website URL"
+                      onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addWebsite())}
+                      inputMode="url"
+                      className="flex-1"
+                    />
+                    <Button type="button" onClick={addWebsite} size="sm">
+                      <Plus className="w-4 h-4" />
+                    </Button>
+                  </div>
+                  <div className="flex flex-wrap gap-1">
+                    {websites.map((website, index) => (
+                      <Badge key={index} variant="secondary" className="gap-1 text-xs">
+                        {website.length > 20 ? `${website.substring(0, 20)}...` : website}
+                        <button
+                          type="button"
+                          onClick={() => removeWebsite(index)}
+                          className="ml-1 hover:text-red-600"
+                        >
+                          <Trash2 className="w-3 h-3" />
+                        </button>
+                      </Badge>
+                    ))}
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+
+              {/* About */}
+              <AccordionItem value="about">
+                <AccordionTrigger className="py-2 text-sm">About</AccordionTrigger>
+                <AccordionContent className="pt-2">
+                  <div>
+                    <Label htmlFor="notes" className="text-sm">Bio / Additional Information</Label>
+                    <Textarea 
+                      id="notes" 
+                      {...register('notes')} 
+                      placeholder="Tell others about yourself..."
+                      className="mt-1 min-h-20"
+                    />
+                  </div>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+
+            <div className="sticky bottom-20 md:bottom-4 z-30 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 pt-4 pb-safe-bottom">
+              <Button type="submit" disabled={isSubmitting} className="w-full touch-target">
                 {isSubmitting ? 'Saving...' : contactCard ? 'Update Contact Card' : 'Create Contact Card'}
               </Button>
             </div>
           </form>
         </CardContent>
       </Card>
+
+      {/* Mobile FAB for Scanner */}
+      {isMobile && (
+        <Button
+          onClick={() => setShowScanner(true)}
+          className="fixed bottom-24 right-4 rounded-full h-14 w-14 shadow-lg z-40"
+          size="lg"
+        >
+          <Scan className="h-6 w-6" />
+        </Button>
+      )}
 
       <BusinessCardScanner
         isOpen={showScanner}
