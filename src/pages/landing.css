@@ -1296,9 +1296,15 @@ html {
 
   /* Footer mobile layout */
   .footer-content {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
     gap: 2rem;
     text-align: center;
+  }
+  
+  .footer-brand {
+    grid-column: 1 / -1;
+    margin-bottom: 1rem;
   }
   
   /* Form mobile optimization */
