@@ -17,6 +17,7 @@ import ProfileManagement from "./pages/ProfileManagement";
 import ViewContact from "./pages/ViewContact";
 import { PublicProfile } from "./pages/PublicProfile";
 import { PrivacyPolicy } from "./pages/PrivacyPolicy";
+import { Support } from "./pages/Support";
 import Messages from "./pages/Messages";
 import NotFound from "./pages/NotFound";
 
@@ -42,6 +43,7 @@ const App = () => (
               <Route path="/public/:identifier" element={<PublicProfile />} />
               <Route path="/contact/:shareCode" element={<ViewContact />} />
               <Route path="/privacy" element={<PrivacyPolicy />} />
+              <Route path="/support" element={<Support />} />
               <Route
                 path="/app"
                 element={
