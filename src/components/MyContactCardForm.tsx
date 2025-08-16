@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import QRCode from 'qrcode';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { MobileInput } from '@/components/ui/mobile-input';
@@ -10,7 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { Copy, RefreshCw, Share2, Trash2, Plus, Camera, Scan } from 'lucide-react';
+import { Trash2, Plus, Camera, Scan } from 'lucide-react';
 import { useUserContactCard } from '@/hooks/useUserContactCard';
 import { useToast } from '@/hooks/use-toast';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -33,13 +32,12 @@ interface ContactCardFormData {
 }
 
 const MyContactCardForm = () => {
-  const { contactCard, loading, createContactCard, updateContactCard, regenerateShareCode } = useUserContactCard();
+  const { contactCard, loading, createContactCard, updateContactCard } = useUserContactCard();
   const { toast } = useToast();
   const isMobile = useIsMobile();
   const [websites, setWebsites] = useState<string[]>(contactCard?.websites || []);
   const [newWebsite, setNewWebsite] = useState('');
   const [showScanner, setShowScanner] = useState(false);
-  const [qrCodeUrl, setQrCodeUrl] = useState<string>('');
   const [companyLogoUrl, setCompanyLogoUrl] = useState<string>('');
 
   const { register, handleSubmit, formState: { errors, isSubmitting }, reset, watch, setValue } = useForm<ContactCardFormData>({
@@ -79,22 +77,6 @@ const MyContactCardForm = () => {
     }
   }, [contactCard, reset]);
 
-  // Generate QR code when contact card changes
-  useEffect(() => {
-    if (contactCard?.share_code) {
-      const contactUrl = `${window.location.origin}/public/${contactCard.share_code}`;
-      QRCode.toDataURL(contactUrl, {
-        width: 200,
-        margin: 2,
-        color: {
-          dark: '#000000',
-          light: '#FFFFFF'
-        }
-      })
-        .then((url) => setQrCodeUrl(url))
-        .catch((err) => console.error('Error generating QR code:', err));
-    }
-  }, [contactCard?.share_code]);
 
   const addWebsite = () => {
     if (newWebsite.trim() && !websites.includes(newWebsite.trim())) {
@@ -129,26 +111,6 @@ const MyContactCardForm = () => {
     }
   };
 
-  const copyShareCode = () => {
-    if (contactCard?.share_code) {
-      navigator.clipboard.writeText(contactCard.share_code);
-      toast({
-        title: "Copied!",
-        description: "Share code copied to clipboard."
-      });
-    }
-  };
-
-  const copyShareLink = () => {
-    if (contactCard?.share_code) {
-      const shareUrl = `${window.location.origin}/?add=${contactCard.share_code}`;
-      navigator.clipboard.writeText(shareUrl);
-      toast({
-        title: "Copied!",
-        description: "Share link copied to clipboard."
-      });
-    }
-  };
 
   const handleBusinessCardExtracted = (contactInfo: any) => {
     reset({
@@ -178,51 +140,6 @@ const MyContactCardForm = () => {
 
   return (
     <div className="space-y-4">
-      {/* Share Card - Collapsed on mobile */}
-      {contactCard && (
-        <Accordion type="single" collapsible defaultValue={!isMobile ? "share-card" : undefined}>
-          <AccordionItem value="share-card" className="border rounded-lg">
-            <AccordionTrigger className="px-4 py-3 hover:no-underline">
-              <div className="flex items-center gap-2">
-                <Share2 className="w-4 h-4" />
-                <span className="text-sm font-medium">Share Your Contact Card</span>
-              </div>
-            </AccordionTrigger>
-            <AccordionContent className="px-4 pb-4">
-              <div className="space-y-3">
-                {qrCodeUrl && (
-                  <div className="flex justify-center">
-                    <div className="p-2 bg-white rounded-lg shadow-sm border">
-                      <img 
-                        src={qrCodeUrl} 
-                        alt="Contact QR Code" 
-                        className="w-24 h-24"
-                      />
-                    </div>
-                  </div>
-                )}
-                <div className="flex items-center gap-2 text-xs">
-                  <Label className="text-xs">Share Code:</Label>
-                  <Badge variant="secondary" className="font-mono text-xs">
-                    {contactCard.share_code}
-                  </Badge>
-                  <Button size="sm" variant="outline" onClick={copyShareCode}>
-                    <Copy className="w-3 h-3" />
-                  </Button>
-                  <Button size="sm" variant="outline" onClick={regenerateShareCode}>
-                    <RefreshCw className="w-3 h-3" />
-                  </Button>
-                </div>
-                <Button onClick={copyShareLink} className="w-full" size="sm">
-                  <Share2 className="w-4 h-4 mr-2" />
-                  Copy Share Link
-                </Button>
-              </div>
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
-      )}
-
       {/* Main Form */}
       <Card>
         <CardHeader>
