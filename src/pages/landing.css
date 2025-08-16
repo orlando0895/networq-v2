@@ -49,7 +49,7 @@ html {
 
 /* Landing Page Dark Theme */
 .landing-page {
-  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+  background: #000000;
   color: white;
   min-height: 100vh;
 }
