@@ -254,67 +254,30 @@ const MyContactCardForm = () => {
               <AccordionContent className="px-6 pb-6">
                 {/* Photos & Logos Section */}
                 <div className="mb-4">
-                  <Card>
-                    <CardHeader className="pb-3">
-                      <CardTitle className="text-base">Photos & Logos</CardTitle>
-                      <CardDescription className="text-sm">
-                        Add a profile picture and company logo to make your card more memorable
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                          <Label className="text-sm font-medium" htmlFor="profile-picture">
-                            Profile Picture
-                          </Label>
-                          <div className="flex items-center justify-between">
-                            <ProfilePictureUpload
-                              currentAvatarUrl={watch('avatar_url')}
-                              onAvatarUpdate={(url) => setValue('avatar_url', url || '')}
-                              userInitials={watch('name')?.split(' ').map(n => n[0]).join('').toUpperCase() || 'U'}
-                              compact={true}
-                              aria-label="Upload profile picture"
-                            />
-                            {watch('avatar_url') && (
-                              <Button 
-                                variant="ghost" 
-                                size="sm" 
-                                onClick={() => setValue('avatar_url', '')}
-                                className="text-muted-foreground hover:text-destructive text-xs"
-                              >
-                                Remove
-                              </Button>
-                            )}
-                          </div>
-                        </div>
-                        <div className="space-y-2">
-                          <Label className="text-sm font-medium" htmlFor="company-logo">
-                            Company Logo
-                          </Label>
-                          <div className="flex items-center justify-between">
-                            <ProfilePictureUpload
-                              currentAvatarUrl={companyLogoUrl}
-                              onAvatarUpdate={(url) => setCompanyLogoUrl(url || '')}
-                              userInitials={watch('company')?.split(' ').map(n => n[0]).join('').toUpperCase() || 'CO'}
-                              variant="companyLogo"
-                              compact={true}
-                              aria-label="Upload company logo"
-                            />
-                            {companyLogoUrl && (
-                              <Button 
-                                variant="ghost" 
-                                size="sm" 
-                                onClick={() => setCompanyLogoUrl('')}
-                                className="text-muted-foreground hover:text-destructive text-xs"
-                              >
-                                Remove
-                              </Button>
-                            )}
-                          </div>
-                        </div>
+                  <div className="w-full rounded-lg border bg-muted/30 p-3 sm:p-4">
+                    <Label className="block text-sm font-medium mb-3">Photos & Logos</Label>
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-3">
+                        <span className="text-xs text-muted-foreground min-w-16">Profile:</span>
+                        <ProfilePictureUpload
+                          currentAvatarUrl={watch('avatar_url')}
+                          onAvatarUpdate={(url) => setValue('avatar_url', url || '')}
+                          userInitials={watch('name')?.split(' ').map(n => n[0]).join('').toUpperCase() || 'U'}
+                          compact={true}
+                        />
                       </div>
-                    </CardContent>
-                  </Card>
+                      <div className="flex items-center gap-3">
+                        <span className="text-xs text-muted-foreground min-w-16">Company:</span>
+                        <ProfilePictureUpload
+                          currentAvatarUrl={companyLogoUrl}
+                          onAvatarUpdate={(url) => setCompanyLogoUrl(url || '')}
+                          userInitials={watch('company')?.split(' ').map(n => n[0]).join('').toUpperCase() || 'CO'}
+                          variant="companyLogo"
+                          compact={true}
+                        />
+                      </div>
+                    </div>
+                  </div>
                 </div>
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
                   {/* Scan Business Card Button */}
@@ -492,67 +455,30 @@ const MyContactCardForm = () => {
             <CardContent>
               {/* Photos & Logos Section */}
               <div className="mb-4">
-                <Card>
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-base">Photos & Logos</CardTitle>
-                    <CardDescription className="text-sm">
-                      Add a profile picture and company logo to make your card more memorable
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label className="text-sm font-medium" htmlFor="profile-picture">
-                          Profile Picture
-                        </Label>
-                        <div className="flex items-center justify-between">
-                          <ProfilePictureUpload
-                            currentAvatarUrl={watch('avatar_url')}
-                            onAvatarUpdate={(url) => setValue('avatar_url', url || '')}
-                            userInitials={watch('name')?.split(' ').map(n => n[0]).join('').toUpperCase() || 'U'}
-                            compact={true}
-                            aria-label="Upload profile picture"
-                          />
-                          {watch('avatar_url') && (
-                            <Button 
-                              variant="ghost" 
-                              size="sm" 
-                              onClick={() => setValue('avatar_url', '')}
-                              className="text-muted-foreground hover:text-destructive text-xs"
-                            >
-                              Remove
-                            </Button>
-                          )}
-                        </div>
-                      </div>
-                      <div className="space-y-2">
-                        <Label className="text-sm font-medium" htmlFor="company-logo">
-                          Company Logo
-                        </Label>
-                        <div className="flex items-center justify-between">
-                          <ProfilePictureUpload
-                            currentAvatarUrl={companyLogoUrl}
-                            onAvatarUpdate={(url) => setCompanyLogoUrl(url || '')}
-                            userInitials={watch('company')?.split(' ').map(n => n[0]).join('').toUpperCase() || 'CO'}
-                            variant="companyLogo"
-                            compact={true}
-                            aria-label="Upload company logo"
-                          />
-                          {companyLogoUrl && (
-                            <Button 
-                              variant="ghost" 
-                              size="sm" 
-                              onClick={() => setCompanyLogoUrl('')}
-                              className="text-muted-foreground hover:text-destructive text-xs"
-                            >
-                              Remove
-                            </Button>
-                          )}
-                        </div>
-                      </div>
+                <div className="w-full rounded-lg border bg-muted/30 p-3 sm:p-4">
+                  <Label className="block text-sm font-medium mb-3">Photos & Logos</Label>
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-3">
+                      <span className="text-xs text-muted-foreground min-w-16">Profile:</span>
+                      <ProfilePictureUpload
+                        currentAvatarUrl={watch('avatar_url')}
+                        onAvatarUpdate={(url) => setValue('avatar_url', url || '')}
+                        userInitials={watch('name')?.split(' ').map(n => n[0]).join('').toUpperCase() || 'U'}
+                        compact={true}
+                      />
                     </div>
-                  </CardContent>
-                </Card>
+                    <div className="flex items-center gap-3">
+                      <span className="text-xs text-muted-foreground min-w-16">Company:</span>
+                      <ProfilePictureUpload
+                        currentAvatarUrl={companyLogoUrl}
+                        onAvatarUpdate={(url) => setCompanyLogoUrl(url || '')}
+                        userInitials={watch('company')?.split(' ').map(n => n[0]).join('').toUpperCase() || 'CO'}
+                        variant="companyLogo"
+                        compact={true}
+                      />
+                    </div>
+                  </div>
+                </div>
               </div>
               <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
                 {/* Scan Business Card Button */}
