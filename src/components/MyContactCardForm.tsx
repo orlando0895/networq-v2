@@ -178,7 +178,50 @@ const MyContactCardForm = () => {
 
   return (
     <div className="space-y-4">
-      {/* Share Card section removed */}
+      {/* Share Card - Collapsed on mobile */}
+      {contactCard && (
+        <Accordion type="single" collapsible defaultValue={!isMobile ? "share-card" : undefined}>
+          <AccordionItem value="share-card" className="border rounded-lg">
+            <AccordionTrigger className="px-4 py-3 hover:no-underline">
+              <div className="flex items-center gap-2">
+                <Share2 className="w-4 h-4" />
+                <span className="text-sm font-medium">Share Your Contact Card</span>
+              </div>
+            </AccordionTrigger>
+            <AccordionContent className="px-4 pb-4">
+              <div className="space-y-3">
+                {qrCodeUrl && (
+                  <div className="flex justify-center">
+                    <div className="p-2 bg-white rounded-lg shadow-sm border">
+                      <img 
+                        src={qrCodeUrl} 
+                        alt="Contact QR Code" 
+                        className="w-24 h-24"
+                      />
+                    </div>
+                  </div>
+                )}
+                <div className="flex items-center gap-2 text-xs">
+                  <Label className="text-xs">Share Code:</Label>
+                  <Badge variant="secondary" className="font-mono text-xs">
+                    {contactCard.share_code}
+                  </Badge>
+                  <Button size="sm" variant="outline" onClick={copyShareCode}>
+                    <Copy className="w-3 h-3" />
+                  </Button>
+                  <Button size="sm" variant="outline" onClick={regenerateShareCode}>
+                    <RefreshCw className="w-3 h-3" />
+                  </Button>
+                </div>
+                <Button onClick={copyShareLink} className="w-full" size="sm">
+                  <Share2 className="w-4 h-4 mr-2" />
+                  Copy Share Link
+                </Button>
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+      )}
 
       {/* Main Form */}
       <Card>
