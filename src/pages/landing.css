@@ -1104,265 +1104,112 @@ html {
 @media (max-width: 768px) {
   /* Hero section mobile adjustments */
   .hero {
-    padding: 5rem 0 3rem;
+    padding: 6rem 0 2rem;
   }
   
   .hero-content {
     grid-template-columns: 1fr;
-    gap: 3rem;
+    gap: 2rem;
     text-align: center;
   }
   
   .hero-title {
-    font-size: clamp(1.8rem, 8vw, 2.5rem);
-    line-height: 1.2;
-    margin-bottom: 1.2rem;
+    font-size: 2.2rem;
+    line-height: 1.1;
+    margin-bottom: 1rem;
   }
   
   .hero-subtitle {
     font-size: 1.1rem;
-    margin-bottom: 2rem;
-    line-height: 1.5;
+    margin-bottom: 1.5rem;
   }
   
   .phone-3d {
-    width: 220px;
-    height: 380px;
-    order: -1;
+    width: 200px;
+    height: 360px;
   }
   
-  /* Enhanced mobile navigation */
-  .header {
-    padding: 0.5rem 0;
-  }
-  
-  .nav {
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 1rem;
-    padding: 0.75rem 0;
-  }
-  
-  .logo-container {
-    order: -1;
-    width: 100%;
-    justify-content: center;
-    margin-bottom: 0.5rem;
-  }
-  
-  .nav .flex {
-    gap: 1rem;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-  
-  /* Card stacking and improved spacing */
+  /* Card stacking and spacing */
   .problem-grid,
-  .features-grid {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-    max-width: 400px;
-    margin: 0 auto;
-  }
-  
+  .features-grid,
   .steps-grid {
     grid-template-columns: 1fr;
-    gap: 2rem;
-    max-width: 350px;
-    margin: 0 auto;
+    gap: 1.5rem;
   }
   
   .stats-3d-grid {
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 1.5rem;
-    max-width: 400px;
-    margin: 0 auto;
-  }
-  
-  /* Section spacing improvements */
-  .problem-section,
-  .how-it-works,
-  .features-section,
-  .social-proof,
-  .waitlist-section {
-    padding: 4rem 0;
+    grid-template-columns: 1fr;
+    gap: 1rem;
   }
   
   /* Section titles mobile sizing */
   .section-title {
-    font-size: clamp(2rem, 7vw, 2.8rem);
+    font-size: 2.5rem;
     text-align: center;
-    margin-bottom: 2rem;
-    line-height: 1.1;
   }
   
   .section-subtitle {
     font-size: 1.1rem;
     text-align: center;
-    margin-bottom: 2.5rem;
-    line-height: 1.5;
   }
   
-  /* Enhanced mobile cards */
-  .problem-card,
-  .feature-card-3d,
-  .stat-card-3d,
-  .step-card {
-    padding: 1.8rem 1.5rem;
-    margin-bottom: 1rem;
+  /* Footer mobile layout */
+  .footer-content {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    text-align: center;
   }
   
-  .problem-card h3,
-  .feature-card-3d h3,
-  .step-content h3 {
-    font-size: 1.3rem;
-    margin-bottom: 0.8rem;
-  }
-  
-  .problem-card p,
-  .feature-card-3d p,
-  .step-content p {
-    font-size: 1rem;
-    line-height: 1.5;
-  }
-  
-  /* Mobile form improvements */
+  /* Form mobile adjustments */
   .form-group-3d {
     max-width: 100%;
     flex-direction: column;
-    gap: 1.2rem;
-  }
-  
-  .input-field-3d {
-    font-size: 16px; /* Prevents zoom on iOS */
-    padding: 1rem 1.2rem;
-    border-radius: 0.75rem;
-  }
-  
-  .waitlist-form-3d {
-    max-width: 400px;
-    margin: 0 auto;
-  }
-  
-  /* Container padding improvements */
-  .container {
-    padding: 0 1.2rem;
-    max-width: 100%;
-  }
-  
-  /* Enhanced mobile buttons - better touch targets */
-  .btn-primary,
-  .btn-secondary {
-    width: 100%;
-    justify-content: center;
-    padding: 1.2rem 2rem;
-    font-size: 1.1rem;
-    min-height: 48px; /* Better touch target */
-    border-radius: 0.75rem;
-  }
-  
-  .btn-ghost {
-    padding: 0.8rem 1.2rem;
-    min-height: 44px;
-  }
-  
-  .hero-cta .flex {
-    flex-direction: column;
     gap: 1rem;
-    width: 100%;
   }
   
-  /* Origin story mobile adjustments */
-  .origin-story {
-    margin-top: 3rem;
-    padding: 2rem 1.5rem;
-  }
-  
-  .origin-story blockquote {
-    font-size: 1.1rem;
-    line-height: 1.6;
-  }
-  
-  /* Testimonial mobile */
-  .testimonial-3d {
-    padding: 2rem 1.5rem;
-    margin: 2rem auto;
-  }
-  
-  .testimonial-3d p {
-    font-size: 1.1rem;
-    line-height: 1.6;
-  }
-  
-  /* Reduced hover effects on touch devices */
-  .problem-card:hover,
-  .feature-card-3d:hover,
-  .stat-card-3d:hover,
-  .step-card:hover,
-  .testimonial-3d:hover {
-    transform: translateY(-3px) scale(1.01);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2), 0 0 20px rgba(59, 130, 246, 0.15);
-  }
-  
-  /* Disable 3D transforms on mobile for performance */
-  .problem-card:hover,
-  .feature-card-3d:hover,
-  .stat-card-3d:hover,
-  .step-card:hover,
-  .testimonial-3d:hover {
-    transform: translateY(-3px) scale(1.01);
-  }
-}
-
-@media (max-width: 480px) {
-  .hero {
-    padding: 4rem 0 2rem;
-  }
-  
-  .hero-title {
-    font-size: clamp(1.6rem, 9vw, 2rem);
-    line-height: 1.2;
-  }
-  
-  .section-title {
-    font-size: clamp(1.8rem, 8vw, 2.2rem);
-    line-height: 1.2;
-  }
-  
+  /* Container padding */
   .container {
     padding: 0 1rem;
   }
   
-  .phone-3d {
-    width: 180px;
-    height: 320px;
+  /* Navigation mobile */
+  .nav {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem 0;
   }
   
-  /* Extra small mobile adjustments */
-  .problem-card,
-  .feature-card-3d,
-  .stat-card-3d,
-  .step-card {
-    padding: 1.5rem 1.2rem;
+  .nav .flex {
+    gap: 2rem;
   }
   
-  .problem-section,
-  .how-it-works,
-  .features-section,
-  .social-proof,
-  .waitlist-section {
-    padding: 3rem 0;
-  }
-  
+  /* Mobile button adjustments */
   .btn-primary,
   .btn-secondary {
-    padding: 1rem 1.5rem;
-    font-size: 1rem;
+    width: 100%;
+    justify-content: center;
+    padding: 1.25rem 2rem;
   }
   
-  .hero-subtitle,
-  .section-subtitle {
-    font-size: 1rem;
+  /* Card hover effects reduced on mobile */
+  .problem-card:hover,
+  .feature-card-3d:hover,
+  .stat-card-3d:hover {
+    transform: translateY(-2px) scale(1.01);
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-title {
+    font-size: 1.8rem;
+  }
+  
+  .section-title {
+    font-size: 2rem;
+  }
+  
+  .container {
+    padding: 0 0.75rem;
   }
 }
 
