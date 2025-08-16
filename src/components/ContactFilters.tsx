@@ -136,7 +136,7 @@ const ContactFilters = ({
       
       <div className="flex flex-col sm:flex-row gap-3">
         <Button
-          variant={filterTier === "all" ? "default" : "outline"}
+          variant="outline"
           size="lg"
           onClick={() => onFilterChange("all")}
           className="flex-1 sm:flex-none transition-all duration-200 h-12 text-base"
