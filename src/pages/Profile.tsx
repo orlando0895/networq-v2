@@ -22,6 +22,7 @@ import ChangePasswordDialog from '@/components/ChangePasswordDialog';
 import { MyCard } from '@/components/MyCard';
 import { ExportDataDialog } from '@/components/ExportDataDialog';
 import { SupportDialog } from '@/components/SupportDialog';
+import { PrivacyPolicyDialog } from '@/components/PrivacyPolicyDialog';
 
 const Profile = () => {
   const { user } = useAuth();
@@ -34,6 +35,7 @@ const Profile = () => {
   const [discoveryStats, setDiscoveryStats] = useState<any>(null);
   const [exportOpen, setExportOpen] = useState(false);
   const [supportOpen, setSupportOpen] = useState(false);
+  const [privacyOpen, setPrivacyOpen] = useState(false);
 
   // Fetch user profile and settings
   useEffect(() => {
@@ -223,7 +225,11 @@ const Profile = () => {
                 <span>Support & Help</span>
                 <ChevronRight className="h-4 w-4" />
               </Button>
-              <Button variant="outline" className="w-full justify-between">
+              <Button 
+                variant="outline" 
+                className="w-full justify-between"
+                onClick={() => setPrivacyOpen(true)}
+              >
                 <span>Terms & Privacy</span>
                 <ChevronRight className="h-4 w-4" />
               </Button>
@@ -287,6 +293,12 @@ const Profile = () => {
       <SupportDialog 
         open={supportOpen} 
         onOpenChange={setSupportOpen} 
+      />
+
+      {/* Privacy Policy Dialog */}
+      <PrivacyPolicyDialog 
+        open={privacyOpen} 
+        onOpenChange={setPrivacyOpen} 
       />
     </MobileLayout>
   );
