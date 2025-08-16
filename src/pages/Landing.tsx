@@ -127,11 +127,11 @@ const LandingPage = () => {
         <div className="container">
           <div className="nav">
             <div className="logo-container animate-slide-in">
-              <img 
-                src="https://customer-assets.emergentagent.com/job_networq-connect/artifacts/xhb43ai8_2.png" 
-                alt="Networq" 
-                className="brand-logo"
-              />
+                <img 
+                  src="/logo.png" 
+                  alt="Networq" 
+                  className="brand-logo"
+                />
             </div>
             <div className="flex items-center gap-4">
               <button className="btn-ghost header-cta animate-fade-in" onClick={() => document.getElementById('waitlist')?.scrollIntoView({ behavior: 'smooth' })}>
@@ -432,7 +432,7 @@ const LandingPage = () => {
             <div className="footer-brand">
               <div className="logo-container">
                 <img 
-                  src="https://customer-assets.emergentagent.com/job_networq-connect/artifacts/xhb43ai8_2.png" 
+                  src="/logo.png" 
                   alt="Networq" 
                   className="footer-logo"
                 />
