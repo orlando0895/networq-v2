@@ -35,14 +35,14 @@ const ContactFilters = ({
           placeholder="Search contacts..."
           value={searchTerm}
           onChange={(e) => onSearchChange(e.target.value)}
-          className="pl-12 pr-14 py-4 text-base border-slate-200 focus:border-indigo-500 focus:ring-indigo-500 transition-colors h-14 text-lg"
+          className="pl-12 pr-16 py-4 text-base border-slate-200 focus:border-indigo-500 focus:ring-indigo-500 transition-colors h-14 text-lg"
         />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
               variant="outline"
               size="icon"
-              className="absolute right-2 top-1/2 -translate-y-1/2 h-9 w-9"
+              className="absolute right-3 top-1/2 -translate-y-1/2 h-9 w-9"
               aria-label="Open filters"
             >
               <Filter className="w-4 h-4" />
