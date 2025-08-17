@@ -36,11 +36,11 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
     
-    /* Brand Colors - Indigo */
-    --primary: 239 84% 67%;
+    /* Brand Colors - Networa Cyan-Blue */
+    --primary: 188 100% 44%;
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 239 84% 77%;
-    --primary-variant: 239 84% 57%;
+    --primary-glow: 188 100% 54%;
+    --primary-variant: 210 100% 40%;
     
     /* Secondary Colors */
     --secondary: 210 40% 96%;
@@ -61,7 +61,7 @@
     /* Structural */
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 239 84% 67%;
+    --ring: 188 100% 44%;
     --radius: 0.75rem;
     
     /* Typography */
@@ -105,10 +105,10 @@
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
     
-    --primary: 239 84% 77%;
+    --primary: 188 100% 54%;
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 239 84% 87%;
-    --primary-variant: 239 84% 67%;
+    --primary-glow: 188 100% 64%;
+    --primary-variant: 210 100% 50%;
     
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
@@ -126,7 +126,7 @@
     
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
-    --ring: 239 84% 77%;
+    --ring: 188 100% 54%;
     
     /* Dark mode gradients */
     --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
