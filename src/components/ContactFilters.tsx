@@ -141,7 +141,7 @@ const ContactFilters = ({
           variant={filterTier === "all" ? "default" : "secondary"}
           size="lg"
           onClick={() => onFilterChange("all")}
-          className="flex-1 sm:flex-none transition-all duration-200 h-12 text-base font-semibold bg-gradient-primary hover:shadow-lg hover:-translate-y-0.5"
+          className="flex-1 sm:flex-none transition-all duration-200 h-12 text-base font-semibold bg-black text-white hover:shadow-lg hover:-translate-y-0.5"
         >
           All ({contacts.length})
         </Button>
