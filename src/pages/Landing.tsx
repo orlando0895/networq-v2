@@ -38,6 +38,7 @@ const LandingPage = () => {
     // Cleanup function to remove class when component unmounts
     return () => {
       document.body.classList.remove('landing-page');
+      document.documentElement.classList.remove('dark');
       observer.disconnect();
     };
   }, []);
