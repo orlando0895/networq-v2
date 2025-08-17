@@ -180,12 +180,7 @@ export const ModernContactCard = ({ contact, onUpdateContact, onDeleteContact }:
 
   return (
     <>
-      <div className="group relative overflow-hidden rounded-2xl bg-gradient-card border-0 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 hover:shadow-primary/20">
-        {/* Tier indicator with brand gradient */}
-        <div className={`absolute top-0 left-0 right-0 h-1.5 ${getTierColor(contact.tier)}`} />
-        
-        {/* Left accent strip for visual hierarchy */}
-        <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-primary opacity-60 group-hover:opacity-100 transition-opacity duration-300" />
+      <div className="card-floating">
         
         <div className="p-6">
           {/* Header with Avatar and Actions */}

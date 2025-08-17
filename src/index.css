@@ -385,6 +385,11 @@
     border-color: hsl(var(--primary) / 0.3);
   }
   
+  /* Floating card utility */
+  .card-floating {
+    @apply group relative overflow-hidden rounded-2xl bg-gradient-card ring-1 ring-border/60 shadow-lg hover:shadow-xl hover:ring-primary/30 transition-all duration-500 hover:-translate-y-1 hover:shadow-primary/10;
+  }
+  
   /* Microinteractions */
   .ripple-effect {
     position: relative;
