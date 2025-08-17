@@ -180,7 +180,7 @@ export const ModernContactCard = ({ contact, onUpdateContact, onDeleteContact }:
 
   return (
     <>
-      <div className="card-floating">
+      <div className="group card-floating">
         
         <div className="p-6">
           {/* Header with Avatar and Actions */}
