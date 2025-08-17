@@ -28,24 +28,26 @@ const ContactFilters = ({
 }: ContactFiltersProps) => {
   return (
     <div className="mb-6 sm:mb-8 space-y-4">
-      <div className="relative">
-        <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
-        <Input
-          type="text"
-          placeholder="Search contacts..."
-          value={searchTerm}
-          onChange={(e) => onSearchChange(e.target.value)}
-          className="pl-12 pr-16 py-4 text-base border-slate-200 focus:border-indigo-500 focus:ring-indigo-500 transition-colors h-14 text-lg"
-        />
+      <div className="flex gap-3">
+        <div className="relative flex-1">
+          <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
+          <Input
+            type="text"
+            placeholder="Search contacts..."
+            value={searchTerm}
+            onChange={(e) => onSearchChange(e.target.value)}
+            className="pl-12 py-4 text-base border-slate-200 focus:border-indigo-500 focus:ring-indigo-500 transition-colors h-14 text-lg"
+          />
+        </div>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
               variant="outline"
               size="icon"
-              className="absolute right-3 top-1/2 -translate-y-1/2 h-9 w-9"
+              className="h-14 w-14 flex-shrink-0"
               aria-label="Open filters"
             >
-              <Filter className="w-4 h-4" />
+              <Filter className="w-5 h-5" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="z-50 bg-popover border border-border shadow-md">
