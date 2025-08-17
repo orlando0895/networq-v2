@@ -36,11 +36,11 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
     
-    /* Brand Colors - Unified Cyan-Blue Gradient */
-    --primary: 188 100% 44%;
+    /* Brand Colors - Modern Black */
+    --primary: 0 0% 0%;
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 188 100% 54%;
-    --primary-variant: 210 100% 40%;
+    --primary-glow: 0 0% 20%;
+    --primary-variant: 0 0% 15%;
     
     /* Secondary Colors */
     --secondary: 210 40% 96%;
@@ -61,27 +61,26 @@
     /* Structural */
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 188 100% 44%;
+    --ring: 0 0% 0%;
     --radius: 0.75rem;
     
     /* Typography */
     --font-heading: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
     --font-body: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
     
-    /* Unified Gradient System - Logo Inspired */
-    --gradient-primary: linear-gradient(135deg, hsl(188 100% 50%), hsl(210 100% 40%));
-    --gradient-secondary: linear-gradient(135deg, hsl(188 100% 50% / 0.1), hsl(210 100% 40% / 0.05));
-    --gradient-hero: linear-gradient(135deg, hsl(188 100% 50%), hsl(210 100% 40%));
-    --gradient-card: linear-gradient(135deg, hsl(var(--card)), hsl(188 100% 50% / 0.03));
-    --gradient-background: linear-gradient(180deg, hsl(var(--background)), hsl(188 100% 50% / 0.02));
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
+    --gradient-secondary: linear-gradient(135deg, hsl(var(--secondary)), hsl(var(--accent)));
+    --gradient-hero: linear-gradient(135deg, hsl(var(--primary-variant)), hsl(var(--primary)));
+    --gradient-card: linear-gradient(180deg, hsl(var(--card)), hsl(var(--muted) / 0.1));
     
-    /* Shadows with Gradient Accent */
-    --shadow-sm: 0 1px 2px 0 hsl(188 100% 44% / 0.08);
-    --shadow-md: 0 4px 6px -1px hsl(188 100% 44% / 0.15), 0 2px 4px -1px hsl(210 100% 40% / 0.08);
-    --shadow-lg: 0 10px 15px -3px hsl(188 100% 44% / 0.15), 0 4px 6px -2px hsl(210 100% 40% / 0.08);
-    --shadow-xl: 0 20px 25px -5px hsl(188 100% 44% / 0.15), 0 10px 10px -5px hsl(210 100% 40% / 0.06);
-    --shadow-glow: 0 0 30px hsl(188 100% 50% / 0.4);
-    --shadow-elegant: 0 10px 40px -10px hsl(188 100% 44% / 0.25);
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 hsl(var(--primary) / 0.05);
+    --shadow-md: 0 4px 6px -1px hsl(var(--primary) / 0.1), 0 2px 4px -1px hsl(var(--primary) / 0.06);
+    --shadow-lg: 0 10px 15px -3px hsl(var(--primary) / 0.1), 0 4px 6px -2px hsl(var(--primary) / 0.05);
+    --shadow-xl: 0 20px 25px -5px hsl(var(--primary) / 0.1), 0 10px 10px -5px hsl(var(--primary) / 0.04);
+    --shadow-glow: 0 0 20px hsl(var(--primary-glow) / 0.3);
+    --shadow-elegant: 0 10px 30px -10px hsl(var(--primary) / 0.2);
     
     /* Transitions */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -106,10 +105,10 @@
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
     
-    --primary: 188 100% 54%;
+    --primary: 0 0% 10%;
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 188 100% 64%;
-    --primary-variant: 210 100% 50%;
+    --primary-glow: 0 0% 30%;
+    --primary-variant: 0 0% 5%;
     
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
@@ -127,18 +126,17 @@
     
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
-    --ring: 188 100% 54%;
+    --ring: 0 0% 10%;
     
-    /* Dark mode unified gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(188 100% 50%), hsl(210 100% 45%));
-    --gradient-secondary: linear-gradient(135deg, hsl(188 100% 50% / 0.08), hsl(210 100% 45% / 0.04));
-    --gradient-hero: linear-gradient(135deg, hsl(188 100% 50%), hsl(210 100% 45%));
-    --gradient-card: linear-gradient(135deg, hsl(var(--card)), hsl(188 100% 50% / 0.05));
-    --gradient-background: linear-gradient(180deg, hsl(var(--background)), hsl(188 100% 50% / 0.03));
+    /* Dark mode gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
+    --gradient-secondary: linear-gradient(135deg, hsl(var(--secondary)), hsl(var(--accent)));
+    --gradient-hero: linear-gradient(135deg, hsl(var(--primary-variant)), hsl(var(--primary)));
+    --gradient-card: linear-gradient(180deg, hsl(var(--card)), hsl(var(--muted) / 0.2));
     
-    /* Dark shadows with gradient */
-    --shadow-glow: 0 0 30px hsl(188 100% 50% / 0.5);
-    --shadow-elegant: 0 10px 40px -10px hsl(188 100% 44% / 0.35);
+    /* Dark shadows */
+    --shadow-glow: 0 0 20px hsl(var(--primary-glow) / 0.4);
+    --shadow-elegant: 0 10px 30px -10px hsl(var(--primary) / 0.3);
     
     /* Sidebar Dark */
     --sidebar-background: 240 5.9% 10%;
@@ -160,7 +158,7 @@
   body {
     font-family: var(--font-body);
     @apply bg-background text-foreground;
-    background: var(--gradient-background);
+    background: var(--gradient-card);
   }
   
   /* Typography Scale */
@@ -323,7 +321,7 @@
     transform: translateX(0);
   }
   
-  /* Enhanced text hierarchy with gradient */
+  /* Enhanced text hierarchy */
   .text-hero {
     font-size: 3rem;
     font-weight: 800;
