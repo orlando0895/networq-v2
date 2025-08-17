@@ -35,7 +35,7 @@ const MobileLayout = ({ children, className, header, noPadding = false }: Mobile
 
 interface PageHeaderProps {
   title: string;
-  subtitle?: string;
+  subtitle?: React.ReactNode;
   action?: React.ReactNode;
   className?: string;
 }

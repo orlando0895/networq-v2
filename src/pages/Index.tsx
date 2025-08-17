@@ -203,7 +203,12 @@ const Index = () => {
       header={
         <PageHeader
           title="Connections"
-          subtitle={`Your trusted network • ${contacts.length} contacts`}
+          subtitle={
+            <>
+              <span className="hidden sm:inline">Your trusted network • </span>
+              {contacts.length} contacts
+            </>
+          }
           action={
             <div className="flex items-center gap-2">
               <DropdownMenu>
