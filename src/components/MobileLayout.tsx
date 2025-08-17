@@ -49,7 +49,7 @@ const PageHeader = ({ title, subtitle, action, className }: PageHeaderProps) => 
             {title}
           </h1>
           {subtitle && (
-            <p className="text-subtitle mt-1 text-[11px] sm:text-xs truncate">
+            <p className="text-subtitle mt-1 text-[10px] sm:text-xs truncate">
               {subtitle}
             </p>
           )}
