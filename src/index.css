@@ -36,7 +36,7 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
     
-    /* Brand Colors - Networa Cyan-Blue */
+    /* Brand Colors - Unified Cyan-Blue Gradient */
     --primary: 188 100% 44%;
     --primary-foreground: 0 0% 100%;
     --primary-glow: 188 100% 54%;
@@ -68,19 +68,20 @@
     --font-heading: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
     --font-body: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
     
-    /* Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
-    --gradient-secondary: linear-gradient(135deg, hsl(var(--secondary)), hsl(var(--accent)));
-    --gradient-hero: linear-gradient(135deg, hsl(var(--primary-variant)), hsl(var(--primary)));
-    --gradient-card: linear-gradient(180deg, hsl(var(--card)), hsl(var(--muted) / 0.1));
+    /* Unified Gradient System - Logo Inspired */
+    --gradient-primary: linear-gradient(135deg, hsl(188 100% 50%), hsl(210 100% 40%));
+    --gradient-secondary: linear-gradient(135deg, hsl(188 100% 50% / 0.1), hsl(210 100% 40% / 0.05));
+    --gradient-hero: linear-gradient(135deg, hsl(188 100% 50%), hsl(210 100% 40%));
+    --gradient-card: linear-gradient(135deg, hsl(var(--card)), hsl(188 100% 50% / 0.03));
+    --gradient-background: linear-gradient(180deg, hsl(var(--background)), hsl(188 100% 50% / 0.02));
     
-    /* Shadows */
-    --shadow-sm: 0 1px 2px 0 hsl(var(--primary) / 0.05);
-    --shadow-md: 0 4px 6px -1px hsl(var(--primary) / 0.1), 0 2px 4px -1px hsl(var(--primary) / 0.06);
-    --shadow-lg: 0 10px 15px -3px hsl(var(--primary) / 0.1), 0 4px 6px -2px hsl(var(--primary) / 0.05);
-    --shadow-xl: 0 20px 25px -5px hsl(var(--primary) / 0.1), 0 10px 10px -5px hsl(var(--primary) / 0.04);
-    --shadow-glow: 0 0 20px hsl(var(--primary-glow) / 0.3);
-    --shadow-elegant: 0 10px 30px -10px hsl(var(--primary) / 0.2);
+    /* Shadows with Gradient Accent */
+    --shadow-sm: 0 1px 2px 0 hsl(188 100% 44% / 0.08);
+    --shadow-md: 0 4px 6px -1px hsl(188 100% 44% / 0.15), 0 2px 4px -1px hsl(210 100% 40% / 0.08);
+    --shadow-lg: 0 10px 15px -3px hsl(188 100% 44% / 0.15), 0 4px 6px -2px hsl(210 100% 40% / 0.08);
+    --shadow-xl: 0 20px 25px -5px hsl(188 100% 44% / 0.15), 0 10px 10px -5px hsl(210 100% 40% / 0.06);
+    --shadow-glow: 0 0 30px hsl(188 100% 50% / 0.4);
+    --shadow-elegant: 0 10px 40px -10px hsl(188 100% 44% / 0.25);
     
     /* Transitions */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -128,15 +129,16 @@
     --input: 217.2 32.6% 17.5%;
     --ring: 188 100% 54%;
     
-    /* Dark mode gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
-    --gradient-secondary: linear-gradient(135deg, hsl(var(--secondary)), hsl(var(--accent)));
-    --gradient-hero: linear-gradient(135deg, hsl(var(--primary-variant)), hsl(var(--primary)));
-    --gradient-card: linear-gradient(180deg, hsl(var(--card)), hsl(var(--muted) / 0.2));
+    /* Dark mode unified gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(188 100% 50%), hsl(210 100% 45%));
+    --gradient-secondary: linear-gradient(135deg, hsl(188 100% 50% / 0.08), hsl(210 100% 45% / 0.04));
+    --gradient-hero: linear-gradient(135deg, hsl(188 100% 50%), hsl(210 100% 45%));
+    --gradient-card: linear-gradient(135deg, hsl(var(--card)), hsl(188 100% 50% / 0.05));
+    --gradient-background: linear-gradient(180deg, hsl(var(--background)), hsl(188 100% 50% / 0.03));
     
-    /* Dark shadows */
-    --shadow-glow: 0 0 20px hsl(var(--primary-glow) / 0.4);
-    --shadow-elegant: 0 10px 30px -10px hsl(var(--primary) / 0.3);
+    /* Dark shadows with gradient */
+    --shadow-glow: 0 0 30px hsl(188 100% 50% / 0.5);
+    --shadow-elegant: 0 10px 40px -10px hsl(188 100% 44% / 0.35);
     
     /* Sidebar Dark */
     --sidebar-background: 240 5.9% 10%;
@@ -158,7 +160,7 @@
   body {
     font-family: var(--font-body);
     @apply bg-background text-foreground;
-    background: var(--gradient-card);
+    background: var(--gradient-background);
   }
   
   /* Typography Scale */
@@ -321,7 +323,7 @@
     transform: translateX(0);
   }
   
-  /* Enhanced text hierarchy */
+  /* Enhanced text hierarchy with gradient */
   .text-hero {
     font-size: 3rem;
     font-weight: 800;
