@@ -159,11 +159,11 @@ export const ModernContactCard = ({ contact, onUpdateContact, onDeleteContact }:
   const getTierColor = (tier: string | null) => {
     switch (tier) {
       case 'A-player':
-        return 'bg-gradient-to-r from-yellow-400 to-yellow-600';
+        return 'bg-gradient-to-r from-yellow-400 to-orange-500';
       case 'Acquaintance':
-        return 'bg-gradient-to-r from-gray-300 to-gray-500';
+        return 'bg-gradient-to-r from-primary/60 to-primary-glow/60';
       default:
-        return 'bg-gradient-to-r from-primary to-primary-variant';
+        return 'bg-gradient-primary';
     }
   };
 
@@ -180,9 +180,12 @@ export const ModernContactCard = ({ contact, onUpdateContact, onDeleteContact }:
 
   return (
     <>
-      <div className="group relative overflow-hidden rounded-2xl bg-gradient-card border border-border/50 shadow-md hover:shadow-elegant transition-all duration-500 hover:-translate-y-1 hover:border-primary/30">
-        {/* Tier indicator */}
-        <div className={`absolute top-0 left-0 right-0 h-1 ${getTierColor(contact.tier)}`} />
+      <div className="group relative overflow-hidden rounded-2xl bg-gradient-card border border-border/50 shadow-md hover:shadow-elegant transition-all duration-500 hover:-translate-y-2 hover:border-primary/50 hover:shadow-glow">
+        {/* Tier indicator with brand gradient */}
+        <div className={`absolute top-0 left-0 right-0 h-1.5 ${getTierColor(contact.tier)}`} />
+        
+        {/* Left accent strip for visual hierarchy */}
+        <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-primary opacity-60 group-hover:opacity-100 transition-opacity duration-300" />
         
         <div className="p-6">
           {/* Header with Avatar and Actions */}
@@ -254,39 +257,41 @@ export const ModernContactCard = ({ contact, onUpdateContact, onDeleteContact }:
             </div>
           </div>
 
-          {/* Contact Methods */}
+          {/* Contact Methods - Message First with Hierarchy */}
           <div className="flex flex-wrap gap-2 mb-4">
+            {/* Primary Action: Message (if available) */}
+            {['share_code', 'qr_code', 'mutual_contact', 'business_card'].includes(contact.added_via || '') && (
+              <Button
+                size="sm"
+                variant="default"
+                className="h-9 px-4 text-sm font-medium bg-gradient-primary hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 ripple-effect"
+                onClick={handleStartConversation}
+              >
+                <MessageSquare className="w-4 h-4 mr-2" />
+                Message
+              </Button>
+            )}
+            
+            {/* Secondary Actions */}
             <Button
               size="sm"
-              variant="outline"
-              className="h-8 px-3 text-xs ripple-effect"
+              variant="secondary"
+              className="h-9 px-3 text-xs font-medium hover:bg-gradient-accent transition-all duration-200 ripple-effect"
               onClick={() => window.open(formatEmailLink(contact.email))}
             >
-              <Mail className="w-3 h-3 mr-1" />
+              <Mail className="w-4 h-4 mr-2" />
               Email
             </Button>
             
             {contact.phone && (
               <Button
                 size="sm"
-                variant="outline"
-                className="h-8 px-3 text-xs ripple-effect"
+                variant="secondary"
+                className="h-9 px-3 text-xs font-medium hover:bg-gradient-accent transition-all duration-200 ripple-effect"
                 onClick={() => window.open(formatPhoneLink(contact.phone))}
               >
-                <Phone className="w-3 h-3 mr-1" />
+                <Phone className="w-4 h-4 mr-2" />
                 Call
-              </Button>
-            )}
-
-            {['share_code', 'qr_code', 'mutual_contact', 'business_card'].includes(contact.added_via || '') && (
-              <Button
-                size="sm"
-                variant="default"
-                className="h-8 px-3 text-xs bg-gradient-primary ripple-effect"
-                onClick={handleStartConversation}
-              >
-                <MessageSquare className="w-3 h-3 mr-1" />
-                Message
               </Button>
             )}
           </div>
@@ -294,14 +299,17 @@ export const ModernContactCard = ({ contact, onUpdateContact, onDeleteContact }:
           {/* Tags and Metadata */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Badge className={`${badge.className} text-xs font-medium border px-2 py-1`}>
+              <Badge className={`${badge.className} text-xs font-semibold uppercase tracking-wide border px-3 py-1.5 rounded-full`}>
                 {badge.icon}
-                <span className="ml-1">{badge.text}</span>
+                <span className="ml-1.5">{badge.text}</span>
               </Badge>
               
               {contact.tier && (
-                <Badge variant="outline" className="text-xs">
-                  {contact.tier === 'A-player' ? '⭐ A-Player' : 'Acquaintance'}
+                <Badge 
+                  variant="outline" 
+                  className="text-xs font-semibold uppercase tracking-wide px-3 py-1.5 rounded-full border-primary/20 bg-gradient-accent"
+                >
+                  {contact.tier === 'A-player' ? '⭐ A-PLAYER' : 'ACQUAINTANCE'}
                 </Badge>
               )}
             </div>
