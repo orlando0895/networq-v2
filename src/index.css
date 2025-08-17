@@ -36,11 +36,11 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
     
-    /* Brand Colors - Modern Black */
-    --primary: 0 0% 0%;
+    /* Brand Colors - Indigo */
+    --primary: 239 84% 67%;
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 0 0% 20%;
-    --primary-variant: 0 0% 15%;
+    --primary-glow: 239 84% 77%;
+    --primary-variant: 239 84% 57%;
     
     /* Secondary Colors */
     --secondary: 210 40% 96%;
@@ -61,7 +61,7 @@
     /* Structural */
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 0 0% 0%;
+    --ring: 239 84% 67%;
     --radius: 0.75rem;
     
     /* Typography */
@@ -105,10 +105,10 @@
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
     
-    --primary: 0 0% 10%;
+    --primary: 239 84% 77%;
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 0 0% 30%;
-    --primary-variant: 0 0% 5%;
+    --primary-glow: 239 84% 87%;
+    --primary-variant: 239 84% 67%;
     
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
@@ -126,7 +126,7 @@
     
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
-    --ring: 0 0% 10%;
+    --ring: 239 84% 77%;
     
     /* Dark mode gradients */
     --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary-glow)));
