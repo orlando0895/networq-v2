@@ -143,7 +143,32 @@ const ContactFilters = ({
           onClick={() => onFilterChange("all")}
           className="flex-1 sm:flex-none transition-all duration-200 h-12 text-base font-semibold bg-[#0d172a] text-white hover:bg-[#0d172a]/90 hover:shadow-lg hover:-translate-y-0.5"
         >
-          All ({contacts.length})
+          <div className="flex flex-col items-center">
+            <span className="text-sm font-semibold">All</span>
+            <span className="text-xs opacity-80">({contacts.length} contacts)</span>
+          </div>
+        </Button>
+        <Button
+          variant={filterTier === "A-player" ? "default" : "secondary"}
+          size="lg"
+          onClick={() => onFilterChange("A-player")}
+          className="flex-1 sm:flex-none transition-all duration-200 h-12 text-base font-semibold hover:shadow-lg hover:-translate-y-0.5"
+        >
+          <div className="flex flex-col items-center">
+            <span className="text-sm font-semibold">A-players</span>
+            <span className="text-xs opacity-80">({contacts.filter(c => c.tier === 'A-player').length} key contacts)</span>
+          </div>
+        </Button>
+        <Button
+          variant={filterTier === "Acquaintance" ? "default" : "secondary"}
+          size="lg"
+          onClick={() => onFilterChange("Acquaintance")}
+          className="flex-1 sm:flex-none transition-all duration-200 h-12 text-base font-semibold hover:shadow-lg hover:-translate-y-0.5"
+        >
+          <div className="flex flex-col items-center">
+            <span className="text-sm font-semibold">Acquaintances</span>
+            <span className="text-xs opacity-80">({contacts.filter(c => c.tier === 'Acquaintance').length} connections)</span>
+          </div>
         </Button>
       </div>
     </div>
