@@ -4,11 +4,11 @@ import { useContacts } from "@/hooks/useContacts";
 import { useUserContactCard } from "@/hooks/useUserContactCard";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import ContactCard from "@/components/ContactCard";
+import { ModernContactCard } from "@/components/ModernContactCard";
 import ContactForm from "@/components/ContactForm";
 import ContactStats from "@/components/ContactStats";
 import ContactFilters from "@/components/ContactFilters";
-import EmptyState from "@/components/EmptyState";
+import { EmptyStateEnhanced } from "@/components/EmptyStateEnhanced";
 import { MobileLayout, PageHeader } from "@/components/MobileLayout";
 import { useToast } from "@/hooks/use-toast";
 import { generateVCF } from "@/lib/vcf";
@@ -203,7 +203,7 @@ const Index = () => {
       header={
         <PageHeader
           title="Connections"
-          subtitle={`${contacts.length} contacts in your network`}
+          subtitle={`Your trusted network • ${contacts.length} contacts`}
           action={
             <div className="flex items-center gap-2">
               <DropdownMenu>
@@ -219,7 +219,7 @@ const Index = () => {
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-              <Button size="sm" className="touch-target" onClick={() => setIsAddingContact(true)}>
+              <Button size="sm" variant="default" className="touch-target bg-gradient-primary hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300" onClick={() => setIsAddingContact(true)}>
                 <Plus className="h-4 w-4" />
                 <span className="ml-2 hidden sm:inline">Add</span>
               </Button>
@@ -250,9 +250,9 @@ const Index = () => {
         )}
 
         {/* Contact Cards */}
-        <div className="space-y-3">
+        <div className="space-y-4">
           {filteredContacts.map(contact => (
-            <ContactCard 
+            <ModernContactCard 
               key={contact.id} 
               contact={contact} 
               onUpdateContact={updateContact} 
@@ -263,7 +263,7 @@ const Index = () => {
 
         {/* Empty State */}
         {filteredContacts.length === 0 && (
-          <EmptyState 
+          <EmptyStateEnhanced 
             hasFilters={hasFilters} 
             onAddContact={() => setIsAddingContact(true)} 
           />

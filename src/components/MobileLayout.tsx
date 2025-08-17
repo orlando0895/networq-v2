@@ -42,14 +42,14 @@ interface PageHeaderProps {
 
 const PageHeader = ({ title, subtitle, action, className }: PageHeaderProps) => {
   return (
-    <div className={cn("px-4 py-4", className)}>
+    <div className={cn("px-4 py-6", className)}>
       <div className="flex items-center justify-between">
         <div className="min-w-0 flex-1">
-          <h1 className="text-xl font-semibold text-foreground truncate">
+          <h1 className="text-2xl font-heading font-bold text-foreground truncate">
             {title}
           </h1>
           {subtitle && (
-            <p className="text-sm text-muted-foreground mt-1 truncate">
+            <p className="text-subtitle mt-1 truncate">
               {subtitle}
             </p>
           )}
