@@ -19,7 +19,8 @@ import {
   UserCheck,
   QrCode,
   CreditCard,
-  ChevronRight
+  ChevronRight,
+  StickyNote
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
@@ -27,6 +28,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { downloadVCF } from '@/lib/vcf';
 import { formatEmailLink, formatPhoneLink } from '@/lib/utils';
 import { ShareContactDialog } from './ShareContactDialog';
+import AddNoteForm from './AddNoteForm';
 import type { Database } from '@/integrations/supabase/types';
 
 type Contact = Database['public']['Tables']['contacts']['Row'];
@@ -39,6 +41,7 @@ interface ModernContactCardProps {
 
 export const ModernContactCard = ({ contact, onUpdateContact, onDeleteContact }: ModernContactCardProps) => {
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
+  const [isNoteDialogOpen, setIsNoteDialogOpen] = useState(false);
   const [hasAccount, setHasAccount] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -264,6 +267,24 @@ export const ModernContactCard = ({ contact, onUpdateContact, onDeleteContact }:
                       size="sm"
                       variant="ghost"
                       className="h-8 w-8 p-0 ripple-effect"
+                      onClick={() => setIsNoteDialogOpen(true)}
+                    >
+                      <StickyNote className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Add Note</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="h-8 w-8 p-0 ripple-effect"
                       onClick={handleExportVCF}
                     >
                       <Download className="h-4 w-4" />
@@ -391,6 +412,13 @@ export const ModernContactCard = ({ contact, onUpdateContact, onDeleteContact }:
         contact={contact}
         isOpen={isShareDialogOpen}
         onClose={() => setIsShareDialogOpen(false)}
+      />
+      
+      <AddNoteForm
+        contact={contact}
+        isOpen={isNoteDialogOpen}
+        onOpenChange={setIsNoteDialogOpen}
+        onUpdateContact={onUpdateContact}
       />
     </>
   );
