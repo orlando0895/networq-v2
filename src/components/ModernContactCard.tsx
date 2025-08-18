@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
@@ -39,8 +39,33 @@ interface ModernContactCardProps {
 
 export const ModernContactCard = ({ contact, onUpdateContact, onDeleteContact }: ModernContactCardProps) => {
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
+  const [hasAccount, setHasAccount] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
+
+  // Check if contact has an account on the platform
+  useEffect(() => {
+    const checkContactAccount = async () => {
+      if (!['share_code', 'qr_code', 'mutual_contact', 'business_card'].includes(contact.added_via || '')) {
+        setHasAccount(false);
+        return;
+      }
+
+      try {
+        const { data: profileData, error: profileError } = await supabase
+          .from('profiles')
+          .select('id')
+          .eq('email', contact.email)
+          .maybeSingle();
+
+        setHasAccount(!profileError && !!profileData);
+      } catch (error) {
+        setHasAccount(false);
+      }
+    };
+
+    checkContactAccount();
+  }, [contact.email, contact.added_via]);
 
   const handleExportVCF = () => {
     const contactData = {
@@ -255,7 +280,7 @@ export const ModernContactCard = ({ contact, onUpdateContact, onDeleteContact }:
           {/* Contact Methods - Message First with Hierarchy */}
           <div className="flex flex-wrap gap-2 mb-4">
             {/* Primary Action: Message (if available) */}
-            {['share_code', 'qr_code', 'mutual_contact', 'business_card'].includes(contact.added_via || '') && (
+            {hasAccount && (
               <Button
                 size="sm"
                 variant="default"
