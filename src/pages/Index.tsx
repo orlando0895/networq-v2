@@ -189,15 +189,6 @@ const Index = () => {
 
   const hasFilters = searchTerm !== "" || filterTier !== "all" || filterIndustry !== "all" || selectedMethods.length > 0;
 
-  if (loading) {
-    return (
-      <MobileLayout>
-        <div className="flex items-center justify-center min-h-[50vh]">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-        </div>
-      </MobileLayout>
-    );
-  }
   return (
     <MobileLayout
       header={
@@ -206,14 +197,14 @@ const Index = () => {
           subtitle={
             <>
               <span className="hidden sm:inline">Your trusted network • </span>
-              {contacts.length} contacts
+              {loading ? "Loading contacts..." : `${contacts.length} contacts`}
             </>
           }
           action={
             <div className="flex items-center gap-2">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button size="sm" variant="outline" className="touch-target">
+                  <Button size="sm" variant="outline" className="touch-target" disabled={loading}>
                     <Download className="h-4 w-4" />
                     <span className="ml-2 hidden sm:inline">Export</span>
                   </Button>
@@ -246,28 +237,35 @@ const Index = () => {
         />
 
         {/* Quick Stats */}
-        {contacts.length > 0 && (
-          <ContactStats 
-            contacts={contacts} 
-            filterIndustry={filterIndustry}
-            onIndustryFilterChange={setFilterIndustry}
-          />
-        )}
+        <ContactStats 
+          contacts={loading ? [] : contacts} 
+          filterIndustry={filterIndustry}
+          onIndustryFilterChange={setFilterIndustry}
+        />
 
         {/* Contact Cards */}
         <div className="space-y-4">
-          {filteredContacts.map(contact => (
-            <ModernContactCard 
-              key={contact.id} 
-              contact={contact} 
-              onUpdateContact={updateContact} 
-              onDeleteContact={deleteContact}
-            />
-          ))}
+          {loading ? (
+            // Show skeleton cards while loading
+            <>
+              <div className="animate-pulse bg-card rounded-lg h-24 border"></div>
+              <div className="animate-pulse bg-card rounded-lg h-24 border"></div>
+              <div className="animate-pulse bg-card rounded-lg h-24 border"></div>
+            </>
+          ) : (
+            filteredContacts.map(contact => (
+              <ModernContactCard 
+                key={contact.id} 
+                contact={contact} 
+                onUpdateContact={updateContact} 
+                onDeleteContact={deleteContact}
+              />
+            ))
+          )}
         </div>
 
         {/* Empty State */}
-        {filteredContacts.length === 0 && (
+        {!loading && filteredContacts.length === 0 && (
           <EmptyStateEnhanced 
             hasFilters={hasFilters} 
             onAddContact={() => setIsAddingContact(true)} 
