@@ -19,7 +19,7 @@ import {
   UserCheck,
   QrCode,
   CreditCard,
-  ChevronRight
+  StickyNote
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
@@ -27,6 +27,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { downloadVCF } from '@/lib/vcf';
 import { formatEmailLink, formatPhoneLink } from '@/lib/utils';
 import { ShareContactDialog } from './ShareContactDialog';
+import AddNoteForm from './AddNoteForm';
 import type { Database } from '@/integrations/supabase/types';
 
 type Contact = Database['public']['Tables']['contacts']['Row'];
@@ -39,6 +40,7 @@ interface ModernContactCardProps {
 
 export const ModernContactCard = ({ contact, onUpdateContact, onDeleteContact }: ModernContactCardProps) => {
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
+  const [isNoteFormOpen, setIsNoteFormOpen] = useState(false);
   const [hasAccount, setHasAccount] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -377,8 +379,24 @@ export const ModernContactCard = ({ contact, onUpdateContact, onDeleteContact }:
                 </Button>
               )}
               
-              {/* Expand indicator */}
-              <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
+              {/* Add Note Button */}
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="h-6 w-6 p-0"
+                      onClick={() => setIsNoteFormOpen(true)}
+                    >
+                      <StickyNote className="w-3 h-3 text-muted-foreground hover:text-primary transition-colors" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Add Note</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </div>
           </div>
         </div>
@@ -391,6 +409,13 @@ export const ModernContactCard = ({ contact, onUpdateContact, onDeleteContact }:
         contact={contact}
         isOpen={isShareDialogOpen}
         onClose={() => setIsShareDialogOpen(false)}
+      />
+      
+      <AddNoteForm
+        contact={contact}
+        isOpen={isNoteFormOpen}
+        onOpenChange={setIsNoteFormOpen}
+        onUpdateContact={onUpdateContact}
       />
     </>
   );
