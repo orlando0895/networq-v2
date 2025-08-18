@@ -240,12 +240,6 @@ const ContactForm = ({ isOpen, onOpenChange, onAddContact }: ContactFormProps) =
 
   return (
     <Sheet open={isOpen} onOpenChange={onOpenChange}>
-      <SheetTrigger asChild>
-        <Button size="lg" className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 transition-all duration-200 h-12 px-6 text-base font-medium">
-          <Plus className="w-5 h-5 sm:mr-2" />
-          <span className="hidden sm:inline">Add Contact</span>
-        </Button>
-      </SheetTrigger>
       <SheetContent className="w-full sm:max-w-md overflow-y-auto">
         <SheetHeader className="pb-6">
           <SheetTitle className="flex items-center gap-2 text-xl font-semibold">
