@@ -27,6 +27,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { downloadVCF } from '@/lib/vcf';
 import { formatEmailLink, formatPhoneLink } from '@/lib/utils';
 import { ShareContactDialog } from './ShareContactDialog';
+import AddNoteForm from './AddNoteForm';
 import type { Database } from '@/integrations/supabase/types';
 
 type Contact = Database['public']['Tables']['contacts']['Row'];
@@ -39,6 +40,7 @@ interface ModernContactCardProps {
 
 export const ModernContactCard = ({ contact, onUpdateContact, onDeleteContact }: ModernContactCardProps) => {
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
+  const [isNoteFormOpen, setIsNoteFormOpen] = useState(false);
   const [hasAccount, setHasAccount] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -377,8 +379,16 @@ export const ModernContactCard = ({ contact, onUpdateContact, onDeleteContact }:
                 </Button>
               )}
               
-              {/* Expand indicator */}
-              <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
+              {/* Add note button */}
+              <Button
+                size="sm"
+                variant="ghost"
+                className="h-6 w-6 p-0"
+                onClick={() => setIsNoteFormOpen(true)}
+                aria-label="Add note"
+              >
+                <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
+              </Button>
             </div>
           </div>
         </div>
@@ -391,6 +401,13 @@ export const ModernContactCard = ({ contact, onUpdateContact, onDeleteContact }:
         contact={contact}
         isOpen={isShareDialogOpen}
         onClose={() => setIsShareDialogOpen(false)}
+      />
+
+      <AddNoteForm
+        contact={contact}
+        isOpen={isNoteFormOpen}
+        onOpenChange={setIsNoteFormOpen}
+        onUpdateContact={onUpdateContact}
       />
     </>
   );
