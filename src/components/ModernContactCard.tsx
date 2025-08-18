@@ -4,22 +4,22 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { 
-  Star, 
-  Mail, 
-  Phone, 
-  MessageSquare, 
-  Download, 
-  Share2, 
-  Edit,
   Building2,
+  ChevronRight,
+  CreditCard,
+  Download, 
+  Edit,
+  Facebook,
   Globe,
   Linkedin,
-  Facebook,
+  Mail, 
   MessageCircle,
-  UserCheck,
+  MessageSquare, 
+  Phone, 
   QrCode,
-  CreditCard,
-  ChevronRight
+  Share2, 
+  Star, 
+  UserCheck
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
