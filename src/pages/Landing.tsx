@@ -389,7 +389,7 @@ const LandingPage = () => {
             <form className="waitlist-form-3d" onSubmit={handleWaitlistSignup}>
               <div className="form-group-3d">
                 <button type="submit" className="btn-primary btn-revolution" disabled={isSubmitting}>
-                  <span>{isSubmitting ? "Joining..." : "Get Early Access"}</span>
+                  <span>{isSubmitting ? "Joining..." : "Get Instant Access"}</span>
                   <ArrowRight className="btn-icon" />
                   <div className="btn-particles"></div>
                 </button>
