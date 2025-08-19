@@ -388,17 +388,6 @@ const LandingPage = () => {
             </p>
             <form className="waitlist-form-3d" onSubmit={handleWaitlistSignup}>
               <div className="form-group-3d">
-                <div className="input-wrapper">
-                  <input
-                    type="email"
-                    className="input-field-3d"
-                    placeholder="Enter your email for early access"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                  />
-                  <div className="input-glow"></div>
-                </div>
                 <button type="submit" className="btn-primary btn-revolution" disabled={isSubmitting}>
                   <span>{isSubmitting ? "Joining..." : "Get Early Access"}</span>
                   <ArrowRight className="btn-icon" />
