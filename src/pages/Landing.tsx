@@ -135,9 +135,6 @@ const LandingPage = () => {
                 />
             </div>
             <div className="flex items-center gap-4">
-              <button className="btn-ghost header-cta animate-fade-in" onClick={() => document.getElementById('waitlist')?.scrollIntoView({ behavior: 'smooth' })}>
-                Get Early Access
-              </button>
               <Link to="/auth" className="btn-ghost animate-fade-in">
                 Sign In
               </Link>
