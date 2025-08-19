@@ -396,8 +396,7 @@ const LandingPage = () => {
               </div>
             </form>
             <p className="waitlist-note animate-on-scroll">
-              Join 1,000+ professionals who are ready to improve their networking. 
-              Early access includes premium features free for 3 months.
+              Join 1,000+ professionals who are ready to improve their networking.
             </p>
           </div>
         </div>
