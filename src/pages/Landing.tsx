@@ -388,7 +388,7 @@ const LandingPage = () => {
             </p>
             <form className="waitlist-form-3d" onSubmit={handleWaitlistSignup}>
               <div className="form-group-3d">
-                <button type="submit" className="btn-primary btn-revolution" disabled={isSubmitting}>
+                <button type="submit" className="btn-primary btn-revolution hover-scale animate-fade-in transition-all duration-300 hover:animate-pulse" disabled={isSubmitting}>
                   <span>{isSubmitting ? "Joining..." : "Get Instant Access"}</span>
                   <ArrowRight className="btn-icon" />
                   <div className="btn-particles"></div>
