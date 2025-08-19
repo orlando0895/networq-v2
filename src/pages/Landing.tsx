@@ -169,12 +169,6 @@ const LandingPage = () => {
                     <span>Get Started Free</span>
                     <ArrowRight className="btn-icon" />
                   </Link>
-                  <button 
-                    className="btn-secondary" 
-                    onClick={() => document.getElementById('waitlist')?.scrollIntoView({ behavior: 'smooth' })}
-                  >
-                    Join Waitlist
-                  </button>
                 </div>
                 <p className="hero-note">Join 1,000+ professionals already using Networq</p>
               </div>
