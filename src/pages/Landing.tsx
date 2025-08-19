@@ -380,7 +380,7 @@ const LandingPage = () => {
         <div className="container">
           <div className="waitlist-content">
             <h2 className="section-title animate-on-scroll">
-              Get <span className="text-accent">Early Access</span>
+              Get <span className="text-accent">Instant Access</span>
             </h2>
             <p className="section-subtitle animate-on-scroll">
               Be among the first professionals to experience effortless networking. 
