@@ -247,7 +247,7 @@ const LandingPage = () => {
             </div>
             <div className="feature-image">
               <img 
-                src="/lovable-uploads/de68fc87-4034-4e34-bcea-69a3002e5e32.png" 
+                src="/lovable-uploads/a5cfad31-2d0f-4d68-81dc-74aca65731d2.png" 
                 alt="QR code sharing interface"
                 className="animate-on-scroll"
               />
