@@ -3,6 +3,7 @@ import { ArrowRight, QrCode, Users, MessageCircle, Calendar, Star, Zap, MapPin, 
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { DecorativeImage } from "@/components/DecorativeImage";
 import "./landing.css";
 
 const LandingPage = () => {
@@ -144,7 +145,13 @@ const LandingPage = () => {
       </header>
 
       {/* 1. Hero Section */}
-      <section className="hero">
+      <section className="hero relative">
+        <DecorativeImage 
+          src="/lovable-uploads/13a3c462-48e9-462a-b56d-edb9dd1a2bbb.png"
+          alt="Networking professionals"
+          position="top-right"
+          size="lg"
+        />
         <div className="container">
           <div className="hero-content">
             <div className="hero-text">
@@ -186,7 +193,13 @@ const LandingPage = () => {
       </section>
 
       {/* 2. Problem & Origin Story */}
-      <section className="problem-section">
+      <section className="problem-section relative">
+        <DecorativeImage 
+          src="/lovable-uploads/35f0bcd5-8832-4a5a-9f44-4111a705f5e6.png"
+          alt="Business networking"
+          position="bottom-left"
+          size="md"
+        />
         <div className="container">
           <div className="problem-content">
             <h2 className="section-title animate-on-scroll">We've All Been There...</h2>
@@ -228,7 +241,13 @@ const LandingPage = () => {
       </section>
 
       {/* 3. How Networq Works */}
-      <section className="how-it-works">
+      <section className="how-it-works relative">
+        <DecorativeImage 
+          src="/lovable-uploads/5fd3099a-4877-4566-8bd3-54ab04eb7899.png"
+          alt="Professional connections"
+          position="top-left"
+          size="md"
+        />
         <div className="container">
           <h2 className="section-title animate-on-scroll">How Networq Works</h2>
           <p className="section-subtitle">Three simple steps to better networking</p>
@@ -275,7 +294,13 @@ const LandingPage = () => {
       </section>
 
       {/* 4. Core Features */}
-      <section className="features-section">
+      <section className="features-section relative">
+        <DecorativeImage 
+          src="/lovable-uploads/13a3c462-48e9-462a-b56d-edb9dd1a2bbb.png"
+          alt="Digital networking"
+          position="bottom-right"
+          size="sm"
+        />
         <div className="container">
           <h2 className="section-title animate-on-scroll">Why Networq Works Better</h2>
           <div className="features-grid">
@@ -338,7 +363,14 @@ const LandingPage = () => {
       </section>
 
       {/* 5. Social Proof & Vision */}
-      <section className="social-proof">
+      <section className="social-proof relative">
+        <DecorativeImage 
+          src="/lovable-uploads/35f0bcd5-8832-4a5a-9f44-4111a705f5e6.png"
+          alt="Success in networking"
+          position="center"
+          size="lg"
+          className="opacity-10"
+        />
         <div className="container">
           <div className="vision-content">
             <h2 className="section-title animate-on-scroll">The Future of Professional Networking</h2>
