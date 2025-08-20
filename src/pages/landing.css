@@ -928,36 +928,109 @@ section {
   }
 }
 
-/* Responsive Design for Enhanced Messaging */
-@media (max-width: 1024px) {
-  .phone-mockup-3d {
-    width: 240px;
-    height: 480px;
-  }
-  
-  .floating-ui-elements {
-    display: none;
-  }
+/* QR Feature Enhancements */
+.qr-feature {
+  position: relative;
+  background: radial-gradient(ellipse at 80% 50%, rgba(34, 197, 94, 0.15) 0%, transparent 50%),
+              radial-gradient(ellipse at 20% 20%, rgba(59, 130, 246, 0.10) 0%, transparent 50%),
+              linear-gradient(135deg, rgba(15, 25, 15, 0.95) 0%, rgba(25, 40, 25, 0.95) 100%);
+  overflow: hidden;
 }
 
-@media (max-width: 768px) {
-  .messaging-feature .feature-layout {
-    grid-template-columns: 1fr;
-    text-align: center;
-  }
-  
-  .phone-3d-container {
-    margin-bottom: 2rem;
-  }
-  
-  .interactive-benefit {
-    padding: 1rem;
-  }
-  
-  .benefit-description {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.qr-showcase {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  perspective: 1000px;
+}
+
+.qr-bubble {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  background: rgba(34, 197, 94, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(34, 197, 94, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: floatingBubble 4s ease-in-out infinite;
+}
+
+.qr-orb {
+  background: radial-gradient(circle, rgba(34, 197, 94, 0.3), transparent) !important;
+}
+
+/* Scanning Feature Enhancements */
+.scanning-feature {
+  position: relative;
+  background: radial-gradient(ellipse at 20% 50%, rgba(168, 85, 247, 0.15) 0%, transparent 50%),
+              radial-gradient(ellipse at 80% 20%, rgba(236, 72, 153, 0.10) 0%, transparent 50%),
+              linear-gradient(135deg, rgba(25, 15, 25, 0.95) 0%, rgba(40, 25, 40, 0.95) 100%);
+  overflow: hidden;
+}
+
+.scanning-showcase {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  perspective: 1000px;
+}
+
+.scan-bubble {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  background: rgba(168, 85, 247, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(168, 85, 247, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: floatingBubble 4s ease-in-out infinite;
+}
+
+.scan-orb {
+  background: radial-gradient(circle, rgba(168, 85, 247, 0.3), transparent) !important;
+}
+
+/* Organization Feature Enhancements */
+.organization-feature {
+  position: relative;
+  background: radial-gradient(ellipse at 20% 50%, rgba(245, 158, 11, 0.15) 0%, transparent 50%),
+              radial-gradient(ellipse at 80% 20%, rgba(239, 68, 68, 0.10) 0%, transparent 50%),
+              linear-gradient(135deg, rgba(25, 20, 15, 0.95) 0%, rgba(40, 35, 25, 0.95) 100%);
+  overflow: hidden;
+}
+
+.organization-showcase {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  perspective: 1000px;
+}
+
+.org-bubble {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  background: rgba(245, 158, 11, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(245, 158, 11, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: floatingBubble 4s ease-in-out infinite;
+}
+
+.org-orb {
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.3), transparent) !important;
 }
 
 .feature-section:nth-child(even) {
@@ -1476,8 +1549,17 @@ section {
   50% { transform: scale(1.05); }
 }
 
-/* Responsive Design */
+/* Responsive Design for Enhanced Features */
 @media (max-width: 1024px) {
+  .phone-mockup-3d {
+    width: 240px;
+    height: 480px;
+  }
+  
+  .floating-ui-elements {
+    display: none;
+  }
+  
   .hero-content {
     grid-template-columns: 1fr;
     text-align: center;
@@ -1527,12 +1609,33 @@ section {
     padding: 4rem 0;
   }
   
+  .messaging-feature .feature-layout,
+  .qr-feature .feature-layout,
+  .scanning-feature .feature-layout,
+  .organization-feature .feature-layout {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+  
   .feature-image img {
     max-width: 100%;
   }
   
   .hero-image {
     max-width: 100%;
+  }
+  
+  .phone-3d-container {
+    margin-bottom: 2rem;
+  }
+  
+  .interactive-benefit {
+    padding: 1rem;
+  }
+  
+  .benefit-description {
+    opacity: 1;
+    transform: translateY(0);
   }
   
   .differentiation-grid,

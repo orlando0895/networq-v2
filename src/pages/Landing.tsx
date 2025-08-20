@@ -334,113 +334,254 @@ const LandingPage = () => {
         </section>
 
         {/* Feature 2: QR Sharing */}
-        <section className="feature-section">
+        <section className="feature-section qr-feature">
           <div className="container">
             <div className="feature-layout">
-              <div className="feature-content">
+              <div className="feature-content qr-content">
+                <div className="feature-badge animate-on-scroll">
+                  <QrCode className="badge-icon" />
+                  <span>Instant Sharing</span>
+                </div>
                 <h2 className="feature-title animate-on-scroll">
-                  Share your info in seconds.
+                  Share your info in
+                  <span className="title-highlight"> seconds.</span>
                 </h2>
                 <p className="feature-subtitle animate-on-scroll">
                   No app required for the recipient
                 </p>
                 <div className="feature-benefits animate-on-scroll">
-                  <div className="benefit-item">
-                    <Camera className="benefit-icon" />
-                    <span>Works with any camera</span>
+                  <div className="benefit-item interactive-benefit" data-benefit="camera">
+                    <div className="benefit-icon-wrapper">
+                      <Camera className="benefit-icon" />
+                      <div className="icon-glow"></div>
+                    </div>
+                    <div className="benefit-content">
+                      <span className="benefit-title">Works with any camera</span>
+                      <span className="benefit-description">Universal compatibility across all devices</span>
+                    </div>
                   </div>
-                  <div className="benefit-item">
-                    <Share2 className="benefit-icon" />
-                    <span>Share link fallback</span>
+                  <div className="benefit-item interactive-benefit" data-benefit="share">
+                    <div className="benefit-icon-wrapper">
+                      <Share2 className="benefit-icon" />
+                      <div className="icon-glow"></div>
+                    </div>
+                    <div className="benefit-content">
+                      <span className="benefit-title">Share link fallback</span>
+                      <span className="benefit-description">Multiple ways to connect seamlessly</span>
+                    </div>
                   </div>
-                  <div className="benefit-item">
-                    <ArrowRight className="benefit-icon" />
-                    <span>Updates sync to shared card</span>
+                  <div className="benefit-item interactive-benefit" data-benefit="sync">
+                    <div className="benefit-icon-wrapper">
+                      <ArrowRight className="benefit-icon" />
+                      <div className="icon-glow"></div>
+                    </div>
+                    <div className="benefit-content">
+                      <span className="benefit-title">Updates sync to shared card</span>
+                      <span className="benefit-description">Real-time updates to all shared contacts</span>
+                    </div>
                   </div>
                 </div>
               </div>
-              <div className="feature-image">
-                <img 
-                  src="/lovable-uploads/a5cfad31-2d0f-4d68-81dc-74aca65731d2.png" 
-                  alt="Share via QR; recipient doesn't need the app"
-                  className="animate-on-scroll"
-                />
+              <div className="feature-image qr-showcase">
+                <div className="phone-3d-container">
+                  <div className="phone-mockup-3d">
+                    <div className="phone-screen-glow"></div>
+                    <img 
+                      src="/lovable-uploads/a5cfad31-2d0f-4d68-81dc-74aca65731d2.png" 
+                      alt="Share via QR; recipient doesn't need the app"
+                      className="phone-screen-content animate-on-scroll"
+                    />
+                    <div className="phone-frame">
+                      <div className="phone-notch"></div>
+                      <div className="phone-button"></div>
+                    </div>
+                  </div>
+                  <div className="floating-ui-elements">
+                    <div className="qr-bubble bubble-1">
+                      <QrCode className="bubble-icon" />
+                    </div>
+                    <div className="qr-bubble bubble-2">
+                      <Share2 className="bubble-icon" />
+                    </div>
+                    <div className="qr-bubble bubble-3">
+                      <Camera className="bubble-icon" />
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
+          </div>
+          <div className="section-background-elements">
+            <div className="gradient-orb orb-1 qr-orb"></div>
+            <div className="gradient-orb orb-2 qr-orb"></div>
           </div>
         </section>
 
         {/* Feature 3: Business Card Scanning */}
-        <section className="feature-section feature-reverse">
+        <section className="feature-section feature-reverse scanning-feature">
           <div className="container">
             <div className="feature-layout">
-              <div className="feature-image">
-                <img 
-                  src="/lovable-uploads/121d40c6-6d40-4982-9947-9923d2be3e3a.png" 
-                  alt="Business card scan with auto field extraction"
-                  className="animate-on-scroll"
-                />
+              <div className="feature-image scanning-showcase">
+                <div className="phone-3d-container">
+                  <div className="phone-mockup-3d">
+                    <div className="phone-screen-glow"></div>
+                    <img 
+                      src="/lovable-uploads/121d40c6-6d40-4982-9947-9923d2be3e3a.png" 
+                      alt="Business card scan with auto field extraction"
+                      className="phone-screen-content animate-on-scroll"
+                    />
+                    <div className="phone-frame">
+                      <div className="phone-notch"></div>
+                      <div className="phone-button"></div>
+                    </div>
+                  </div>
+                  <div className="floating-ui-elements">
+                    <div className="scan-bubble bubble-1">
+                      <Camera className="bubble-icon" />
+                    </div>
+                    <div className="scan-bubble bubble-2">
+                      <Scan className="bubble-icon" />
+                    </div>
+                    <div className="scan-bubble bubble-3">
+                      <Users className="bubble-icon" />
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div className="feature-content">
+              <div className="feature-content scanning-content">
+                <div className="feature-badge animate-on-scroll">
+                  <Camera className="badge-icon" />
+                  <span>Smart Scanning</span>
+                </div>
                 <h2 className="feature-title animate-on-scroll">
-                  No more lost business cards.
+                  No more lost
+                  <span className="title-highlight"> business cards.</span>
                 </h2>
                 <p className="feature-subtitle animate-on-scroll">
                   Automatically extracts name, email, company, title
                 </p>
                 <div className="feature-benefits animate-on-scroll">
-                  <div className="benefit-item">
-                    <Camera className="benefit-icon" />
-                    <span>Upload or snap</span>
+                  <div className="benefit-item interactive-benefit" data-benefit="upload">
+                    <div className="benefit-icon-wrapper">
+                      <Camera className="benefit-icon" />
+                      <div className="icon-glow"></div>
+                    </div>
+                    <div className="benefit-content">
+                      <span className="benefit-title">Upload or snap</span>
+                      <span className="benefit-description">Flexible capture from gallery or camera</span>
+                    </div>
                   </div>
-                  <div className="benefit-item">
-                    <Scan className="benefit-icon" />
-                    <span>Fix fields before saving</span>
+                  <div className="benefit-item interactive-benefit" data-benefit="edit">
+                    <div className="benefit-icon-wrapper">
+                      <Scan className="benefit-icon" />
+                      <div className="icon-glow"></div>
+                    </div>
+                    <div className="benefit-content">
+                      <span className="benefit-title">Fix fields before saving</span>
+                      <span className="benefit-description">Review and perfect extracted information</span>
+                    </div>
                   </div>
-                  <div className="benefit-item">
-                    <Users className="benefit-icon" />
-                    <span>Links to the event</span>
+                  <div className="benefit-item interactive-benefit" data-benefit="link">
+                    <div className="benefit-icon-wrapper">
+                      <Users className="benefit-icon" />
+                      <div className="icon-glow"></div>
+                    </div>
+                    <div className="benefit-content">
+                      <span className="benefit-title">Links to the event</span>
+                      <span className="benefit-description">Contextual connection to where you met</span>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+          <div className="section-background-elements">
+            <div className="gradient-orb orb-1 scan-orb"></div>
+            <div className="gradient-orb orb-2 scan-orb"></div>
+          </div>
         </section>
 
         {/* Feature 4: Organization */}
-        <section className="feature-section">
+        <section className="feature-section organization-feature">
           <div className="container">
             <div className="feature-layout">
-              <div className="feature-content">
+              <div className="feature-content organization-content">
+                <div className="feature-badge animate-on-scroll">
+                  <Filter className="badge-icon" />
+                  <span>Smart Organization</span>
+                </div>
                 <h2 className="feature-title animate-on-scroll">
-                  Stay organized without the effort.
+                  Stay organized without
+                  <span className="title-highlight"> the effort.</span>
                 </h2>
                 <p className="feature-subtitle animate-on-scroll">
                   Segment by client type and priority for quick outreach
                 </p>
                 <div className="feature-benefits animate-on-scroll">
-                  <div className="benefit-item">
-                    <Tag className="benefit-icon" />
-                    <span>Tag by industry</span>
+                  <div className="benefit-item interactive-benefit" data-benefit="tags">
+                    <div className="benefit-icon-wrapper">
+                      <Tag className="benefit-icon" />
+                      <div className="icon-glow"></div>
+                    </div>
+                    <div className="benefit-content">
+                      <span className="benefit-title">Tag by industry</span>
+                      <span className="benefit-description">Categorize contacts for targeted outreach</span>
+                    </div>
                   </div>
-                  <div className="benefit-item">
-                    <Filter className="benefit-icon" />
-                    <span>Saved views</span>
+                  <div className="benefit-item interactive-benefit" data-benefit="views">
+                    <div className="benefit-icon-wrapper">
+                      <Filter className="benefit-icon" />
+                      <div className="icon-glow"></div>
+                    </div>
+                    <div className="benefit-content">
+                      <span className="benefit-title">Saved views</span>
+                      <span className="benefit-description">Custom filters for instant access</span>
+                    </div>
                   </div>
-                  <div className="benefit-item">
-                    <Star className="benefit-icon" />
-                    <span>Follow-up filters</span>
+                  <div className="benefit-item interactive-benefit" data-benefit="followup">
+                    <div className="benefit-icon-wrapper">
+                      <Star className="benefit-icon" />
+                      <div className="icon-glow"></div>
+                    </div>
+                    <div className="benefit-content">
+                      <span className="benefit-title">Follow-up filters</span>
+                      <span className="benefit-description">Never miss important connections</span>
+                    </div>
                   </div>
                 </div>
               </div>
-              <div className="feature-image">
-                <img 
-                  src="/lovable-uploads/95e43555-d5b4-4913-8c10-d39846440ae4.png" 
-                  alt="Contact organization by tags and saved views"
-                  className="animate-on-scroll"
-                />
+              <div className="feature-image organization-showcase">
+                <div className="phone-3d-container">
+                  <div className="phone-mockup-3d">
+                    <div className="phone-screen-glow"></div>
+                    <img 
+                      src="/lovable-uploads/95e43555-d5b4-4913-8c10-d39846440ae4.png" 
+                      alt="Contact organization by tags and saved views"
+                      className="phone-screen-content animate-on-scroll"
+                    />
+                    <div className="phone-frame">
+                      <div className="phone-notch"></div>
+                      <div className="phone-button"></div>
+                    </div>
+                  </div>
+                  <div className="floating-ui-elements">
+                    <div className="org-bubble bubble-1">
+                      <Tag className="bubble-icon" />
+                    </div>
+                    <div className="org-bubble bubble-2">
+                      <Filter className="bubble-icon" />
+                    </div>
+                    <div className="org-bubble bubble-3">
+                      <Star className="bubble-icon" />
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
+          </div>
+          <div className="section-background-elements">
+            <div className="gradient-orb orb-1 org-orb"></div>
+            <div className="gradient-orb orb-2 org-orb"></div>
           </div>
         </section>
       </section>
