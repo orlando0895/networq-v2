@@ -188,7 +188,7 @@ const LandingPage = () => {
           <div className="feature-layout">
             <div className="feature-image">
               <img 
-                src="/lovable-uploads/d5a7f574-934a-4e95-ba65-87a654b95eb4.png" 
+                src="/lovable-uploads/40188bd7-a231-4c99-9d9c-65fbb1597950.png" 
                 alt="Messaging interface"
                 className="animate-on-scroll"
               />
