@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { ArrowRight, QrCode, Users, MessageCircle, Calendar, Star, Zap, MapPin, ChevronDown } from "lucide-react";
+import { ArrowRight, QrCode, Users, MessageCircle, Camera, Filter, Star } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { DecorativeImage } from "@/components/DecorativeImage";
 import "./landing.css";
 
 const LandingPage = () => {
@@ -144,25 +143,19 @@ const LandingPage = () => {
         </div>
       </header>
 
-      {/* 1. Hero Section */}
-      <section className="hero relative">
-        <DecorativeImage 
-          src="/lovable-uploads/13a3c462-48e9-462a-b56d-edb9dd1a2bbb.png"
-          alt="Networking professionals"
-          position="top-right"
-          size="lg"
-        />
+      {/* Hero Section */}
+      <section className="hero">
         <div className="container">
           <div className="hero-content">
             <div className="hero-text">
               <h1 className={`hero-title ${isLoaded ? 'animate-title' : ''}`}>
-                Never Lose Another{" "}
+                Never Lose a{" "}
                 <span className="text-accent animate-glow">Connection</span>{" "}
                 Again
               </h1>
               <p className="hero-subtitle animate-fade-up">
-                Stop losing valuable contacts at networking events. Networq is the digital business 
-                card with built-in CRM that makes contact exchange instant and follow-up effortless.
+                The professional networking app that keeps you organized, connected, and productive.
+                Instantly save, organize, and access every contact.
               </p>
               <div className="hero-cta animate-fade-up-delay">
                 <div className="flex flex-col sm:flex-row gap-4">
@@ -174,118 +167,87 @@ const LandingPage = () => {
                     <ArrowRight className="btn-icon" />
                   </Link>
                 </div>
-                <p className="hero-note">Join 1,000+ professionals already using Networq</p>
+                <p className="hero-note">Join thousands of professionals using Networq</p>
               </div>
             </div>
             <div className="hero-visual">
-              <div className="phone-3d animate-float">
-                <div className="phone-screen">
-                  <div className="qr-demo animate-pulse-soft">
-                    <QrCode size={120} className="qr-icon animate-rotate-slow" />
-                    <p className="qr-text">Instant Contact Sharing</p>
-                  </div>
-                  <div className="screen-glow"></div>
-                </div>
-              </div>
+              <img 
+                src="/lovable-uploads/0f090af1-87f5-4573-91e4-85ce965e642c.png" 
+                alt="Never lose a connection again - Networq app interface"
+                className="hero-image animate-float"
+              />
             </div>
           </div>
         </div>
       </section>
 
-      {/* 2. Problem & Origin Story */}
-      <section className="problem-section relative">
-        <DecorativeImage 
-          src="/lovable-uploads/35f0bcd5-8832-4a5a-9f44-4111a705f5e6.png"
-          alt="Business networking"
-          position="bottom-left"
-          size="md"
-        />
+      {/* Feature 1: Contact Management */}
+      <section className="feature-section">
         <div className="container">
-          <div className="problem-content">
-            <h2 className="section-title animate-on-scroll">We've All Been There...</h2>
-            <div className="problem-grid">
-              <div className="problem-card animate-card-1">
-                <div className="problem-icon-3d">
-                  <div className="icon-inner">📇</div>
+          <div className="feature-layout">
+            <div className="feature-content">
+              <h2 className="feature-title animate-on-scroll">
+                Never lose a connection again.
+              </h2>
+              <p className="feature-subtitle animate-on-scroll">
+                Instantly save, organize, and access every contact.
+              </p>
+              <div className="feature-benefits animate-on-scroll">
+                <div className="benefit-item">
+                  <Users className="benefit-icon" />
+                  <span>61 contacts organized automatically</span>
                 </div>
-                <h3>Business Cards Get Lost</h3>
-                <p>Those stacks of cards? They vanish into wallet black holes, never to be seen again.</p>
-                <div className="card-glow"></div>
-              </div>
-              <div className="problem-card animate-card-2">
-                <div className="problem-icon-3d">
-                  <div className="icon-inner">🔗</div>
+                <div className="benefit-item">
+                  <Filter className="benefit-icon" />
+                  <span>Smart filtering and search</span>
                 </div>
-                <h3>Connections Fizzle Out</h3>
-                <p>Great conversations at events turn into "I should reach out" thoughts that never happen.</p>
-                <div className="card-glow"></div>
-              </div>
-              <div className="problem-card animate-card-3">
-                <div className="problem-icon-3d">
-                  <div className="icon-inner">📱</div>
+                <div className="benefit-item">
+                  <QrCode className="benefit-icon" />
+                  <span>Instant contact sharing</span>
                 </div>
-                <h3>Contact Info Gets Outdated</h3>
-                <p>Phone numbers change, emails update, but your saved contacts stay frozen in time.</p>
-                <div className="card-glow"></div>
               </div>
             </div>
-            <div className="origin-story animate-on-scroll">
-              <blockquote className="animate-quote">
-                "After years of attending networking events where valuable connections slipped away, 
-                I knew professionals needed a better solution. Networq solves the contact exchange problem once and for all."
-              </blockquote>
-              <cite>— Orlando Taylor, Founder</cite>
+            <div className="feature-image">
+              <img 
+                src="/lovable-uploads/0f090af1-87f5-4573-91e4-85ce965e642c.png" 
+                alt="Contact management interface"
+                className="animate-on-scroll"
+              />
             </div>
           </div>
         </div>
       </section>
 
-      {/* 3. How Networq Works */}
-      <section className="how-it-works relative">
-        <DecorativeImage 
-          src="/lovable-uploads/5fd3099a-4877-4566-8bd3-54ab04eb7899.png"
-          alt="Professional connections"
-          position="top-left"
-          size="md"
-        />
+      {/* Feature 2: Messaging */}
+      <section className="feature-section feature-reverse">
         <div className="container">
-          <h2 className="section-title animate-on-scroll">How Networq Works</h2>
-          <p className="section-subtitle">Three simple steps to better networking</p>
-          <div className="steps-container">
-            <div className="steps-grid">
-              <div className="step-card animate-step-1">
-                <div className="step-number-3d">
-                  <span>1</span>
-                  <div className="number-glow"></div>
+          <div className="feature-layout">
+            <div className="feature-image">
+              <img 
+                src="/lovable-uploads/d5a7f574-934a-4e95-ba65-87a654b95eb4.png" 
+                alt="Messaging interface"
+                className="animate-on-scroll"
+              />
+            </div>
+            <div className="feature-content">
+              <h2 className="feature-title animate-on-scroll">
+                Keep the conversation alive.
+              </h2>
+              <p className="feature-subtitle animate-on-scroll">
+                Message contacts directly and follow up with ease.
+              </p>
+              <div className="feature-benefits animate-on-scroll">
+                <div className="benefit-item">
+                  <MessageCircle className="benefit-icon" />
+                  <span>Direct messaging with contacts</span>
                 </div>
-                <div className="step-content">
-                  <QrCode className="step-icon animate-rotate-hover" />
-                  <h3>Share Contacts Instantly</h3>
-                  <p>Generate your QR code or scan theirs. Contact details transfer in seconds, even without internet.</p>
+                <div className="benefit-item">
+                  <Users className="benefit-icon" />
+                  <span>Group conversations</span>
                 </div>
-                <div className="step-connector"></div>
-              </div>
-              <div className="step-card animate-step-2">
-                <div className="step-number-3d">
-                  <span>2</span>
-                  <div className="number-glow"></div>
-                </div>
-                <div className="step-content">
-                  <Users className="step-icon animate-scale-hover" />
-                  <h3>Stay Organized Automatically</h3>
-                  <p>Contacts are sorted by events, industry, and tags. No more scattered business cards.</p>
-                </div>
-                <div className="step-connector"></div>
-              </div>
-              <div className="step-card animate-step-3">
-                <div className="step-number-3d">
-                  <span>3</span>
-                  <div className="number-glow"></div>
-                </div>
-                <div className="step-content">
-                  <MessageCircle className="step-icon animate-pulse-hover" />
-                  <h3>Follow Up Effortlessly</h3>
-                  <p>Send messages, schedule meetings, and nurture relationships—all in one place.</p>
+                <div className="benefit-item">
+                  <Star className="benefit-icon" />
+                  <span>Follow-up reminders</span>
                 </div>
               </div>
             </div>
@@ -293,94 +255,125 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* 4. Core Features */}
-      <section className="features-section relative">
-        <DecorativeImage 
-          src="/lovable-uploads/13a3c462-48e9-462a-b56d-edb9dd1a2bbb.png"
-          alt="Digital networking"
-          position="bottom-right"
-          size="sm"
-        />
+      {/* Feature 3: QR Sharing */}
+      <section className="feature-section">
         <div className="container">
-          <h2 className="section-title animate-on-scroll">Why Networq Works Better</h2>
-          <div className="features-grid">
-            <div className="feature-card-3d animate-feature-1">
-              <div className="feature-icon-wrapper">
-                <QrCode className="feature-icon" />
-                <div className="icon-glow"></div>
+          <div className="feature-layout">
+            <div className="feature-content">
+              <h2 className="feature-title animate-on-scroll">
+                Share your info in seconds.
+              </h2>
+              <p className="feature-subtitle animate-on-scroll">
+                One QR scan is all it takes.
+              </p>
+              <div className="feature-benefits animate-on-scroll">
+                <div className="benefit-item">
+                  <QrCode className="benefit-icon" />
+                  <span>Generate QR codes instantly</span>
+                </div>
+                <div className="benefit-item">
+                  <ArrowRight className="benefit-icon" />
+                  <span>Copy share links</span>
+                </div>
+                <div className="benefit-item">
+                  <Users className="benefit-icon" />
+                  <span>Update contact cards in real-time</span>
+                </div>
               </div>
-              <h3>QR Code Contact Sharing</h3>
-              <p>Skip the business card shuffle. Share your complete contact info instantly, online or offline.</p>
-              <div className="feature-shimmer"></div>
             </div>
-            <div className="feature-card-3d animate-feature-2">
-              <div className="feature-icon-wrapper">
-                <Users className="feature-icon" />
-                <div className="icon-glow"></div>
-              </div>
-              <h3>Built-in CRM</h3>
-              <p>Every contact becomes a managed relationship. Track conversations, set follow-up reminders, and close more deals.</p>
-              <div className="feature-shimmer"></div>
-            </div>
-            <div className="feature-card-3d animate-feature-3">
-              <div className="feature-icon-wrapper">
-                <Zap className="feature-icon" />
-                <div className="icon-glow"></div>
-              </div>
-              <h3>Always Up-to-Date</h3>
-              <p>When someone updates their info, your contacts update automatically. No more outdated phone numbers.</p>
-              <div className="feature-shimmer"></div>
-            </div>
-            <div className="feature-card-3d animate-feature-4">
-              <div className="feature-icon-wrapper">
-                <MessageCircle className="feature-icon" />
-                <div className="icon-glow"></div>
-              </div>
-              <h3>In-App Messaging</h3>
-              <p>Connect directly with your contacts. Start conversations, share documents, and coordinate meetings.</p>
-              <div className="feature-shimmer"></div>
-            </div>
-            <div className="feature-card-3d animate-feature-5">
-              <div className="feature-icon-wrapper">
-                <Calendar className="feature-icon" />
-                <div className="icon-glow"></div>
-              </div>
-              <h3>Event Discovery</h3>
-              <p>Find relevant networking events in your area. See who's attending before you decide to go.</p>
-              <div className="feature-shimmer"></div>
-            </div>
-            <div className="feature-card-3d animate-feature-6">
-              <div className="feature-icon-wrapper">
-                <MapPin className="feature-icon" />
-                <div className="icon-glow"></div>
-              </div>
-              <h3>Discover Local Professionals</h3>
-              <p>Browse professionals in your industry and location. Connect with the right people strategically.</p>
-              <div className="feature-shimmer"></div>
+            <div className="feature-image">
+              <img 
+                src="/lovable-uploads/de68fc87-4034-4e34-bcea-69a3002e5e32.png" 
+                alt="QR code sharing interface"
+                className="animate-on-scroll"
+              />
             </div>
           </div>
         </div>
       </section>
 
-      {/* 5. Social Proof & Vision */}
-      <section className="social-proof relative">
-        <DecorativeImage 
-          src="/lovable-uploads/35f0bcd5-8832-4a5a-9f44-4111a705f5e6.png"
-          alt="Success in networking"
-          position="center"
-          size="lg"
-          className="opacity-10"
-        />
+      {/* Feature 4: Business Card Scanning */}
+      <section className="feature-section feature-reverse">
+        <div className="container">
+          <div className="feature-layout">
+            <div className="feature-image">
+              <img 
+                src="/lovable-uploads/47c7e8a6-0830-4387-8730-a3fd480b93c1.png" 
+                alt="Business card scanning interface"
+                className="animate-on-scroll"
+              />
+            </div>
+            <div className="feature-content">
+              <h2 className="feature-title animate-on-scroll">
+                No more lost business cards.
+              </h2>
+              <p className="feature-subtitle animate-on-scroll">
+                Scan and save contact info instantly.
+              </p>
+              <div className="feature-benefits animate-on-scroll">
+                <div className="benefit-item">
+                  <Camera className="benefit-icon" />
+                  <span>Take photos of business cards</span>
+                </div>
+                <div className="benefit-item">
+                  <ArrowRight className="benefit-icon" />
+                  <span>Upload existing images</span>
+                </div>
+                <div className="benefit-item">
+                  <Users className="benefit-icon" />
+                  <span>Auto-extract contact information</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Feature 5: Organization */}
+      <section className="feature-section">
+        <div className="container">
+          <div className="feature-layout">
+            <div className="feature-content">
+              <h2 className="feature-title animate-on-scroll">
+                Stay organized without the effort.
+              </h2>
+              <p className="feature-subtitle animate-on-scroll">
+                Easily filter your contacts by industry or tags.
+              </p>
+              <div className="feature-benefits animate-on-scroll">
+                <div className="benefit-item">
+                  <Filter className="benefit-icon" />
+                  <span>Filter by industry categories</span>
+                </div>
+                <div className="benefit-item">
+                  <Users className="benefit-icon" />
+                  <span>Smart contact grouping</span>
+                </div>
+                <div className="benefit-item">
+                  <Star className="benefit-icon" />
+                  <span>Custom tags and labels</span>
+                </div>
+              </div>
+            </div>
+            <div className="feature-image">
+              <img 
+                src="/lovable-uploads/c5027386-eb84-489b-a9cc-8bfd988f2a9f.png" 
+                alt="Contact organization and filtering"
+                className="animate-on-scroll"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Social Proof */}
+      <section className="social-proof">
         <div className="container">
           <div className="vision-content">
-            <h2 className="section-title animate-on-scroll">The Future of Professional Networking</h2>
-            <p className="vision-text animate-on-scroll">
-              We're building the networking standard that professionals worldwide will rely on. 
-              Networq will be the natural way people connect at business events, conferences, and meetings.
-            </p>
+            <h2 className="section-title animate-on-scroll">Trusted by Professionals Worldwide</h2>
             <div className="stats-3d-grid">
               <div className="stat-card-3d animate-stat-1">
-                <div className="stat-number">1K+</div>
+                <div className="stat-number">10K+</div>
                 <div className="stat-label">Active Users</div>
                 <div className="stat-glow"></div>
               </div>
@@ -407,70 +400,74 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* 6. Join the Revolution (Waitlist) */}
+      {/* Call to Action */}
       <section className="waitlist-section" id="waitlist">
         <div className="container">
           <div className="waitlist-content">
             <h2 className="section-title animate-on-scroll">
-              Get <span className="text-accent">Instant Access</span>
+              Ready to Transform Your <span className="text-accent">Networking?</span>
             </h2>
             <p className="section-subtitle animate-on-scroll">
-              Be among the first professionals to experience effortless networking. 
-              Skip the business card hassle and never lose a valuable connection again.
+              Join thousands of professionals who never lose connections again.
+              Start building better relationships today.
             </p>
             <form className="waitlist-form-3d" onSubmit={handleWaitlistSignup}>
               <div className="form-group-3d">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Enter your email address"
+                  className="input-3d"
+                  required
+                />
                 <button type="submit" className="btn-primary btn-revolution hover-scale animate-fade-in transition-all duration-300 hover:animate-pulse" disabled={isSubmitting}>
-                  <span>{isSubmitting ? "Joining..." : "Get Instant Access"}</span>
+                  <span>{isSubmitting ? "Getting Started..." : "Get Started Free"}</span>
                   <ArrowRight className="btn-icon" />
                   <div className="btn-particles"></div>
                 </button>
               </div>
             </form>
             <p className="waitlist-note animate-on-scroll">
-              Join 1,000+ professionals who are ready to improve their networking.
+              Free forever plan available. No credit card required.
             </p>
           </div>
         </div>
       </section>
 
-      {/* 7. Footer */}
-      <footer className="footer-3d">
+      {/* Footer */}
+      <footer className="footer">
         <div className="container">
           <div className="footer-content">
             <div className="footer-brand">
-              <div className="logo-container">
-                <img 
-                  src="/logo.png" 
-                  alt="Networq" 
-                  className="footer-logo"
-                />
+              <img 
+                src="/logo.png" 
+                alt="Networq" 
+                className="footer-logo"
+              />
+              <p className="footer-tagline">Never lose a connection again</p>
+            </div>
+            <div className="footer-links">
+              <div className="footer-column">
+                <h4>Product</h4>
+                <ul>
+                  <li><Link to="/auth">Features</Link></li>
+                  <li><Link to="/auth">Pricing</Link></li>
+                  <li><Link to="/auth">Download</Link></li>
+                </ul>
               </div>
-              <p className="footer-description">
-                The digital business card with built-in CRM that makes 
-                professional networking effortless and effective.
-              </p>
-            </div>
-            <div className="footer-section">
-              <h4>Product</h4>
-              <ul>
-                <li><a href="#features">Features</a></li>
-                <li><a href="#how-it-works">How it Works</a></li>
-                <li><a href="#pricing">Pricing</a></li>
-              </ul>
-            </div>
-            <div className="footer-section">
-              <h4>Company</h4>
-              <ul>
-                <li><a href="#about">About</a></li>
-                <li><a href="#privacy">Privacy</a></li>
-                <li><a href="#terms">Terms</a></li>
-              </ul>
+              <div className="footer-column">
+                <h4>Company</h4>
+                <ul>
+                  <li><Link to="/support">About</Link></li>
+                  <li><Link to="/support">Contact</Link></li>
+                  <li><Link to="/privacy-policy">Privacy</Link></li>
+                </ul>
+              </div>
             </div>
           </div>
           <div className="footer-bottom">
-            <p>&copy; 2024 Networq LLC. Making networking work better for everyone.</p>
-            <p>Founded by Orlando Taylor</p>
+            <p>&copy; 2024 Networq. All rights reserved.</p>
           </div>
         </div>
       </footer>
