@@ -258,7 +258,7 @@ const LandingPage = () => {
                   <div className="phone-mockup-3d">
                     <div className="phone-screen-glow"></div>
                     <img 
-                      src="/lovable-uploads/40188bd7-a231-4c99-9d9c-65fbb1597950.png" 
+                      src="/lovable-uploads/d112c248-ec26-41a0-8e0e-ceb150605156.png" 
                       alt="In-app messaging with event context and reminders"
                       className="phone-screen-content animate-on-scroll"
                     />
