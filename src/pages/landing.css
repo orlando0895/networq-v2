@@ -645,11 +645,11 @@ section {
 }
 
 .feature-image img {
-  max-width: 65%;
+  max-width: 90%;
   height: auto;
   border-radius: 20px;
   aspect-ratio: 16/10;
-  object-fit: cover;
+  object-fit: contain;
   box-shadow: 
     0 18px 38px -12px rgba(0, 0, 0, 0.4),
     0 0 0 1px rgba(255, 255, 255, 0.05),
