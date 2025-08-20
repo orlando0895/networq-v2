@@ -262,7 +262,7 @@ const LandingPage = () => {
           <div className="feature-layout">
             <div className="feature-image">
               <img 
-                src="/lovable-uploads/47c7e8a6-0830-4387-8730-a3fd480b93c1.png" 
+                src="/lovable-uploads/121d40c6-6d40-4982-9947-9923d2be3e3a.png" 
                 alt="Business card scanning interface"
                 className="animate-on-scroll"
               />
