@@ -172,7 +172,7 @@ const LandingPage = () => {
             </div>
             <div className="hero-visual">
               <img 
-                src="/lovable-uploads/0f090af1-87f5-4573-91e4-85ce965e642c.png" 
+                src="/lovable-uploads/bd602110-e9bd-4fff-b06d-0a8e822ce33e.png" 
                 alt="Never lose a connection again - Networq app interface"
                 className="hero-image animate-float"
               />
