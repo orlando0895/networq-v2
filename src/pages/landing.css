@@ -99,8 +99,8 @@ html {
 
 .hero-content {
   display: grid;
-  grid-template-columns: 1fr 1.2fr;
-  gap: 5rem;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 4rem;
   align-items: center;
   min-height: 80vh;
 }
@@ -1491,14 +1491,14 @@ html {
 
 .feature-layout {
   display: grid;
-  grid-template-columns: 1fr 1.2fr;
+  grid-template-columns: 1.3fr 1fr;
   gap: 4rem;
   align-items: center;
   min-height: 500px;
 }
 
 .feature-reverse .feature-layout {
-  grid-template-columns: 1.2fr 1fr;
+  grid-template-columns: 1fr 1.3fr;
 }
 
 .feature-reverse .feature-content {
@@ -1570,7 +1570,7 @@ html {
 }
 
 .feature-image img {
-  max-width: 100%;
+  max-width: 75%;
   height: auto;
   border-radius: 20px;
   box-shadow: 
@@ -1599,7 +1599,7 @@ html {
 }
 
 .hero-image {
-  max-width: 110%;
+  max-width: 85%;
   height: auto;
   border-radius: 20px;
   box-shadow: 
