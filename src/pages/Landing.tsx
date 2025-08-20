@@ -181,42 +181,6 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* Feature 1: Contact Management */}
-      <section className="feature-section">
-        <div className="container">
-          <div className="feature-layout">
-            <div className="feature-content">
-              <h2 className="feature-title animate-on-scroll">
-                Never lose a connection again.
-              </h2>
-              <p className="feature-subtitle animate-on-scroll">
-                Instantly save, organize, and access every contact.
-              </p>
-              <div className="feature-benefits animate-on-scroll">
-                <div className="benefit-item">
-                  <Users className="benefit-icon" />
-                  <span>61 contacts organized automatically</span>
-                </div>
-                <div className="benefit-item">
-                  <Filter className="benefit-icon" />
-                  <span>Smart filtering and search</span>
-                </div>
-                <div className="benefit-item">
-                  <QrCode className="benefit-icon" />
-                  <span>Instant contact sharing</span>
-                </div>
-              </div>
-            </div>
-            <div className="feature-image">
-              <img 
-                src="/lovable-uploads/0f090af1-87f5-4573-91e4-85ce965e642c.png" 
-                alt="Contact management interface"
-                className="animate-on-scroll"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* Feature 2: Messaging */}
       <section className="feature-section feature-reverse">
