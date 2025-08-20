@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { ArrowRight, QrCode, Users, MessageCircle, Camera, Filter, Star } from "lucide-react";
+import { ArrowRight, QrCode, Users, MessageCircle, Camera, Filter, Star, Share2, Scan, Tag, Shield, Check, Sparkles } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -9,7 +9,17 @@ const LandingPage = () => {
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [professionIndex, setProfessionIndex] = useState(0);
   const { toast } = useToast();
+
+  const professions = [
+    "financial advisors",
+    "real estate agents", 
+    "entrepreneurs",
+    "consultants",
+    "recruiters",
+    "account executives"
+  ];
 
   useEffect(() => {
     setIsLoaded(true);
@@ -34,14 +44,25 @@ const LandingPage = () => {
     // Observe all animate-on-scroll elements
     const animateElements = document.querySelectorAll('.animate-on-scroll');
     animateElements.forEach((el) => observer.observe(el));
+
+    // Set up rotating professions
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let intervalId;
+    
+    if (!reduceMotion) {
+      intervalId = setInterval(() => {
+        setProfessionIndex((prev) => (prev + 1) % professions.length);
+      }, 2500);
+    }
     
     // Cleanup function to remove class when component unmounts
     return () => {
       document.body.classList.remove('landing-page');
       document.documentElement.classList.remove('dark');
       observer.disconnect();
+      if (intervalId) clearInterval(intervalId);
     };
-  }, []);
+  }, [professions.length]);
 
   const handleWaitlistSignup = async (e) => {
     e.preventDefault();
@@ -123,8 +144,18 @@ const LandingPage = () => {
         <div className="grid-overlay"></div>
       </div>
 
+      {/* Skip to content link */}
+      <a 
+        href="#main" 
+        className="skip-link"
+        onFocus={(e) => e.target.classList.add('focused')}
+        onBlur={(e) => e.target.classList.remove('focused')}
+      >
+        Skip to content
+      </a>
+
       {/* Header */}
-      <header className="header">
+      <header className="header sticky-header">
         <div className="container">
           <div className="nav">
             <div className="logo-container animate-slide-in">
@@ -134,17 +165,21 @@ const LandingPage = () => {
                   className="brand-logo"
                 />
             </div>
-            <div className="flex items-center gap-4">
-              <Link to="/auth" className="btn-ghost animate-fade-in">
-                Sign In
-              </Link>
-            </div>
+            <nav aria-label="Primary navigation" className="main-nav">
+              <a href="#features" className="nav-link">Features</a>
+              <a href="#how-it-works" className="nav-link">How it works</a>
+              <a href="#security" className="nav-link">Security</a>
+              <a href="#pricing" className="nav-link">Pricing</a>
+              <Link to="/support" className="nav-link">Support</Link>
+              <Link to="/auth" className="nav-link">Sign in</Link>
+              <a href="#waitlist" className="btn-primary nav-cta">Get Started</a>
+            </nav>
           </div>
         </div>
       </header>
 
       {/* Hero Section */}
-      <section className="hero">
+      <section className="hero" id="main">
         <div className="container">
           <div className="hero-content">
             <div className="hero-text">
@@ -159,13 +194,13 @@ const LandingPage = () => {
               </p>
               <div className="hero-cta animate-fade-up-delay">
                 <div className="flex flex-col sm:flex-row gap-4">
-                  <Link 
-                    to="/auth"
+                  <a 
+                    href="#waitlist"
                     className="btn-primary hero-btn btn-3d" 
                   >
                     <span>Get Started Free</span>
                     <ArrowRight className="btn-icon" />
-                  </Link>
+                  </a>
                 </div>
                 <p className="hero-note">Join thousands of professionals using Networq</p>
               </div>
@@ -181,152 +216,270 @@ const LandingPage = () => {
         </div>
       </section>
 
-
-      {/* Feature 2: Messaging */}
-      <section className="feature-section feature-reverse">
+      {/* Why Networq is Different */}
+      <section className="differentiation-section" id="why-different">
         <div className="container">
-          <div className="feature-layout">
-            <div className="feature-image">
-              <img 
-                src="/lovable-uploads/40188bd7-a231-4c99-9d9c-65fbb1597950.png" 
-                alt="Messaging interface"
-                className="animate-on-scroll"
-              />
+          <h2 className="section-title animate-on-scroll">Why Networq is Different</h2>
+          <div className="differentiation-grid">
+            <div className="differentiation-card animate-on-scroll">
+              <div className="card-header">
+                <Users className="card-icon" />
+                <h3>vs. LinkedIn</h3>
+              </div>
+              <p>Built for networking, not social feeds. Follow-ups live with the contact.</p>
             </div>
-            <div className="feature-content">
-              <h2 className="feature-title animate-on-scroll">
-                Keep the conversation alive.
-              </h2>
-              <p className="feature-subtitle animate-on-scroll">
-                Message contacts directly and follow up with ease.
-              </p>
-              <div className="feature-benefits animate-on-scroll">
-                <div className="benefit-item">
-                  <MessageCircle className="benefit-icon" />
-                  <span>Direct messaging with contacts</span>
+            <div className="differentiation-card animate-on-scroll">
+              <div className="card-header">
+                <MessageCircle className="card-icon" />
+                <h3>vs. Phone Contacts</h3>
+              </div>
+              <p>Adds context (event, notes, tags) and automates follow-ups.</p>
+            </div>
+            <div className="differentiation-card animate-on-scroll">
+              <div className="card-header">
+                <Filter className="card-icon" />
+                <h3>vs. Personal CRM</h3>
+              </div>
+              <p>Lightweight and event-first; QR/scan capture makes it effortless.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+      {/* Features Section */}
+      <section id="features">
+        {/* Feature 1: Messaging */}
+        <section className="feature-section feature-reverse">
+          <div className="container">
+            <div className="feature-layout">
+              <div className="feature-image">
+                <img 
+                  src="/lovable-uploads/40188bd7-a231-4c99-9d9c-65fbb1597950.png" 
+                  alt="In-app messaging with event context and reminders"
+                  className="animate-on-scroll"
+                />
+              </div>
+              <div className="feature-content">
+                <h2 className="feature-title animate-on-scroll">
+                  Keep the conversation alive.
+                </h2>
+                <p className="feature-subtitle animate-on-scroll">
+                  In-app messaging to follow up after events
+                </p>
+                <div className="feature-benefits animate-on-scroll">
+                  <div className="benefit-item">
+                    <MessageCircle className="benefit-icon" />
+                    <span>Keep context by event</span>
+                  </div>
+                  <div className="benefit-item">
+                    <Star className="benefit-icon" />
+                    <span>Reminders to follow up</span>
+                  </div>
+                  <div className="benefit-item">
+                    <Users className="benefit-icon" />
+                    <span>Group threads for teams</span>
+                  </div>
                 </div>
-                <div className="benefit-item">
-                  <Users className="benefit-icon" />
-                  <span>Group conversations</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Feature 2: QR Sharing */}
+        <section className="feature-section">
+          <div className="container">
+            <div className="feature-layout">
+              <div className="feature-content">
+                <h2 className="feature-title animate-on-scroll">
+                  Share your info in seconds.
+                </h2>
+                <p className="feature-subtitle animate-on-scroll">
+                  No app required for the recipient
+                </p>
+                <div className="feature-benefits animate-on-scroll">
+                  <div className="benefit-item">
+                    <Camera className="benefit-icon" />
+                    <span>Works with any camera</span>
+                  </div>
+                  <div className="benefit-item">
+                    <Share2 className="benefit-icon" />
+                    <span>Share link fallback</span>
+                  </div>
+                  <div className="benefit-item">
+                    <ArrowRight className="benefit-icon" />
+                    <span>Updates sync to shared card</span>
+                  </div>
                 </div>
-                <div className="benefit-item">
-                  <Star className="benefit-icon" />
-                  <span>Follow-up reminders</span>
+              </div>
+              <div className="feature-image">
+                <img 
+                  src="/lovable-uploads/a5cfad31-2d0f-4d68-81dc-74aca65731d2.png" 
+                  alt="Share via QR; recipient doesn't need the app"
+                  className="animate-on-scroll"
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Feature 3: Business Card Scanning */}
+        <section className="feature-section feature-reverse">
+          <div className="container">
+            <div className="feature-layout">
+              <div className="feature-image">
+                <img 
+                  src="/lovable-uploads/121d40c6-6d40-4982-9947-9923d2be3e3a.png" 
+                  alt="Business card scan with auto field extraction"
+                  className="animate-on-scroll"
+                />
+              </div>
+              <div className="feature-content">
+                <h2 className="feature-title animate-on-scroll">
+                  No more lost business cards.
+                </h2>
+                <p className="feature-subtitle animate-on-scroll">
+                  Automatically extracts name, email, company, title
+                </p>
+                <div className="feature-benefits animate-on-scroll">
+                  <div className="benefit-item">
+                    <Camera className="benefit-icon" />
+                    <span>Upload or snap</span>
+                  </div>
+                  <div className="benefit-item">
+                    <Scan className="benefit-icon" />
+                    <span>Fix fields before saving</span>
+                  </div>
+                  <div className="benefit-item">
+                    <Users className="benefit-icon" />
+                    <span>Links to the event</span>
+                  </div>
                 </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Feature 4: Organization */}
+        <section className="feature-section">
+          <div className="container">
+            <div className="feature-layout">
+              <div className="feature-content">
+                <h2 className="feature-title animate-on-scroll">
+                  Stay organized without the effort.
+                </h2>
+                <p className="feature-subtitle animate-on-scroll">
+                  Segment by client type and priority for quick outreach
+                </p>
+                <div className="feature-benefits animate-on-scroll">
+                  <div className="benefit-item">
+                    <Tag className="benefit-icon" />
+                    <span>Tag by industry</span>
+                  </div>
+                  <div className="benefit-item">
+                    <Filter className="benefit-icon" />
+                    <span>Saved views</span>
+                  </div>
+                  <div className="benefit-item">
+                    <Star className="benefit-icon" />
+                    <span>Follow-up filters</span>
+                  </div>
+                </div>
+              </div>
+              <div className="feature-image">
+                <img 
+                  src="/lovable-uploads/95e43555-d5b4-4913-8c10-d39846440ae4.png" 
+                  alt="Contact organization by tags and saved views"
+                  className="animate-on-scroll"
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      {/* How It Works */}
+      <section className="how-it-works" id="how-it-works">
+        <div className="container">
+          <h2 className="section-title animate-on-scroll">How It Works</h2>
+          <div className="steps-grid">
+            <div className="step-card animate-on-scroll" aria-describedby="step-1-desc">
+              <div className="step-header">
+                <div className="step-number">1</div>
+                <Share2 className="step-icon" />
+                <h3>Share your card with a QR</h3>
+              </div>
+              <p id="step-1-desc">Generate and display your QR code for instant contact sharing</p>
+              <div className="step-image">
+                <img 
+                  src="/lovable-uploads/a5cfad31-2d0f-4d68-81dc-74aca65731d2.png" 
+                  alt="QR code generation step"
+                  className="step-thumbnail"
+                />
+              </div>
+            </div>
+            
+            <div className="step-card animate-on-scroll" aria-describedby="step-2-desc">
+              <div className="step-header">
+                <div className="step-number">2</div>
+                <Scan className="step-icon" />
+                <h3>Scan business cards or save contacts from QR</h3>
+              </div>
+              <p id="step-2-desc">Capture contact information effortlessly through scanning or QR codes</p>
+              <div className="step-image">
+                <img 
+                  src="/lovable-uploads/121d40c6-6d40-4982-9947-9923d2be3e3a.png" 
+                  alt="Business card scanning step"
+                  className="step-thumbnail"
+                />
+              </div>
+            </div>
+            
+            <div className="step-card animate-on-scroll" aria-describedby="step-3-desc">
+              <div className="step-header">
+                <div className="step-number">3</div>
+                <Tag className="step-icon" />
+                <h3>Add tags/notes and schedule follow-up</h3>
+              </div>
+              <p id="step-3-desc">Organize contacts with tags and set reminders for future outreach</p>
+              <div className="step-image">
+                <img 
+                  src="/lovable-uploads/95e43555-d5b4-4913-8c10-d39846440ae4.png" 
+                  alt="Contact organization step"
+                  className="step-thumbnail"
+                />
+              </div>
+            </div>
+            
+            <div className="step-card animate-on-scroll" aria-describedby="step-4-desc">
+              <div className="step-header">
+                <div className="step-number">4</div>
+                <MessageCircle className="step-icon" />
+                <h3>Message and track conversations</h3>
+              </div>
+              <p id="step-4-desc">Keep all communication in one place with context and history</p>
+              <div className="step-image">
+                <img 
+                  src="/lovable-uploads/40188bd7-a231-4c99-9d9c-65fbb1597950.png" 
+                  alt="Messaging and tracking step"
+                  className="step-thumbnail"
+                />
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Feature 3: QR Sharing */}
-      <section className="feature-section">
+      {/* Perfect For Section */}
+      <section className="perfect-for-section">
         <div className="container">
-          <div className="feature-layout">
-            <div className="feature-content">
-              <h2 className="feature-title animate-on-scroll">
-                Share your info in seconds.
-              </h2>
-              <p className="feature-subtitle animate-on-scroll">
-                One QR scan is all it takes.
-              </p>
-              <div className="feature-benefits animate-on-scroll">
-                <div className="benefit-item">
-                  <QrCode className="benefit-icon" />
-                  <span>Generate QR codes instantly</span>
-                </div>
-                <div className="benefit-item">
-                  <ArrowRight className="benefit-icon" />
-                  <span>Copy share links</span>
-                </div>
-                <div className="benefit-item">
-                  <Users className="benefit-icon" />
-                  <span>Update contact cards in real-time</span>
-                </div>
-              </div>
-            </div>
-            <div className="feature-image">
-              <img 
-                src="/lovable-uploads/a5cfad31-2d0f-4d68-81dc-74aca65731d2.png" 
-                alt="QR code sharing interface"
-                className="animate-on-scroll"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Feature 4: Business Card Scanning */}
-      <section className="feature-section feature-reverse">
-        <div className="container">
-          <div className="feature-layout">
-            <div className="feature-image">
-              <img 
-                src="/lovable-uploads/121d40c6-6d40-4982-9947-9923d2be3e3a.png" 
-                alt="Business card scanning interface"
-                className="animate-on-scroll"
-              />
-            </div>
-            <div className="feature-content">
-              <h2 className="feature-title animate-on-scroll">
-                No more lost business cards.
-              </h2>
-              <p className="feature-subtitle animate-on-scroll">
-                Scan and save contact info instantly.
-              </p>
-              <div className="feature-benefits animate-on-scroll">
-                <div className="benefit-item">
-                  <Camera className="benefit-icon" />
-                  <span>Take photos of business cards</span>
-                </div>
-                <div className="benefit-item">
-                  <ArrowRight className="benefit-icon" />
-                  <span>Upload existing images</span>
-                </div>
-                <div className="benefit-item">
-                  <Users className="benefit-icon" />
-                  <span>Auto-extract contact information</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Feature 5: Organization */}
-      <section className="feature-section">
-        <div className="container">
-          <div className="feature-layout">
-            <div className="feature-content">
-              <h2 className="feature-title animate-on-scroll">
-                Stay organized without the effort.
-              </h2>
-              <p className="feature-subtitle animate-on-scroll">
-                Easily filter your contacts by industry or tags.
-              </p>
-              <div className="feature-benefits animate-on-scroll">
-                <div className="benefit-item">
-                  <Filter className="benefit-icon" />
-                  <span>Filter by industry categories</span>
-                </div>
-                <div className="benefit-item">
-                  <Users className="benefit-icon" />
-                  <span>Smart contact grouping</span>
-                </div>
-                <div className="benefit-item">
-                  <Star className="benefit-icon" />
-                  <span>Custom tags and labels</span>
-                </div>
-              </div>
-            </div>
-            <div className="feature-image">
-              <img 
-                src="/lovable-uploads/95e43555-d5b4-4913-8c10-d39846440ae4.png" 
-                alt="Contact organization and filtering"
-                className="animate-on-scroll"
-              />
-            </div>
-          </div>
+          <p className="perfect-for-text" aria-live="polite">
+            Perfect for{" "}
+            <span className="rotating-profession">
+              {professions[professionIndex]}
+            </span>{" "}
+            looking to make the most out of their contacts list
+          </p>
         </div>
       </section>
 
@@ -359,6 +512,121 @@ const LandingPage = () => {
                 <cite>— Sarah M., Sales Director</cite>
                 <div className="testimonial-glow"></div>
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Security & Privacy */}
+      <section className="security-section trust-section" id="security">
+        <div className="container">
+          <h2 className="section-title animate-on-scroll">Security & Privacy</h2>
+          <div className="security-content">
+            <div className="security-grid">
+              <div className="security-feature animate-on-scroll">
+                <Shield className="security-icon" />
+                <h3>Encryption in transit (TLS)</h3>
+                <p>All data transfers are secured with industry-standard encryption</p>
+              </div>
+              <div className="security-feature animate-on-scroll">
+                <Check className="security-icon" />
+                <h3>Secure managed Postgres</h3>
+                <p>Your data is stored securely with Supabase's enterprise-grade infrastructure</p>
+              </div>
+              <div className="security-feature animate-on-scroll">
+                <ArrowRight className="security-icon" />
+                <h3>Export your data anytime</h3>
+                <p>Full data portability - download all your contacts and conversations</p>
+              </div>
+              <div className="security-feature animate-on-scroll">
+                <Users className="security-icon" />
+                <h3>Delete your account anytime</h3>
+                <p>Complete control over your data with instant account deletion</p>
+              </div>
+              <div className="security-feature animate-on-scroll">
+                <Shield className="security-icon" />
+                <h3>Minimal permissions</h3>
+                <p>We only request access to what's necessary for core functionality</p>
+              </div>
+              <div className="security-feature animate-on-scroll">
+                <Check className="security-icon" />
+                <h3>Private by default</h3>
+                <p>Your contacts and conversations are never shared without permission</p>
+              </div>
+            </div>
+            <div className="security-cta animate-on-scroll">
+              <Link to="/privacy" className="btn-secondary">
+                Read Privacy Policy
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing */}
+      <section className="pricing-section" id="pricing">
+        <div className="container">
+          <h2 className="section-title animate-on-scroll">Simple Pricing</h2>
+          <div className="pricing-grid">
+            <div className="pricing-card animate-on-scroll">
+              <div className="pricing-header">
+                <h3>Free</h3>
+                <div className="price">
+                  <span className="currency">$</span>
+                  <span className="amount">0</span>
+                  <span className="period">/month</span>
+                </div>
+              </div>
+              <div className="pricing-features">
+                <div className="feature-item">
+                  <Check className="feature-check" />
+                  <span>Core capture</span>
+                </div>
+                <div className="feature-item">
+                  <Check className="feature-check" />
+                  <span>Basic organization</span>
+                </div>
+                <div className="feature-item">
+                  <Check className="feature-check" />
+                  <span>QR share</span>
+                </div>
+              </div>
+              <a href="#waitlist" className="btn-secondary pricing-cta">
+                Get Started Free
+              </a>
+            </div>
+            
+            <div className="pricing-card featured animate-on-scroll">
+              <div className="pricing-badge">Coming Soon</div>
+              <div className="pricing-header">
+                <h3>Pro</h3>
+                <div className="price">
+                  <span className="currency">$</span>
+                  <span className="amount">9</span>
+                  <span className="period">/month</span>
+                </div>
+              </div>
+              <div className="pricing-features">
+                <div className="feature-item">
+                  <Check className="feature-check" />
+                  <span>Everything in Free</span>
+                </div>
+                <div className="feature-item">
+                  <Check className="feature-check" />
+                  <span>Advanced filters</span>
+                </div>
+                <div className="feature-item">
+                  <Check className="feature-check" />
+                  <span>Reminders</span>
+                </div>
+                <div className="feature-item">
+                  <Check className="feature-check" />
+                  <span>Team features</span>
+                </div>
+              </div>
+              <a href="#waitlist" className="btn-primary pricing-cta">
+                Join waitlist for early Pro access
+              </a>
             </div>
           </div>
         </div>
