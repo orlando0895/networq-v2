@@ -250,39 +250,86 @@ const LandingPage = () => {
       {/* Features Section */}
       <section id="features">
         {/* Feature 1: Messaging */}
-        <section className="feature-section feature-reverse">
+        <section className="feature-section feature-reverse messaging-feature">
           <div className="container">
             <div className="feature-layout">
-              <div className="feature-image">
-                <img 
-                  src="/lovable-uploads/40188bd7-a231-4c99-9d9c-65fbb1597950.png" 
-                  alt="In-app messaging with event context and reminders"
-                  className="animate-on-scroll"
-                />
+              <div className="feature-image messaging-showcase">
+                <div className="phone-3d-container">
+                  <div className="phone-mockup-3d">
+                    <div className="phone-screen-glow"></div>
+                    <img 
+                      src="/lovable-uploads/40188bd7-a231-4c99-9d9c-65fbb1597950.png" 
+                      alt="In-app messaging with event context and reminders"
+                      className="phone-screen-content animate-on-scroll"
+                    />
+                    <div className="phone-frame">
+                      <div className="phone-notch"></div>
+                      <div className="phone-button"></div>
+                    </div>
+                  </div>
+                  <div className="floating-ui-elements">
+                    <div className="message-bubble bubble-1">
+                      <MessageCircle className="bubble-icon" />
+                    </div>
+                    <div className="message-bubble bubble-2">
+                      <Users className="bubble-icon" />
+                    </div>
+                    <div className="message-bubble bubble-3">
+                      <Star className="bubble-icon" />
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div className="feature-content">
+              <div className="feature-content messaging-content">
+                <div className="feature-badge animate-on-scroll">
+                  <Sparkles className="badge-icon" />
+                  <span>Premium Messaging</span>
+                </div>
                 <h2 className="feature-title animate-on-scroll">
-                  Keep the conversation alive.
+                  Keep the conversation
+                  <span className="title-highlight"> alive.</span>
                 </h2>
                 <p className="feature-subtitle animate-on-scroll">
                   In-app messaging to follow up after events
                 </p>
                 <div className="feature-benefits animate-on-scroll">
-                  <div className="benefit-item">
-                    <MessageCircle className="benefit-icon" />
-                    <span>Keep context by event</span>
+                  <div className="benefit-item interactive-benefit" data-benefit="context">
+                    <div className="benefit-icon-wrapper">
+                      <MessageCircle className="benefit-icon" />
+                      <div className="icon-glow"></div>
+                    </div>
+                    <div className="benefit-content">
+                      <span className="benefit-title">Keep context by event</span>
+                      <span className="benefit-description">Never lose track of where you met</span>
+                    </div>
                   </div>
-                  <div className="benefit-item">
-                    <Star className="benefit-icon" />
-                    <span>Reminders to follow up</span>
+                  <div className="benefit-item interactive-benefit" data-benefit="reminders">
+                    <div className="benefit-icon-wrapper">
+                      <Star className="benefit-icon" />
+                      <div className="icon-glow"></div>
+                    </div>
+                    <div className="benefit-content">
+                      <span className="benefit-title">Reminders to follow up</span>
+                      <span className="benefit-description">Smart notifications at the right time</span>
+                    </div>
                   </div>
-                  <div className="benefit-item">
-                    <Users className="benefit-icon" />
-                    <span>Group threads for teams</span>
+                  <div className="benefit-item interactive-benefit" data-benefit="teams">
+                    <div className="benefit-icon-wrapper">
+                      <Users className="benefit-icon" />
+                      <div className="icon-glow"></div>
+                    </div>
+                    <div className="benefit-content">
+                      <span className="benefit-title">Group threads for teams</span>
+                      <span className="benefit-description">Collaborate with your entire team</span>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
+          </div>
+          <div className="section-background-elements">
+            <div className="gradient-orb orb-1"></div>
+            <div className="gradient-orb orb-2"></div>
           </div>
         </section>
 
