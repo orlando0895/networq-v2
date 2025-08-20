@@ -321,7 +321,7 @@ const LandingPage = () => {
             </div>
             <div className="feature-image">
               <img 
-                src="/lovable-uploads/c5027386-eb84-489b-a9cc-8bfd988f2a9f.png" 
+                src="/lovable-uploads/95e43555-d5b4-4913-8c10-d39846440ae4.png" 
                 alt="Contact organization and filtering"
                 className="animate-on-scroll"
               />
