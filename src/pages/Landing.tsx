@@ -387,10 +387,11 @@ const LandingPage = () => {
                       alt="Share via QR; recipient doesn't need the app"
                       className="phone-screen-content animate-on-scroll"
                     />
-                    <div className="phone-frame">
-                      <div className="phone-notch"></div>
-                      <div className="phone-button"></div>
-                    </div>
+                    <img 
+                      src="/lovable-uploads/6025a1e3-8f42-4a9c-b78b-79ee6d98e146.png" 
+                      alt="Profile interface with QR code sharing"
+                      className="phone-screen-content"
+                    />
                   </div>
                   <div className="floating-ui-elements">
                     <div className="qr-bubble bubble-1">
