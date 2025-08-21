@@ -258,8 +258,8 @@ const LandingPage = () => {
                   <div className="phone-mockup-3d">
                     <div className="phone-screen-glow"></div>
                     <img 
-                      src="/lovable-uploads/d3057bd3-0732-4e1a-9371-d33056106976.png" 
-                      alt="QR code sharing interface with contact card sharing options"
+                      src="/lovable-uploads/004eee51-2dc9-4417-9e84-11b72c4dc89c.png" 
+                      alt="Messages interface showing conversations and connections"
                       className="phone-screen-content animate-on-scroll"
                     />
                   </div>
