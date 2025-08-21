@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,24 +8,44 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-import { useEffect } from 'react';
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [isResetPassword, setIsResetPassword] = useState(false);
+  const [isPasswordRecovery, setIsPasswordRecovery] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [fullName, setFullName] = useState('');
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
   const { user } = useAuth();
 
-  // Redirect if already logged in
+  // Check for password recovery state and redirect if already logged in
   useEffect(() => {
     if (user) {
       navigate('/app');
+      return;
     }
+
+    // Check for recovery state in URL hash
+    const hash = window.location.hash;
+    if (hash.includes('type=recovery')) {
+      setIsPasswordRecovery(true);
+      // Clean up URL
+      window.history.replaceState(null, '', window.location.pathname);
+    }
+
+    // Listen for auth state changes to detect recovery
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'PASSWORD_RECOVERY') {
+        setIsPasswordRecovery(true);
+      }
+    });
+
+    return () => subscription.unsubscribe();
   }, [user, navigate]);
 
   const handleAuth = async (e: React.FormEvent) => {
@@ -127,6 +147,58 @@ const Auth = () => {
     }
   };
 
+  const handleUpdatePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    if (newPassword !== confirmPassword) {
+      toast({
+        title: "Error",
+        description: "Passwords do not match.",
+        variant: "destructive",
+      });
+      setLoading(false);
+      return;
+    }
+
+    if (newPassword.length < 6) {
+      toast({
+        title: "Error",
+        description: "Password must be at least 6 characters long.",
+        variant: "destructive",
+      });
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const { error } = await supabase.auth.updateUser({
+        password: newPassword
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Password updated!",
+        description: "Your password has been successfully updated.",
+      });
+
+      // Reset state and redirect to app
+      setIsPasswordRecovery(false);
+      setNewPassword('');
+      setConfirmPassword('');
+      navigate('/app');
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "An error occurred while updating password.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 px-4">
       <Card className="w-full max-w-md">
@@ -140,7 +212,9 @@ const Auth = () => {
           </div>
           <div className="space-y-1">
             <CardTitle className="text-2xl">
-              {isResetPassword 
+              {isPasswordRecovery
+                ? 'Set your new password'
+                : isResetPassword 
                 ? 'Reset your password'
                 : isLogin 
                 ? 'Sign in to Networq' 
@@ -148,7 +222,9 @@ const Auth = () => {
               }
             </CardTitle>
             <CardDescription>
-              {isResetPassword
+              {isPasswordRecovery
+                ? 'Enter a new password for your account'
+                : isResetPassword
                 ? 'Enter your email to receive password reset instructions'
                 : isLogin 
                 ? 'Enter your credentials to access your network' 
@@ -158,7 +234,39 @@ const Auth = () => {
           </div>
         </CardHeader>
         <CardContent>
-          {isResetPassword ? (
+          {isPasswordRecovery ? (
+            <form onSubmit={handleUpdatePassword} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="new-password">New Password</Label>
+                <Input
+                  id="new-password"
+                  type="password"
+                  placeholder="Enter your new password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  required
+                  minLength={6}
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="confirm-password">Confirm Password</Label>
+                <Input
+                  id="confirm-password"
+                  type="password"
+                  placeholder="Confirm your new password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                  minLength={6}
+                />
+              </div>
+              
+              <Button type="submit" className="w-full" disabled={loading}>
+                {loading ? 'Updating...' : 'Update Password'}
+              </Button>
+            </form>
+          ) : isResetPassword ? (
             <form onSubmit={handleResetPassword} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="reset-email">Email</Label>
@@ -223,7 +331,7 @@ const Auth = () => {
             </form>
           )}
           
-          {!isResetPassword && (
+          {!isResetPassword && !isPasswordRecovery && (
             <>
               <div className="relative my-6">
                 <div className="absolute inset-0 flex items-center">
@@ -265,7 +373,11 @@ const Auth = () => {
           )}
           
           <div className="mt-4 text-center space-y-2">
-            {isResetPassword ? (
+            {isPasswordRecovery ? (
+              <p className="text-sm text-muted-foreground">
+                After updating your password, you'll be signed in automatically.
+              </p>
+            ) : isResetPassword ? (
               <button
                 type="button"
                 onClick={() => {
