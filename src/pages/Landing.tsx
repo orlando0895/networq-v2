@@ -597,13 +597,6 @@ const LandingPage = () => {
                 <h3>Share your card with a QR</h3>
               </div>
               <p id="step-1-desc">Generate and display your QR code for instant contact sharing</p>
-              <div className="step-image">
-                <img 
-                  src="/lovable-uploads/a5cfad31-2d0f-4d68-81dc-74aca65731d2.png" 
-                  alt="QR code generation step"
-                  className="step-thumbnail"
-                />
-              </div>
             </div>
             
             <div className="step-card animate-on-scroll" aria-describedby="step-2-desc">
