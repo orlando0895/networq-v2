@@ -258,14 +258,10 @@ const LandingPage = () => {
                   <div className="phone-mockup-3d">
                     <div className="phone-screen-glow"></div>
                     <img 
-                      src="/lovable-uploads/d112c248-ec26-41a0-8e0e-ceb150605156.png" 
-                      alt="In-app messaging with event context and reminders"
+                      src="/lovable-uploads/004eee51-2dc9-4417-9e84-11b72c4dc89c.png" 
+                      alt="Messages interface showing conversations and connections"
                       className="phone-screen-content animate-on-scroll"
                     />
-                    <div className="phone-frame">
-                      <div className="phone-notch"></div>
-                      <div className="phone-button"></div>
-                    </div>
                   </div>
                   <div className="floating-ui-elements">
                     <div className="message-bubble bubble-1">
