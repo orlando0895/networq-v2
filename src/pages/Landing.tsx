@@ -427,10 +427,11 @@ const LandingPage = () => {
                       alt="Business card scan with auto field extraction"
                       className="phone-screen-content animate-on-scroll"
                     />
-                    <div className="phone-frame">
-                      <div className="phone-notch"></div>
-                      <div className="phone-button"></div>
-                    </div>
+                    <img 
+                      src="/lovable-uploads/34dfd5ce-7686-4630-a59c-a4be95cc8519.png" 
+                      alt="Business card scanning interface with camera options"
+                      className="phone-screen-content"
+                    />
                   </div>
                   <div className="floating-ui-elements">
                     <div className="scan-bubble bubble-1">
