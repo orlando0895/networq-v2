@@ -217,43 +217,58 @@ const LandingPage = () => {
       </section>
 
       {/* We've All Been There */}
-      <section className="differentiation-section" id="why-different">
-        <div className="container">
-          <h2 className="section-title animate-on-scroll">We've All Been There...</h2>
-          <div className="differentiation-grid">
-            <div className="differentiation-card animate-on-scroll">
-              <div className="card-header">
-                <div className="card-icon-wrapper">
-                  <Filter className="card-icon" />
-                </div>
-                <h3>Business Cards Get Lost</h3>
+      <section className="py-24 bg-background">
+        <div className="container mx-auto px-6">
+          <h2 className="text-5xl font-bold text-center text-white mb-16 animate-on-scroll">
+            We've All Been There...
+          </h2>
+          
+          <div className="grid md:grid-cols-3 gap-8 mb-16">
+            {/* Business Cards Get Lost */}
+            <div className="bg-gray-900/80 backdrop-blur rounded-2xl p-8 text-center animate-on-scroll">
+              <div className="w-16 h-16 bg-blue-900/50 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <Camera className="w-8 h-8 text-blue-400" />
               </div>
-              <p>Those stacks of cards? They vanish into wallet black holes, never to be seen again.</p>
+              <h3 className="text-xl font-semibold text-white mb-4">Business Cards Get Lost</h3>
+              <p className="text-gray-400 leading-relaxed">
+                Those stacks of cards? They vanish into wallet black holes, never to be seen again.
+              </p>
             </div>
-            <div className="differentiation-card animate-on-scroll">
-              <div className="card-header">
-                <div className="card-icon-wrapper">
-                  <Users className="card-icon" />
-                </div>
-                <h3>Connections Fizzle Out</h3>
+
+            {/* Connections Fizzle Out */}
+            <div className="bg-gray-900/80 backdrop-blur rounded-2xl p-8 text-center animate-on-scroll">
+              <div className="w-16 h-16 bg-blue-900/50 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <Users className="w-8 h-8 text-blue-400" />
               </div>
-              <p>Great conversations at events turn into "I should reach out" thoughts that never happen.</p>
+              <h3 className="text-xl font-semibold text-white mb-4">Connections Fizzle Out</h3>
+              <p className="text-gray-400 leading-relaxed">
+                Great conversations at events turn into "I should reach out" thoughts that never happen.
+              </p>
             </div>
-            <div className="differentiation-card animate-on-scroll">
-              <div className="card-header">
-                <div className="card-icon-wrapper">
-                  <MessageCircle className="card-icon" />
-                </div>
-                <h3>Contact Info Gets Outdated</h3>
+
+            {/* Contact Info Gets Outdated */}
+            <div className="bg-gray-900/80 backdrop-blur rounded-2xl p-8 text-center animate-on-scroll">
+              <div className="w-16 h-16 bg-blue-900/50 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <MessageCircle className="w-8 h-8 text-blue-400" />
               </div>
-              <p>Phone numbers change, emails update, but your saved contacts stay frozen in time.</p>
+              <h3 className="text-xl font-semibold text-white mb-4">Contact Info Gets Outdated</h3>
+              <p className="text-gray-400 leading-relaxed">
+                Phone numbers change, emails update, but your saved contacts stay frozen in time.
+              </p>
             </div>
           </div>
-          <div className="founder-quote animate-on-scroll">
-            <blockquote>
-              "After years of attending networking events where valuable connections slipped away, I knew professionals needed a better solution. Networq solves the contact exchange problem once and for all."
-            </blockquote>
-            <cite>— Orlando Taylor, Founder</cite>
+
+          {/* Founder Quote */}
+          <div className="max-w-4xl mx-auto animate-on-scroll">
+            <div className="flex items-start gap-6">
+              <div className="w-1 h-24 bg-blue-500 rounded-full flex-shrink-0"></div>
+              <div>
+                <blockquote className="text-xl text-gray-300 italic leading-relaxed mb-4">
+                  "After years of attending networking events where valuable connections slipped away, I knew professionals needed a better solution. Networq solves the contact exchange problem once and for all."
+                </blockquote>
+                <cite className="text-gray-400 font-medium">— Orlando Taylor, Founder</cite>
+              </div>
+            </div>
           </div>
         </div>
       </section>
