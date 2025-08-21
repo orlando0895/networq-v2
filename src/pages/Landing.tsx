@@ -606,13 +606,6 @@ const LandingPage = () => {
                 <h3>Scan business cards or save contacts from QR</h3>
               </div>
               <p id="step-2-desc">Capture contact information effortlessly through scanning or QR codes</p>
-              <div className="step-image">
-                <img 
-                  src="/lovable-uploads/121d40c6-6d40-4982-9947-9923d2be3e3a.png" 
-                  alt="Business card scanning step"
-                  className="step-thumbnail"
-                />
-              </div>
             </div>
             
             <div className="step-card animate-on-scroll" aria-describedby="step-3-desc">
