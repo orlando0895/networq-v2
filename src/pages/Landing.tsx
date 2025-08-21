@@ -557,10 +557,11 @@ const LandingPage = () => {
                       alt="Contact organization by tags and saved views"
                       className="phone-screen-content animate-on-scroll"
                     />
-                    <div className="phone-frame">
-                      <div className="phone-notch"></div>
-                      <div className="phone-button"></div>
-                    </div>
+                    <img 
+                      src="/lovable-uploads/b650bbbc-251f-4899-9875-2ebbd14e3fc3.png" 
+                      alt="Contacts organization interface with filters and industry tags"
+                      className="phone-screen-content"
+                    />
                   </div>
                   <div className="floating-ui-elements">
                     <div className="org-bubble bubble-1">
