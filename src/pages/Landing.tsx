@@ -216,32 +216,44 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* Why Networq is Different */}
+      {/* We've All Been There */}
       <section className="differentiation-section" id="why-different">
         <div className="container">
-          <h2 className="section-title animate-on-scroll">Why Networq is Different</h2>
+          <h2 className="section-title animate-on-scroll">We've All Been There...</h2>
           <div className="differentiation-grid">
             <div className="differentiation-card animate-on-scroll">
               <div className="card-header">
-                <Users className="card-icon" />
-                <h3>vs. LinkedIn</h3>
+                <div className="card-icon-wrapper">
+                  <Filter className="card-icon" />
+                </div>
+                <h3>Business Cards Get Lost</h3>
               </div>
-              <p>Built for networking, not social feeds. Follow-ups live with the contact.</p>
+              <p>Those stacks of cards? They vanish into wallet black holes, never to be seen again.</p>
             </div>
             <div className="differentiation-card animate-on-scroll">
               <div className="card-header">
-                <MessageCircle className="card-icon" />
-                <h3>vs. Phone Contacts</h3>
+                <div className="card-icon-wrapper">
+                  <Users className="card-icon" />
+                </div>
+                <h3>Connections Fizzle Out</h3>
               </div>
-              <p>Adds context (event, notes, tags) and automates follow-ups.</p>
+              <p>Great conversations at events turn into "I should reach out" thoughts that never happen.</p>
             </div>
             <div className="differentiation-card animate-on-scroll">
               <div className="card-header">
-                <Filter className="card-icon" />
-                <h3>vs. Personal CRM</h3>
+                <div className="card-icon-wrapper">
+                  <MessageCircle className="card-icon" />
+                </div>
+                <h3>Contact Info Gets Outdated</h3>
               </div>
-              <p>Lightweight and event-first; QR/scan capture makes it effortless.</p>
+              <p>Phone numbers change, emails update, but your saved contacts stay frozen in time.</p>
             </div>
+          </div>
+          <div className="founder-quote animate-on-scroll">
+            <blockquote>
+              "After years of attending networking events where valuable connections slipped away, I knew professionals needed a better solution. Networq solves the contact exchange problem once and for all."
+            </blockquote>
+            <cite>— Orlando Taylor, Founder</cite>
           </div>
         </div>
       </section>
