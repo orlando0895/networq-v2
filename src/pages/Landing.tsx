@@ -615,13 +615,6 @@ const LandingPage = () => {
                 <h3>Add tags/notes and schedule follow-up</h3>
               </div>
               <p id="step-3-desc">Organize contacts with tags and set reminders for future outreach</p>
-              <div className="step-image">
-                <img 
-                  src="/lovable-uploads/95e43555-d5b4-4913-8c10-d39846440ae4.png" 
-                  alt="Contact organization step"
-                  className="step-thumbnail"
-                />
-              </div>
             </div>
             
             <div className="step-card animate-on-scroll" aria-describedby="step-4-desc">
