@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { ArrowRight, QrCode, Users, MessageCircle, Camera, Filter, Star, Share2, Scan, Tag, Shield, Check, Sparkles } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import "./landing.css";
 
@@ -11,6 +11,7 @@ const LandingPage = () => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [professionIndex, setProfessionIndex] = useState(0);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const professions = [
     "financial advisors",
@@ -22,6 +23,13 @@ const LandingPage = () => {
   ];
 
   useEffect(() => {
+    // Check for password recovery redirect from email
+    const hash = window.location.hash;
+    if (hash.includes('type=recovery')) {
+      navigate('/auth');
+      return;
+    }
+
     setIsLoaded(true);
     // Add landing page class to body for dark theme
     document.body.classList.add('landing-page');
@@ -62,7 +70,7 @@ const LandingPage = () => {
       observer.disconnect();
       if (intervalId) clearInterval(intervalId);
     };
-  }, [professions.length]);
+  }, [professions.length, navigate]);
 
   const handleWaitlistSignup = async (e) => {
     e.preventDefault();
