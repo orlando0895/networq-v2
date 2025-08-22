@@ -40,7 +40,7 @@ const Auth = () => {
 
     // Listen for auth state changes to detect recovery
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'PASSWORD_RECOVERY') {
+      if (event === 'PASSWORD_RECOVERY' && session) {
         setIsPasswordRecovery(true);
       }
     });
@@ -172,6 +172,13 @@ const Auth = () => {
     }
 
     try {
+      // Get current session to ensure we have an active session
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      
+      if (sessionError || !session) {
+        throw new Error('Auth session missing! Please click the reset link in your email again.');
+      }
+
       const { error } = await supabase.auth.updateUser({
         password: newPassword
       });
