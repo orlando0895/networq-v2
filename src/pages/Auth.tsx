@@ -24,18 +24,19 @@ const Auth = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
 
-  // Check for password recovery state and redirect if already logged in
+  // Check for password recovery state and handle special logic
   useEffect(() => {
-    if (user) {
+    // Check for recovery state in URL hash first
+    const hash = window.location.hash;
+    const isRecoveryLink = hash.includes('type=recovery');
+    
+    if (isRecoveryLink) {
+      setIsPasswordRecovery(true);
+      // Don't redirect to /app even if user is signed in - force password reset
+    } else if (user && !isPasswordRecovery) {
+      // Only redirect if not in password recovery flow
       navigate('/app');
       return;
-    }
-
-    // Check for recovery state in URL hash
-    const hash = window.location.hash;
-    if (hash.includes('type=recovery')) {
-      setIsPasswordRecovery(true);
-      // Don't clean up URL immediately - let Supabase process the recovery first
     }
 
     // Listen for auth state changes to detect recovery
@@ -46,11 +47,14 @@ const Auth = () => {
         setTimeout(() => {
           window.history.replaceState(null, '', window.location.pathname);
         }, 100);
+      } else if (event === 'SIGNED_IN' && session && !isRecoveryLink && !isPasswordRecovery) {
+        // Only auto-redirect on normal sign-in, not during password recovery
+        navigate('/app');
       }
     });
 
     return () => subscription.unsubscribe();
-  }, [user, navigate]);
+  }, [user, navigate, isPasswordRecovery]);
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
