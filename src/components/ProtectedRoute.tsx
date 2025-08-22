@@ -19,7 +19,8 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
 
   // Block access if user is in password recovery flow
   const hash = window.location.hash;
-  const isRecoveryLink = hash.includes('type=recovery');
+  const searchParams = new URLSearchParams(window.location.search);
+  const isRecoveryLink = hash.includes('type=recovery') || (searchParams.has('type') && searchParams.get('type') === 'recovery');
   
   if (!user || isRecoveryLink) {
     return <Navigate to="/auth" replace />;

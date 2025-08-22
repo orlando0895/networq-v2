@@ -26,9 +26,10 @@ const Auth = () => {
 
   // Check for password recovery state and handle special logic
   useEffect(() => {
-    // Check for recovery state in URL hash first
+    // Check for recovery state in URL hash or search params
     const hash = window.location.hash;
-    const isRecoveryLink = hash.includes('type=recovery');
+    const searchParams = new URLSearchParams(window.location.search);
+    const isRecoveryLink = hash.includes('type=recovery') || searchParams.has('type') && searchParams.get('type') === 'recovery';
     
     if (isRecoveryLink) {
       setIsPasswordRecovery(true);
