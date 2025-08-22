@@ -218,8 +218,11 @@ const Auth = () => {
 
       toast({
         title: "Password updated!",
-        description: "Your password has been successfully updated.",
+        description: "Your password has been successfully updated. Please sign in with your new password.",
       });
+
+      // Sign out the user after password update
+      await supabase.auth.signOut();
 
       // Clean up URL and reset state
       window.history.replaceState(null, '', window.location.pathname);
@@ -227,7 +230,11 @@ const Auth = () => {
       setNewPassword('');
       setConfirmPassword('');
       setRecoveryEmail('');
-      navigate('/app');
+      
+      // Reset to login form
+      setIsLogin(true);
+      setEmail('');
+      setPassword('');
     } catch (error: any) {
       toast({
         title: "Error",
