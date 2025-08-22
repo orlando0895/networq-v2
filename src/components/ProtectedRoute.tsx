@@ -22,7 +22,11 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const searchParams = new URLSearchParams(window.location.search);
   const isRecoveryLink = hash.includes('type=recovery') || (searchParams.has('type') && searchParams.get('type') === 'recovery');
   
-  if (!user || isRecoveryLink) {
+  if (isRecoveryLink) {
+    return <Navigate to="/reset-password" replace />;
+  }
+  
+  if (!user) {
     return <Navigate to="/auth" replace />;
   }
 

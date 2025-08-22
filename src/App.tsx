@@ -10,6 +10,7 @@ import BottomNavigation from "@/components/BottomNavigation";
 import Index from "./pages/Index";
 import Landing from "./pages/Landing";
 import Auth from "./pages/Auth";
+import ResetPassword from "./pages/ResetPassword";
 import Events from "./pages/Events";
 import Discovery from "./pages/Discovery";
 import Profile from "./pages/Profile";
@@ -40,6 +41,7 @@ const App = () => (
           <div className="min-h-screen">
             <Routes>
               <Route path="/auth" element={<Auth />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/public/:identifier" element={<PublicProfile />} />
               <Route path="/contact/:shareCode" element={<ViewContact />} />
               <Route path="/privacy" element={<PrivacyPolicy />} />

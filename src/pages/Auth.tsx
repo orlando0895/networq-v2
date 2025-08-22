@@ -12,50 +12,38 @@ import { useAuth } from '@/contexts/AuthContext';
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [isResetPassword, setIsResetPassword] = useState(false);
-  const [isPasswordRecovery, setIsPasswordRecovery] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [recoveryEmail, setRecoveryEmail] = useState('');
   const [fullName, setFullName] = useState('');
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
   const { user } = useAuth();
 
-  // Check for password recovery state and handle special logic
+  // Check for email prefill from URL params and handle user redirect
   useEffect(() => {
-    // Check for recovery state in URL hash or search params
-    const hash = window.location.hash;
     const searchParams = new URLSearchParams(window.location.search);
-    const isRecoveryLink = hash.includes('type=recovery') || searchParams.has('type') && searchParams.get('type') === 'recovery';
-    
-    if (isRecoveryLink) {
-      setIsPasswordRecovery(true);
-      // Don't redirect to /app even if user is signed in - force password reset
-    } else if (user && !isPasswordRecovery) {
-      // Only redirect if not in password recovery flow
+    const emailParam = searchParams.get('email');
+    if (emailParam) {
+      setEmail(emailParam);
+      // Clean up URL
+      window.history.replaceState(null, '', window.location.pathname);
+    }
+
+    if (user) {
       navigate('/app');
       return;
     }
 
-    // Listen for auth state changes to detect recovery
+    // Listen for auth state changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'PASSWORD_RECOVERY' && session) {
-        setIsPasswordRecovery(true);
-        // Clean up URL after Supabase has processed the recovery
-        setTimeout(() => {
-          window.history.replaceState(null, '', window.location.pathname);
-        }, 100);
-      } else if (event === 'SIGNED_IN' && session && !isRecoveryLink && !isPasswordRecovery) {
-        // Only auto-redirect on normal sign-in, not during password recovery
+      if (event === 'SIGNED_IN' && session) {
         navigate('/app');
       }
     });
 
     return () => subscription.unsubscribe();
-  }, [user, navigate, isPasswordRecovery]);
+  }, [user, navigate]);
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -133,7 +121,7 @@ const Auth = () => {
 
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/auth`,
+        redirectTo: `${window.location.origin}/reset-password`,
       });
 
       if (error) throw error;
@@ -156,96 +144,6 @@ const Auth = () => {
     }
   };
 
-  const handleUpdatePassword = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-
-    if (newPassword !== confirmPassword) {
-      toast({
-        title: "Error",
-        description: "Passwords do not match.",
-        variant: "destructive",
-      });
-      setLoading(false);
-      return;
-    }
-
-    if (newPassword.length < 6) {
-      toast({
-        title: "Error",
-        description: "Password must be at least 6 characters long.",
-        variant: "destructive",
-      });
-      setLoading(false);
-      return;
-    }
-
-    try {
-      // Get current session to ensure we have an active session
-      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-      
-      if (sessionError || !session) {
-        // If no valid session and we have an email, try to send a new reset email
-        if (recoveryEmail) {
-          try {
-            const { error: resetError } = await supabase.auth.resetPasswordForEmail(recoveryEmail, {
-              redirectTo: `${window.location.origin}/auth`,
-            });
-            
-            if (!resetError) {
-              toast({
-                title: "Reset link expired",
-                description: "We've sent a new password reset email to your address.",
-              });
-              setIsPasswordRecovery(false);
-              setIsResetPassword(false);
-              setNewPassword('');
-              setConfirmPassword('');
-              setRecoveryEmail('');
-              return;
-            }
-          } catch (resetError) {
-            // Fall through to show the original session error
-          }
-        }
-        throw new Error('Auth session missing! Please click the reset link in your email again.');
-      }
-
-      const { error } = await supabase.auth.updateUser({
-        password: newPassword
-      });
-
-      if (error) throw error;
-
-      toast({
-        title: "Password updated!",
-        description: "Your password has been successfully updated. Please sign in with your new password.",
-      });
-
-      // Sign out the user after password update
-      await supabase.auth.signOut();
-
-      // Clean up URL and reset state
-      window.history.replaceState(null, '', window.location.pathname);
-      setIsPasswordRecovery(false);
-      setNewPassword('');
-      setConfirmPassword('');
-      setRecoveryEmail('');
-      
-      // Reset to login form with email prefilled
-      setIsLogin(true);
-      setEmail(recoveryEmail || '');
-      setPassword('');
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message || "An error occurred while updating password.",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 px-4">
@@ -260,9 +158,7 @@ const Auth = () => {
           </div>
           <div className="space-y-1">
             <CardTitle className="text-2xl">
-              {isPasswordRecovery
-                ? 'Set your new password'
-                : isResetPassword 
+              {isResetPassword 
                 ? 'Reset your password'
                 : isLogin 
                 ? 'Sign in to Networq' 
@@ -270,9 +166,7 @@ const Auth = () => {
               }
             </CardTitle>
             <CardDescription>
-              {isPasswordRecovery
-                ? 'Enter a new password for your account'
-                : isResetPassword
+              {isResetPassword
                 ? 'Enter your email to receive password reset instructions'
                 : isLogin 
                 ? 'Enter your credentials to access your network' 
@@ -282,54 +176,7 @@ const Auth = () => {
           </div>
         </CardHeader>
         <CardContent>
-          {isPasswordRecovery ? (
-            <form onSubmit={handleUpdatePassword} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="recovery-email">Email</Label>
-                <Input
-                  id="recovery-email"
-                  type="email"
-                  placeholder="Enter your email address"
-                  value={recoveryEmail}
-                  onChange={(e) => setRecoveryEmail(e.target.value)}
-                  required
-                />
-                <p className="text-xs text-muted-foreground">
-                  This helps us verify your identity and can resend a reset link if needed.
-                </p>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="new-password">New Password</Label>
-                <Input
-                  id="new-password"
-                  type="password"
-                  placeholder="Enter your new password"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  required
-                  minLength={6}
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="confirm-password">Confirm Password</Label>
-                <Input
-                  id="confirm-password"
-                  type="password"
-                  placeholder="Confirm your new password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  required
-                  minLength={6}
-                />
-              </div>
-              
-              <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? 'Updating...' : 'Update Password'}
-              </Button>
-            </form>
-          ) : isResetPassword ? (
+          {isResetPassword ? (
             <form onSubmit={handleResetPassword} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="reset-email">Email</Label>
@@ -394,7 +241,7 @@ const Auth = () => {
             </form>
           )}
           
-          {!isResetPassword && !isPasswordRecovery && (
+          {!isResetPassword && (
             <>
               <div className="relative my-6">
                 <div className="absolute inset-0 flex items-center">
@@ -436,11 +283,7 @@ const Auth = () => {
           )}
           
           <div className="mt-4 text-center space-y-2">
-            {isPasswordRecovery ? (
-              <p className="text-sm text-muted-foreground">
-                After updating your password, you'll need to sign in with your new password.
-              </p>
-            ) : isResetPassword ? (
+            {isResetPassword ? (
               <button
                 type="button"
                 onClick={() => {
