@@ -231,9 +231,9 @@ const Auth = () => {
       setConfirmPassword('');
       setRecoveryEmail('');
       
-      // Reset to login form
+      // Reset to login form with email prefilled
       setIsLogin(true);
-      setEmail('');
+      setEmail(recoveryEmail || '');
       setPassword('');
     } catch (error: any) {
       toast({
@@ -437,7 +437,7 @@ const Auth = () => {
           <div className="mt-4 text-center space-y-2">
             {isPasswordRecovery ? (
               <p className="text-sm text-muted-foreground">
-                After updating your password, you'll be signed in automatically.
+                After updating your password, you'll need to sign in with your new password.
               </p>
             ) : isResetPassword ? (
               <button
