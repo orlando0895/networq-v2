@@ -17,6 +17,7 @@ const Auth = () => {
   const [password, setPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [recoveryEmail, setRecoveryEmail] = useState('');
   const [fullName, setFullName] = useState('');
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
@@ -34,14 +35,17 @@ const Auth = () => {
     const hash = window.location.hash;
     if (hash.includes('type=recovery')) {
       setIsPasswordRecovery(true);
-      // Clean up URL
-      window.history.replaceState(null, '', window.location.pathname);
+      // Don't clean up URL immediately - let Supabase process the recovery first
     }
 
     // Listen for auth state changes to detect recovery
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'PASSWORD_RECOVERY' && session) {
         setIsPasswordRecovery(true);
+        // Clean up URL after Supabase has processed the recovery
+        setTimeout(() => {
+          window.history.replaceState(null, '', window.location.pathname);
+        }, 100);
       }
     });
 
@@ -176,6 +180,29 @@ const Auth = () => {
       const { data: { session }, error: sessionError } = await supabase.auth.getSession();
       
       if (sessionError || !session) {
+        // If no valid session and we have an email, try to send a new reset email
+        if (recoveryEmail) {
+          try {
+            const { error: resetError } = await supabase.auth.resetPasswordForEmail(recoveryEmail, {
+              redirectTo: `${window.location.origin}/auth`,
+            });
+            
+            if (!resetError) {
+              toast({
+                title: "Reset link expired",
+                description: "We've sent a new password reset email to your address.",
+              });
+              setIsPasswordRecovery(false);
+              setIsResetPassword(false);
+              setNewPassword('');
+              setConfirmPassword('');
+              setRecoveryEmail('');
+              return;
+            }
+          } catch (resetError) {
+            // Fall through to show the original session error
+          }
+        }
         throw new Error('Auth session missing! Please click the reset link in your email again.');
       }
 
@@ -190,10 +217,12 @@ const Auth = () => {
         description: "Your password has been successfully updated.",
       });
 
-      // Reset state and redirect to app
+      // Clean up URL and reset state
+      window.history.replaceState(null, '', window.location.pathname);
       setIsPasswordRecovery(false);
       setNewPassword('');
       setConfirmPassword('');
+      setRecoveryEmail('');
       navigate('/app');
     } catch (error: any) {
       toast({
@@ -243,6 +272,21 @@ const Auth = () => {
         <CardContent>
           {isPasswordRecovery ? (
             <form onSubmit={handleUpdatePassword} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="recovery-email">Email</Label>
+                <Input
+                  id="recovery-email"
+                  type="email"
+                  placeholder="Enter your email address"
+                  value={recoveryEmail}
+                  onChange={(e) => setRecoveryEmail(e.target.value)}
+                  required
+                />
+                <p className="text-xs text-muted-foreground">
+                  This helps us verify your identity and can resend a reset link if needed.
+                </p>
+              </div>
+
               <div className="space-y-2">
                 <Label htmlFor="new-password">New Password</Label>
                 <Input
