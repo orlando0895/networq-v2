@@ -233,9 +233,9 @@ const LandingPage = () => {
           
           <div className="grid md:grid-cols-3 gap-8 mb-16">
             {/* Business Cards Get Lost */}
-            <div className="bg-gray-900/80 backdrop-blur rounded-2xl p-8 text-center animate-on-scroll">
-              <div className="w-16 h-16 bg-blue-900/50 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <Camera className="w-8 h-8 text-blue-400" />
+            <div className="bg-gray-900/80 backdrop-blur rounded-2xl p-8 text-center animate-on-scroll transition-all duration-300 hover:bg-gray-800/90 hover:scale-105 hover:shadow-xl hover:shadow-blue-500/20">
+              <div className="w-16 h-16 bg-blue-900/50 rounded-2xl flex items-center justify-center mx-auto mb-6 transition-all duration-300 group-hover:bg-blue-800/60">
+                <Camera className="w-8 h-8 text-blue-400 transition-all duration-300 group-hover:text-blue-300" />
               </div>
               <h3 className="text-xl font-semibold text-white mb-4">Business Cards Get Lost</h3>
               <p className="text-gray-400 leading-relaxed">
@@ -244,9 +244,9 @@ const LandingPage = () => {
             </div>
 
             {/* Connections Fizzle Out */}
-            <div className="bg-gray-900/80 backdrop-blur rounded-2xl p-8 text-center animate-on-scroll">
-              <div className="w-16 h-16 bg-blue-900/50 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <Users className="w-8 h-8 text-blue-400" />
+            <div className="bg-gray-900/80 backdrop-blur rounded-2xl p-8 text-center animate-on-scroll transition-all duration-300 hover:bg-gray-800/90 hover:scale-105 hover:shadow-xl hover:shadow-blue-500/20">
+              <div className="w-16 h-16 bg-blue-900/50 rounded-2xl flex items-center justify-center mx-auto mb-6 transition-all duration-300 group-hover:bg-blue-800/60">
+                <Users className="w-8 h-8 text-blue-400 transition-all duration-300 group-hover:text-blue-300" />
               </div>
               <h3 className="text-xl font-semibold text-white mb-4">Connections Fizzle Out</h3>
               <p className="text-gray-400 leading-relaxed">
@@ -255,9 +255,9 @@ const LandingPage = () => {
             </div>
 
             {/* Contact Info Gets Outdated */}
-            <div className="bg-gray-900/80 backdrop-blur rounded-2xl p-8 text-center animate-on-scroll">
-              <div className="w-16 h-16 bg-blue-900/50 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <MessageCircle className="w-8 h-8 text-blue-400" />
+            <div className="bg-gray-900/80 backdrop-blur rounded-2xl p-8 text-center animate-on-scroll transition-all duration-300 hover:bg-gray-800/90 hover:scale-105 hover:shadow-xl hover:shadow-blue-500/20">
+              <div className="w-16 h-16 bg-blue-900/50 rounded-2xl flex items-center justify-center mx-auto mb-6 transition-all duration-300 group-hover:bg-blue-800/60">
+                <MessageCircle className="w-8 h-8 text-blue-400 transition-all duration-300 group-hover:text-blue-300" />
               </div>
               <h3 className="text-xl font-semibold text-white mb-4">Contact Info Gets Outdated</h3>
               <p className="text-gray-400 leading-relaxed">
