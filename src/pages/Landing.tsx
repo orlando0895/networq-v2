@@ -14,12 +14,26 @@ const LandingPage = () => {
   const navigate = useNavigate();
 
   const professions = [
+    "real estate agents",
     "financial advisors",
-    "real estate agents", 
-    "entrepreneurs",
-    "consultants",
-    "recruiters",
-    "account executives"
+    "insurance brokers",
+    "mortgage loan officers",
+    "business coaches",
+    "marketing consultants",
+    "event planners",
+    "public speakers",
+    "fitness coaches & personal trainers",
+    "photographers & videographers",
+    "freelance designers",
+    "wedding planners",
+    "recruiters & talent agents",
+    "startup founders & tech entrepreneurs",
+    "accountants & bookkeepers",
+    "lawyers",
+    "medical & wellness professionals",
+    "direct sales & network marketing reps",
+    "small business owners",
+    "social media managers & influencers"
   ];
 
   useEffect(() => {
