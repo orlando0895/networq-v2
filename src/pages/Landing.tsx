@@ -209,7 +209,7 @@ const LandingPage = () => {
                     <ArrowRight className="btn-icon" />
                   </a>
                 </div>
-                <p className="hero-note">Join thousands of professionals using Networq</p>
+                <p className="hero-note">Perfect for financial advisors looking to make the most out of their contacts list</p>
               </div>
             </div>
             <div className="hero-visual">
