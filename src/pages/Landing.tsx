@@ -176,7 +176,6 @@ const LandingPage = () => {
             <nav aria-label="Primary navigation" className="main-nav">
               <a href="#features" className="nav-link">Features</a>
               <a href="#how-it-works" className="nav-link">How it works</a>
-              <a href="#security" className="nav-link">Security</a>
               <a href="#pricing" className="nav-link">Pricing</a>
               <Link to="/support" className="nav-link">Support</Link>
               <Link to="/auth" className="nav-link">Sign in</Link>
@@ -702,51 +701,6 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* Security & Privacy */}
-      <section className="security-section trust-section" id="security">
-        <div className="container">
-          <h2 className="section-title animate-on-scroll">Security & Privacy</h2>
-          <div className="security-content">
-            <div className="security-grid">
-              <div className="security-feature animate-on-scroll">
-                <Shield className="security-icon" />
-                <h3>Encryption in transit (TLS)</h3>
-                <p>All data transfers are secured with industry-standard encryption</p>
-              </div>
-              <div className="security-feature animate-on-scroll">
-                <Check className="security-icon" />
-                <h3>Secure managed Postgres</h3>
-                <p>Your data is stored securely with Supabase's enterprise-grade infrastructure</p>
-              </div>
-              <div className="security-feature animate-on-scroll">
-                <ArrowRight className="security-icon" />
-                <h3>Export your data anytime</h3>
-                <p>Full data portability - download all your contacts and conversations</p>
-              </div>
-              <div className="security-feature animate-on-scroll">
-                <Users className="security-icon" />
-                <h3>Delete your account anytime</h3>
-                <p>Complete control over your data with instant account deletion</p>
-              </div>
-              <div className="security-feature animate-on-scroll">
-                <Shield className="security-icon" />
-                <h3>Minimal permissions</h3>
-                <p>We only request access to what's necessary for core functionality</p>
-              </div>
-              <div className="security-feature animate-on-scroll">
-                <Check className="security-icon" />
-                <h3>Private by default</h3>
-                <p>Your contacts and conversations are never shared without permission</p>
-              </div>
-            </div>
-            <div className="security-cta animate-on-scroll">
-              <Link to="/privacy" className="btn-secondary">
-                Read Privacy Policy
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* Pricing */}
       <section className="pricing-section" id="pricing">
