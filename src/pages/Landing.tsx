@@ -223,7 +223,13 @@ const LandingPage = () => {
                     <ArrowRight className="btn-icon" />
                   </a>
                 </div>
-                <p className="hero-note">Perfect for financial advisors looking to make the most out of their contacts list</p>
+                <p className="perfect-for-text" aria-live="polite">
+                  Perfect for{" "}
+                  <span className="rotating-profession">
+                    {professions[professionIndex]}
+                  </span>{" "}
+                  looking to make the most out of their contacts list
+                </p>
               </div>
             </div>
             <div className="hero-visual">
@@ -668,18 +674,6 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* Perfect For Section */}
-      <section className="perfect-for-section">
-        <div className="container">
-          <p className="perfect-for-text" aria-live="polite">
-            Perfect for{" "}
-            <span className="rotating-profession">
-              {professions[professionIndex]}
-            </span>{" "}
-            looking to make the most out of their contacts list
-          </p>
-        </div>
-      </section>
 
       {/* Social Proof */}
       <section className="social-proof">
