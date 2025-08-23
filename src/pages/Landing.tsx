@@ -628,44 +628,28 @@ const LandingPage = () => {
             <div className="step-card animate-on-scroll" aria-describedby="step-1-desc">
               <div className="step-header">
                 <div className="step-number">1</div>
-                <Share2 className="step-icon" />
-                <h3>Share your card with a QR</h3>
+                <QrCode className="step-icon" />
+                <h3>Share Contacts Instantly</h3>
               </div>
-              <p id="step-1-desc">Generate and display your QR code for instant contact sharing</p>
+              <p id="step-1-desc">Generate your QR code or scan theirs. Contact details transfer in seconds, even without internet.</p>
             </div>
             
             <div className="step-card animate-on-scroll" aria-describedby="step-2-desc">
               <div className="step-header">
                 <div className="step-number">2</div>
-                <Scan className="step-icon" />
-                <h3>Scan business cards or save contacts from QR</h3>
+                <Users className="step-icon" />
+                <h3>Stay Organized Automatically</h3>
               </div>
-              <p id="step-2-desc">Capture contact information effortlessly through scanning or QR codes</p>
+              <p id="step-2-desc">Contacts are sorted by events, industry, and tags. No more scattered business cards.</p>
             </div>
             
             <div className="step-card animate-on-scroll" aria-describedby="step-3-desc">
               <div className="step-header">
                 <div className="step-number">3</div>
-                <Tag className="step-icon" />
-                <h3>Add tags/notes and schedule follow-up</h3>
-              </div>
-              <p id="step-3-desc">Organize contacts with tags and set reminders for future outreach</p>
-            </div>
-            
-            <div className="step-card animate-on-scroll" aria-describedby="step-4-desc">
-              <div className="step-header">
-                <div className="step-number">4</div>
                 <MessageCircle className="step-icon" />
-                <h3>Message and track conversations</h3>
+                <h3>Follow Up Effortlessly</h3>
               </div>
-              <p id="step-4-desc">Keep all communication in one place with context and history</p>
-              <div className="step-image">
-                <img 
-                  src="/lovable-uploads/40188bd7-a231-4c99-9d9c-65fbb1597950.png" 
-                  alt="Messaging and tracking step"
-                  className="step-thumbnail"
-                />
-              </div>
+              <p id="step-3-desc">Send messages, schedule meetings, and nurture relationships—all in one place.</p>
             </div>
           </div>
         </div>
