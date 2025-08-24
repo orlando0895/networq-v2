@@ -724,7 +724,7 @@ const LandingPage = () => {
               <div className="pricing-header mb-8 relative z-10">
                 <h3 className="text-3xl font-bold text-white mb-6 leading-tight">Get Started. Build Your Networq. $0. Always.</h3>
                 <div className="price">
-                  <div className="flex flex-col items-center justify-center gap-3 text-center">
+                  <div className="flex items-center justify-center gap-3 text-center">
                     <span className="text-xl font-bold text-blue-300 bg-blue-500/20 px-3 py-1 rounded-full">Free</span>
                     <div className="flex items-baseline gap-1">
                       <span className="text-5xl font-bold text-white drop-shadow-lg">$0</span>
