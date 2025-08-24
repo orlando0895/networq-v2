@@ -644,7 +644,7 @@ const LandingPage = () => {
         <div className="container">
           <h2 className="section-title animate-on-scroll">How It Works</h2>
           <div className="steps-grid">
-            <div className="step-card animate-on-scroll" aria-describedby="step-1-desc">
+            <div className="step-card animate-on-scroll bg-gray-900/80 backdrop-blur rounded-2xl p-8 text-center transition-all duration-300 hover:bg-gray-800/90 hover:scale-105 hover:shadow-xl hover:shadow-blue-500/20 cursor-pointer" aria-describedby="step-1-desc">
               <div className="step-header">
                 <div className="step-number">1</div>
                 <QrCode className="step-icon" />
@@ -653,7 +653,7 @@ const LandingPage = () => {
               <p id="step-1-desc">Generate your QR code or scan theirs. Contact details transfer in seconds, even without internet.</p>
             </div>
             
-            <div className="step-card animate-on-scroll" aria-describedby="step-2-desc">
+            <div className="step-card animate-on-scroll bg-gray-900/80 backdrop-blur rounded-2xl p-8 text-center transition-all duration-300 hover:bg-gray-800/90 hover:scale-105 hover:shadow-xl hover:shadow-blue-500/20 cursor-pointer" aria-describedby="step-2-desc">
               <div className="step-header">
                 <div className="step-number">2</div>
                 <Users className="step-icon" />
@@ -662,7 +662,7 @@ const LandingPage = () => {
               <p id="step-2-desc">Contacts are sorted by events, industry, and tags. No more scattered business cards.</p>
             </div>
             
-            <div className="step-card animate-on-scroll" aria-describedby="step-3-desc">
+            <div className="step-card animate-on-scroll bg-gray-900/80 backdrop-blur rounded-2xl p-8 text-center transition-all duration-300 hover:bg-gray-800/90 hover:scale-105 hover:shadow-xl hover:shadow-blue-500/20 cursor-pointer" aria-describedby="step-3-desc">
               <div className="step-header">
                 <div className="step-number">3</div>
                 <MessageCircle className="step-icon" />
