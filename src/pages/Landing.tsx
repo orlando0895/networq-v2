@@ -223,7 +223,7 @@ const LandingPage = () => {
                     <ArrowRight className="btn-icon" />
                   </a>
                 </div>
-                <p className="perfect-for-text" aria-live="polite">
+                <p className="perfect-for-text mt-8" aria-live="polite">
                   Perfect for{" "}
                   <span className="rotating-profession">
                     {professions[professionIndex]}
