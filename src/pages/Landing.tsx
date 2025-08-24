@@ -715,32 +715,48 @@ const LandingPage = () => {
         <div className="container">
           <h2 className="section-title animate-on-scroll">Simple Pricing</h2>
           <div className="pricing-grid">
-            <div className="pricing-card animate-on-scroll">
-              <div className="pricing-header">
-                <h3>Free</h3>
-                <div className="price">
-                  <span className="currency">$</span>
-                  <span className="amount">0</span>
-                  <span className="period">/month</span>
+            <div className="pricing-card animate-on-scroll border border-blue-500/20 bg-gradient-to-br from-background to-blue-950/10 relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent pointer-events-none"></div>
+              <div className="relative z-10">
+                <div className="pricing-subheader mb-3">
+                  <p className="text-sm text-gray-400">The perfect plan for new connectors, rising professionals, and power players.</p>
                 </div>
+                <div className="pricing-header">
+                  <h3 className="text-2xl font-bold mb-2">Get Started. Build Your Networq. $0. Always.</h3>
+                  <div className="price">
+                    <span className="text-lg font-medium text-gray-300">Free</span>
+                    <div className="flex items-baseline gap-1 mt-1">
+                      <span className="currency">$</span>
+                      <span className="amount">0</span>
+                      <span className="period">/month</span>
+                    </div>
+                    <p className="text-sm text-gray-400 mt-1">No credit card required</p>
+                  </div>
+                </div>
+                <div className="pricing-features">
+                  <h4 className="text-sm font-semibold text-gray-300 mb-4">What You Get:</h4>
+                  <div className="feature-item">
+                    <QrCode className="feature-check" />
+                    <span>Instantly create your digital business card</span>
+                  </div>
+                  <div className="feature-item">
+                    <Share2 className="feature-check" />
+                    <span>Share your profile via QR code — no app required</span>
+                  </div>
+                  <div className="feature-item">
+                    <Users className="feature-check" />
+                    <span>Save contacts from any event in seconds</span>
+                  </div>
+                  <div className="feature-item">
+                    <Tag className="feature-check" />
+                    <span>Organize your connections with basic tagging</span>
+                  </div>
+                </div>
+                <a href="#waitlist" className="btn-primary pricing-cta">
+                  Start Networking Free
+                </a>
+                <p className="text-xs text-gray-500 mt-3 text-center">No commitments. Upgrade only when you're ready.</p>
               </div>
-              <div className="pricing-features">
-                <div className="feature-item">
-                  <Check className="feature-check" />
-                  <span>Core capture</span>
-                </div>
-                <div className="feature-item">
-                  <Check className="feature-check" />
-                  <span>Basic organization</span>
-                </div>
-                <div className="feature-item">
-                  <Check className="feature-check" />
-                  <span>QR share</span>
-                </div>
-              </div>
-              <a href="#waitlist" className="btn-secondary pricing-cta">
-                Get Started Free
-              </a>
             </div>
             
           </div>
