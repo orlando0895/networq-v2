@@ -717,56 +717,56 @@ const LandingPage = () => {
           <div className="pricing-grid">
             <div className="pricing-card animate-on-scroll bg-gray-900/90 backdrop-blur rounded-2xl p-10 text-center border border-gray-700/50 shadow-2xl shadow-black/25 relative overflow-hidden">
               <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-blue-500/30 to-transparent"></div>
-              
-              {/* Pricing Header */}
-              <div className="mb-12">
-                <div className="flex items-center justify-center gap-3 mb-4">
-                  <span className="text-xl font-semibold text-white">Free</span>
-                  <span className="text-5xl font-bold text-white">$0</span>
-                  <span className="text-xl text-gray-400">/month</span>
-                  <span className="text-sm text-gray-500 ml-4">No credit card required</span>
+              <div className="pricing-subheader mb-6">
+                <p className="text-sm text-gray-400">The perfect plan for new connectors, rising professionals, and power players.</p>
+              </div>
+              <div className="pricing-header mb-8">
+                <h3 className="text-2xl font-bold text-white mb-4">Get Started. Build Your Networq. $0. Always.</h3>
+                <div className="price">
+                  <div className="flex items-center justify-center gap-2 mb-2">
+                    <span className="text-lg font-semibold text-gray-300">Free</span>
+                    <div className="flex items-baseline gap-1">
+                      <span className="text-4xl font-bold text-white">$0</span>
+                      <span className="text-lg text-gray-400">/month</span>
+                    </div>
+                  </div>
+                  <p className="text-sm text-gray-400">No credit card required</p>
                 </div>
               </div>
-
-              {/* Features */}
-              <div className="text-left">
-                <h4 className="text-lg font-semibold text-white mb-8">What You Get:</h4>
-                <div className="space-y-6">
-                  <div className="flex items-center gap-4">
-                    <div className="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <QrCode className="w-5 h-5 text-blue-400" />
+              <div className="pricing-features mb-8">
+                <h4 className="text-sm font-semibold text-gray-300 mb-6 text-left">What You Get:</h4>
+                <div className="space-y-4">
+                  <div className="feature-item flex items-center gap-3 text-left">
+                    <div className="w-6 h-6 bg-blue-900/50 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <QrCode className="w-4 h-4 text-blue-400" />
                     </div>
-                    <span className="text-lg text-gray-200">Instantly create your digital business card</span>
+                    <span className="text-gray-300">Instantly create your digital business card</span>
                   </div>
-                  <div className="flex items-center gap-4">
-                    <div className="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <Share2 className="w-5 h-5 text-blue-400" />
+                  <div className="feature-item flex items-center gap-3 text-left">
+                    <div className="w-6 h-6 bg-blue-900/50 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <Share2 className="w-4 h-4 text-blue-400" />
                     </div>
-                    <span className="text-lg text-gray-200">Share your profile via QR code — no app required</span>
+                    <span className="text-gray-300">Share your profile via QR code — no app required</span>
                   </div>
-                  <div className="flex items-center gap-4">
-                    <div className="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <Users className="w-5 h-5 text-blue-400" />
+                  <div className="feature-item flex items-center gap-3 text-left">
+                    <div className="w-6 h-6 bg-blue-900/50 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <Users className="w-4 h-4 text-blue-400" />
                     </div>
-                    <span className="text-lg text-gray-200">Save contacts from any event in seconds</span>
+                    <span className="text-gray-300">Save contacts from any event in seconds</span>
                   </div>
-                  <div className="flex items-center gap-4">
-                    <div className="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <Tag className="w-5 h-5 text-blue-400" />
+                  <div className="feature-item flex items-center gap-3 text-left">
+                    <div className="w-6 h-6 bg-blue-900/50 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <Tag className="w-4 h-4 text-blue-400" />
                     </div>
-                    <span className="text-lg text-gray-200">Organize your connections with basic tagging</span>
+                    <span className="text-gray-300">Organize your connections with basic tagging</span>
                   </div>
                 </div>
               </div>
-
-              {/* CTA */}
-              <div className="mt-12">
-                <a href="#waitlist" className="btn-primary w-full inline-flex items-center justify-center gap-2 py-4 text-lg font-semibold">
-                  <span>Start Networking Free</span>
-                  <ArrowRight className="w-5 h-5" />
-                </a>
-                <p className="text-sm text-gray-500 mt-4">No commitments. Upgrade only when you're ready.</p>
-              </div>
+              <a href="#waitlist" className="btn-primary pricing-cta w-full inline-flex items-center justify-center gap-2">
+                <span>Start Networking Free</span>
+                <ArrowRight className="w-4 h-4" />
+              </a>
+              <p className="text-xs text-gray-500 mt-4">No commitments. Upgrade only when you're ready.</p>
             </div>
             
           </div>
