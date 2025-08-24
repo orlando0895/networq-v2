@@ -743,38 +743,6 @@ const LandingPage = () => {
               </a>
             </div>
             
-            <div className="pricing-card featured animate-on-scroll">
-              <div className="pricing-badge">Coming Soon</div>
-              <div className="pricing-header">
-                <h3>Pro</h3>
-                <div className="price">
-                  <span className="currency">$</span>
-                  <span className="amount">9</span>
-                  <span className="period">/month</span>
-                </div>
-              </div>
-              <div className="pricing-features">
-                <div className="feature-item">
-                  <Check className="feature-check" />
-                  <span>Everything in Free</span>
-                </div>
-                <div className="feature-item">
-                  <Check className="feature-check" />
-                  <span>Advanced filters</span>
-                </div>
-                <div className="feature-item">
-                  <Check className="feature-check" />
-                  <span>Reminders</span>
-                </div>
-                <div className="feature-item">
-                  <Check className="feature-check" />
-                  <span>Team features</span>
-                </div>
-              </div>
-              <a href="#waitlist" className="btn-primary pricing-cta">
-                Join waitlist for early Pro access
-              </a>
-            </div>
           </div>
         </div>
       </section>
