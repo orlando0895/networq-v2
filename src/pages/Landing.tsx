@@ -724,14 +724,14 @@ const LandingPage = () => {
               <div className="pricing-header mb-8 relative z-10">
                 <h3 className="text-3xl font-bold text-white mb-6 leading-tight">Get Started. Build Your Networq. $0. Always.</h3>
                 <div className="price">
-                  <div className="flex items-center justify-center gap-3 mb-3">
+                  <div className="flex items-center justify-center gap-3">
                     <span className="text-xl font-bold text-blue-300 bg-blue-500/20 px-3 py-1 rounded-full">Free</span>
                     <div className="flex items-baseline gap-1">
                       <span className="text-5xl font-bold text-white drop-shadow-lg">$0</span>
                       <span className="text-xl text-blue-200">/month</span>
                     </div>
+                    <span className="text-base text-blue-300 font-medium">No credit card required</span>
                   </div>
-                  <p className="text-base text-blue-300 font-medium">No credit card required</p>
                 </div>
               </div>
               <div className="pricing-features mb-10 relative z-10">
