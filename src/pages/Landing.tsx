@@ -721,7 +721,6 @@ const LandingPage = () => {
                 <p className="text-sm text-gray-400">The perfect plan for new connectors, rising professionals, and power players.</p>
               </div>
               <div className="pricing-header mb-8">
-                <h3 className="text-2xl font-bold text-white mb-4">Get Started. Build Your Networq. $0. Always.</h3>
                 <div className="price">
                   <div className="flex items-center justify-center gap-2 mb-2">
                     <span className="text-lg font-semibold text-gray-300">Free</span>
@@ -729,8 +728,8 @@ const LandingPage = () => {
                       <span className="text-4xl font-bold text-white">$0</span>
                       <span className="text-lg text-gray-400">/month</span>
                     </div>
+                    <span className="text-lg text-gray-400 ml-4">No credit card required</span>
                   </div>
-                  <p className="text-sm text-gray-400">No credit card required</p>
                 </div>
               </div>
               <div className="pricing-features mb-8">
