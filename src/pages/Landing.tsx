@@ -787,14 +787,6 @@ const LandingPage = () => {
             </p>
             <form className="waitlist-form-3d" onSubmit={handleWaitlistSignup}>
               <div className="form-group-3d">
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Enter your email address"
-                  className="input-3d"
-                  required
-                />
                 <button type="submit" className="btn-primary btn-revolution hover-scale animate-fade-in transition-all duration-300 hover:animate-pulse" disabled={isSubmitting}>
                   <span>{isSubmitting ? "Getting Started..." : "Get Started Free"}</span>
                   <ArrowRight className="btn-icon" />
