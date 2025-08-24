@@ -715,7 +715,8 @@ const LandingPage = () => {
         <div className="container">
           <h2 className="section-title animate-on-scroll">Simple Pricing</h2>
           <div className="pricing-grid">
-            <div className="pricing-card animate-on-scroll bg-gray-900/80 backdrop-blur rounded-2xl p-8 text-center transition-all duration-300 hover:bg-gray-800/90 hover:scale-105 hover:shadow-xl hover:shadow-blue-500/20 border border-gray-800/50">
+            <div className="pricing-card animate-on-scroll bg-gray-900/90 backdrop-blur rounded-2xl p-10 text-center border border-gray-700/50 shadow-2xl shadow-black/25 relative overflow-hidden">
+              <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-blue-500/30 to-transparent"></div>
               <div className="pricing-subheader mb-6">
                 <p className="text-sm text-gray-400">The perfect plan for new connectors, rising professionals, and power players.</p>
               </div>
