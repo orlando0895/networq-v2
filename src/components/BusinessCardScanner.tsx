@@ -317,7 +317,7 @@ const BusinessCardScanner = ({ isOpen, onOpenChange, onContactExtracted }: Busin
                   autoPlay
                   playsInline
                   muted
-                  className="w-full rounded-lg bg-black min-h-[300px]"
+                  className="w-full aspect-square rounded-lg bg-black"
                   style={{ objectFit: 'cover' }}
                 />
                 <canvas ref={canvasRef} className="hidden" />
