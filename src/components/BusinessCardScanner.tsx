@@ -1,6 +1,6 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Camera, Upload, X, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
@@ -40,18 +40,6 @@ const BusinessCardScanner = ({ isOpen, onOpenChange, onContactExtracted }: Busin
       console.log('Camera stream acquired:', stream);
       setCameraStream(stream);
       setShowCamera(true);
-      
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        
-        // Ensure video plays after setting source
-        videoRef.current.onloadedmetadata = () => {
-          console.log('Video metadata loaded');
-          videoRef.current?.play().catch((playError) => {
-            console.error('Error playing video:', playError);
-          });
-        };
-      }
     } catch (error) {
       console.error('Camera access error:', error);
       
@@ -74,6 +62,35 @@ const BusinessCardScanner = ({ isOpen, onOpenChange, onContactExtracted }: Busin
       });
     }
   };
+
+  // Effect to attach camera stream to video element when camera is shown
+  useEffect(() => {
+    if (showCamera && cameraStream && videoRef.current) {
+      console.log('Attaching stream to video element...');
+      const video = videoRef.current;
+      
+      video.srcObject = cameraStream;
+      
+      video.onloadedmetadata = () => {
+        console.log('Video metadata loaded, attempting to play...');
+        video.play().then(() => {
+          console.log('Video is now playing');
+        }).catch((playError) => {
+          console.error('Error playing video:', playError);
+        });
+      };
+    }
+  }, [showCamera, cameraStream]);
+
+  // Cleanup effect for camera stream
+  useEffect(() => {
+    return () => {
+      if (cameraStream) {
+        console.log('Cleaning up camera stream...');
+        cameraStream.getTracks().forEach(track => track.stop());
+      }
+    };
+  }, [cameraStream]);
 
   const stopCamera = () => {
     if (cameraStream) {
@@ -242,6 +259,9 @@ const BusinessCardScanner = ({ isOpen, onOpenChange, onContactExtracted }: Busin
             <Camera className="w-5 h-5" />
             Scan Business Card
           </DialogTitle>
+          <DialogDescription>
+            Extract contact information from business cards by taking a photo or uploading an image.
+          </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4">
