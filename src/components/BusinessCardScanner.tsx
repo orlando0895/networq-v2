@@ -301,15 +301,6 @@ const BusinessCardScanner = ({ isOpen, onOpenChange, onContactExtracted }: Busin
                   style={{ objectFit: 'cover' }}
                 />
                 <canvas ref={canvasRef} className="hidden" />
-                
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={stopCamera}
-                  className="absolute top-2 right-2"
-                >
-                  <X className="w-4 h-4" />
-                </Button>
               </div>
               
               <div className="flex gap-2">
