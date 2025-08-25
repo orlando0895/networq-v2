@@ -296,7 +296,9 @@ const BusinessCardScanner = ({ isOpen, onOpenChange, onContactExtracted }: Busin
                   ref={videoRef}
                   autoPlay
                   playsInline
-                  className="w-full rounded-lg"
+                  muted
+                  className="w-full rounded-lg bg-black min-h-[300px]"
+                  style={{ objectFit: 'cover' }}
                 />
                 <canvas ref={canvasRef} className="hidden" />
                 
