@@ -22,6 +22,13 @@ const BusinessCardScanner = ({ isOpen, onOpenChange, onContactExtracted }: Busin
 
   const startCamera = async () => {
     try {
+      console.log('Requesting camera access...');
+      
+      // Check if mediaDevices is supported
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        throw new Error('Camera is not supported on this device');
+      }
+
       const stream = await navigator.mediaDevices.getUserMedia({ 
         video: { 
           facingMode: 'environment',
@@ -29,16 +36,40 @@ const BusinessCardScanner = ({ isOpen, onOpenChange, onContactExtracted }: Busin
           height: { ideal: 720 }
         } 
       });
+      
+      console.log('Camera stream acquired:', stream);
       setCameraStream(stream);
       setShowCamera(true);
       
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
+        
+        // Ensure video plays after setting source
+        videoRef.current.onloadedmetadata = () => {
+          console.log('Video metadata loaded');
+          videoRef.current?.play().catch((playError) => {
+            console.error('Error playing video:', playError);
+          });
+        };
       }
     } catch (error) {
+      console.error('Camera access error:', error);
+      
+      let errorMessage = "Could not access camera. Please try uploading an image instead.";
+      
+      if (error instanceof Error) {
+        if (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError') {
+          errorMessage = "Camera permission denied. Please allow camera access and try again.";
+        } else if (error.name === 'NotFoundError' || error.name === 'DevicesNotFoundError') {
+          errorMessage = "No camera found on this device. Please try uploading an image instead.";
+        } else if (error.name === 'NotSupportedError') {
+          errorMessage = "Camera is not supported on this device. Please try uploading an image instead.";
+        }
+      }
+      
       toast({
         title: "Camera Error",
-        description: "Could not access camera. Please try uploading an image instead.",
+        description: errorMessage,
         variant: "destructive"
       });
     }
