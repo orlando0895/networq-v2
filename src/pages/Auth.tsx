@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { Apple } from 'lucide-react';
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -83,10 +84,11 @@ const Auth = () => {
           description: "Please check your email to verify your account.",
         });
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const err = error as Error;
       toast({
         title: "Error",
-        description: error.message || "An error occurred during authentication.",
+        description: err.message || "An error occurred during authentication.",
         variant: "destructive",
       });
     } finally {
@@ -105,11 +107,31 @@ const Auth = () => {
       });
 
       if (error) throw error;
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const err = error as Error;
       toast({
         title: "Error",
-        description: error.message || "An error occurred with Google sign in.",
+        description: err.message || "An error occurred with Google sign in.",
         variant: "destructive",
+      });
+      setLoading(false);
+    }
+  };
+
+  const handleAppleAuth = async () => {
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'apple',
+        options: { redirectTo: `${window.location.origin}/app` },
+      });
+      if (error) throw error;
+    } catch (error: unknown) {
+      const err = error as Error;
+      toast({
+        title: 'Error',
+        description: err.message || 'An error occurred with Apple sign in.',
+        variant: 'destructive',
       });
       setLoading(false);
     }
@@ -133,10 +155,11 @@ const Auth = () => {
       
       setIsResetPassword(false);
       setEmail('');
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const err = error as Error;
       toast({
         title: "Error",
-        description: error.message || "An error occurred while sending reset email.",
+        description: err.message || "An error occurred while sending reset email.",
         variant: "destructive",
       });
     } finally {
@@ -252,10 +275,10 @@ const Auth = () => {
                 </div>
               </div>
               
-              <Button 
-                type="button" 
-                variant="outline" 
-                className="w-full" 
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full"
                 onClick={handleGoogleAuth}
                 disabled={loading}
               >
@@ -278,6 +301,17 @@ const Auth = () => {
                   />
                 </svg>
                 {loading ? 'Please wait...' : 'Continue with Google'}
+              </Button>
+
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full mt-2"
+                onClick={handleAppleAuth}
+                disabled={loading}
+              >
+                <Apple className="mr-2 h-4 w-4" />
+                {loading ? 'Please wait...' : 'Continue with Apple'}
               </Button>
             </>
           )}
