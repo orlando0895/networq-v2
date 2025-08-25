@@ -349,8 +349,8 @@ const LandingPage = () => {
                       <div className="icon-glow"></div>
                     </div>
                     <div className="benefit-content">
-                      <span className="benefit-title">Keep context by event</span>
-                      <span className="benefit-description">Never lose track of where you met</span>
+                      <span className="benefit-title">1:1 and group chats</span>
+                      <span className="benefit-description">Direct messaging with your contacts</span>
                     </div>
                   </div>
                   <div className="benefit-item interactive-benefit" data-benefit="reminders">
@@ -359,8 +359,8 @@ const LandingPage = () => {
                       <div className="icon-glow"></div>
                     </div>
                     <div className="benefit-content">
-                      <span className="benefit-title">Reminders to follow up</span>
-                      <span className="benefit-description">Smart notifications at the right time</span>
+                      <span className="benefit-title">Event discussion threads</span>
+                      <span className="benefit-description">Chat about events with other attendees</span>
                     </div>
                   </div>
                   <div className="benefit-item interactive-benefit" data-benefit="teams">
@@ -369,8 +369,8 @@ const LandingPage = () => {
                       <div className="icon-glow"></div>
                     </div>
                     <div className="benefit-content">
-                      <span className="benefit-title">Group threads for teams</span>
-                      <span className="benefit-description">Collaborate with your entire team</span>
+                      <span className="benefit-title">Search and mute conversations</span>
+                      <span className="benefit-description">Stay organized with smart chat controls</span>
                     </div>
                   </div>
                 </div>
@@ -406,8 +406,8 @@ const LandingPage = () => {
                       <div className="icon-glow"></div>
                     </div>
                     <div className="benefit-content">
-                      <span className="benefit-title">Works with any camera</span>
-                      <span className="benefit-description">Universal compatibility across all devices</span>
+                      <span className="benefit-title">Save to contacts in one tap</span>
+                      <span className="benefit-description">Instantly add contact info to your phone</span>
                     </div>
                   </div>
                   <div className="benefit-item interactive-benefit" data-benefit="share">
@@ -416,7 +416,7 @@ const LandingPage = () => {
                       <div className="icon-glow"></div>
                     </div>
                     <div className="benefit-content">
-                      <span className="benefit-title">Share link fallback</span>
+                      <span className="benefit-title">Works with any camera app</span>
                       <span className="benefit-description">Multiple ways to connect seamlessly</span>
                     </div>
                   </div>
@@ -519,8 +519,8 @@ const LandingPage = () => {
                       <div className="icon-glow"></div>
                     </div>
                     <div className="benefit-content">
-                      <span className="benefit-title">Upload or snap</span>
-                      <span className="benefit-description">Flexible capture from gallery or camera</span>
+                      <span className="benefit-title">Scan or upload business cards</span>
+                      <span className="benefit-description">Camera capture or gallery upload</span>
                     </div>
                   </div>
                   <div className="benefit-item interactive-benefit" data-benefit="edit">
@@ -529,8 +529,8 @@ const LandingPage = () => {
                       <div className="icon-glow"></div>
                     </div>
                     <div className="benefit-content">
-                      <span className="benefit-title">Fix fields before saving</span>
-                      <span className="benefit-description">Review and perfect extracted information</span>
+                      <span className="benefit-title">AI extracts contact details</span>
+                      <span className="benefit-description">Auto-fills name, email, phone, and company</span>
                     </div>
                   </div>
                   <div className="benefit-item interactive-benefit" data-benefit="link">
@@ -539,8 +539,8 @@ const LandingPage = () => {
                       <div className="icon-glow"></div>
                     </div>
                     <div className="benefit-content">
-                      <span className="benefit-title">Links to the event</span>
-                      <span className="benefit-description">Contextual connection to where you met</span>
+                      <span className="benefit-title">Create contact from scan</span>
+                      <span className="benefit-description">Save directly to your contact list</span>
                     </div>
                   </div>
                 </div>
@@ -576,8 +576,8 @@ const LandingPage = () => {
                       <div className="icon-glow"></div>
                     </div>
                     <div className="benefit-content">
-                      <span className="benefit-title">Tag by industry</span>
-                      <span className="benefit-description">Categorize contacts for targeted outreach</span>
+                      <span className="benefit-title">Filter by tier and connection method</span>
+                      <span className="benefit-description">Organize contacts by priority level</span>
                     </div>
                   </div>
                   <div className="benefit-item interactive-benefit" data-benefit="views">
@@ -586,8 +586,8 @@ const LandingPage = () => {
                       <div className="icon-glow"></div>
                     </div>
                     <div className="benefit-content">
-                      <span className="benefit-title">Saved views</span>
-                      <span className="benefit-description">Custom filters for instant access</span>
+                      <span className="benefit-title">Export contacts to CSV or VCF</span>
+                      <span className="benefit-description">Backup and integrate with other systems</span>
                     </div>
                   </div>
                   <div className="benefit-item interactive-benefit" data-benefit="followup">
@@ -596,8 +596,8 @@ const LandingPage = () => {
                       <div className="icon-glow"></div>
                     </div>
                     <div className="benefit-content">
-                      <span className="benefit-title">Follow-up filters</span>
-                      <span className="benefit-description">Never miss important connections</span>
+                      <span className="benefit-title">Notes and tier management</span>
+                      <span className="benefit-description">Track relationship status and notes</span>
                     </div>
                   </div>
                 </div>
@@ -648,27 +648,27 @@ const LandingPage = () => {
               <div className="step-header">
                 <div className="step-number">1</div>
                 <QrCode className="step-icon" />
-                <h3>Share Contacts Instantly</h3>
+                <h3>Share Your Contact Card</h3>
               </div>
-              <p id="step-1-desc">Generate your QR code or scan theirs. Contact details transfer in seconds, even without internet.</p>
+              <p id="step-1-desc">Create your digital business card and share via QR code. Recipients save to their phone contacts instantly.</p>
             </div>
             
             <div className="step-card animate-on-scroll bg-gray-900/80 backdrop-blur rounded-2xl p-8 text-center transition-all duration-300 hover:bg-gray-800/90 hover:scale-105 hover:shadow-xl hover:shadow-blue-500/20 cursor-pointer" aria-describedby="step-2-desc">
               <div className="step-header">
                 <div className="step-number">2</div>
-                <Users className="step-icon" />
-                <h3>Stay Organized Automatically</h3>
+                <Camera className="step-icon" />
+                <h3>Scan Business Cards</h3>
               </div>
-              <p id="step-2-desc">Contacts are sorted by events, industry, and tags. No more scattered business cards.</p>
+              <p id="step-2-desc">Use AI-powered scanning to extract contact details from business cards and save them to your contact list.</p>
             </div>
             
             <div className="step-card animate-on-scroll bg-gray-900/80 backdrop-blur rounded-2xl p-8 text-center transition-all duration-300 hover:bg-gray-800/90 hover:scale-105 hover:shadow-xl hover:shadow-blue-500/20 cursor-pointer" aria-describedby="step-3-desc">
               <div className="step-header">
                 <div className="step-number">3</div>
                 <MessageCircle className="step-icon" />
-                <h3>Follow Up Effortlessly</h3>
+                <h3>Stay Connected</h3>
               </div>
-              <p id="step-3-desc">Send messages, schedule meetings, and nurture relationships—all in one place.</p>
+              <p id="step-3-desc">Message your contacts directly, organize by tier and connection method, and export when needed.</p>
             </div>
           </div>
         </div>
