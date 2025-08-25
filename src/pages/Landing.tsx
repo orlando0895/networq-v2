@@ -193,7 +193,7 @@ const LandingPage = () => {
               <a href="#pricing" className="nav-link">Pricing</a>
               <Link to="/support" className="nav-link">Support</Link>
               <Link to="/auth" className="nav-link">Sign in</Link>
-              <a href="#waitlist" className="btn-primary nav-cta">Get Started</a>
+              <Link to="/auth" className="btn-primary nav-cta">Get Started</Link>
             </nav>
           </div>
         </div>
@@ -215,13 +215,13 @@ const LandingPage = () => {
               </p>
               <div className="hero-cta animate-fade-up-delay">
                 <div className="flex flex-col sm:flex-row gap-4">
-                  <a 
-                    href="#waitlist"
+                  <Link 
+                    to="/auth"
                     className="btn-primary hero-btn btn-3d" 
                   >
                     <span>Get Started Free</span>
                     <ArrowRight className="btn-icon" />
-                  </a>
+                  </Link>
                 </div>
                 <p className="perfect-for-text mt-8" aria-live="polite">
                   Perfect for{" "}
@@ -763,10 +763,10 @@ const LandingPage = () => {
                   </div>
                 </div>
               </div>
-              <a href="#waitlist" className="btn-primary pricing-cta w-full inline-flex items-center justify-center gap-2 text-lg font-semibold py-4 shadow-xl">
+              <Link to="/auth" className="btn-primary pricing-cta w-full inline-flex items-center justify-center gap-2 text-lg font-semibold py-4 shadow-xl">
                 <span>Start Networking Free</span>
                 <ArrowRight className="w-5 h-5" />
-              </a>
+              </Link>
               <p className="text-sm text-blue-200/70 mt-6 font-medium relative z-10">No commitments. Upgrade only when you're ready.</p>
             </div>
             
@@ -785,15 +785,15 @@ const LandingPage = () => {
               Join thousands of professionals who never lose connections again.
               Start building better relationships today.
             </p>
-            <form className="waitlist-form-3d" onSubmit={handleWaitlistSignup}>
+            <div className="waitlist-form-3d">
               <div className="form-group-3d">
-                <button type="submit" className="btn-primary btn-revolution hover-scale animate-fade-in transition-all duration-300 hover:animate-pulse" disabled={isSubmitting}>
-                  <span>{isSubmitting ? "Getting Started..." : "Get Started Free"}</span>
+                <Link to="/auth" className="btn-primary btn-revolution hover-scale animate-fade-in transition-all duration-300 hover:animate-pulse">
+                  <span>Get Started Free</span>
                   <ArrowRight className="btn-icon" />
                   <div className="btn-particles"></div>
-                </button>
+                </Link>
               </div>
-            </form>
+            </div>
             <p className="waitlist-note animate-on-scroll">
               Free forever plan available. No credit card required.
             </p>
