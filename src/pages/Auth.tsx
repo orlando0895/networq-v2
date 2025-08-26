@@ -122,13 +122,19 @@ const Auth = () => {
         provider: 'apple',
         options: {
           redirectTo: `${window.location.origin}/app`,
+          scopes: 'name email'
         }
       });
 
-      if (error) throw error;
+      if (error) {
+        if (error.message.includes('provider not enabled')) {
+          throw new Error('Apple sign-in is not configured. Please contact support.');
+        }
+        throw error;
+      }
     } catch (error: any) {
       toast({
-        title: "Error", 
+        title: "Apple Sign-in Error", 
         description: error.message || "An error occurred with Apple sign in.",
         variant: "destructive",
       });
