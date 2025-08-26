@@ -24,6 +24,28 @@ const Auth = () => {
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search);
     const emailParam = searchParams.get('email');
+    
+    // DIAGNOSTIC: Check for auth errors from URL params
+    const error = searchParams.get('error');
+    const errorDescription = searchParams.get('error_description');
+    const errorCode = searchParams.get('error_code');
+    
+    if (error) {
+      console.error('Auth URL Error:', {
+        error,
+        errorDescription,
+        errorCode,
+        fullURL: window.location.href,
+        params: Object.fromEntries(searchParams.entries())
+      });
+      
+      toast({
+        title: "Authentication Error",
+        description: errorDescription || error || "An authentication error occurred",
+        variant: "destructive",
+      });
+    }
+    
     if (emailParam) {
       setEmail(emailParam);
       // Clean up URL
@@ -35,15 +57,26 @@ const Auth = () => {
       return;
     }
 
-    // Listen for auth state changes
+    // Listen for auth state changes with verbose logging
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log('Auth state change:', {
+        event,
+        user: session?.user?.id,
+        provider: session?.user?.app_metadata?.provider,
+        timestamp: new Date().toISOString()
+      });
+      
       if (event === 'SIGNED_IN' && session) {
         navigate('/app');
+      }
+      
+      if (event === 'TOKEN_REFRESHED') {
+        console.log('Token refreshed successfully');
       }
     });
 
     return () => subscription.unsubscribe();
-  }, [user, navigate]);
+  }, [user, navigate, toast]);
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -117,22 +150,26 @@ const Auth = () => {
 
   const handleAppleAuth = async () => {
     setLoading(true);
+    console.log('Starting Apple auth with redirect:', `${window.location.origin}/auth`);
+    
     try {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'apple',
         options: {
-          redirectTo: `${window.location.origin}/app`,
+          redirectTo: `${window.location.origin}/auth`, // Changed to /auth for easier debugging
           scopes: 'name email'
         }
       });
 
       if (error) {
+        console.error('Apple OAuth initiation error:', error);
         if (error.message.includes('provider not enabled')) {
           throw new Error('Apple sign-in is not configured. Please contact support.');
         }
         throw error;
       }
     } catch (error: any) {
+      console.error('Apple auth error:', error);
       toast({
         title: "Apple Sign-in Error", 
         description: error.message || "An error occurred with Apple sign in.",
