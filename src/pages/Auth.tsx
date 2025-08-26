@@ -150,13 +150,13 @@ const Auth = () => {
 
   const handleAppleAuth = async () => {
     setLoading(true);
-    console.log('Starting Apple auth with redirect:', `${window.location.origin}/auth`);
+    console.log('Starting Apple auth with redirect:', `${window.location.origin}/app`);
     
     try {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'apple',
         options: {
-          redirectTo: `${window.location.origin}/auth`, // Changed to /auth for easier debugging
+          redirectTo: `${window.location.origin}/app`,
           scopes: 'name email'
         }
       });
@@ -348,7 +348,7 @@ const Auth = () => {
                 <Button 
                   type="button" 
                   variant="outline" 
-                  className="w-full bg-black text-white hover:bg-gray-800 border-black" 
+                  className="w-full bg-foreground text-background hover:bg-foreground/90 border-foreground" 
                   onClick={handleAppleAuth}
                   disabled={loading}
                 >
