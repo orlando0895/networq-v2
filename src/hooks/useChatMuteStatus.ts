@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
 export function useChatMuteStatus(conversationId: string) {
   const [isMuted, setIsMuted] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const channelRef = useRef<any>(null);
 
   useEffect(() => {
     if (!conversationId) return;
@@ -38,9 +39,15 @@ export function useChatMuteStatus(conversationId: string) {
 
     fetchMuteStatus();
 
-    // Set up real-time subscription for mute status changes
+    // Clean up any existing channel first
+    if (channelRef.current) {
+      supabase.removeChannel(channelRef.current);
+      channelRef.current = null;
+    }
+
+    // Set up real-time subscription for mute status changes with unique channel name
     const subscription = supabase
-      .channel(`mute-status-${conversationId}`)
+      .channel(`mute-status-${conversationId}-${Date.now()}`)
       .on(
         'postgres_changes',
         {
@@ -63,8 +70,14 @@ export function useChatMuteStatus(conversationId: string) {
       )
       .subscribe();
 
+    // Store the channel reference
+    channelRef.current = subscription;
+
     return () => {
-      supabase.removeChannel(subscription);
+      if (channelRef.current) {
+        supabase.removeChannel(channelRef.current);
+        channelRef.current = null;
+      }
     };
   }, [conversationId]);
 

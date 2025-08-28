@@ -236,7 +236,7 @@ export const useContacts = () => {
     if (!user) return;
 
     const channel = supabase
-      .channel('contacts-changes')
+      .channel(`contacts-changes-${user.id}`)
       .on(
         'postgres_changes',
         {
