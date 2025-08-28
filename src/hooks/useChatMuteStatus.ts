@@ -1,10 +1,10 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { subscriptionManager } from '@/lib/supabase-subscriptions';
 
 export function useChatMuteStatus(conversationId: string) {
   const [isMuted, setIsMuted] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const channelRef = useRef<any>(null);
 
   useEffect(() => {
     if (!conversationId) return;
@@ -39,45 +39,37 @@ export function useChatMuteStatus(conversationId: string) {
 
     fetchMuteStatus();
 
-    // Clean up any existing channel first
-    if (channelRef.current) {
-      supabase.removeChannel(channelRef.current);
-      channelRef.current = null;
-    }
-
-    // Set up real-time subscription for mute status changes with unique channel name
-    const subscription = supabase
-      .channel(`mute-status-${conversationId}-${Date.now()}`)
-      .on(
-        'postgres_changes',
-        {
-          event: 'UPDATE',
-          schema: 'public',
-          table: 'conversation_participants',
-          filter: `conversation_id=eq.${conversationId}`
-        },
-        (payload) => {
-          // Check if this update affects the current user
-          supabase.auth.getUser().then(({ data: currentUser }) => {
-            if (currentUser.user && payload.new.user_id === currentUser.user.id) {
-              const mutedUntil = payload.new.muted_until ? new Date(payload.new.muted_until) : null;
-              const isCurrentlyMuted = payload.new.notifications_enabled === false || 
-                (mutedUntil && mutedUntil > new Date());
-              setIsMuted(isCurrentlyMuted);
-            }
-          });
-        }
-      )
-      .subscribe();
-
-    // Store the channel reference
-    channelRef.current = subscription;
+    // Use subscription manager to prevent duplicate subscriptions
+    const channelName = `mute-status-${conversationId}`;
+    const channel = subscriptionManager.getOrCreateChannel(channelName, () => 
+      supabase
+        .channel(channelName)
+        .on(
+          'postgres_changes',
+          {
+            event: 'UPDATE',
+            schema: 'public',
+            table: 'conversation_participants',
+            filter: `conversation_id=eq.${conversationId}`
+          },
+          (payload) => {
+            // Check if this update affects the current user
+            supabase.auth.getUser().then(({ data: currentUser }) => {
+              if (currentUser.user && payload.new.user_id === currentUser.user.id) {
+                const mutedUntil = payload.new.muted_until ? new Date(payload.new.muted_until) : null;
+                const isCurrentlyMuted = payload.new.notifications_enabled === false || 
+                  (mutedUntil && mutedUntil > new Date());
+                setIsMuted(isCurrentlyMuted);
+              }
+            });
+          }
+        )
+        .subscribe()
+    );
 
     return () => {
-      if (channelRef.current) {
-        supabase.removeChannel(channelRef.current);
-        channelRef.current = null;
-      }
+      // Don't remove the channel here - let the manager handle it
+      // This prevents issues with multiple components using the same channel
     };
   }, [conversationId]);
 
