@@ -10,17 +10,17 @@ interface MobileLayoutProps {
 
 const MobileLayout = ({ children, className, header, noPadding = false }: MobileLayoutProps) => {
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="min-h-screen-safe flex flex-col bg-background pt-safe-top">
       {/* Header */}
       {header && (
-        <header className="sticky top-0 z-40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
+        <header className="sticky top-0 z-40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border px-safe">
           {header}
         </header>
       )}
       
       {/* Main Content */}
       <main className={cn(
-        "flex-1 pb-safe-bottom",
+        "flex-1 pb-safe-bottom px-safe",
         // Mobile-first padding
         noPadding ? "" : "px-4 py-4",
         // Add bottom padding for mobile navigation
