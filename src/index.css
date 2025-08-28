@@ -180,19 +180,19 @@
 @layer utilities {
   /* Safe area utilities for notches and system UI */
   .pb-safe-bottom {
-    padding-bottom: env(safe-area-inset-bottom);
+    padding-bottom: calc(env(safe-area-inset-bottom) + 0.5rem);
   }
   
   .pt-safe-top {
-    padding-top: env(safe-area-inset-top);
+    padding-top: calc(env(safe-area-inset-top) + 0.5rem);
   }
   
   .pl-safe-left {
-    padding-left: env(safe-area-inset-left);
+    padding-left: calc(env(safe-area-inset-left) + 0.75rem);
   }
   
   .pr-safe-right {
-    padding-right: env(safe-area-inset-right);
+    padding-right: calc(env(safe-area-inset-right) + 0.75rem);
   }
 
   /* Margin variants for safe areas */
@@ -212,22 +212,22 @@
     margin-right: env(safe-area-inset-right);
   }
 
-  /* Combined safe area insets */
+  /* Combined safe area insets with extra padding */
   .p-safe {
-    padding-top: env(safe-area-inset-top);
-    padding-bottom: env(safe-area-inset-bottom);
-    padding-left: env(safe-area-inset-left);
-    padding-right: env(safe-area-inset-right);
+    padding-top: calc(env(safe-area-inset-top) + 0.5rem);
+    padding-bottom: calc(env(safe-area-inset-bottom) + 0.5rem);
+    padding-left: calc(env(safe-area-inset-left) + 0.75rem);
+    padding-right: calc(env(safe-area-inset-right) + 0.75rem);
   }
 
   .px-safe {
-    padding-left: env(safe-area-inset-left);
-    padding-right: env(safe-area-inset-right);
+    padding-left: calc(env(safe-area-inset-left) + 0.75rem);
+    padding-right: calc(env(safe-area-inset-right) + 0.75rem);
   }
 
   .py-safe {
-    padding-top: env(safe-area-inset-top);
-    padding-bottom: env(safe-area-inset-bottom);
+    padding-top: calc(env(safe-area-inset-top) + 0.5rem);
+    padding-bottom: calc(env(safe-area-inset-bottom) + 0.5rem);
   }
 
   /* Min height accounting for safe areas */
