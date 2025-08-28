@@ -148,9 +148,10 @@ export function ChatWindow({ conversationId, currentUserId, onBack, onMessageSen
 
     fetchData();
 
-    // Set up real-time subscription for new messages
+    // Set up real-time subscription for new messages with proper cleanup
+    const channelName = `chat-${conversationId}-${currentUserId}`;
     const messagesChannel = supabase
-      .channel(`messages-${conversationId}`)
+      .channel(channelName)
       .on(
         'postgres_changes',
         {
@@ -161,6 +162,8 @@ export function ChatWindow({ conversationId, currentUserId, onBack, onMessageSen
         },
         async (payload) => {
           const newMessage = payload.new as Message;
+          console.log('New message in chat:', newMessage);
+          
           // Only add if it's not from current user (to avoid duplicates)
           if (newMessage.sender_id !== currentUserId) {
             // Fetch sender info for the new message

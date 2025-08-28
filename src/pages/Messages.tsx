@@ -289,15 +289,19 @@ const Messages = ({ targetConversationId }: MessagesProps) => {
 
     fetchConversations();
 
+    // Only subscribe to messages when not viewing a specific conversation
+    // This prevents duplicate subscriptions with ChatWindow
+    if (selectedConversationId) return;
+
     // Clean up any existing channel first
     if (channelRef.current) {
-      channelRef.current.unsubscribe();
+      supabase.removeChannel(channelRef.current);
       channelRef.current = null;
     }
 
     // Set up optimized real-time subscription for messages with unique channel name
     const messagesChannel = supabase
-      .channel(`messages-${user.id}-${Date.now()}`)
+      .channel(`messages-overview-${user.id}`)
       .on(
         'postgres_changes',
         {
@@ -307,7 +311,7 @@ const Messages = ({ targetConversationId }: MessagesProps) => {
         },
         (payload) => {
           const newMessage = payload.new;
-          console.log('New message received:', newMessage);
+          console.log('New message received in overview:', newMessage);
           
           // Update conversation state immediately
           setConversations(prev => {
@@ -347,11 +351,11 @@ const Messages = ({ targetConversationId }: MessagesProps) => {
 
     return () => {
       if (channelRef.current) {
-        channelRef.current.unsubscribe();
+        supabase.removeChannel(channelRef.current);
         channelRef.current = null;
       }
     };
-  }, [user]);
+  }, [user, selectedConversationId]);
 
   const handleDeleteConversation = async (conversationId: string, deleteType: 'hide' | 'delete') => {
     try {
