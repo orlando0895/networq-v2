@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { MobileLayout, PageHeader } from '@/components/MobileLayout';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
+import { subscriptionManager } from '@/lib/supabase-subscriptions';
 import { useToast } from '@/hooks/use-toast';
 import CreateEventForm from '@/components/CreateEventForm';
 import PremiumUpgradeDialog from '@/components/PremiumUpgradeDialog';
@@ -122,27 +123,30 @@ const Events = () => {
   useEffect(() => {
     if (events.length === 0) return;
 
-    const channel = supabase
-      .channel('event-updates')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'event_attendees'
-        },
-        async (payload) => {
-          // Refetch events when attendance changes to get updated counts
-          const eventIds = events.map(e => e.id);
-          if (payload.new && eventIds.includes((payload.new as any).event_id)) {
-            await fetchEvents();
+    const channelName = `event-updates`;
+    const channel = subscriptionManager.getOrCreateChannel(channelName, () =>
+      supabase
+        .channel(channelName)
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'event_attendees'
+          },
+          async (payload) => {
+            // Refetch events when attendance changes to get updated counts
+            const eventIds = events.map(e => e.id);
+            if (payload.new && eventIds.includes((payload.new as any).event_id)) {
+              await fetchEvents();
+            }
           }
-        }
-      )
-      .subscribe();
+        )
+        .subscribe()
+    );
 
     return () => {
-      supabase.removeChannel(channel);
+      // Don't remove the channel here - let the manager handle it
     };
   }, [events]);
 

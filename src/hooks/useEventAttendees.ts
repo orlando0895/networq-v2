@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { subscriptionManager } from '@/lib/supabase-subscriptions';
 import { useAuth } from '@/contexts/AuthContext';
 
 interface EventAttendee {
@@ -89,24 +90,27 @@ export const useEventAttendees = (eventId: string) => {
     fetchAttendees();
 
     // Set up real-time subscription for attendee changes
-    const channel = supabase
-      .channel(`event-attendees-${eventId}`)
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'event_attendees',
-          filter: `event_id=eq.${eventId}`,
-        },
-        () => {
-          fetchAttendees();
-        }
-      )
-      .subscribe();
+    const channelName = `event-attendees-${eventId}`;
+    const channel = subscriptionManager.getOrCreateChannel(channelName, () =>
+      supabase
+        .channel(channelName)
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'event_attendees',
+            filter: `event_id=eq.${eventId}`,
+          },
+          () => {
+            fetchAttendees();
+          }
+        )
+        .subscribe()
+    );
 
     return () => {
-      supabase.removeChannel(channel);
+      // Don't remove the channel here - let the manager handle it
     };
   }, [eventId]);
 

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { subscriptionManager } from '@/lib/supabase-subscriptions';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 
@@ -160,24 +161,27 @@ export const useEventComments = (eventId: string) => {
     fetchComments();
 
     // Set up real-time subscription
-    const channel = supabase
-      .channel(`event-comments-${eventId}`)
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'event_comments',
-          filter: `event_id=eq.${eventId}`,
-        },
-        () => {
-          fetchComments();
-        }
-      )
-      .subscribe();
+    const channelName = `event-comments-${eventId}`;
+    const channel = subscriptionManager.getOrCreateChannel(channelName, () =>
+      supabase
+        .channel(channelName)
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'event_comments',
+            filter: `event_id=eq.${eventId}`,
+          },
+          () => {
+            fetchComments();
+          }
+        )
+        .subscribe()
+    );
 
     return () => {
-      supabase.removeChannel(channel);
+      // Don't remove the channel here - let the manager handle it
     };
   }, [eventId]);
 

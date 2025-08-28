@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { subscriptionManager } from '@/lib/supabase-subscriptions';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { useMutualContacts } from '@/hooks/useMutualContacts';
@@ -235,59 +236,62 @@ export const useContacts = () => {
   useEffect(() => {
     if (!user) return;
 
-    const channel = supabase
-      .channel(`contacts-changes-${user.id}`)
-      .on(
-        'postgres_changes',
-        {
-          event: 'UPDATE',
-          schema: 'public',
-          table: 'contacts',
-          filter: `user_id=eq.${user.id}`
-        },
-        (payload) => {
-          console.log('🔄 Contact updated via realtime:', payload);
-          // Update the specific contact in the list
-          setContacts(prev => prev.map(contact => 
-            contact.id === payload.new.id ? payload.new as Contact : contact
-          ));
-        }
-      )
-      .on(
-        'postgres_changes',
-        {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'contacts',
-          filter: `user_id=eq.${user.id}`
-        },
-        (payload) => {
-          console.log('🔄 Contact added via realtime:', payload);
-          // Add new contact to the list if it's not already there
-          setContacts(prev => {
-            const exists = prev.some(contact => contact.id === payload.new.id);
-            return exists ? prev : [payload.new as Contact, ...prev];
-          });
-        }
-      )
-      .on(
-        'postgres_changes',
-        {
-          event: 'DELETE',
-          schema: 'public',
-          table: 'contacts',
-          filter: `user_id=eq.${user.id}`
-        },
-        (payload) => {
-          console.log('🔄 Contact deleted via realtime:', payload);
-          // Remove contact from the list
-          setContacts(prev => prev.filter(contact => contact.id !== payload.old.id));
-        }
-      )
-      .subscribe();
+    const channelName = `contacts-changes-${user.id}`;
+    const channel = subscriptionManager.getOrCreateChannel(channelName, () =>
+      supabase
+        .channel(channelName)
+        .on(
+          'postgres_changes',
+          {
+            event: 'UPDATE',
+            schema: 'public',
+            table: 'contacts',
+            filter: `user_id=eq.${user.id}`
+          },
+          (payload) => {
+            console.log('🔄 Contact updated via realtime:', payload);
+            // Update the specific contact in the list
+            setContacts(prev => prev.map(contact => 
+              contact.id === payload.new.id ? payload.new as Contact : contact
+            ));
+          }
+        )
+        .on(
+          'postgres_changes',
+          {
+            event: 'INSERT',
+            schema: 'public',
+            table: 'contacts',
+            filter: `user_id=eq.${user.id}`
+          },
+          (payload) => {
+            console.log('🔄 Contact added via realtime:', payload);
+            // Add new contact to the list if it's not already there
+            setContacts(prev => {
+              const exists = prev.some(contact => contact.id === payload.new.id);
+              return exists ? prev : [payload.new as Contact, ...prev];
+            });
+          }
+        )
+        .on(
+          'postgres_changes',
+          {
+            event: 'DELETE',
+            schema: 'public',
+            table: 'contacts',
+            filter: `user_id=eq.${user.id}`
+          },
+          (payload) => {
+            console.log('🔄 Contact deleted via realtime:', payload);
+            // Remove contact from the list
+            setContacts(prev => prev.filter(contact => contact.id !== payload.old.id));
+          }
+        )
+        .subscribe()
+    );
 
     return () => {
-      supabase.removeChannel(channel);
+      // Don't remove the channel here - let the manager handle it
     };
   }, [user]);
 

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { subscriptionManager } from '@/lib/supabase-subscriptions';
 import { useToast } from '@/hooks/use-toast';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -148,42 +149,44 @@ export function ChatWindow({ conversationId, currentUserId, onBack, onMessageSen
 
     fetchData();
 
-    // Set up real-time subscription for new messages with proper cleanup
+    // Set up real-time subscription for new messages using subscription manager
     const channelName = `chat-${conversationId}-${currentUserId}`;
-    const messagesChannel = supabase
-      .channel(channelName)
-      .on(
-        'postgres_changes',
-        {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'messages',
-          filter: `conversation_id=eq.${conversationId}`
-        },
-        async (payload) => {
-          const newMessage = payload.new as Message;
-          console.log('New message in chat:', newMessage);
-          
-          // Only add if it's not from current user (to avoid duplicates)
-          if (newMessage.sender_id !== currentUserId) {
-            // Fetch sender info for the new message
-            const { data: senderData } = await supabase
-              .from('profiles')
-              .select('full_name, email')
-              .eq('id', newMessage.sender_id)
-              .single();
+    const messagesChannel = subscriptionManager.getOrCreateChannel(channelName, () => 
+      supabase
+        .channel(channelName)
+        .on(
+          'postgres_changes',
+          {
+            event: 'INSERT',
+            schema: 'public',
+            table: 'messages',
+            filter: `conversation_id=eq.${conversationId}`
+          },
+          async (payload) => {
+            const newMessage = payload.new as Message;
+            console.log('New message in chat:', newMessage);
+            
+            // Only add if it's not from current user (to avoid duplicates)
+            if (newMessage.sender_id !== currentUserId) {
+              // Fetch sender info for the new message
+              const { data: senderData } = await supabase
+                .from('profiles')
+                .select('full_name, email')
+                .eq('id', newMessage.sender_id)
+                .single();
 
-            setMessages(prev => [...prev, {
-              ...newMessage,
-              sender: senderData || { full_name: '', email: '' }
-            }]);
+              setMessages(prev => [...prev, {
+                ...newMessage,
+                sender: senderData || { full_name: '', email: '' }
+              }]);
+            }
           }
-        }
-      )
-      .subscribe();
+        )
+        .subscribe()
+    );
 
     return () => {
-      supabase.removeChannel(messagesChannel);
+      // Don't remove the channel here - let the manager handle it
     };
   }, [conversationId, currentUserId, toast]);
 

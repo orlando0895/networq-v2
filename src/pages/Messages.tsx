@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
+import { subscriptionManager } from '@/lib/supabase-subscriptions';
 import { ConversationList } from '@/components/ConversationList';
 import { ChatWindow } from '@/components/ChatWindow';
 import { NewMessageDialog } from '@/components/NewMessageDialog';
