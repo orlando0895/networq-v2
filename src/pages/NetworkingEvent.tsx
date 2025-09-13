@@ -81,11 +81,11 @@ const NetworkingEvent = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-black">`
       {/* Subtle animated background */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/3 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary/3 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '3s' }}></div>
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '3s' }}></div>
       </div>
 
       <MobileLayout className="relative z-10">
@@ -101,7 +101,7 @@ const NetworkingEvent = () => {
             </div>
             
             <div className="space-y-8 max-w-5xl mx-auto">
-              <h1 className="text-6xl md:text-7xl font-light tracking-tight text-foreground leading-[0.9]">
+              <h1 className="text-6xl md:text-7xl font-light tracking-tight text-white leading-[0.9]">
                 The future of
                 <br />
                 <span className="font-medium bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
@@ -110,7 +110,7 @@ const NetworkingEvent = () => {
                 <br />
                 is here.
               </h1>
-              <p className="text-xl md:text-2xl text-muted-foreground font-light leading-relaxed max-w-3xl mx-auto">
+              <p className="text-xl md:text-2xl text-gray-300 font-light leading-relaxed max-w-3xl mx-auto">
                 Join the exclusive launch event in Scottsdale and experience how Networq is transforming professional connections.
               </p>
             </div>
@@ -119,22 +119,22 @@ const NetworkingEvent = () => {
           {/* Why Section */}
           <section className="space-y-20 animate-fade-in">
             <div className="text-center space-y-8 max-w-4xl mx-auto">
-              <h2 className="text-5xl md:text-6xl font-light tracking-tight text-foreground">
+              <h2 className="text-5xl md:text-6xl font-light tracking-tight text-white">
                 Why traditional networking fails
               </h2>
-              <p className="text-xl text-muted-foreground font-light leading-relaxed">
+              <p className="text-xl text-gray-300 font-light leading-relaxed">
                 Every networking event ends the same way: a pile of business cards that get forgotten.
               </p>
             </div>
             
             <div className="grid gap-1 md:grid-cols-3 max-w-6xl mx-auto">
               {networkingProblems.map((item, index) => (
-                <div key={index} className="group p-12 hover:bg-card/50 transition-all duration-300 rounded-3xl">
+                <div key={index} className="group p-12 hover:bg-white/5 transition-all duration-300 rounded-3xl">
                   <div className="space-y-6">
-                    <h3 className="text-2xl font-medium text-foreground group-hover:text-primary transition-colors">
+                    <h3 className="text-2xl font-medium text-white group-hover:text-primary transition-colors">
                       {item.problem}
                     </h3>
-                    <p className="text-lg text-muted-foreground font-light leading-relaxed">
+                    <p className="text-lg text-gray-300 font-light leading-relaxed">
                       {item.impact}
                     </p>
                     <div className="pt-4">
@@ -152,26 +152,26 @@ const NetworkingEvent = () => {
           {/* Features Section */}
           <section className="space-y-20 animate-fade-in">
             <div className="text-center space-y-8 max-w-4xl mx-auto">
-              <h2 className="text-5xl md:text-6xl font-light tracking-tight text-foreground">
+              <h2 className="text-5xl md:text-6xl font-light tracking-tight text-white">
                 Designed for simplicity
               </h2>
-              <p className="text-xl text-muted-foreground font-light leading-relaxed">
+              <p className="text-xl text-gray-300 font-light leading-relaxed">
                 Powerful networking tools that feel effortless to use.
               </p>
             </div>
             
             <div className="grid gap-1 md:grid-cols-2 max-w-6xl mx-auto">
               {appFeatures.map((feature, index) => (
-                <div key={index} className="group p-12 hover:bg-card/30 transition-all duration-500 rounded-3xl">
+                <div key={index} className="group p-12 hover:bg-white/5 transition-all duration-500 rounded-3xl">
                   <div className="space-y-8">
                     <div className="w-12 h-12 text-primary group-hover:scale-110 transition-transform duration-300">
                       {feature.icon}
                     </div>
                     <div className="space-y-4">
-                      <h3 className="text-2xl font-medium text-foreground group-hover:text-primary transition-colors">
+                      <h3 className="text-2xl font-medium text-white group-hover:text-primary transition-colors">
                         {feature.title}
                       </h3>
-                      <p className="text-lg text-muted-foreground font-light leading-relaxed">
+                      <p className="text-lg text-gray-300 font-light leading-relaxed">
                         {feature.description}
                       </p>
                     </div>
@@ -182,12 +182,12 @@ const NetworkingEvent = () => {
           </section>
 
           {/* Event Section */}
-          <section className="space-y-20 animate-fade-in bg-card/20 rounded-[4rem] p-16 md:p-24">
+          <section className="space-y-20 animate-fade-in bg-white/5 rounded-[4rem] p-16 md:p-24">
             <div className="text-center space-y-8 max-w-4xl mx-auto">
-              <h2 className="text-5xl md:text-6xl font-light tracking-tight text-foreground">
+              <h2 className="text-5xl md:text-6xl font-light tracking-tight text-white">
                 Launch event
               </h2>
-              <p className="text-xl text-muted-foreground font-light leading-relaxed">
+              <p className="text-xl text-gray-300 font-light leading-relaxed">
                 Be among the first to experience Networq with Scottsdale's most innovative professionals.
               </p>
             </div>
@@ -199,9 +199,9 @@ const NetworkingEvent = () => {
                     {highlight.icon}
                   </div>
                   <div className="space-y-2">
-                    <h3 className="text-xl font-medium text-foreground">{highlight.title}</h3>
+                    <h3 className="text-xl font-medium text-white">{highlight.title}</h3>
                     <p className="text-primary font-medium text-sm">{highlight.subtitle}</p>
-                    <p className="text-muted-foreground font-light">{highlight.description}</p>
+                    <p className="text-gray-300 font-light">{highlight.description}</p>
                   </div>
                 </div>
               ))}
@@ -211,56 +211,56 @@ const NetworkingEvent = () => {
           {/* Registration Section */}
           <section className="space-y-20 animate-fade-in">
             <div className="text-center space-y-8 max-w-4xl mx-auto">
-              <h2 className="text-5xl md:text-6xl font-light tracking-tight text-foreground">
+              <h2 className="text-5xl md:text-6xl font-light tracking-tight text-white">
                 Join the launch
               </h2>
-              <p className="text-xl text-muted-foreground font-light leading-relaxed">
+              <p className="text-xl text-gray-300 font-light leading-relaxed">
                 Secure your spot at the exclusive Networq launch event in Scottsdale.
               </p>
             </div>
             
             <div className="max-w-2xl mx-auto">
-              <Card className="border-0 bg-card/30 backdrop-blur-sm rounded-3xl overflow-hidden">
+              <Card className="border-0 bg-white/5 backdrop-blur-sm rounded-3xl overflow-hidden">
                 <CardContent className="p-12 space-y-8">
                   <div className="grid gap-6 md:grid-cols-2">
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-muted-foreground">First Name</label>
+                      <label className="text-sm font-medium text-gray-300">First Name</label>
                       <Input 
                         placeholder="John" 
-                        className="border-0 bg-background/50 rounded-2xl h-14 text-lg focus:ring-2 focus:ring-primary/20 transition-all"
+                        className="border-0 bg-white/10 rounded-2xl h-14 text-lg text-white placeholder:text-gray-400 focus:ring-2 focus:ring-primary/20 transition-all"
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-muted-foreground">Last Name</label>
+                      <label className="text-sm font-medium text-gray-300">Last Name</label>
                       <Input 
                         placeholder="Doe" 
-                        className="border-0 bg-background/50 rounded-2xl h-14 text-lg focus:ring-2 focus:ring-primary/20 transition-all"
+                        className="border-0 bg-white/10 rounded-2xl h-14 text-lg text-white placeholder:text-gray-400 focus:ring-2 focus:ring-primary/20 transition-all"
                       />
                     </div>
                   </div>
                   
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-muted-foreground">Email</label>
+                    <label className="text-sm font-medium text-gray-300">Email</label>
                     <Input 
                       type="email" 
                       placeholder="john@example.com" 
-                      className="border-0 bg-background/50 rounded-2xl h-14 text-lg focus:ring-2 focus:ring-primary/20 transition-all"
+                      className="border-0 bg-white/10 rounded-2xl h-14 text-lg text-white placeholder:text-gray-400 focus:ring-2 focus:ring-primary/20 transition-all"
                     />
                   </div>
                   
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-muted-foreground">Company</label>
+                    <label className="text-sm font-medium text-gray-300">Company</label>
                     <Input 
                       placeholder="Your Company" 
-                      className="border-0 bg-background/50 rounded-2xl h-14 text-lg focus:ring-2 focus:ring-primary/20 transition-all"
+                      className="border-0 bg-white/10 rounded-2xl h-14 text-lg text-white placeholder:text-gray-400 focus:ring-2 focus:ring-primary/20 transition-all"
                     />
                   </div>
                   
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-muted-foreground">Role</label>
+                    <label className="text-sm font-medium text-gray-300">Role</label>
                     <Input 
                       placeholder="Your Title" 
-                      className="border-0 bg-background/50 rounded-2xl h-14 text-lg focus:ring-2 focus:ring-primary/20 transition-all"
+                      className="border-0 bg-white/10 rounded-2xl h-14 text-lg text-white placeholder:text-gray-400 focus:ring-2 focus:ring-primary/20 transition-all"
                     />
                   </div>
                   
@@ -268,7 +268,7 @@ const NetworkingEvent = () => {
                     Secure Your Spot
                   </Button>
                   
-                  <p className="text-center text-sm text-muted-foreground font-light">
+                  <p className="text-center text-sm text-gray-400 font-light">
                     Limited seats available. Event details will be sent via email.
                   </p>
                 </CardContent>
