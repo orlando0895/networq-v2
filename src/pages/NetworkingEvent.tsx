@@ -1,5 +1,4 @@
 import React from 'react';
-import { MobileLayout } from '@/components/MobileLayout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -8,6 +7,11 @@ import { Textarea } from '@/components/ui/textarea';
 import { Calendar, MapPin, Users, Target, Star, CheckCircle, ArrowRight, Zap, Network, Smartphone, MessageSquare, QrCode, Scan, Sparkles, TrendingUp, Award, Clock, Mail, Phone, User, Building } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import networqLogo from '@/assets/networq-logo.png';
+import appConnections from '@/assets/app-connections.png';
+import appFilters from '@/assets/app-filters.png';
+import appScanner from '@/assets/app-scanner.png';
+import appProfile from '@/assets/app-profile.png';
+import appMessages from '@/assets/app-messages.png';
 
 const NetworkingEvent = () => {
   const navigate = useNavigate();
@@ -114,6 +118,18 @@ const NetworkingEvent = () => {
                 Join the exclusive launch event in Scottsdale and experience how Networq is transforming professional connections.
               </p>
             </div>
+            
+            {/* App preview with animation */}
+            <div className="flex justify-center">
+              <div className="relative group">
+                <div className="absolute -inset-4 bg-gradient-to-r from-primary/20 to-secondary/20 rounded-3xl blur-xl group-hover:blur-2xl transition-all duration-500"></div>
+                <img 
+                  src={appConnections} 
+                  alt="Networq App - Connections Screen" 
+                  className="relative w-64 h-auto object-contain hover:scale-105 transition-transform duration-500 animate-fade-in"
+                />
+              </div>
+            </div>
           </section>
 
           {/* Why Section */}
@@ -127,25 +143,39 @@ const NetworkingEvent = () => {
               </p>
             </div>
             
-            <div className="grid gap-1 md:grid-cols-3 max-w-6xl mx-auto">
-              {networkingProblems.map((item, index) => (
-                <div key={index} className="group p-12 hover:bg-white/5 transition-all duration-300 rounded-3xl">
-                  <div className="space-y-6">
-                    <h3 className="text-2xl font-medium text-white group-hover:text-primary transition-colors">
-                      {item.problem}
-                    </h3>
-                    <p className="text-lg text-gray-300 font-light leading-relaxed">
-                      {item.impact}
-                    </p>
-                    <div className="pt-4">
-                      <p className="text-primary font-medium flex items-center gap-3">
-                        <CheckCircle className="w-5 h-5 flex-shrink-0" />
-                        {item.solution}
+            <div className="grid gap-8 lg:gap-16 md:grid-cols-2 max-w-6xl mx-auto items-center">
+              <div className="space-y-12">
+                {networkingProblems.map((item, index) => (
+                  <div key={index} className="group p-8 hover:bg-white/5 transition-all duration-300 rounded-3xl">
+                    <div className="space-y-6">
+                      <h3 className="text-2xl font-medium text-white group-hover:text-primary transition-colors">
+                        {item.problem}
+                      </h3>
+                      <p className="text-lg text-gray-300 font-light leading-relaxed">
+                        {item.impact}
                       </p>
+                      <div className="pt-4">
+                        <p className="text-primary font-medium flex items-center gap-3">
+                          <CheckCircle className="w-5 h-5 flex-shrink-0" />
+                          {item.solution}
+                        </p>
+                      </div>
                     </div>
                   </div>
+                ))}
+              </div>
+              
+              {/* App screenshot with scanning feature */}
+              <div className="flex justify-center">
+                <div className="relative group">
+                  <div className="absolute -inset-4 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 rounded-3xl blur-xl animate-pulse"></div>
+                  <img 
+                    src={appScanner} 
+                    alt="Networq App - Business Card Scanner" 
+                    className="relative w-64 h-auto object-contain hover:scale-105 transition-transform duration-500 hover:rotate-2"
+                  />
                 </div>
-              ))}
+              </div>
             </div>
           </section>
 
@@ -160,24 +190,47 @@ const NetworkingEvent = () => {
               </p>
             </div>
             
-            <div className="grid gap-1 md:grid-cols-2 max-w-6xl mx-auto">
-              {appFeatures.map((feature, index) => (
-                <div key={index} className="group p-12 hover:bg-white/5 transition-all duration-500 rounded-3xl">
-                  <div className="space-y-8">
-                    <div className="w-12 h-12 text-primary group-hover:scale-110 transition-transform duration-300">
-                      {feature.icon}
-                    </div>
-                    <div className="space-y-4">
-                      <h3 className="text-2xl font-medium text-white group-hover:text-primary transition-colors">
-                        {feature.title}
-                      </h3>
-                      <p className="text-lg text-gray-300 font-light leading-relaxed">
-                        {feature.description}
-                      </p>
+            <div className="grid gap-8 lg:gap-16 md:grid-cols-2 max-w-6xl mx-auto items-center">
+              {/* App screenshots showcase */}
+              <div className="flex flex-col gap-8 md:order-1">
+                <div className="relative group">
+                  <div className="absolute -inset-2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-2xl blur-lg group-hover:blur-xl transition-all duration-500"></div>
+                  <img 
+                    src={appFilters} 
+                    alt="Networq App - Industry Filters" 
+                    className="relative w-56 h-auto object-contain hover:scale-105 transition-transform duration-500 mx-auto"
+                  />
+                </div>
+                <div className="relative group">
+                  <div className="absolute -inset-2 bg-gradient-to-r from-green-500/20 to-teal-500/20 rounded-2xl blur-lg group-hover:blur-xl transition-all duration-500"></div>
+                  <img 
+                    src={appProfile} 
+                    alt="Networq App - QR Code Profile" 
+                    className="relative w-56 h-auto object-contain hover:scale-105 transition-transform duration-500 mx-auto"
+                    style={{ animationDelay: '0.2s' }}
+                  />
+                </div>
+              </div>
+              
+              <div className="space-y-8 md:order-2">
+                {appFeatures.map((feature, index) => (
+                  <div key={index} className="group p-8 hover:bg-white/5 transition-all duration-500 rounded-3xl">
+                    <div className="space-y-6">
+                      <div className="w-12 h-12 text-primary group-hover:scale-110 transition-transform duration-300">
+                        {feature.icon}
+                      </div>
+                      <div className="space-y-4">
+                        <h3 className="text-2xl font-medium text-white group-hover:text-primary transition-colors">
+                          {feature.title}
+                        </h3>
+                        <p className="text-lg text-gray-300 font-light leading-relaxed">
+                          {feature.description}
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </section>
 
@@ -194,17 +247,30 @@ const NetworkingEvent = () => {
             
             <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4 max-w-6xl mx-auto">
               {eventHighlights.map((highlight, index) => (
-                <div key={index} className="text-center space-y-6">
-                  <div className="w-16 h-16 mx-auto text-primary">
+                <div key={index} className="text-center space-y-6 group hover:scale-105 transition-transform duration-300">
+                  <div className="w-16 h-16 mx-auto text-primary group-hover:scale-110 transition-transform duration-300">
                     {highlight.icon}
                   </div>
                   <div className="space-y-2">
-                    <h3 className="text-xl font-medium text-white">{highlight.title}</h3>
+                    <h3 className="text-xl font-medium text-white group-hover:text-primary transition-colors">{highlight.title}</h3>
                     <p className="text-primary font-medium text-sm">{highlight.subtitle}</p>
                     <p className="text-gray-300 font-light">{highlight.description}</p>
                   </div>
                 </div>
               ))}
+            </div>
+            
+            {/* Floating Messages App Preview */}
+            <div className="flex justify-center mt-16">
+              <div className="relative">
+                <div className="absolute -inset-4 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 rounded-3xl blur-xl animate-pulse"></div>
+                <img 
+                  src={appMessages} 
+                  alt="Networq App - Messages" 
+                  className="relative w-64 h-auto object-contain hover:scale-105 transition-transform duration-500 animate-fade-in"
+                  style={{ animationDelay: '0.5s' }}
+                />
+              </div>
             </div>
           </section>
 
@@ -219,8 +285,22 @@ const NetworkingEvent = () => {
               </p>
             </div>
             
-            <div className="max-w-2xl mx-auto">
-              <Card className="border-0 bg-white/5 backdrop-blur-sm rounded-3xl overflow-hidden">
+            <div className="grid gap-8 lg:gap-16 md:grid-cols-2 max-w-4xl mx-auto items-center">
+              {/* App preview with floating effect */}
+              <div className="flex justify-center md:order-2">
+                <div className="relative">
+                  <div className="absolute -inset-6 bg-gradient-to-r from-primary/30 to-secondary/30 rounded-3xl blur-2xl animate-pulse"></div>
+                  <div className="relative bg-white/5 backdrop-blur-sm rounded-3xl p-8 border border-white/10">
+                    <img 
+                      src={appConnections} 
+                      alt="Networq App Preview" 
+                      className="w-48 h-auto object-contain mx-auto hover:scale-105 transition-transform duration-500"
+                    />
+                  </div>
+                </div>
+              </div>
+              
+              <Card className="border-0 bg-white/5 backdrop-blur-sm rounded-3xl overflow-hidden md:order-1">
                 <CardContent className="p-12 space-y-8">
                   <div className="grid gap-6 md:grid-cols-2">
                     <div className="space-y-2">
