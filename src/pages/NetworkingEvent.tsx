@@ -88,8 +88,8 @@ const NetworkingEvent = () => {
         <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary/5 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '3s' }}></div>
       </div>
 
-      <MobileLayout className="relative z-10">
-        <div className="space-y-32 py-16">
+      <div className="relative z-10 min-h-screen">
+        <div className="space-y-32 py-16 px-4 md:px-8 max-w-7xl mx-auto">
           {/* Hero Section */}
           <section className="text-center space-y-16 animate-fade-in">
             <div className="flex justify-center mb-8">
@@ -276,7 +276,7 @@ const NetworkingEvent = () => {
             </div>
           </section>
         </div>
-      </MobileLayout>
+      </div>
     </div>
   );
 };
