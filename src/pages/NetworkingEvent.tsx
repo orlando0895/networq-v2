@@ -274,16 +274,6 @@ const NetworkingEvent = () => {
             </div>
             
             <div className="grid gap-8 lg:gap-16 md:grid-cols-2 max-w-4xl mx-auto items-center">
-              {/* App preview with floating effect */}
-              <div className="flex justify-center md:order-2">
-                <div className="relative bg-white/5 backdrop-blur-sm rounded-3xl p-8 border border-white/10">
-                  <img 
-                    src={appConnections} 
-                    alt="Networq App Preview" 
-                    className="w-48 h-auto object-contain mx-auto hover:scale-105 transition-transform duration-500"
-                  />
-                </div>
-              </div>
               
               <Card className="border-0 bg-white/5 backdrop-blur-sm rounded-3xl overflow-hidden md:order-1">
                 <CardContent className="p-12 space-y-8">
