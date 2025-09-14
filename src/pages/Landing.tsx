@@ -1,40 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { ArrowRight, QrCode, Users, MessageCircle, Camera, Filter, Star, Share2, Scan, Tag, Shield, Check, Sparkles } from "lucide-react";
+import { ArrowRight, Download, Shield, Zap, Users, Smartphone, Check, Star } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import "./landing.css";
 
 const LandingPage = () => {
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [professionIndex, setProfessionIndex] = useState(0);
   const { toast } = useToast();
   const navigate = useNavigate();
-
-  const professions = [
-    "real estate agents",
-    "financial advisors",
-    "insurance brokers",
-    "mortgage loan officers",
-    "business coaches",
-    "marketing consultants",
-    "event planners",
-    "public speakers",
-    "fitness coaches & personal trainers",
-    "photographers & videographers",
-    "freelance designers",
-    "wedding planners",
-    "recruiters & talent agents",
-    "startup founders & tech entrepreneurs",
-    "accountants & bookkeepers",
-    "lawyers",
-    "medical & wellness professionals",
-    "direct sales & network marketing reps",
-    "small business owners",
-    "social media managers & influencers"
-  ];
 
   useEffect(() => {
     // Check for password recovery redirect from email
@@ -44,49 +18,14 @@ const LandingPage = () => {
       return;
     }
 
-    setIsLoaded(true);
-    // Add landing page class to body for dark theme
-    document.body.classList.add('landing-page');
     document.documentElement.classList.add('dark');
     
-    // Set up intersection observer for scroll animations
-    const observerOptions = {
-      threshold: 0.1,
-      rootMargin: '0px 0px -10% 0px'
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('in-view');
-        }
-      });
-    }, observerOptions);
-
-    // Observe all animate-on-scroll elements
-    const animateElements = document.querySelectorAll('.animate-on-scroll');
-    animateElements.forEach((el) => observer.observe(el));
-
-    // Set up rotating professions
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    let intervalId;
-    
-    if (!reduceMotion) {
-      intervalId = setInterval(() => {
-        setProfessionIndex((prev) => (prev + 1) % professions.length);
-      }, 2500);
-    }
-    
-    // Cleanup function to remove class when component unmounts
     return () => {
-      document.body.classList.remove('landing-page');
       document.documentElement.classList.remove('dark');
-      observer.disconnect();
-      if (intervalId) clearInterval(intervalId);
     };
-  }, [professions.length, navigate]);
+  }, [navigate]);
 
-  const handleWaitlistSignup = async (e) => {
+  const handleWaitlistSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !email.includes("@")) {
       toast({
@@ -99,55 +38,30 @@ const LandingPage = () => {
 
     setIsSubmitting(true);
     try {
-      // Try backend URL if it exists, otherwise use Supabase
-      const backendUrl = import.meta.env.VITE_BACKEND_URL;
-      
-      if (backendUrl) {
-        const response = await fetch(`${backendUrl}/api/waitlist`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ email }),
-        });
-
-        const result = await response.json();
-        
-        if (!response.ok) {
-          throw new Error(result.detail || 'Something went wrong');
-        }
-
-        toast({
-          title: "Welcome to Networq! 🎉",
-          description: result.message,
-        });
-      } else {
-        // Fallback to Supabase
-        const { error } = await supabase
-          .from('waitlist_signups')
-          .insert([
-            {
-              email: email.toLowerCase(),
-              source: 'landing_page',
-              user_agent: navigator.userAgent
-            }
-          ]);
-
-        if (error) {
-          if (error.code === '23505') { // Unique constraint violation
-            throw new Error('Email already registered for waitlist');
+      const { error } = await supabase
+        .from('waitlist_signups')
+        .insert([
+          {
+            email: email.toLowerCase(),
+            source: 'landing_page',
+            user_agent: navigator.userAgent
           }
-          throw new Error(error.message || 'Something went wrong');
-        }
+        ]);
 
-        toast({
-          title: "Welcome to Networq! 🎉",
-          description: "You've successfully joined our waitlist. We'll notify you when early access is available!",
-        });
+      if (error) {
+        if (error.code === '23505') {
+          throw new Error('Email already registered for waitlist');
+        }
+        throw new Error(error.message || 'Something went wrong');
       }
+
+      toast({
+        title: "Welcome to Networq! 🎉",
+        description: "You've successfully joined our waitlist. We'll notify you when early access is available!",
+      });
       
       setEmail("");
-    } catch (error) {
+    } catch (error: any) {
       toast({
         title: "Something went wrong",
         description: error.message || "Please try again later.",
@@ -159,681 +73,212 @@ const LandingPage = () => {
   };
 
   return (
-    <div className="landing-page">
-      {/* Animated Background Elements */}
-      <div className="bg-animations">
-        <div className="floating-particles"></div>
-        <div className="grid-overlay"></div>
-      </div>
-
-      {/* Skip to content link */}
-      <a 
-        href="#main" 
-        className="skip-link"
-        onFocus={(e) => e.target.classList.add('focused')}
-        onBlur={(e) => e.target.classList.remove('focused')}
-      >
-        Skip to content
-      </a>
-
+    <div className="min-h-screen bg-black text-white overflow-hidden">
       {/* Header */}
-      <header className="header sticky-header">
-        <div className="container">
-          <div className="nav">
-            <div className="logo-container animate-slide-in">
-                <img 
-                  src="/logo.png" 
-                  alt="Networq" 
-                  className="brand-logo"
-                />
-            </div>
-            <nav aria-label="Primary navigation" className="main-nav">
-              <a href="#features" className="nav-link">Features</a>
-              <a href="#how-it-works" className="nav-link">How it works</a>
-              <a href="#pricing" className="nav-link">Pricing</a>
-              <Link to="/support" className="nav-link">Support</Link>
-              <Link to="/auth" className="nav-link">Sign in</Link>
-              <Link to="/auth" className="btn-primary nav-cta">Get Started</Link>
-            </nav>
+      <header className="relative z-50 px-6 py-6">
+        <nav className="max-w-7xl mx-auto flex items-center justify-between">
+          <div className="flex items-center">
+            <img 
+              src="/logo.png" 
+              alt="Networq" 
+              className="h-8 w-auto"
+            />
           </div>
-        </div>
+          <div className="hidden md:flex items-center space-x-8">
+            <Link to="/auth" className="text-white/70 hover:text-white transition-colors">
+              Sign in
+            </Link>
+          </div>
+        </nav>
       </header>
 
       {/* Hero Section */}
-      <section className="hero" id="main">
-        <div className="container">
-          <div className="hero-content">
-            <div className="hero-text">
-              <h1 className={`hero-title ${isLoaded ? 'animate-title' : ''}`}>
-                Never Lose a{" "}
-                <span className="text-accent animate-glow">Connection</span>{" "}
-                Again
-              </h1>
-              <p className="hero-subtitle animate-fade-up">
-                The professional networking app that keeps you organized, connected, and productive.
-                Instantly save, organize, and access every contact.
-              </p>
-              <div className="hero-cta animate-fade-up-delay">
-                <div className="flex flex-col sm:flex-row gap-4">
-                  <Link 
-                    to="/auth"
-                    className="btn-primary hero-btn btn-3d" 
-                  >
-                    <span>Get Started Free</span>
-                    <ArrowRight className="btn-icon" />
-                  </Link>
-                </div>
-                <p className="perfect-for-text mt-8" aria-live="polite">
-                  Perfect for{" "}
-                  <span className="rotating-profession">
-                    {professions[professionIndex]}
-                  </span>{" "}
-                  looking to make the most out of their contacts list
-                </p>
+      <main className="relative">
+        {/* Background gradient */}
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-900/20 via-black to-purple-900/20" />
+        
+        <div className="relative z-10 max-w-7xl mx-auto px-6 pt-20 pb-32">
+          <div className="text-center">
+            {/* Main headline */}
+            <h1 className="text-5xl md:text-7xl font-light tracking-tight mb-6">
+              Never lose a
+              <br />
+              <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent font-normal">
+                connection
+              </span>
+              <br />
+              again.
+            </h1>
+            
+            {/* Subtitle */}
+            <p className="text-xl md:text-2xl text-white/70 mb-12 max-w-3xl mx-auto font-light leading-relaxed">
+              The professional networking app that keeps you organized, connected, and productive.
+            </p>
+            
+            {/* App preview */}
+            <div className="relative mx-auto w-80 h-96 mb-16">
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-[3rem] blur-3xl" />
+              <div className="relative bg-black/90 backdrop-blur-xl rounded-[3rem] p-2 border border-white/20">
+                <img 
+                  src="/lovable-uploads/c018c308-324b-4fc0-9dff-95bcced380de.png" 
+                  alt="Networq mobile app interface"
+                  className="w-full h-full object-cover rounded-[2.5rem]"
+                />
               </div>
             </div>
-            <div className="hero-visual">
-              <img 
-                src="/lovable-uploads/c018c308-324b-4fc0-9dff-95bcced380de.png" 
-                alt="Never lose a connection again - Networq app interface"
-                className="hero-image animate-float"
-              />
+            
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 items-center justify-center mb-8">
+              <Link 
+                to="/auth"
+                className="bg-white text-black px-8 py-4 rounded-full font-medium hover:bg-white/90 transition-all flex items-center gap-2 shadow-2xl"
+              >
+                Get Started Free
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+              <button className="flex items-center gap-2 text-white/70 hover:text-white transition-colors">
+                <Download className="w-4 h-4" />
+                Download on App Store
+              </button>
             </div>
+
+            {/* Download note */}
+            <p className="text-sm text-white/50">
+              Available for iOS and Android. No subscription required.
+            </p>
           </div>
         </div>
-      </section>
-
-      {/* We've All Been There */}
-      <section className="py-24 bg-background">
-        <div className="container mx-auto px-6">
-          <h2 className="text-5xl font-bold text-center text-white mb-16 animate-on-scroll">
-            We've All Been There...
-          </h2>
-          
-          <div className="grid md:grid-cols-3 gap-8 mb-16">
-            {/* Business Cards Get Lost */}
-            <div className="bg-gray-900/80 backdrop-blur rounded-2xl p-8 text-center animate-on-scroll transition-all duration-300 hover:bg-gray-800/90 hover:scale-105 hover:shadow-xl hover:shadow-blue-500/20">
-              <div className="w-16 h-16 bg-blue-900/50 rounded-2xl flex items-center justify-center mx-auto mb-6 transition-all duration-300 group-hover:bg-blue-800/60">
-                <Camera className="w-8 h-8 text-blue-400 transition-all duration-300 group-hover:text-blue-300" />
-              </div>
-              <h3 className="text-xl font-semibold text-white mb-4">Business Cards Get Lost</h3>
-              <p className="text-gray-400 leading-relaxed">
-                Those stacks of cards? They vanish into wallet black holes, never to be seen again.
-              </p>
-            </div>
-
-            {/* Connections Fizzle Out */}
-            <div className="bg-gray-900/80 backdrop-blur rounded-2xl p-8 text-center animate-on-scroll transition-all duration-300 hover:bg-gray-800/90 hover:scale-105 hover:shadow-xl hover:shadow-blue-500/20">
-              <div className="w-16 h-16 bg-blue-900/50 rounded-2xl flex items-center justify-center mx-auto mb-6 transition-all duration-300 group-hover:bg-blue-800/60">
-                <Users className="w-8 h-8 text-blue-400 transition-all duration-300 group-hover:text-blue-300" />
-              </div>
-              <h3 className="text-xl font-semibold text-white mb-4">Connections Fizzle Out</h3>
-              <p className="text-gray-400 leading-relaxed">
-                Great conversations at events turn into "I should reach out" thoughts that never happen.
-              </p>
-            </div>
-
-            {/* Contact Info Gets Outdated */}
-            <div className="bg-gray-900/80 backdrop-blur rounded-2xl p-8 text-center animate-on-scroll transition-all duration-300 hover:bg-gray-800/90 hover:scale-105 hover:shadow-xl hover:shadow-blue-500/20">
-              <div className="w-16 h-16 bg-blue-900/50 rounded-2xl flex items-center justify-center mx-auto mb-6 transition-all duration-300 group-hover:bg-blue-800/60">
-                <MessageCircle className="w-8 h-8 text-blue-400 transition-all duration-300 group-hover:text-blue-300" />
-              </div>
-              <h3 className="text-xl font-semibold text-white mb-4">Contact Info Gets Outdated</h3>
-              <p className="text-gray-400 leading-relaxed">
-                Phone numbers change, emails update, but your saved contacts stay frozen in time.
-              </p>
-            </div>
-          </div>
-
-          {/* Founder Quote */}
-          <div className="max-w-4xl mx-auto animate-on-scroll">
-            <div className="flex items-start gap-6">
-              <div className="w-1 h-24 bg-blue-500 rounded-full flex-shrink-0"></div>
-              <div>
-                <blockquote className="text-xl text-gray-300 italic leading-relaxed mb-4">
-                  "After years of attending networking events where valuable connections slipped away, I knew professionals needed a better solution. Networq solves the contact exchange problem once and for all."
-                </blockquote>
-                <cite className="text-gray-400 font-medium">— Orlando Taylor, Founder</cite>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
+      </main>
 
       {/* Features Section */}
-      <section id="features">
-        {/* Feature 1: Messaging */}
-        <section className="feature-section feature-reverse messaging-feature">
-          <div className="container">
-            <div className="feature-layout">
-              <div className="feature-image messaging-showcase">
-                <div className="phone-3d-container">
-                  <div className="phone-mockup-3d">
-                    <div className="phone-screen-glow"></div>
-                    <img 
-                      src="/lovable-uploads/004eee51-2dc9-4417-9e84-11b72c4dc89c.png" 
-                      alt="Messages interface showing conversations and connections"
-                      className="phone-screen-content animate-on-scroll"
-                    />
-                  </div>
-                  <div className="floating-ui-elements">
-                    <div className="message-bubble bubble-1">
-                      <MessageCircle className="bubble-icon" />
-                    </div>
-                    <div className="message-bubble bubble-2">
-                      <Users className="bubble-icon" />
-                    </div>
-                    <div className="message-bubble bubble-3">
-                      <Star className="bubble-icon" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="feature-content messaging-content">
-                <div className="feature-badge animate-on-scroll">
-                  <Sparkles className="badge-icon" />
-                  <span>Premium Messaging</span>
-                </div>
-                <h2 className="feature-title animate-on-scroll">
-                  Keep the conversation
-                  <span className="title-highlight"> alive.</span>
-                </h2>
-                <p className="feature-subtitle animate-on-scroll">
-                  In-app messaging to follow up after events
-                </p>
-                <div className="feature-benefits animate-on-scroll">
-                  <div className="benefit-item interactive-benefit" data-benefit="context">
-                    <div className="benefit-icon-wrapper">
-                      <MessageCircle className="benefit-icon" />
-                      <div className="icon-glow"></div>
-                    </div>
-                    <div className="benefit-content">
-                      <span className="benefit-title">1:1 and group chats</span>
-                      <span className="benefit-description">Direct messaging with your contacts</span>
-                    </div>
-                  </div>
-                  <div className="benefit-item interactive-benefit" data-benefit="reminders">
-                    <div className="benefit-icon-wrapper">
-                      <Star className="benefit-icon" />
-                      <div className="icon-glow"></div>
-                    </div>
-                    <div className="benefit-content">
-                      <span className="benefit-title">Event discussion threads</span>
-                      <span className="benefit-description">Chat about events with other attendees</span>
-                    </div>
-                  </div>
-                  <div className="benefit-item interactive-benefit" data-benefit="teams">
-                    <div className="benefit-icon-wrapper">
-                      <Users className="benefit-icon" />
-                      <div className="icon-glow"></div>
-                    </div>
-                    <div className="benefit-content">
-                      <span className="benefit-title">Search and mute conversations</span>
-                      <span className="benefit-description">Stay organized with smart chat controls</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+      <section className="relative bg-gray-900/50 py-32">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-20">
+            <h2 className="text-4xl md:text-5xl font-light mb-6">
+              Why choose Networq?
+            </h2>
+            <p className="text-xl text-white/70 max-w-2xl mx-auto">
+              Simple, powerful features designed for modern professionals.
+            </p>
           </div>
-          <div className="section-background-elements">
-            <div className="gradient-orb orb-1"></div>
-            <div className="gradient-orb orb-2"></div>
-          </div>
-        </section>
-
-        {/* Feature 2: QR Sharing */}
-        <section className="feature-section qr-feature">
-          <div className="container">
-            <div className="feature-layout">
-              <div className="feature-content qr-content">
-                <div className="feature-badge animate-on-scroll">
-                  <QrCode className="badge-icon" />
-                  <span>Instant Sharing</span>
-                </div>
-                <h2 className="feature-title animate-on-scroll">
-                  Share your info in
-                  <span className="title-highlight"> seconds.</span>
-                </h2>
-                <p className="feature-subtitle animate-on-scroll">
-                  No app required for the recipient
-                </p>
-                <div className="feature-benefits animate-on-scroll">
-                  <div className="benefit-item interactive-benefit" data-benefit="camera">
-                    <div className="benefit-icon-wrapper">
-                      <Camera className="benefit-icon" />
-                      <div className="icon-glow"></div>
-                    </div>
-                    <div className="benefit-content">
-                      <span className="benefit-title">Save to contacts in one tap</span>
-                      <span className="benefit-description">Instantly add contact info to your phone</span>
-                    </div>
-                  </div>
-                  <div className="benefit-item interactive-benefit" data-benefit="share">
-                    <div className="benefit-icon-wrapper">
-                      <Share2 className="benefit-icon" />
-                      <div className="icon-glow"></div>
-                    </div>
-                    <div className="benefit-content">
-                      <span className="benefit-title">Works with any camera app</span>
-                      <span className="benefit-description">Multiple ways to connect seamlessly</span>
-                    </div>
-                  </div>
-                  <div className="benefit-item interactive-benefit" data-benefit="sync">
-                    <div className="benefit-icon-wrapper">
-                      <ArrowRight className="benefit-icon" />
-                      <div className="icon-glow"></div>
-                    </div>
-                    <div className="benefit-content">
-                      <span className="benefit-title">Updates sync to shared card</span>
-                      <span className="benefit-description">Real-time updates to all shared contacts</span>
-                    </div>
-                  </div>
-                </div>
+          
+          <div className="grid md:grid-cols-3 gap-12">
+            {/* Feature 1 */}
+            <div className="text-center">
+              <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <Smartphone className="w-8 h-8 text-white" />
               </div>
-              <div className="feature-image qr-showcase">
-                <div className="phone-3d-container">
-                  <div className="phone-mockup-3d">
-                    <div className="phone-screen-glow"></div>
-                    <img 
-                      src="/lovable-uploads/a5cfad31-2d0f-4d68-81dc-74aca65731d2.png" 
-                      alt="Share via QR; recipient doesn't need the app"
-                      className="phone-screen-content animate-on-scroll"
-                    />
-                    <img 
-                      src="/lovable-uploads/6025a1e3-8f42-4a9c-b78b-79ee6d98e146.png" 
-                      alt="Profile interface with QR code sharing"
-                      className="phone-screen-content"
-                    />
-                  </div>
-                  <div className="floating-ui-elements">
-                    <div className="qr-bubble bubble-1">
-                      <QrCode className="bubble-icon" />
-                    </div>
-                    <div className="qr-bubble bubble-2">
-                      <Share2 className="bubble-icon" />
-                    </div>
-                    <div className="qr-bubble bubble-3">
-                      <Camera className="bubble-icon" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="section-background-elements">
-            <div className="gradient-orb orb-1 qr-orb"></div>
-            <div className="gradient-orb orb-2 qr-orb"></div>
-          </div>
-        </section>
-
-        {/* Feature 3: Business Card Scanning */}
-        <section className="feature-section feature-reverse scanning-feature">
-          <div className="container">
-            <div className="feature-layout">
-              <div className="feature-image scanning-showcase">
-                <div className="phone-3d-container">
-                  <div className="phone-mockup-3d">
-                    <div className="phone-screen-glow"></div>
-                    <img 
-                      src="/lovable-uploads/121d40c6-6d40-4982-9947-9923d2be3e3a.png" 
-                      alt="Business card scan with auto field extraction"
-                      className="phone-screen-content animate-on-scroll"
-                    />
-                    <img 
-                      src="/lovable-uploads/34dfd5ce-7686-4630-a59c-a4be95cc8519.png" 
-                      alt="Business card scanning interface with camera options"
-                      className="phone-screen-content"
-                    />
-                  </div>
-                  <div className="floating-ui-elements">
-                    <div className="scan-bubble bubble-1">
-                      <Camera className="bubble-icon" />
-                    </div>
-                    <div className="scan-bubble bubble-2">
-                      <Scan className="bubble-icon" />
-                    </div>
-                    <div className="scan-bubble bubble-3">
-                      <Users className="bubble-icon" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="feature-content scanning-content">
-                <div className="feature-badge animate-on-scroll">
-                  <Camera className="badge-icon" />
-                  <span>Smart Scanning</span>
-                </div>
-                <h2 className="feature-title animate-on-scroll">
-                  No more lost
-                  <span className="title-highlight"> business cards.</span>
-                </h2>
-                <p className="feature-subtitle animate-on-scroll">
-                  Automatically extracts name, email, company, title
-                </p>
-                <div className="feature-benefits animate-on-scroll">
-                  <div className="benefit-item interactive-benefit" data-benefit="upload">
-                    <div className="benefit-icon-wrapper">
-                      <Camera className="benefit-icon" />
-                      <div className="icon-glow"></div>
-                    </div>
-                    <div className="benefit-content">
-                      <span className="benefit-title">Scan or upload business cards</span>
-                      <span className="benefit-description">Camera capture or gallery upload</span>
-                    </div>
-                  </div>
-                  <div className="benefit-item interactive-benefit" data-benefit="edit">
-                    <div className="benefit-icon-wrapper">
-                      <Scan className="benefit-icon" />
-                      <div className="icon-glow"></div>
-                    </div>
-                    <div className="benefit-content">
-                      <span className="benefit-title">AI extracts contact details</span>
-                      <span className="benefit-description">Auto-fills name, email, phone, and company</span>
-                    </div>
-                  </div>
-                  <div className="benefit-item interactive-benefit" data-benefit="link">
-                    <div className="benefit-icon-wrapper">
-                      <Users className="benefit-icon" />
-                      <div className="icon-glow"></div>
-                    </div>
-                    <div className="benefit-content">
-                      <span className="benefit-title">Create contact from scan</span>
-                      <span className="benefit-description">Save directly to your contact list</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="section-background-elements">
-            <div className="gradient-orb orb-1 scan-orb"></div>
-            <div className="gradient-orb orb-2 scan-orb"></div>
-          </div>
-        </section>
-
-        {/* Feature 4: Organization */}
-        <section className="feature-section organization-feature">
-          <div className="container">
-            <div className="feature-layout">
-              <div className="feature-content organization-content">
-                <div className="feature-badge animate-on-scroll">
-                  <Filter className="badge-icon" />
-                  <span>Smart Organization</span>
-                </div>
-                <h2 className="feature-title animate-on-scroll">
-                  Stay organized without
-                  <span className="title-highlight"> the effort.</span>
-                </h2>
-                <p className="feature-subtitle animate-on-scroll">
-                  Segment by client type and priority for quick outreach
-                </p>
-                <div className="feature-benefits animate-on-scroll">
-                  <div className="benefit-item interactive-benefit" data-benefit="tags">
-                    <div className="benefit-icon-wrapper">
-                      <Tag className="benefit-icon" />
-                      <div className="icon-glow"></div>
-                    </div>
-                    <div className="benefit-content">
-                      <span className="benefit-title">Filter by tier and connection method</span>
-                      <span className="benefit-description">Organize contacts by priority level</span>
-                    </div>
-                  </div>
-                  <div className="benefit-item interactive-benefit" data-benefit="views">
-                    <div className="benefit-icon-wrapper">
-                      <Filter className="benefit-icon" />
-                      <div className="icon-glow"></div>
-                    </div>
-                    <div className="benefit-content">
-                      <span className="benefit-title">Export contacts to CSV or VCF</span>
-                      <span className="benefit-description">Backup and integrate with other systems</span>
-                    </div>
-                  </div>
-                  <div className="benefit-item interactive-benefit" data-benefit="followup">
-                    <div className="benefit-icon-wrapper">
-                      <Star className="benefit-icon" />
-                      <div className="icon-glow"></div>
-                    </div>
-                    <div className="benefit-content">
-                      <span className="benefit-title">Notes and tier management</span>
-                      <span className="benefit-description">Track relationship status and notes</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="feature-image organization-showcase">
-                <div className="phone-3d-container">
-                  <div className="phone-mockup-3d">
-                    <div className="phone-screen-glow"></div>
-                    <img 
-                      src="/lovable-uploads/95e43555-d5b4-4913-8c10-d39846440ae4.png" 
-                      alt="Contact organization by tags and saved views"
-                      className="phone-screen-content animate-on-scroll"
-                    />
-                    <img 
-                      src="/lovable-uploads/b650bbbc-251f-4899-9875-2ebbd14e3fc3.png" 
-                      alt="Contacts organization interface with filters and industry tags"
-                      className="phone-screen-content"
-                    />
-                  </div>
-                  <div className="floating-ui-elements">
-                    <div className="org-bubble bubble-1">
-                      <Tag className="bubble-icon" />
-                    </div>
-                    <div className="org-bubble bubble-2">
-                      <Filter className="bubble-icon" />
-                    </div>
-                    <div className="org-bubble bubble-3">
-                      <Star className="bubble-icon" />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="section-background-elements">
-            <div className="gradient-orb orb-1 org-orb"></div>
-            <div className="gradient-orb orb-2 org-orb"></div>
-          </div>
-        </section>
-      </section>
-
-      {/* How It Works */}
-      <section className="how-it-works" id="how-it-works">
-        <div className="container">
-          <h2 className="section-title animate-on-scroll">How It Works</h2>
-          <div className="steps-grid">
-            <div className="step-card animate-on-scroll bg-gray-900/80 backdrop-blur rounded-2xl p-8 text-center transition-all duration-300 hover:bg-gray-800/90 hover:scale-105 hover:shadow-xl hover:shadow-blue-500/20 cursor-pointer" aria-describedby="step-1-desc">
-              <div className="step-header">
-                <div className="step-number">1</div>
-                <QrCode className="step-icon" />
-                <h3>Share Your Contact Card</h3>
-              </div>
-              <p id="step-1-desc">Create your digital business card and share via QR code. Recipients save to their phone contacts instantly.</p>
+              <h3 className="text-xl font-medium mb-4">Instant Contact Exchange</h3>
+              <p className="text-white/70 leading-relaxed">
+                Share your contact information with a QR code. No app required for recipients.
+              </p>
             </div>
             
-            <div className="step-card animate-on-scroll bg-gray-900/80 backdrop-blur rounded-2xl p-8 text-center transition-all duration-300 hover:bg-gray-800/90 hover:scale-105 hover:shadow-xl hover:shadow-blue-500/20 cursor-pointer" aria-describedby="step-2-desc">
-              <div className="step-header">
-                <div className="step-number">2</div>
-                <Camera className="step-icon" />
-                <h3>Scan Business Cards</h3>
+            {/* Feature 2 */}
+            <div className="text-center">
+              <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <Users className="w-8 h-8 text-white" />
               </div>
-              <p id="step-2-desc">Use AI-powered scanning to extract contact details from business cards and save them to your contact list.</p>
+              <h3 className="text-xl font-medium mb-4">Smart Organization</h3>
+              <p className="text-white/70 leading-relaxed">
+                Keep your contacts organized with tags, notes, and filters. Never forget where you met someone.
+              </p>
             </div>
             
-            <div className="step-card animate-on-scroll bg-gray-900/80 backdrop-blur rounded-2xl p-8 text-center transition-all duration-300 hover:bg-gray-800/90 hover:scale-105 hover:shadow-xl hover:shadow-blue-500/20 cursor-pointer" aria-describedby="step-3-desc">
-              <div className="step-header">
-                <div className="step-number">3</div>
-                <MessageCircle className="step-icon" />
-                <h3>Stay Connected</h3>
+            {/* Feature 3 */}
+            <div className="text-center">
+              <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <Shield className="w-8 h-8 text-white" />
               </div>
-              <p id="step-3-desc">Message your contacts directly, organize by tier and connection method, and export when needed.</p>
+              <h3 className="text-xl font-medium mb-4">Privacy First</h3>
+              <p className="text-white/70 leading-relaxed">
+                Your data stays yours. No selling, no tracking, no ads. Just a clean, professional experience.
+              </p>
             </div>
           </div>
         </div>
       </section>
-
 
       {/* Social Proof */}
-      <section className="social-proof">
-        <div className="container">
-          <div className="vision-content">
-            <h2 className="section-title animate-on-scroll">Trusted by Professionals Worldwide</h2>
-            <div className="stats-3d-grid">
-              <div className="stat-card-3d animate-stat-1">
-                <div className="stat-number">10K+</div>
-                <div className="stat-label">Active Users</div>
-                <div className="stat-glow"></div>
-              </div>
-              <div className="stat-card-3d animate-stat-2">
-                <div className="stat-number">95%</div>
-                <div className="stat-label">Follow-up Rate</div>
-                <div className="stat-glow"></div>
-              </div>
-              <div className="stat-card-3d animate-stat-3">
-                <div className="stat-number">3 Sec</div>
-                <div className="stat-label">Contact Exchange</div>
-                <div className="stat-glow"></div>
-              </div>
+      <section className="py-20">
+        <div className="max-w-4xl mx-auto px-6 text-center">
+          <div className="grid md:grid-cols-3 gap-8 mb-12">
+            <div>
+              <div className="text-3xl font-light mb-2">10K+</div>
+              <div className="text-white/70">Professionals</div>
             </div>
-            <div className="testimonials">
-              <div className="testimonial-3d animate-on-scroll">
-                <Star className="testimonial-icon animate-star" />
-                <p>"Finally, a networking solution that actually works. I never lose contacts anymore!"</p>
-                <cite>— Sarah M., Sales Director</cite>
-                <div className="testimonial-glow"></div>
-              </div>
+            <div>
+              <div className="text-3xl font-light mb-2">50K+</div>
+              <div className="text-white/70">Connections Made</div>
+            </div>
+            <div>
+              <div className="text-3xl font-light mb-2">4.9★</div>
+              <div className="text-white/70">App Store Rating</div>
             </div>
           </div>
+          
+          <blockquote className="text-xl text-white/90 italic mb-4">
+            "Networq has completely transformed how I manage my professional relationships. It's simple, elegant, and just works."
+          </blockquote>
+          <cite className="text-white/70">— Sarah Chen, Business Development Manager</cite>
         </div>
       </section>
 
-
-      {/* Pricing */}
-      <section className="pricing-section" id="pricing">
-        <div className="container">
-          <h2 className="section-title animate-on-scroll">Simple Pricing</h2>
-          <div className="pricing-grid">
-            <div className="pricing-card animate-on-scroll bg-gray-900/95 backdrop-blur rounded-2xl p-10 text-center border border-blue-500/30 shadow-2xl shadow-blue-500/10 relative overflow-hidden">
-              <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-blue-400/60 to-transparent"></div>
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-purple-500/5 pointer-events-none"></div>
-              <div className="pricing-subheader mb-6 relative z-10">
-                <p className="text-base text-blue-200/80 font-medium">The perfect plan for new connectors, rising professionals, and power players.</p>
-              </div>
-              <div className="pricing-header mb-8 relative z-10">
-                <h3 className="text-3xl font-bold text-white mb-6 leading-tight">Get Started. Build Your Networq. $0. Always.</h3>
-                <div className="price">
-                  <div className="flex flex-wrap md:flex-nowrap items-baseline justify-center gap-4">
-                    <span className="inline-flex items-center whitespace-nowrap text-xl font-bold text-blue-300 bg-blue-500/20 px-3 py-1 rounded-full leading-none">Free</span>
-                    <div className="flex items-baseline gap-1 leading-none">
-                      <span className="text-5xl font-bold text-white drop-shadow-lg leading-none">$0</span>
-                      <span className="text-xl text-blue-200 leading-none">/month</span>
-                    </div>
-                    <span className="text-base text-blue-300 font-medium whitespace-nowrap leading-none">No credit card required</span>
-                  </div>
-                </div>
-              </div>
-              <div className="pricing-features mb-10 relative z-10">
-                <h4 className="text-lg font-bold text-white mb-8 text-left">What You Get:</h4>
-                <div className="space-y-5">
-                  <div className="feature-item flex items-center gap-4 text-left p-3 rounded-xl bg-blue-500/10 border border-blue-500/20">
-                    <div className="w-8 h-8 bg-blue-500/30 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
-                      <QrCode className="w-5 h-5 text-blue-300" />
-                    </div>
-                    <span className="text-white font-medium">Instantly create your digital business card</span>
-                  </div>
-                  <div className="feature-item flex items-center gap-4 text-left p-3 rounded-xl bg-blue-500/10 border border-blue-500/20">
-                    <div className="w-8 h-8 bg-blue-500/30 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
-                      <Share2 className="w-5 h-5 text-blue-300" />
-                    </div>
-                    <span className="text-white font-medium">Share your profile via QR code — no app required</span>
-                  </div>
-                  <div className="feature-item flex items-center gap-4 text-left p-3 rounded-xl bg-blue-500/10 border border-blue-500/20">
-                    <div className="w-8 h-8 bg-blue-500/30 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
-                      <Users className="w-5 h-5 text-blue-300" />
-                    </div>
-                    <span className="text-white font-medium">Save contacts from any event in seconds</span>
-                  </div>
-                  <div className="feature-item flex items-center gap-4 text-left p-3 rounded-xl bg-blue-500/10 border border-blue-500/20">
-                    <div className="w-8 h-8 bg-blue-500/30 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
-                      <Tag className="w-5 h-5 text-blue-300" />
-                    </div>
-                    <span className="text-white font-medium">Organize your connections with basic tagging</span>
-                  </div>
-                </div>
-              </div>
-              <Link to="/auth" className="btn-primary pricing-cta w-full inline-flex items-center justify-center gap-2 text-lg font-semibold py-4 shadow-xl">
-                <span>Start Networking Free</span>
-                <ArrowRight className="w-5 h-5" />
-              </Link>
-              <p className="text-sm text-blue-200/70 mt-6 font-medium relative z-10">No commitments. Upgrade only when you're ready.</p>
+      {/* Final CTA */}
+      <section className="py-20 bg-gradient-to-r from-blue-900/30 to-purple-900/30">
+        <div className="max-w-4xl mx-auto px-6 text-center">
+          <h2 className="text-4xl md:text-5xl font-light mb-6">
+            Ready to get started?
+          </h2>
+          <p className="text-xl text-white/70 mb-8">
+            Join thousands of professionals who never lose a connection.
+          </p>
+          
+          {/* Email signup */}
+          <form onSubmit={handleWaitlistSignup} className="max-w-md mx-auto">
+            <div className="flex gap-3">
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter your email"
+                className="flex-1 px-4 py-3 bg-white/10 backdrop-blur border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:border-white/40"
+                disabled={isSubmitting}
+              />
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="bg-white text-black px-6 py-3 rounded-xl font-medium hover:bg-white/90 transition-all disabled:opacity-50"
+              >
+                {isSubmitting ? "..." : "Join Waitlist"}
+              </button>
             </div>
-            
-          </div>
-        </div>
-      </section>
-
-      {/* Call to Action */}
-      <section className="waitlist-section" id="waitlist">
-        <div className="container">
-          <div className="waitlist-content">
-            <h2 className="section-title animate-on-scroll">
-              Ready to Transform Your <span className="text-accent">Networking?</span>
-            </h2>
-            <p className="section-subtitle animate-on-scroll">
-              Join thousands of professionals who never lose connections again.
-              Start building better relationships today.
-            </p>
-            <div className="waitlist-form-3d">
-              <div className="form-group-3d">
-                <Link to="/auth" className="btn-primary btn-revolution hover-scale animate-fade-in transition-all duration-300 hover:animate-pulse">
-                  <span>Get Started Free</span>
-                  <ArrowRight className="btn-icon" />
-                  <div className="btn-particles"></div>
-                </Link>
-              </div>
-            </div>
-            <p className="waitlist-note animate-on-scroll">
-              Free forever plan available. No credit card required.
-            </p>
-          </div>
+          </form>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="footer">
-        <div className="container">
-          <div className="footer-content">
-            <div className="footer-brand">
+      <footer className="py-12 border-t border-white/10">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <div className="flex items-center mb-4 md:mb-0">
               <img 
                 src="/logo.png" 
                 alt="Networq" 
-                className="footer-logo"
+                className="h-6 w-auto mr-3"
               />
-              <p className="footer-tagline">Never lose a connection again</p>
+              <span className="text-white/70 text-sm">
+                © 2024 Networq. All rights reserved.
+              </span>
             </div>
-            <div className="footer-links">
-              <div className="footer-column">
-                <h4>Product</h4>
-                <ul>
-                  <li><Link to="/auth">Features</Link></li>
-                  <li><Link to="/auth">Pricing</Link></li>
-                  <li><Link to="/auth">Download</Link></li>
-                </ul>
-              </div>
-              <div className="footer-column">
-                <h4>Company</h4>
-                <ul>
-                  <li><Link to="/support">About</Link></li>
-                  <li><Link to="/support">Contact</Link></li>
-                  <li><Link to="/privacy-policy">Privacy</Link></li>
-                </ul>
-              </div>
+            <div className="flex space-x-6">
+              <Link to="/privacy" className="text-white/70 hover:text-white text-sm transition-colors">
+                Privacy
+              </Link>
+              <Link to="/support" className="text-white/70 hover:text-white text-sm transition-colors">
+                Support
+              </Link>
             </div>
-          </div>
-          <div className="footer-bottom">
-            <p>&copy; 2024 Networq. All rights reserved.</p>
           </div>
         </div>
       </footer>
