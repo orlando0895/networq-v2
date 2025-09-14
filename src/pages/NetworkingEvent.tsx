@@ -196,16 +196,16 @@ const NetworkingEvent = () => {
                 <div className="relative group">
                   <div className="absolute -inset-2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-2xl blur-lg group-hover:blur-xl transition-all duration-500"></div>
                   <img 
-                    src={appFilters} 
-                    alt="Networq App - Industry Filters" 
+                    src={appProfile} 
+                    alt="Networq App - Profile Screen" 
                     className="relative w-56 h-auto object-contain hover:scale-105 transition-transform duration-500 mx-auto"
                   />
                 </div>
                 <div className="relative group">
                   <div className="absolute -inset-2 bg-gradient-to-r from-green-500/20 to-teal-500/20 rounded-2xl blur-lg group-hover:blur-xl transition-all duration-500"></div>
                   <img 
-                    src={appProfile} 
-                    alt="Networq App - QR Code Profile" 
+                    src={appMessages} 
+                    alt="Networq App - Messages Screen" 
                     className="relative w-56 h-auto object-contain hover:scale-105 transition-transform duration-500 mx-auto"
                     style={{ animationDelay: '0.2s' }}
                   />
