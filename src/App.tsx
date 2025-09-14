@@ -21,6 +21,7 @@ import { PrivacyPolicy } from "./pages/PrivacyPolicy";
 import { Support } from "./pages/Support";
 import Messages from "./pages/Messages";
 import NetworkingEvent from "./pages/NetworkingEvent";
+import SponsorshipOpportunities from "./pages/SponsorshipOpportunities";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -48,6 +49,7 @@ const App = () => (
               <Route path="/privacy" element={<PrivacyPolicy />} />
               <Route path="/support" element={<Support />} />
               <Route path="/networking-event" element={<NetworkingEvent />} />
+              <Route path="/sponsorship" element={<SponsorshipOpportunities />} />
               <Route
                 path="/app"
                 element={
