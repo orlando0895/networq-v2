@@ -260,18 +260,6 @@ const NetworkingEvent = () => {
               ))}
             </div>
             
-            {/* Floating Messages App Preview */}
-            <div className="flex justify-center mt-16">
-              <div className="relative">
-                <div className="absolute -inset-4 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 rounded-3xl blur-xl animate-pulse"></div>
-                <img 
-                  src={appMessages} 
-                  alt="Networq App - Messages" 
-                  className="relative w-64 h-auto object-contain hover:scale-105 transition-transform duration-500 animate-fade-in"
-                  style={{ animationDelay: '0.5s' }}
-                />
-              </div>
-            </div>
           </section>
 
           {/* Registration Section */}
