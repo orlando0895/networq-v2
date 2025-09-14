@@ -170,8 +170,8 @@ const NetworkingEvent = () => {
                 <div className="relative group">
                   <div className="absolute -inset-4 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 rounded-3xl blur-xl animate-pulse"></div>
                   <img 
-                    src={appMessages} 
-                    alt="Networq App - Messages" 
+                    src={appFilters} 
+                    alt="Networq App - Industry Filters" 
                     className="relative w-64 h-auto object-contain hover:scale-105 transition-transform duration-500 hover:rotate-2"
                   />
                 </div>
