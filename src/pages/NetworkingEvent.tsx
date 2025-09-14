@@ -265,6 +265,11 @@ const NetworkingEvent = () => {
           {/* Registration Section */}
           <section className="space-y-20 animate-fade-in">
             <div className="text-center space-y-8 max-w-4xl mx-auto">
+              <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-primary/10 border border-primary/20 mb-8">
+                <Star className="w-4 h-4 text-primary" />
+                <span className="text-primary font-medium text-sm">Limited Seats Available</span>
+                <Star className="w-4 h-4 text-primary" />
+              </div>
               <h2 className="text-5xl md:text-6xl font-light tracking-tight text-white">
                 Join the launch
               </h2>
@@ -273,59 +278,79 @@ const NetworkingEvent = () => {
               </p>
             </div>
             
-            <div className="grid gap-8 lg:gap-16 md:grid-cols-2 max-w-4xl mx-auto items-center">
-              
-              <Card className="border-0 bg-white/5 backdrop-blur-sm rounded-3xl overflow-hidden md:order-1">
-                <CardContent className="p-12 space-y-8">
+            <div className="max-w-2xl mx-auto">
+              <Card className="border-0 bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-sm rounded-3xl overflow-hidden shadow-2xl shadow-primary/10">
+                <CardContent className="p-8 md:p-12 space-y-8">
+                  <div className="text-center space-y-4 mb-8">
+                    <h3 className="text-2xl font-medium text-white">Reserve Your Spot</h3>
+                    <p className="text-gray-300 font-light">Join Scottsdale's most innovative professionals</p>
+                  </div>
+
                   <div className="grid gap-6 md:grid-cols-2">
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium text-gray-300">First Name</label>
+                    <div className="space-y-3">
+                      <label className="block text-sm font-medium text-gray-300">First Name *</label>
                       <Input 
                         placeholder="John" 
-                        className="border-0 bg-white/10 rounded-2xl h-14 text-lg text-white placeholder:text-gray-400 focus:ring-2 focus:ring-primary/20 transition-all"
+                        className="border border-white/20 bg-white/10 rounded-xl h-12 text-white placeholder:text-gray-400 focus:ring-2 focus:ring-primary/30 focus:border-primary/50 transition-all hover:bg-white/15"
                       />
                     </div>
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium text-gray-300">Last Name</label>
+                    <div className="space-y-3">
+                      <label className="block text-sm font-medium text-gray-300">Last Name *</label>
                       <Input 
                         placeholder="Doe" 
-                        className="border-0 bg-white/10 rounded-2xl h-14 text-lg text-white placeholder:text-gray-400 focus:ring-2 focus:ring-primary/20 transition-all"
+                        className="border border-white/20 bg-white/10 rounded-xl h-12 text-white placeholder:text-gray-400 focus:ring-2 focus:ring-primary/30 focus:border-primary/50 transition-all hover:bg-white/15"
                       />
                     </div>
                   </div>
                   
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-300">Email</label>
+                  <div className="space-y-3">
+                    <label className="block text-sm font-medium text-gray-300">Email Address *</label>
                     <Input 
                       type="email" 
                       placeholder="john@example.com" 
-                      className="border-0 bg-white/10 rounded-2xl h-14 text-lg text-white placeholder:text-gray-400 focus:ring-2 focus:ring-primary/20 transition-all"
+                      className="border border-white/20 bg-white/10 rounded-xl h-12 text-white placeholder:text-gray-400 focus:ring-2 focus:ring-primary/30 focus:border-primary/50 transition-all hover:bg-white/15"
                     />
                   </div>
                   
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-300">Company</label>
-                    <Input 
-                      placeholder="Your Company" 
-                      className="border-0 bg-white/10 rounded-2xl h-14 text-lg text-white placeholder:text-gray-400 focus:ring-2 focus:ring-primary/20 transition-all"
-                    />
+                  <div className="grid gap-6 md:grid-cols-2">
+                    <div className="space-y-3">
+                      <label className="block text-sm font-medium text-gray-300">Company</label>
+                      <Input 
+                        placeholder="Your Company" 
+                        className="border border-white/20 bg-white/10 rounded-xl h-12 text-white placeholder:text-gray-400 focus:ring-2 focus:ring-primary/30 focus:border-primary/50 transition-all hover:bg-white/15"
+                      />
+                    </div>
+                    <div className="space-y-3">
+                      <label className="block text-sm font-medium text-gray-300">Role/Title</label>
+                      <Input 
+                        placeholder="Your Title" 
+                        className="border border-white/20 bg-white/10 rounded-xl h-12 text-white placeholder:text-gray-400 focus:ring-2 focus:ring-primary/30 focus:border-primary/50 transition-all hover:bg-white/15"
+                      />
+                    </div>
                   </div>
                   
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-300">Role</label>
-                    <Input 
-                      placeholder="Your Title" 
-                      className="border-0 bg-white/10 rounded-2xl h-14 text-lg text-white placeholder:text-gray-400 focus:ring-2 focus:ring-primary/20 transition-all"
-                    />
+                  <div className="pt-4">
+                    <Button className="w-full h-14 rounded-xl text-lg font-medium bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary/80 transition-all duration-300 hover:scale-[1.02] shadow-lg shadow-primary/25">
+                      <CheckCircle className="w-5 h-5 mr-2" />
+                      Secure Your Spot
+                    </Button>
                   </div>
                   
-                  <Button className="w-full h-14 rounded-2xl text-lg font-medium bg-primary hover:bg-primary/90 transition-all duration-300 hover:scale-[1.02]">
-                    Secure Your Spot
-                  </Button>
-                  
-                  <p className="text-center text-sm text-gray-400 font-light">
-                    Limited seats available. Event details will be sent via email.
-                  </p>
+                  <div className="text-center pt-4 space-y-2">
+                    <p className="text-sm text-gray-400 font-light">
+                      Event details will be sent via email within 24 hours
+                    </p>
+                    <div className="flex items-center justify-center gap-4 text-xs text-gray-500">
+                      <span className="flex items-center gap-1">
+                        <Clock className="w-3 h-3" />
+                        Free Event
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <Award className="w-3 h-3" />
+                        Premium Networking
+                      </span>
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
             </div>
