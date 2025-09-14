@@ -1,13 +1,8 @@
-import React, { useState, useEffect } from "react";
-import { ArrowRight, Download, Shield, Zap, Users, Smartphone, Check, Star } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import React, { useEffect } from "react";
+import { ArrowRight, Download, Shield, Users, Smartphone } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
 
 const LandingPage = () => {
-  const [email, setEmail] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const { toast } = useToast();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -17,265 +12,222 @@ const LandingPage = () => {
       navigate('/auth');
       return;
     }
-
-    document.documentElement.classList.add('dark');
-    
-    return () => {
-      document.documentElement.classList.remove('dark');
-    };
   }, [navigate]);
 
-  const handleWaitlistSignup = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email || !email.includes("@")) {
-      toast({
-        title: "Invalid Email",
-        description: "Please enter a valid email address.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setIsSubmitting(true);
-    try {
-      const { error } = await supabase
-        .from('waitlist_signups')
-        .insert([
-          {
-            email: email.toLowerCase(),
-            source: 'landing_page',
-            user_agent: navigator.userAgent
-          }
-        ]);
-
-      if (error) {
-        if (error.code === '23505') {
-          throw new Error('Email already registered for waitlist');
-        }
-        throw new Error(error.message || 'Something went wrong');
-      }
-
-      toast({
-        title: "Welcome to Networq! 🎉",
-        description: "You've successfully joined our waitlist. We'll notify you when early access is available!",
-      });
-      
-      setEmail("");
-    } catch (error: any) {
-      toast({
-        title: "Something went wrong",
-        description: error.message || "Please try again later.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
   return (
-    <div className="min-h-screen bg-black text-white overflow-hidden">
-      {/* Header */}
-      <header className="relative z-50 px-6 py-6">
-        <nav className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center">
+    <div className="min-h-screen bg-background text-foreground">
+      {/* Navigation */}
+      <nav className="fixed top-0 w-full z-50 px-6 py-6 bg-background/95 backdrop-blur-xl border-b border-border/50">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <div className="flex items-center space-x-3">
             <img 
               src="/logo.png" 
               alt="Networq" 
               className="h-8 w-auto"
             />
+            <span className="text-xl font-semibold tracking-tight">Networq</span>
           </div>
-          <div className="hidden md:flex items-center space-x-8">
-            <Link to="/auth" className="text-white/70 hover:text-white transition-colors">
-              Sign in
-            </Link>
-          </div>
-        </nav>
-      </header>
+          <Link 
+            to="/auth" 
+            className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-6 py-3 rounded-xl hover:bg-muted/50 border border-transparent hover:border-border"
+          >
+            Sign in
+          </Link>
+        </div>
+      </nav>
 
       {/* Hero Section */}
-      <main className="relative">
-        {/* Background gradient */}
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-900/20 via-black to-purple-900/20" />
-        
-        <div className="relative z-10 max-w-7xl mx-auto px-6 pt-20 pb-32">
-          <div className="text-center">
-            {/* Main headline */}
-            <h1 className="text-5xl md:text-7xl font-light tracking-tight mb-6">
+      <main className="pt-32 pb-20">
+        <div className="max-w-7xl mx-auto px-6 text-center">
+          <div className="max-w-4xl mx-auto">
+            <div className="mb-6">
+              <span className="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-primary/10 text-primary border border-primary/20">
+                ✨ Professional networking reimagined
+              </span>
+            </div>
+            
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-light tracking-tight mb-8 leading-[0.9] text-foreground">
               Never lose a
               <br />
-              <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent font-normal">
+              <span className="bg-gradient-hero bg-clip-text text-transparent font-medium">
                 connection
               </span>
               <br />
               again.
             </h1>
             
-            {/* Subtitle */}
-            <p className="text-xl md:text-2xl text-white/70 mb-12 max-w-3xl mx-auto font-light leading-relaxed">
-              The professional networking app that keeps you organized, connected, and productive.
+            <p className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-3xl mx-auto font-light leading-relaxed">
+              The most elegant way to share your contact information and grow your professional network. Built for modern professionals.
             </p>
             
-            {/* App preview */}
-            <div className="relative mx-auto w-80 h-96 mb-16">
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-[3rem] blur-3xl" />
-              <div className="relative bg-black/90 backdrop-blur-xl rounded-[3rem] p-2 border border-white/20">
-                <img 
-                  src="/lovable-uploads/c018c308-324b-4fc0-9dff-95bcced380de.png" 
-                  alt="Networq mobile app interface"
-                  className="w-full h-full object-cover rounded-[2.5rem]"
-                />
-              </div>
-            </div>
-            
-            {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 items-center justify-center mb-8">
+            <div className="flex flex-col sm:flex-row gap-4 items-center justify-center mb-20">
               <Link 
                 to="/auth"
-                className="bg-white text-black px-8 py-4 rounded-full font-medium hover:bg-white/90 transition-all flex items-center gap-2 shadow-2xl"
+                className="group bg-primary text-primary-foreground px-8 py-4 rounded-2xl font-semibold hover:shadow-elegant transition-all flex items-center gap-2 text-lg shadow-lg hover:-translate-y-0.5"
               >
                 Get Started Free
-                <ArrowRight className="w-4 h-4" />
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition-transform" />
               </Link>
-              <button className="flex items-center gap-2 text-white/70 hover:text-white transition-colors">
-                <Download className="w-4 h-4" />
-                Download on App Store
+              <button className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors text-lg px-6 py-4 rounded-2xl hover:bg-muted/50">
+                <Download className="w-5 h-5" />
+                Download App
               </button>
             </div>
 
-            {/* Download note */}
-            <p className="text-sm text-white/50">
-              Available for iOS and Android. No subscription required.
-            </p>
+            {/* App Preview */}
+            <div className="relative max-w-sm mx-auto mb-20">
+              <div className="absolute inset-0 bg-gradient-primary rounded-[3rem] blur-3xl opacity-20" />
+              <div className="relative bg-card backdrop-blur-xl rounded-[3rem] p-4 border border-border shadow-2xl">
+                <img 
+                  src="/lovable-uploads/c018c308-324b-4fc0-9dff-95bcced380de.png" 
+                  alt="Networq mobile app interface showcasing professional digital business cards"
+                  className="w-full h-auto object-cover rounded-[2.5rem]"
+                />
+              </div>
+            </div>
           </div>
         </div>
       </main>
 
       {/* Features Section */}
-      <section className="relative bg-gray-900/50 py-32">
+      <section id="how-it-works" className="py-32 bg-gradient-accent">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-20">
-            <h2 className="text-4xl md:text-5xl font-light mb-6">
-              Why choose Networq?
+            <div className="mb-4">
+              <span className="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-primary/10 text-primary border border-primary/20">
+                How it works
+              </span>
+            </div>
+            <h2 className="text-4xl md:text-6xl font-light mb-6 tracking-tight text-foreground">
+              Simple. Powerful. Professional.
             </h2>
-            <p className="text-xl text-white/70 max-w-2xl mx-auto">
-              Simple, powerful features designed for modern professionals.
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+              Three simple steps to transform your networking experience.
             </p>
           </div>
           
-          <div className="grid md:grid-cols-3 gap-12">
-            {/* Feature 1 */}
-            <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <Smartphone className="w-8 h-8 text-white" />
+          <div className="grid md:grid-cols-3 gap-12 max-w-6xl mx-auto">
+            <div className="text-center group">
+              <div className="relative">
+                <div className="w-24 h-24 bg-gradient-primary rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-lg group-hover:shadow-elegant transition-all duration-300 transform group-hover:-translate-y-1">
+                  <Smartphone className="w-12 h-12 text-primary-foreground" />
+                </div>
+                <div className="absolute -top-2 -right-2 w-6 h-6 bg-primary rounded-full flex items-center justify-center text-primary-foreground text-xs font-bold">
+                  1
+                </div>
               </div>
-              <h3 className="text-xl font-medium mb-4">Instant Contact Exchange</h3>
-              <p className="text-white/70 leading-relaxed">
-                Share your contact information with a QR code. No app required for recipients.
+              <h3 className="text-2xl font-semibold mb-4 text-foreground">Create your card</h3>
+              <p className="text-muted-foreground text-lg leading-relaxed">
+                Design a beautiful digital business card with all your professional information in minutes.
               </p>
             </div>
             
-            {/* Feature 2 */}
-            <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <Users className="w-8 h-8 text-white" />
+            <div className="text-center group">
+              <div className="relative">
+                <div className="w-24 h-24 bg-gradient-primary rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-lg group-hover:shadow-elegant transition-all duration-300 transform group-hover:-translate-y-1">
+                  <Users className="w-12 h-12 text-primary-foreground" />
+                </div>
+                <div className="absolute -top-2 -right-2 w-6 h-6 bg-primary rounded-full flex items-center justify-center text-primary-foreground text-xs font-bold">
+                  2
+                </div>
               </div>
-              <h3 className="text-xl font-medium mb-4">Smart Organization</h3>
-              <p className="text-white/70 leading-relaxed">
-                Keep your contacts organized with tags, notes, and filters. Never forget where you met someone.
+              <h3 className="text-2xl font-semibold mb-4 text-foreground">Share instantly</h3>
+              <p className="text-muted-foreground text-lg leading-relaxed">
+                Share your contact information with a simple QR code or link. No app required for recipients.
               </p>
             </div>
             
-            {/* Feature 3 */}
-            <div className="text-center">
-              <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <Shield className="w-8 h-8 text-white" />
+            <div className="text-center group">
+              <div className="relative">
+                <div className="w-24 h-24 bg-gradient-primary rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-lg group-hover:shadow-elegant transition-all duration-300 transform group-hover:-translate-y-1">
+                  <Shield className="w-12 h-12 text-primary-foreground" />
+                </div>
+                <div className="absolute -top-2 -right-2 w-6 h-6 bg-primary rounded-full flex items-center justify-center text-primary-foreground text-xs font-bold">
+                  3
+                </div>
               </div>
-              <h3 className="text-xl font-medium mb-4">Privacy First</h3>
-              <p className="text-white/70 leading-relaxed">
-                Your data stays yours. No selling, no tracking, no ads. Just a clean, professional experience.
+              <h3 className="text-2xl font-semibold mb-4 text-foreground">Stay organized</h3>
+              <p className="text-muted-foreground text-lg leading-relaxed">
+                Keep track of your connections with smart organization tools and never lose touch.
               </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Social Proof */}
-      <section className="py-20">
-        <div className="max-w-4xl mx-auto px-6 text-center">
-          <div className="grid md:grid-cols-3 gap-8 mb-12">
-            <div>
-              <div className="text-3xl font-light mb-2">10K+</div>
-              <div className="text-white/70">Professionals</div>
-            </div>
-            <div>
-              <div className="text-3xl font-light mb-2">50K+</div>
-              <div className="text-white/70">Connections Made</div>
-            </div>
-            <div>
-              <div className="text-3xl font-light mb-2">4.9★</div>
-              <div className="text-white/70">App Store Rating</div>
-            </div>
+      {/* Trust Indicators */}
+      <section className="py-32 bg-card/50">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-light mb-4 text-foreground">
+              Trusted by professionals worldwide
+            </h2>
+            <p className="text-muted-foreground text-lg">
+              Join thousands who have transformed their networking
+            </p>
           </div>
           
-          <blockquote className="text-xl text-white/90 italic mb-4">
-            "Networq has completely transformed how I manage my professional relationships. It's simple, elegant, and just works."
-          </blockquote>
-          <cite className="text-white/70">— Sarah Chen, Business Development Manager</cite>
+          <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+            <div className="text-center p-8 rounded-2xl bg-card border border-border hover:shadow-lg transition-all">
+              <div className="text-5xl font-light text-foreground mb-2">10K+</div>
+              <div className="text-muted-foreground font-medium">Active Professionals</div>
+            </div>
+            <div className="text-center p-8 rounded-2xl bg-card border border-border hover:shadow-lg transition-all">
+              <div className="text-5xl font-light text-foreground mb-2">50K+</div>
+              <div className="text-muted-foreground font-medium">Connections Made</div>
+            </div>
+            <div className="text-center p-8 rounded-2xl bg-card border border-border hover:shadow-lg transition-all">
+              <div className="text-5xl font-light text-foreground mb-2">4.9★</div>
+              <div className="text-muted-foreground font-medium">App Store Rating</div>
+            </div>
+          </div>
         </div>
       </section>
 
       {/* Final CTA */}
-      <section className="py-20 bg-gradient-to-r from-blue-900/30 to-purple-900/30">
+      <section className="py-32 bg-gradient-to-br from-primary/5 to-primary-glow/5">
         <div className="max-w-4xl mx-auto px-6 text-center">
-          <h2 className="text-4xl md:text-5xl font-light mb-6">
+          <h2 className="text-4xl md:text-6xl font-light mb-8 tracking-tight text-foreground">
             Ready to get started?
           </h2>
-          <p className="text-xl text-white/70 mb-8">
-            Join thousands of professionals who never lose a connection.
+          <p className="text-xl text-muted-foreground mb-12 max-w-2xl mx-auto leading-relaxed">
+            Join thousands of professionals who never lose a connection. No credit card required.
           </p>
           
-          {/* Email signup */}
-          <form onSubmit={handleWaitlistSignup} className="max-w-md mx-auto">
-            <div className="flex gap-3">
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter your email"
-                className="flex-1 px-4 py-3 bg-white/10 backdrop-blur border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:border-white/40"
-                disabled={isSubmitting}
-              />
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="bg-white text-black px-6 py-3 rounded-xl font-medium hover:bg-white/90 transition-all disabled:opacity-50"
-              >
-                {isSubmitting ? "..." : "Join Waitlist"}
-              </button>
-            </div>
-          </form>
+          <div className="flex flex-col sm:flex-row gap-4 items-center justify-center">
+            <Link 
+              to="/auth"
+              className="group inline-flex items-center gap-2 bg-primary text-primary-foreground px-10 py-5 rounded-2xl font-semibold hover:shadow-elegant transition-all text-lg shadow-lg hover:-translate-y-0.5"
+            >
+              Get Started Free
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition-transform" />
+            </Link>
+            <p className="text-sm text-muted-foreground">
+              Free forever • No credit card required
+            </p>
+          </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="py-12 border-t border-white/10">
+      <footer className="py-16 border-t border-border bg-card/30">
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="flex items-center mb-4 md:mb-0">
+            <div className="flex items-center mb-6 md:mb-0">
               <img 
                 src="/logo.png" 
                 alt="Networq" 
                 className="h-6 w-auto mr-3"
               />
-              <span className="text-white/70 text-sm">
+              <span className="text-muted-foreground text-sm">
                 © 2024 Networq. All rights reserved.
               </span>
             </div>
-            <div className="flex space-x-6">
-              <Link to="/privacy" className="text-white/70 hover:text-white text-sm transition-colors">
-                Privacy
+            <div className="flex space-x-8">
+              <Link to="/privacy" className="text-muted-foreground hover:text-foreground text-sm transition-colors font-medium">
+                Privacy Policy
               </Link>
-              <Link to="/support" className="text-white/70 hover:text-white text-sm transition-colors">
+              <Link to="/support" className="text-muted-foreground hover:text-foreground text-sm transition-colors font-medium">
                 Support
               </Link>
             </div>
