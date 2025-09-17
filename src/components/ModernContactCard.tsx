@@ -207,194 +207,166 @@ export const ModernContactCard = ({ contact, onUpdateContact, onDeleteContact }:
 
   return (
     <>
-      <div className="group card-floating">
-        
-        <div className="p-6">
-          {/* Header with Avatar and Actions */}
-          <div className="flex items-start justify-between mb-4">
-            <div className="flex items-center gap-4">
-              <Avatar className="h-16 w-16 ring-2 ring-primary/20 ring-offset-2 ring-offset-background">
-                <AvatarImage 
-                  src={contact.profile_picture_url} 
-                  alt={`${contact.name} profile`}
-                />
-                <AvatarFallback className="bg-gradient-primary text-primary-foreground font-semibold text-lg">
-                  {getInitials(contact.name)}
-                </AvatarFallback>
-              </Avatar>
-              
-              <div className="flex-1 min-w-0">
-                <h3 className="font-heading text-xl font-semibold text-foreground leading-tight">
-                  {contact.name}
-                </h3>
-                {contact.company && (
-                  <div className="flex items-center gap-1 mt-1">
-                    <Building2 className="w-4 h-4 text-muted-foreground" />
-                    <p className="text-sm text-muted-foreground">{contact.company}</p>
-                  </div>
-                )}
-                {contact.industry && (
-                  <p className="text-xs text-muted-foreground mt-1">{contact.industry}</p>
-                )}
-              </div>
-            </div>
-
-            {/* Quick Actions */}
-            <div className="flex items-center gap-1 transition-opacity duration-300">
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      className="h-8 w-8 p-0 ripple-effect"
-                      onClick={() => setIsShareDialogOpen(true)}
-                    >
-                      <Share2 className="h-4 w-4" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Share Contact</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      className="h-8 w-8 p-0 ripple-effect"
-                      onClick={handleExportVCF}
-                    >
-                      <Download className="h-4 w-4" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Download vCard</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
+      <div className="bg-card rounded-xl border border-border shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden">
+        {/* Header */}
+        <div className="px-6 pt-6 pb-4">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold text-foreground truncate pr-2">
+              {contact.name}
+            </h3>
+            <Badge className={`${badge.className} text-xs font-medium px-2 py-1 rounded-md flex items-center gap-1.5 shrink-0`}>
+              {badge.icon}
+              <span>{badge.text}</span>
+            </Badge>
           </div>
-
-          {/* Contact Methods - Message First with Hierarchy */}
-          <div className="flex flex-wrap gap-2 mb-4">
-            {/* Primary Action: Message (if available) */}
-            {hasAccount && (
-              <Button
-                size="sm"
-                variant="default"
-                className="h-9 px-4 text-sm font-medium bg-gradient-primary hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 ripple-effect"
-                onClick={handleStartConversation}
-              >
-                <MessageSquare className="w-4 h-4 mr-2" />
-                Message
-              </Button>
-            )}
-            
-            {/* Secondary Actions */}
+          
+          {/* Primary Action Button */}
+          {hasAccount ? (
             <Button
-              size="sm"
-              variant="secondary"
-              className="h-9 px-3 text-xs font-medium hover:bg-gradient-accent transition-all duration-200 ripple-effect"
+              className="w-full h-11 bg-primary hover:bg-primary/90 text-primary-foreground font-medium rounded-lg mb-4"
+              onClick={handleStartConversation}
+            >
+              <MessageSquare className="w-4 h-4 mr-2" />
+              Message
+            </Button>
+          ) : (
+            <Button
+              className="w-full h-11 bg-primary hover:bg-primary/90 text-primary-foreground font-medium rounded-lg mb-4"
               onClick={() => window.open(formatEmailLink(contact.email))}
             >
               <Mail className="w-4 h-4 mr-2" />
-              Email
+              Send Email
             </Button>
-            
-            {contact.phone && (
-              <Button
-                size="sm"
-                variant="secondary"
-                className="h-9 px-3 text-xs font-medium hover:bg-gradient-accent transition-all duration-200 ripple-effect"
-                onClick={() => window.open(formatPhoneLink(contact.phone))}
-              >
-                <Phone className="w-4 h-4 mr-2" />
-                Call
-              </Button>
-            )}
-          </div>
-
-          {/* Tags and Metadata */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Badge className={`${badge.className} text-xs font-semibold uppercase tracking-wide border px-3 py-1.5 rounded-full`}>
-                {badge.icon}
-                <span className="ml-1.5">{badge.text}</span>
-              </Badge>
-              
-              {contact.tier && (
-                <Badge 
-                  variant="outline" 
-                  className="text-xs font-semibold uppercase tracking-wide px-3 py-1.5 rounded-full border-primary/20 bg-gradient-accent"
-                >
-                  {contact.tier === 'A-player' ? '⭐ A-PLAYER' : 'ACQUAINTANCE'}
-                </Badge>
-              )}
-            </div>
-
-            {/* Social Links - Compact */}
-            <div className="flex items-center gap-1">
-              {contact.linkedin && (
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  className="h-6 w-6 p-0"
-                  onClick={() => window.open(contact.linkedin!, '_blank')}
-                >
-                  <Linkedin className="w-3 h-3 text-blue-600" />
-                </Button>
-              )}
-              {contact.facebook && (
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  className="h-6 w-6 p-0"
-                  onClick={() => window.open(contact.facebook!, '_blank')}
-                >
-                  <Facebook className="w-3 h-3 text-blue-600" />
-                </Button>
-              )}
-              {contact.whatsapp && (
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  className="h-6 w-6 p-0"
-                  onClick={() => window.open(contact.whatsapp!, '_blank')}
-                >
-                  <MessageCircle className="w-3 h-3 text-green-600" />
-                </Button>
-              )}
-              {(contact.websites && contact.websites.length > 0) && (
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  className="h-6 w-6 p-0"
-                  onClick={() => window.open(contact.websites![0], '_blank')}
-                >
-                  <Globe className="w-3 h-3 text-muted-foreground" />
-                </Button>
-              )}
-              
-              {/* Add note button */}
-              <Button
-                size="sm"
-                variant="ghost"
-                className="h-6 w-6 p-0"
-                onClick={() => setIsNoteFormOpen(true)}
-                aria-label="Add note"
-              >
-                <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
-              </Button>
-            </div>
-          </div>
+          )}
         </div>
 
-        {/* Hover overlay with subtle animation */}
-        <div className="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+        {/* Contact Details */}
+        <div className="px-6 pb-6 space-y-3">
+          {/* Company & Industry */}
+          {contact.company && (
+            <div className="flex items-center text-sm text-muted-foreground">
+              <Building2 className="w-4 h-4 mr-3 text-muted-foreground/70" />
+              <span className="font-medium">Company</span>
+              <span className="ml-auto text-foreground">{contact.company}</span>
+            </div>
+          )}
+          
+          {contact.industry && (
+            <div className="flex items-center text-sm text-muted-foreground">
+              <Globe className="w-4 h-4 mr-3 text-muted-foreground/70" />
+              <span className="font-medium">Industry</span>
+              <span className="ml-auto text-foreground">{contact.industry}</span>
+            </div>
+          )}
+
+          {/* Phone */}
+          {contact.phone && (
+            <div className="flex items-center text-sm text-muted-foreground">
+              <Phone className="w-4 h-4 mr-3 text-muted-foreground/70" />
+              <span className="font-medium">Phone</span>
+              <Button
+                variant="link" 
+                className="ml-auto p-0 h-auto text-sm text-primary hover:text-primary/80"
+                onClick={() => window.open(formatPhoneLink(contact.phone))}
+              >
+                {contact.phone}
+              </Button>
+            </div>
+          )}
+
+          {/* Email */}
+          <div className="flex items-center text-sm text-muted-foreground">
+            <Mail className="w-4 h-4 mr-3 text-muted-foreground/70" />
+            <span className="font-medium">Email</span>
+            <Button
+              variant="link" 
+              className="ml-auto p-0 h-auto text-sm text-primary hover:text-primary/80 truncate max-w-[140px]"
+              onClick={() => window.open(formatEmailLink(contact.email))}
+            >
+              {contact.email}
+            </Button>
+          </div>
+
+          {/* Social Links */}
+          {(contact.linkedin || contact.facebook || contact.whatsapp || (contact.websites && contact.websites.length > 0)) && (
+            <div className="flex items-center justify-between pt-2">
+              <span className="text-sm font-medium text-muted-foreground">Social</span>
+              <div className="flex items-center gap-2">
+                {contact.linkedin && (
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="h-7 w-7 p-0"
+                    onClick={() => window.open(contact.linkedin!, '_blank')}
+                  >
+                    <Linkedin className="w-4 h-4 text-blue-600" />
+                  </Button>
+                )}
+                {contact.facebook && (
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="h-7 w-7 p-0"
+                    onClick={() => window.open(contact.facebook!, '_blank')}
+                  >
+                    <Facebook className="w-4 h-4 text-blue-600" />
+                  </Button>
+                )}
+                {contact.whatsapp && (
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="h-7 w-7 p-0"
+                    onClick={() => window.open(contact.whatsapp!, '_blank')}
+                  >
+                    <MessageCircle className="w-4 h-4 text-green-600" />
+                  </Button>
+                )}
+                {(contact.websites && contact.websites.length > 0) && (
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="h-7 w-7 p-0"
+                    onClick={() => window.open(contact.websites![0], '_blank')}
+                  >
+                    <Globe className="w-4 h-4 text-muted-foreground" />
+                  </Button>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Quick Actions */}
+          <div className="flex items-center justify-between pt-3 border-t border-border">
+            <Button
+              variant="ghost" 
+              size="sm"
+              className="text-xs text-muted-foreground hover:text-foreground"
+              onClick={() => setIsShareDialogOpen(true)}
+            >
+              <Share2 className="w-3 h-3 mr-1.5" />
+              Share
+            </Button>
+            <Button
+              variant="ghost" 
+              size="sm"
+              className="text-xs text-muted-foreground hover:text-foreground"
+              onClick={handleExportVCF}
+            >
+              <Download className="w-3 h-3 mr-1.5" />
+              Export
+            </Button>
+            <Button
+              variant="ghost" 
+              size="sm"
+              className="text-xs text-muted-foreground hover:text-foreground"
+              onClick={() => setIsNoteFormOpen(true)}
+            >
+              <Edit className="w-3 h-3 mr-1.5" />
+              Note
+            </Button>
+          </div>
+        </div>
       </div>
 
       <ShareContactDialog
